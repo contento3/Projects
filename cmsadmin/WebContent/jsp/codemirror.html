@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+  <head>
+  <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <title>CodeMirror 2: Active Line Demo</title>
+    <link rel="stylesheet" href="../css/codemirror/codemirror.css">
+    <script src="../js/codemirror/codemirror.js"></script>
+    <link rel="stylesheet" href="../css/codemirror/theme/default.css">
+    <script src="../js/codemirror/mode/xml/xml.js"></script>
+    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <link rel="stylesheet" href="../css/codemirror/docs.css">
+
+    <style type="text/css">
+      .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
+      .activeline {background: #f0fcff !important;}
+    </style>
+  </head>
+  <body>
+     <div>
+     Template Name : <input type="text" id="templateName" name="templateName">
+     </div>
+     <div>
+     Template Path : <input type="text" id="templatePath" name="templatePath">
+     </div>
+     <textarea id="code" name="code">
+	 </textarea><input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
+
+    <script>
+    function saveTemplate() {
+    	var text = editor.getValue();
+    	var templateName = $('#templateName').val();
+		$.post( '/jsp/addTemplate.ajax', { text: text,templateName : templateName,templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId },
+		      function( data ) {
+				alert("template saved.");
+				}
+			);
+      }
+    
+    function loadTemplateText(templateId) {
+		$.get( '/jsp/loadTemplate.ajax', {templateId : templateId },
+		      function( data ) {
+			  	editor.setValue(data);
+				}
+			);
+    }
+    
+    $.extend({
+    	  getUrlVars: function(){
+    	    var vars = [], hash;
+    	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    	    for(var i = 0; i < hashes.length; i++) {
+    	      hash = hashes[i].split('=');
+    	      vars.push(hash[0]);
+    	      vars[hash[0]] = hash[1];
+    	    }
+    	    return vars;
+    	  },
+    	  getUrlVar: function(name){
+    	    return $.getUrlVars()[name];
+    	  }
+    	});
+    
+    function adjustButtonText(){
+    	$('#addEditButton').val('Save template');
+    }
+
+	function addTemplateName(templateName){
+		$('#templateName').val(templateName);
+	}
+
+	var templateId;
+	var directoryId;
+	var templateTypeId;
+	$(document).ready(function() {
+		var urlVars = $.getUrlVars();
+		templateId = urlVars['templateId'];
+		directoryId = urlVars['directoryId'];
+		templateTypeId = urlVars['templateTypeId'];
+		
+		var templateName= urlVars['templateName'];
+
+		addTemplateName(decodeURI(templateName));
+		adjustButtonText(templateId);   
+		loadTemplateText(templateId);
+	});
+
+	</script>
+	<script>
+	    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+  		mode: "application/xml",
+  		lineNumbers: true,
+  		onCursorActivity: function() {
+    	editor.setLineClass(hlLine, null);
+    	hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+  	}
+	});
+	var hlLine = editor.setLineClass(0, "activeline");
+ </script>
+
+  </body>
+</html>

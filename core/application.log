@@ -1,0 +1,97 @@
+2011-08-11 01:07:25,428 INFO main org.hibernate.cfg.SettingsFactory - JPA-QL strict compliance: enabled
+2011-08-11 01:07:25,428 INFO main org.hibernate.cfg.SettingsFactory - Second-level cache: enabled
+2011-08-11 01:07:25,428 INFO main org.hibernate.cfg.SettingsFactory - Query cache: disabled
+2011-08-11 01:07:25,429 INFO main org.hibernate.cfg.SettingsFactory - Cache region factory : org.hibernate.cache.impl.bridge.RegionFactoryCacheProviderBridge
+2011-08-11 01:07:25,446 INFO main org.hibernate.cache.impl.bridge.RegionFactoryCacheProviderBridge - Cache provider: org.hibernate.cache.NoCacheProvider
+2011-08-11 01:07:25,449 INFO main org.hibernate.cfg.SettingsFactory - Optimize cache for minimal puts: disabled
+2011-08-11 01:07:25,449 INFO main org.hibernate.cfg.SettingsFactory - Structured second-level cache entries: disabled
+2011-08-11 01:07:25,458 INFO main org.hibernate.cfg.SettingsFactory - Statistics: disabled
+2011-08-11 01:07:25,458 INFO main org.hibernate.cfg.SettingsFactory - Deleted entity synthetic identifier rollback: disabled
+2011-08-11 01:07:25,458 INFO main org.hibernate.cfg.SettingsFactory - Default entity-mode: pojo
+2011-08-11 01:07:25,458 INFO main org.hibernate.cfg.SettingsFactory - Named query checking : enabled
+2011-08-11 01:07:25,459 INFO main org.hibernate.cfg.SettingsFactory - Check Nullability in Core (should be disabled when Bean Validation is on): enabled
+2011-08-11 01:07:25,490 INFO main org.hibernate.impl.SessionFactoryImpl - building session factory
+2011-08-11 01:07:25,897 INFO main org.hibernate.impl.SessionFactoryObjectFactory - Not binding factory to JNDI, no JNDI name configured
+2011-08-11 01:07:27,113 INFO main org.hibernate.impl.SessionFactoryImpl - closing
+2011-08-11 01:07:27,171 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: org.modeshape.connector.store.jpa.model.common.WorkspaceEntity
+2011-08-11 01:07:27,171 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: WorkspaceEntity.findAll => select ws from WorkspaceEntity as ws
+2011-08-11 01:07:27,172 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: WorkspaceEntity.findByName => select ws from WorkspaceEntity as ws where ws.name = :name
+2011-08-11 01:07:27,172 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: WorkspaceEntity.findAllNames => select ws.name from WorkspaceEntity as ws
+2011-08-11 01:07:27,172 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity org.modeshape.connector.store.jpa.model.common.WorkspaceEntity on table DNA_WORKSPACES
+2011-08-11 01:07:27,178 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: org.modeshape.connector.store.jpa.model.common.NamespaceEntity
+2011-08-11 01:07:27,179 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: NamespaceEntity.findAll => select ns from NamespaceEntity as ns
+2011-08-11 01:07:27,179 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: NamespaceEntity.findByUri => select ns from NamespaceEntity as ns where ns.uri = ?1
+2011-08-11 01:07:27,179 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity org.modeshape.connector.store.jpa.model.common.NamespaceEntity on table DNA_NAMESPACES
+2011-08-11 01:07:27,181 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: org.modeshape.connector.store.jpa.model.simple.LargeValueEntity
+2011-08-11 01:07:27,181 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: LargeValueEntity.deleteAllUnused => delete LargeValueEntity lve where lve.hash not in (select values.hash from NodeEntity node join node.largeValues values)
+2011-08-11 01:07:27,181 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity org.modeshape.connector.store.jpa.model.simple.LargeValueEntity on table MODE_SIMPLE_LARGE_VALUES
+2011-08-11 01:07:27,197 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: org.modeshape.connector.store.jpa.model.simple.NodeEntity
+2011-08-11 01:07:27,197 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: NodeEntity.findByNodeUuid => from NodeEntity as node where node.workspaceId = :workspaceId and node.nodeUuidString = :nodeUuidString
+2011-08-11 01:07:27,197 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: NodeEntity.findInWorkspace => from NodeEntity as node where node.workspaceId = :workspaceId
+2011-08-11 01:07:27,197 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: NodeEntity.deleteAllInWorkspace => delete from NodeEntity where workspaceId = :workspaceId
+2011-08-11 01:07:27,197 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: NodeEntity.withLargeValues => from NodeEntity as node where node.workspaceId = :workspaceId and size(node.largeValues) > 0
+2011-08-11 01:07:27,198 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity org.modeshape.connector.store.jpa.model.simple.NodeEntity on table MODE_SIMPLE_NODE
+2011-08-11 01:07:27,264 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: org.modeshape.connector.store.jpa.model.simple.SubgraphNodeEntity
+2011-08-11 01:07:27,264 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: SubgraphNodeEntity.insertChildren => insert into SubgraphNodeEntity(queryId,nodeUuid,depth,parentIndexInParent,indexInParent) select parentNode.queryId, child.nodeUuidString, parentNode.depth+1, parentNode.indexInParent, child.indexInParent from NodeEntity child, SubgraphNodeEntity parentNode where child.workspaceId = :workspaceId and child.parent.nodeUuidString = parentNode.nodeUuid and parentNode.queryId = :queryId and parentNode.depth = :parentDepth
+2011-08-11 01:07:27,265 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: SubgraphNodeEntity.getCount => select count(*) from SubgraphNodeEntity where queryId = :queryId
+2011-08-11 01:07:27,265 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: SubgraphNodeEntity.getNodeEntitiesWithLargeValues => select props from NodeEntity props, SubgraphNodeEntity node where props.workspaceId = :workspaceId and props.nodeUuidString = node.nodeUuid and node.queryId = :queryId and node.depth >= :depth and size(props.largeValues) > 0
+2011-08-11 01:07:27,265 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: SubgraphNodeEntity.getChildEntities => select child from NodeEntity child, SubgraphNodeEntity node where child.workspaceId = :workspaceId and child.nodeUuidString = node.nodeUuid and node.queryId = :queryId and node.depth >= :depth and node.depth <= :maxDepth order by node.depth, node.parentIndexInParent, node.indexInParent
+2011-08-11 01:07:27,265 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: SubgraphNodeEntity.clearParentReferences => update NodeEntity child set child.parent = null where child.workspaceId = :workspaceId and child.nodeUuidString in ( select node.nodeUuid from SubgraphNodeEntity node where node.queryId = :queryId and node.depth >= :depth )
+2011-08-11 01:07:27,265 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: SubgraphNodeEntity.deleteChildEntities => delete NodeEntity child where child.workspaceId = :workspaceId and child.nodeUuidString in ( select node.nodeUuid from SubgraphNodeEntity node where node.queryId = :queryId and node.depth >= :depth )
+2011-08-11 01:07:27,265 INFO main org.hibernate.cfg.annotations.QueryBinder - Binding Named query: SubgraphNodeEntity.deleteByQueryId => delete SubgraphNodeEntity where queryId = :queryId
+2011-08-11 01:07:27,266 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity org.modeshape.connector.store.jpa.model.simple.SubgraphNodeEntity on table MODE_SUBGRAPH_NODES
+2011-08-11 01:07:27,269 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: org.modeshape.connector.store.jpa.model.simple.SubgraphQueryEntity
+2011-08-11 01:07:27,269 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity org.modeshape.connector.store.jpa.model.simple.SubgraphQueryEntity on table MODE_SUBGRAPH_QUERIES
+2011-08-11 01:07:27,280 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: org.modeshape.connector.store.jpa.model.simple.NodeEntity.children -> MODE_SIMPLE_NODE
+2011-08-11 01:07:27,285 INFO main org.hibernate.cfg.search.HibernateSearchEventListenerRegister - Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
+2011-08-11 01:07:27,290 INFO main org.hibernate.connection.ConnectionProviderFactory - Initializing connection provider: org.hibernate.connection.C3P0ConnectionProvider
+2011-08-11 01:07:27,290 INFO main org.hibernate.connection.C3P0ConnectionProvider - C3P0 using driver: com.mysql.jdbc.Driver at URL: jdbc:mysql://localhost:3306/cms
+2011-08-11 01:07:27,291 INFO main org.hibernate.connection.C3P0ConnectionProvider - Connection properties: {user=root, password=****, autocommit=true, release_mode=auto}
+2011-08-11 01:07:27,291 INFO main org.hibernate.connection.C3P0ConnectionProvider - autocommit mode: true
+2011-08-11 01:07:27,335 INFO main com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.PoolBackedDataSource@7962879a [ connectionPoolDataSource -> com.mchange.v2.c3p0.WrapperConnectionPoolDataSource@b2ccdbb3 [ acquireIncrement -> 1, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, debugUnreturnedConnectionStackTraces -> false, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge51d8h1ejldk0sewrbo|1af4309, idleConnectionTestPeriod -> 180, initialPoolSize -> 0, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 600, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 2, maxStatements -> 100, maxStatementsPerConnection -> 0, minPoolSize -> 0, nestedDataSource -> com.mchange.v2.c3p0.DriverManagerDataSource@23dfd902 [ description -> null, driverClass -> null, factoryClassLocation -> null, identityToken -> 1hge51d8h1ejldk0sewrbo|cf3539, jdbcUrl -> jdbc:mysql://localhost:3306/cms, properties -> {user=******, password=******, autocommit=true, release_mode=auto} ], preferredTestQuery -> null, propertyCycle -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, usesTraditionalReflectiveProxies -> false; userOverrides: {} ], dataSourceName -> null, factoryClassLocation -> null, identityToken -> 1hge51d8h1ejldk0sewrbo|1abf87, numHelperThreads -> 3 ]
+2011-08-11 01:07:27,392 INFO main org.hibernate.cfg.SettingsFactory - Database ->
+       name : MySQL
+    version : 5.0.45-community-nt
+      major : 5
+      minor : 0
+2011-08-11 01:07:27,392 INFO main org.hibernate.cfg.SettingsFactory - Driver ->
+       name : MySQL-AB JDBC Driver
+    version : mysql-connector-java-5.1.13 ( Revision: ${bzr.revision-id} )
+      major : 5
+      minor : 1
+2011-08-11 01:07:27,392 INFO main org.hibernate.dialect.Dialect - Using dialect: org.hibernate.dialect.MySQLDialect
+2011-08-11 01:07:27,393 INFO main org.hibernate.engine.jdbc.JdbcSupportLoader - Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2011-08-11 01:07:27,393 INFO main org.hibernate.transaction.TransactionFactoryFactory - Transaction strategy: org.hibernate.transaction.JDBCTransactionFactory
+2011-08-11 01:07:27,393 INFO main org.hibernate.transaction.TransactionManagerLookupFactory - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+2011-08-11 01:07:27,394 INFO main org.hibernate.cfg.SettingsFactory - Automatic flush during beforeCompletion(): disabled
+2011-08-11 01:07:27,394 INFO main org.hibernate.cfg.SettingsFactory - Automatic session close at end of transaction: disabled
+2011-08-11 01:07:27,394 INFO main org.hibernate.cfg.SettingsFactory - JDBC batch size: 15
+2011-08-11 01:07:27,394 INFO main org.hibernate.cfg.SettingsFactory - JDBC batch updates for versioned data: disabled
+2011-08-11 01:07:27,394 INFO main org.hibernate.cfg.SettingsFactory - Scrollable result sets: enabled
+2011-08-11 01:07:27,394 INFO main org.hibernate.cfg.SettingsFactory - JDBC3 getGeneratedKeys(): enabled
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Connection release mode: auto
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Maximum outer join fetch depth: 3
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Default batch fetch size: 1
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Generate SQL with comments: enabled
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Order SQL updates by primary key: disabled
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Order SQL inserts for batching: disabled
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+2011-08-11 01:07:27,395 INFO main org.hibernate.hql.ast.ASTQueryTranslatorFactory - Using ASTQueryTranslatorFactory
+2011-08-11 01:07:27,395 INFO main org.hibernate.cfg.SettingsFactory - Query language substitutions: {}
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - JPA-QL strict compliance: enabled
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - Second-level cache: enabled
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - Query cache: disabled
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - Cache region factory : org.hibernate.cache.impl.bridge.RegionFactoryCacheProviderBridge
+2011-08-11 01:07:27,396 INFO main org.hibernate.cache.impl.bridge.RegionFactoryCacheProviderBridge - Cache provider: org.hibernate.cache.NoCacheProvider
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - Optimize cache for minimal puts: disabled
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - Structured second-level cache entries: disabled
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - Statistics: disabled
+2011-08-11 01:07:27,396 INFO main org.hibernate.cfg.SettingsFactory - Deleted entity synthetic identifier rollback: disabled
+2011-08-11 01:07:27,397 INFO main org.hibernate.cfg.SettingsFactory - Default entity-mode: pojo
+2011-08-11 01:07:27,397 INFO main org.hibernate.cfg.SettingsFactory - Named query checking : enabled
+2011-08-11 01:07:27,397 INFO main org.hibernate.cfg.SettingsFactory - Check Nullability in Core (should be disabled when Bean Validation is on): enabled
+2011-08-11 01:07:27,402 INFO main org.hibernate.impl.SessionFactoryImpl - building session factory
+2011-08-11 01:07:27,402 WARN main org.hibernate.type.TypeFactory - Scoping types to session factory org.hibernate.impl.SessionFactoryImpl@4ab84c after already scoped org.hibernate.impl.SessionFactoryImpl@189acb5
+2011-08-11 01:07:27,424 INFO main org.hibernate.tuple.PojoInstantiator - no default (no-argument) constructor for class: org.modeshape.connector.store.jpa.model.simple.SubgraphQueryEntity (class must be instantiated by Interceptor)
+2011-08-11 01:07:27,545 INFO main org.hibernate.impl.SessionFactoryObjectFactory - Not binding factory to JNDI, no JNDI name configured
+2011-08-11 01:07:50,250 INFO main org.hibernate.impl.SessionFactoryImpl - closing

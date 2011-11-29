@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+ 	<class name="com.olive.cms.page.model.Page" table="Page">
+ 	 	<id column="PAGE_ID" name="pageId" type="java.lang.Integer">
+			<generator class="increment"/>
+ 	 	</id>
+	<property column="PAGE_URI" name="uri" type="java.lang.String"/>
+	<property column="PAGE_TITLE" name="title" type="java.lang.String"/>
+	
+	<one-to-one name="pageLayout" class="com.olive.cms.page.layout.model.PageLayout" lazy="false" fetch="join" constrained="true"></one-to-one>
+	<many-to-one name="site" cascade="none" class="com.olive.cms.site.structure.model.Site" column="site_id"/>
+	
+	</class>
+</hibernate-mapping>

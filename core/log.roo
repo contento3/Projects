@@ -1,0 +1,37 @@
+// Spring Roo 1.0.2.RELEASE [rev 638] log opened at 2010-11-07 16:32:11
+hint
+help
+project --topLevelPackage com.olive
+hint
+// [failed] persistence setup Hibernate --provider mysql
+// [failed] persistence setup Hibernate --provider Hibernate 
+// [failed] persistence setup --provider Hibernate --database MYSQL 
+persistence setup --provider HIBERNATE --database MYSQL 
+hint
+// [failed] persistence setup --provider DATANUCLEUS --database MSSQL 
+// [failed] persistence setup --provider DATANUCLEUS --database MSSQL 
+// [failed] persistence setup --provider DATANUCLEUS --database MYSQL 
+hint
+exit
+// Spring Roo 1.0.2.RELEASE [rev 638] log closed at 2010-11-07 20:47:38
+// Spring Roo 1.0.2.RELEASE [rev 638] log closed at 2010-11-07 20:47:38
+// Spring Roo 1.0.2.RELEASE [rev 638] log opened at 2010-11-07 20:49:52
+hint
+help
+help
+// Spring Roo 1.0.2.RELEASE [rev 638] log closed at 2010-11-07 21:44:19
+// Spring Roo 1.0.2.RELEASE [rev 638] log opened at 2010-11-07 22:10:22
+help
+// Spring Roo 1.0.2.RELEASE [rev 638] log closed at 2010-11-07 22:10:53
+// Spring Roo 1.0.2.RELEASE [rev 638] log opened at 2010-11-09 21:30:08
+help
+// Spring Roo 1.0.2.RELEASE [rev 638] log closed at 2010-11-09 22:13:02
+// Spring Roo 1.1.0.RELEASE [rev 793f2b0] log opened at 2010-11-10 21:10:53
+help
+gwt setup
+// Spring Roo 1.1.0.RELEASE [rev 793f2b0] log closed at 2010-11-10 22:21:33
+// Spring Roo 1.1.0.RELEASE [rev 793f2b0] log opened at 2010-12-13 01:19:16
+// Spring Roo 1.1.0.RELEASE [rev 793f2b0] log closed at 2010-12-13 02:08:27
+// Spring Roo 1.1.0.RELEASE [rev 793f2b0] log opened at 2010-12-18 13:33:58
+gwt setup
+// Spring Roo 1.1.0.RELEASE [rev 793f2b0] log closed at 2010-12-18 18:13:58
