@@ -21,11 +21,11 @@
 		</beans:property>
 	</beans:bean>
 	<http auto-config='true'>
-		<intercept-url  pattern="/olivecms/**" access="ROLE_USER" />
+		<intercept-url  pattern="/home/**" access="ROLE_USER" />
 		<intercept-url pattern="/jsp/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<intercept-url pattern="/jsp/login_error*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<intercept-url pattern="/jsp/codemirror.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<form-login login-page='/jsp/login' default-target-url="/olivecms" authentication-failure-url="/jsp/login_error" />
+		<form-login login-page='/jsp/login' default-target-url="/home" authentication-failure-url="/jsp/login_error" />
         <logout invalidate-session="true" logout-success-url="/jsp/login"/>
         <session-management>
     		<concurrency-control max-sessions="1" expired-url= 

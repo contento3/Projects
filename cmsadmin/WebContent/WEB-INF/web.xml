@@ -67,7 +67,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>olivecms</servlet-name>
-    <url-pattern>/olivecms/*</url-pattern>
+    <url-pattern>/home/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>spring</servlet-name>

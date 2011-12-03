@@ -33,7 +33,9 @@ public class OliveHome extends Application
 		
 		
 		this.setMainWindow(main);
-        setLogoutURL("/vaadin-spring-jsp/j_spring_security_logout");
+		
+		//TODO put in a properties file
+        setLogoutURL("/cms/j_spring_security_logout");
 
 //		if (hasAnyRole(Roles.ROLE_ADMIN))
 //		{
