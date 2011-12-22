@@ -8,7 +8,7 @@
 <body>
 <div align="center">
 Login here
-<form action="/vaadin-spring-jsp/j_spring_security_check" method="post">
+<form action="/cms/j_spring_security_check" method="post">
 <table>
 <tr>
 <td>
