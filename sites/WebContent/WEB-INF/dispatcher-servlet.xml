@@ -1,0 +1,36 @@
+<beans 
+  xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+  ">
+
+<bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<property name="mappings">
+		<value>
+			/page/*=pageController
+			/*=pageController
+		</value>
+	</property>
+</bean>
+
+<bean id="pageController" class="com.contento3.site.controller.PageController">
+	<property name="freeMarkerView" ref="fmView" />
+</bean>
+
+<bean id="fmView" class="com.contento3.site.resolver.FreemarkerViewResolver">
+	<property name="freemarkerRenderingEngine" ref="fmRenderingEngine" />
+</bean>
+
+<bean id="fmRenderingEngine" class="com.contento3.site.template.render.engine.impl.FreemarkerRenderingEngine">
+	<property name="templateLoader" ref="fmTemplateLoader" />
+	<property name="configuration" ref="fmConfiguration" />
+</bean>
+
+<bean id="fmTemplateLoader" class="com.contento3.site.template.loader.FreemarkerTemplateLoader"></bean>
+
+<bean id="fmConfiguration" class="freemarker.template.Configuration"></bean>
+
+</beans>
