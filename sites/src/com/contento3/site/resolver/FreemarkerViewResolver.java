@@ -21,7 +21,7 @@ public class FreemarkerViewResolver extends AbstractView {
 		
 		// Read the data file and process the template using FreeMarker
 		try {
-			PrintWriter writer = response.getWriter();
+			PrintWriter writer     = response.getWriter();
 			freemarkerRenderingEngine.process("example2.txt",writer);
 			writer.close();
 		}
