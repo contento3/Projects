@@ -18,6 +18,7 @@ public class FreemarkerViewResolver extends AbstractView {
 	protected void renderMergedOutputModel(Map arg0, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
+		
 		// Read the data file and process the template using FreeMarker
 		try {
 			PrintWriter writer = response.getWriter();
