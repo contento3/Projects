@@ -2,7 +2,8 @@
 /log.roo
 
 
+/WEB-INF/classes
+
 # Java class files
 *.class
-
 /classes/**/*
