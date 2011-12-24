@@ -3,3 +3,5 @@
 
 # Java class files
 *.class
+
+/classes/**/*
