@@ -2,6 +2,6 @@
 /log.roo
 
 # Java class files
-*.class
+core/classes/*.class
 
-/classes/**/*
+core/classes/*.xml
