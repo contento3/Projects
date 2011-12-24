@@ -3,18 +3,23 @@ package com.olive.cms.page.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.olive.cms.page.dao.PageDao;
 import com.olive.cms.page.dto.PageDto;
+import com.olive.cms.page.exception.PageNotFoundException;
 import com.olive.cms.page.layout.service.PageLayoutAssembler;
 import com.olive.cms.page.model.Page;
 import com.olive.cms.page.service.PageService;
 import com.olive.cms.site.structure.service.SiteService;
+import com.olive.common.aspect.ApplicationLogger;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class PageServiceImpl implements PageService {
+
+	private static final Logger LOGGER = Logger.getLogger(PageServiceImpl.class);
 
 	private PageDao pageDao;
 	private SiteService siteService;
@@ -28,7 +33,7 @@ public class PageServiceImpl implements PageService {
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public PageDto findPageWithLayout(final Integer pageId){
+	public PageDto findPageWithLayout(final Integer pageId)  throws PageNotFoundException{
     	Page page = pageDao.findById(pageId);
     	return domainToDto(page);
     }
@@ -37,7 +42,13 @@ public class PageServiceImpl implements PageService {
 	@Override
 	public PageDto createAndReturn(final PageDto pageDto){
 		Integer id = create(pageDto);
-		return findPageWithLayout(id);
+		PageDto newPageDto = null;
+		try {
+			newPageDto = findPageWithLayout(id);
+		} catch (PageNotFoundException e) {
+			LOGGER.error(String.format("We are expecting a new page created with name [%s], but page not found.",pageDto.getTitle()),e);
+		}
+		return newPageDto;
 	}
 	
 	public PageServiceImpl(final PageDao pageDao,final SiteService siteService,final PageLayoutAssembler pageLayoutAssembler){
@@ -90,5 +101,11 @@ public class PageServiceImpl implements PageService {
 		}
 		return dtos;
 	}
+
+	@Override
+	public PageDto findByPathForSite(String path, Integer siteId) throws PageNotFoundException{
+		return 	domainToDto(pageDao.findPageByPathAndSiteId(path, siteId));
+	}
+
 
 }

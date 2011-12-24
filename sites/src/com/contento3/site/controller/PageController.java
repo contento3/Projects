@@ -23,13 +23,17 @@ public class PageController extends AbstractController {
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		  ModelAndView modelAndView = new ModelAndView();
-		  modelAndView.setView(freemarkerView); 
-		  return modelAndView;
+		ModelAndView modelAndView = null;
+		
+		if (!request.getRequestURI().equals("/favicon.ico")){
+		 modelAndView = new ModelAndView();
+		modelAndView.setView(freemarkerView); 
+		}
+
+		return modelAndView;
 	}
 
 	public void setFreeMarkerView(final FreemarkerViewResolver freemarkerView){
 		this.freemarkerView = freemarkerView;
 	} 
-	
 }

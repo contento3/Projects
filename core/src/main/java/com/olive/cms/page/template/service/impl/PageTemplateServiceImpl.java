@@ -6,6 +6,7 @@ import com.olive.cms.page.dao.PageDao;
 import com.olive.cms.page.model.Page;
 import com.olive.cms.page.section.dao.PageSectionTypeDao;
 import com.olive.cms.page.section.model.PageSectionType;
+import com.olive.cms.page.section.model.PageSectionTypeEnum;
 import com.olive.cms.page.template.dao.PageTemplateDao;
 import com.olive.cms.page.template.dao.TemplateDao;
 import com.olive.cms.page.template.dto.PageTemplateDto;
@@ -72,5 +73,16 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(final Integer pageId,final Integer pageSectionTypeId) {
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionTypeId));
 	}
-	
+
+	@Override
+	public Collection<PageTemplateDto> findByPageId(Integer pageId) {
+		return assembler.domainsToDtos(dao.findByPageId(pageId));
+	}
+
+	@Override
+	public Collection<PageTemplateDto> findByPageAndPageSectionType(
+			Integer pageId, PageSectionTypeEnum pageSectionType) {
+		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionType));
+	}
+
 }

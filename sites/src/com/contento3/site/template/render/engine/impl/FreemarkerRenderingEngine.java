@@ -2,11 +2,15 @@ package com.contento3.site.template.render.engine.impl;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.log4j.Logger;
+
+import com.contento3.site.template.model.TemplateModelContext;
 import com.contento3.site.template.render.engine.RenderingEngine;
+import com.olive.cms.site.structure.dto.SiteDto;
 
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
@@ -14,11 +18,15 @@ import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class FreemarkerRenderingEngine implements RenderingEngine{
+public class FreemarkerRenderingEngine implements RenderingEngine {
+
+	private static final Logger LOGGER = Logger.getLogger(FreemarkerRenderingEngine.class);
 
 	private TemplateLoader templateLoader;
 	
 	private Configuration configuration;
+	
+	private TemplateModelContext modelContext;
 	
 	@PostConstruct
 	private void afterPropertiesSet(){
@@ -36,30 +44,31 @@ public class FreemarkerRenderingEngine implements RenderingEngine{
 	public void setConfiguration(final Configuration configuration){
 		this.configuration = configuration;
 	}
-	
+
+	public void setModelContext(final TemplateModelContext modelContext){
+		this.modelContext = modelContext;
+	}
+
 	@Override
-	public void process(String templatePath, Writer writer) {
-		HashMap datamodel = new HashMap();
-		datamodel.put("pet", "Bunnies");
-		datamodel.put("number", new Integer(6));
-
+	public void process(SiteDto siteDto,String pagePath, Writer writer) {
 		try {
-
+			
+			pagePath = String.format("%s:%d",pagePath,siteDto.getSiteId());
 			// our loader is already cached and also do a validation
-			//	cfg.setCacheStorage(new DisableCache());
+			// cfg.setCacheStorage(new DisableCache());
 			configuration.setTemplateLoader(templateLoader);
-			Template tpl;
-		
-			tpl = configuration.getTemplate(templatePath);
-			//OutputStreamWriter output = new OutputStreamWriter(System.out);
-			tpl.process(datamodel, writer);
 
+			Template tpl = configuration.getTemplate(pagePath,Locale.ENGLISH,"en");
+
+			tpl.process(modelContext, writer);
+ 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("error ioexception",e);
 		} catch (TemplateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("error templateexception",e);
+		}
+		catch (Exception e) {
+			LOGGER.error("error exception",e);
 		}
 	}
 }

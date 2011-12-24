@@ -35,6 +35,13 @@ public class SiteServiceImpl implements SiteService {
 		return domainToDto(siteDao.findById(siteId));
 	}
 
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public SiteDto findSiteByDomain(String domain){
+		return domainToDto(siteDao.findByDomain(domain));
+	}
+
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<SiteDto> findSiteByAccountId(Integer accountId) {

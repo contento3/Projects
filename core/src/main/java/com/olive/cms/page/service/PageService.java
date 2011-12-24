@@ -3,6 +3,7 @@ package com.olive.cms.page.service;
 import java.util.Collection;
 
 import com.olive.cms.page.dto.PageDto;
+import com.olive.cms.page.exception.PageNotFoundException;
 import com.olive.cms.page.model.Page;
 import com.olive.common.service.Service;
 
@@ -15,6 +16,7 @@ public interface PageService {
 	 * @param pageSize
 	 * @return
 	 */
+	//TODO change it to findPageBySiteId
 	Collection <PageDto> getPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize);
 
 	/**
@@ -22,6 +24,7 @@ public interface PageService {
 	 * @param siteId
 	 * @return
 	 */
+	//TODO change it to findPageBySiteId
 	Collection <PageDto> getPageBySiteId(Integer siteId);
 
 	/**
@@ -64,13 +67,21 @@ public interface PageService {
      * @param pageId
      * @return
      */
-    PageDto findPageWithLayout(final Integer pageId);
+    PageDto findPageWithLayout(final Integer pageId)  throws PageNotFoundException;
 
     /**
      * 
      * @param pageDto
      * @return
      */
-    PageDto createAndReturn(final PageDto pageDto);
+    PageDto createAndReturn(final PageDto pageDto)  ;
+
+    /**
+     * 
+     * @param path
+     * @param siteId
+     * @return
+     */
+	PageDto findByPathForSite(String path, Integer siteId)  throws PageNotFoundException;
 
 }

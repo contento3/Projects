@@ -8,6 +8,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.util.CollectionUtils;
 
 import com.olive.cms.page.dao.PageDao;
 import com.olive.cms.page.model.Page;
@@ -43,7 +44,25 @@ implements PageDao {
 		.eq("site.siteId", siteId));
 		return criteria.list();
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Page findPageByPathAndSiteId(final String path,final Integer siteId) {
+		
+		Criteria criteria = this.getSession()
+		.createCriteria(Page.class)
+		.add(Restrictions
+		.eq("site.siteId", siteId)).add(Restrictions
+		.eq("uri", path));
+
+		Page page=null;
+		if (!CollectionUtils.isEmpty(criteria.list())){
+			page = (Page)criteria.list().get(0);
+		}	
+		
+		return page;
+	}
+
 	public Long findTotalPagesForSite(Integer siteId){
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)

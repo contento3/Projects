@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.olive.account.model.Account;
+
 @Entity
 @Table(name = "TEMPLATE")
 public class Template {
@@ -33,6 +35,10 @@ public class Template {
 	@OneToOne
 	@JoinColumn(name = "TEMPLATE_DIRECTORY_ID")
 	private TemplateDirectory directory;
+
+	@OneToOne
+	@JoinColumn(name = "ACCOUNT_ID")
+	private Account account;
 
 	public Integer getTemplateId() {
 		return templateId;
@@ -80,5 +86,13 @@ public class Template {
 
 	public TemplateDirectory getDirectory() {
 		return directory;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public Account getAccount() {
+		return account;
 	}
 }

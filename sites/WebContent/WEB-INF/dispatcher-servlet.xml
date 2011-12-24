@@ -10,8 +10,11 @@
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<value>
-			/page/*=pageController
-			/*=pageController
+			/page/**/*=pageController
+			/image/**/*=staticResourceController
+			/js/**/*=staticResourceController
+			/css/**/*=staticResourceController
+	 		/*=pageController
 		</value>
 	</property>
 </bean>
@@ -20,17 +23,56 @@
 	<property name="freeMarkerView" ref="fmView" />
 </bean>
 
+<!-- This is used to return the javascript,css and images that are stored in the database and potentially stored on amazon s3  -->
+<bean id="staticResourceController" class="com.contento3.site.controller.StaticResourceController">
+	<property name="staticResourceViewResolver" ref="staticResourceView" />
+</bean>
+
 <bean id="fmView" class="com.contento3.site.resolver.FreemarkerViewResolver">
 	<property name="freemarkerRenderingEngine" ref="fmRenderingEngine" />
+	<property name="siteService" ref="siteService" />
+</bean>
+
+
+<bean id="staticResourceView" class="com.contento3.site.resolver.StaticResourceViewResolver">
+	<property name="templateService" ref="templateService" />
 </bean>
 
 <bean id="fmRenderingEngine" class="com.contento3.site.template.render.engine.impl.FreemarkerRenderingEngine">
 	<property name="templateLoader" ref="fmTemplateLoader" />
 	<property name="configuration" ref="fmConfiguration" />
+	<property name="modelContext" ref="modelContext" />
 </bean>
 
-<bean id="fmTemplateLoader" class="com.contento3.site.template.loader.FreemarkerTemplateLoader"></bean>
+<bean id="pageAssemb" class="com.contento3.site.template.assembler.PageAssembler">
+		<property name="pageService" ref="pageService" />
+		<property name="pageTemplateService" ref="pageTemplateService" />
+		<property name="templateService" ref="templateService" />
+</bean>
+
+<bean id="fmTemplateLoader" class="com.contento3.site.template.loader.FreemarkerTemplateLoader">
+	<property name="pageAssembler" ref="pageAssemb" />
+</bean>
 
 <bean id="fmConfiguration" class="freemarker.template.Configuration"></bean>
+
+<bean id="modelContext" class="com.contento3.site.template.model.TemplateModelContext">
+	<property name="models">
+ 		<list>
+ 			<ref bean="serviceMap" />
+		</list>
+    </property>
+</bean>
+
+<bean id="serviceMap" class="com.contento3.site.template.model.TemplateModelMapImpl">
+  <property name="map">
+      <map>
+        <entry key="templateService" value-ref="templateService"/>
+      </map>
+  </property>
+</bean>
+
+<bean id="myTestService" class="com.contento3.site.template.test.service.TestServiceImpl">
+</bean>
 
 </beans>

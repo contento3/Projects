@@ -1,6 +1,5 @@
 package com.olive.cms.page.section.dto;
 
-import com.olive.cms.page.section.model.PageSectionType;
 
 public class PageSectionDto implements Comparable<PageSectionDto>{
 
