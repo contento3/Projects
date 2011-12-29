@@ -343,7 +343,7 @@ public class SiteUIManager implements UIManager {
 			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM);
 			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open",parentWindow,contextHelper));
 		}
-		return pageLayoutsTab;
+		 return pageLayoutsTab;
 	}
 	
 	public void renderPageTemplateList(final VerticalLayout pageSectionLayout,final PageSectionTypeEnum sectionType){

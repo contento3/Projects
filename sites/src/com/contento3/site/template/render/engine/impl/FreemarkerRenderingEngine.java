@@ -66,6 +66,8 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 			LOGGER.error("error ioexception",e);
 		} catch (TemplateException e) {
 			LOGGER.error("error templateexception",e);
+			
+			
 		}
 		catch (Exception e) {
 			LOGGER.error("error exception",e);
