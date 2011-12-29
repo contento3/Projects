@@ -18,6 +18,12 @@ import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+/**
+ * This class is used to render requested freemarker template.
+ * @author HAMMAD
+ *
+ */
+
 public class FreemarkerRenderingEngine implements RenderingEngine {
 
 	private static final Logger LOGGER = Logger.getLogger(FreemarkerRenderingEngine.class);
