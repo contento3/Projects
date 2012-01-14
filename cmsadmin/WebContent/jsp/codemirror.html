@@ -29,7 +29,7 @@
     function saveTemplate() {
     	var text = editor.getValue();
     	var templateName = $('#templateName').val();
-		$.post( '/jsp/addTemplate.ajax', { text: text,templateName : templateName,templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId },
+		$.post( '/cms/jsp/addTemplate.ajax', { text: text,templateName : templateName,templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId, accountId : accountId },
 		      function( data ) {
 				alert("template saved.");
 				}
@@ -37,7 +37,7 @@
       }
     
     function loadTemplateText(templateId) {
-		$.get( '/jsp/loadTemplate.ajax', {templateId : templateId },
+		$.get( '/cms/jsp/loadTemplate.ajax', {templateId : templateId},
 		      function( data ) {
 			  	editor.setValue(data);
 				}
@@ -71,12 +71,13 @@
 	var templateId;
 	var directoryId;
 	var templateTypeId;
+	var accountId;
 	$(document).ready(function() {
 		var urlVars = $.getUrlVars();
 		templateId = urlVars['templateId'];
 		directoryId = urlVars['directoryId'];
 		templateTypeId = urlVars['templateTypeId'];
-		
+		accountId = urlVars['accountId'];
 		var templateName= urlVars['templateName'];
 
 		addTemplateName(decodeURI(templateName));

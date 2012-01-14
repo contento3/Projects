@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
 import com.olive.account.dto.AccountDto;
 import com.olive.cms.page.dto.PageDto;
+import com.olive.cms.page.exception.PageNotFoundException;
 import com.olive.cms.page.layout.dto.PageLayoutDto;
 import com.olive.cms.page.layout.service.PageLayoutService;
 import com.olive.cms.page.section.dto.PageSectionDto;
@@ -19,6 +21,7 @@ import com.olive.cms.page.template.dto.PageTemplateDto;
 import com.olive.cms.page.template.service.PageTemplateService;
 import com.olive.cms.site.structure.dto.SiteDto;
 import com.olive.cms.site.structure.service.SiteService;
+import com.olive.common.aspect.ApplicationLogger;
 import com.olive.web.UIManager;
 import com.olive.web.common.helper.PageTemplateAssignmentPopup;
 import com.olive.web.common.helper.TextFieldRendererHelper;
@@ -47,6 +50,10 @@ import com.vaadin.ui.Window;
 import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SiteUIManager implements UIManager {
+	
+	private static final Logger LOGGER = Logger.getLogger(SiteUIManager.class);
+
+	
 	public static final String NEWSITE = "newsite";
 	public static final String SITEDASHBOARD = "pages";
 	public static final String NEWPAGE = "newpage";
@@ -294,7 +301,14 @@ public class SiteUIManager implements UIManager {
 	 */
 	private TabSheet populatePage(final Integer pageId,final FormLayout newPageFormLayout){
 		PageService pageService = (PageService) contextHelper.getBean("pageService");
-		PageDto pageDto = pageService.findPageWithLayout(pageId);
+		
+		PageDto pageDto = null;
+		try {
+			pageDto = pageService.findPageWithLayout(pageId);
+		} catch (PageNotFoundException e) {
+			LOGGER.equals(String.format("Page not found %s",pageId));
+		}
+		
 		((TextField)newPageFormLayout.getComponent(0)).setValue(pageDto.getTitle());
 		((TextField)newPageFormLayout.getComponent(1)).setValue(pageDto.getUri());
 		

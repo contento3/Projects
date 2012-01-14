@@ -33,6 +33,7 @@ public class TemplateAjaxController {
     		@RequestParam (value="templateId",required=false) String templateId,
     		@RequestParam (value="directoryId",required=false) String directoryId,
     		@RequestParam (value="templateTypeId",required=false) Integer templateTypeId,
+    		@RequestParam (value="accountId",required=true) String accountId,
     		Model model) {
     
     	TemplateDto templateDto = new TemplateDto();

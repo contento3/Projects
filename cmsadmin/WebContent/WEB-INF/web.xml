@@ -27,7 +27,11 @@
   <listener>
     <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
   </listener>
-   
+
+  <servlet>
+    <servlet-name>codemirror</servlet-name>
+    <jsp-file>/jsp/codemirror.html</jsp-file>
+  </servlet>
   <servlet>
     <servlet-name>login</servlet-name>
     <jsp-file>/jsp/login.jsp</jsp-file>
@@ -57,6 +61,10 @@
         </servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>codemirror</servlet-name>
+    <url-pattern>/jsp/codemirror</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>login</servlet-name>
     <url-pattern>/jsp/login</url-pattern>

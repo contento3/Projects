@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
+import javax.servlet.http.HttpSession;
+
 import com.olive.cms.page.template.dto.TemplateDirectoryDto;
 import com.olive.cms.page.template.dto.TemplateDto;
 import com.olive.cms.page.template.service.TemplateDirectoryService;
@@ -17,6 +19,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -250,7 +253,12 @@ public class TemplateUIManager implements UIManager{
 		URL url = null;
 
     	try {
-        	StringBuffer urlStr = new StringBuffer("http://localhost:8080/jsp/codemirror.html");
+        	StringBuffer urlStr = new StringBuffer("http://localhost:8080/cms/jsp/codemirror");
+
+            //Get accountId from the session
+            WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
+            HttpSession session = ctx.getHttpSession();
+            Integer accountId = (Integer)session.getAttribute("accountId");
 
         	if (null != templateId){
         		TemplateDto templateDto = templateService.findTemplateById(templateId);
@@ -261,7 +269,9 @@ public class TemplateUIManager implements UIManager{
         			  .append("&directoryId=")
   			          .append(templateDto.getTemplateDirectoryDto().getId())
         			  .append("&templateTypeId=")
-		              .append(templateDto.getTemplateType().getTemplateTypeId());
+		              .append(templateDto.getTemplateType().getTemplateTypeId())
+		        	  .append("&accountId=")
+				      .append(session.getAttribute("accountId"));
         	}
         	url = new URL(urlStr.toString());
 		} 
