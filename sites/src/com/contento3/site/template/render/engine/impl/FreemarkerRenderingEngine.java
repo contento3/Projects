@@ -8,9 +8,9 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 
+import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.site.template.model.TemplateModelContext;
 import com.contento3.site.template.render.engine.RenderingEngine;
-import com.olive.cms.site.structure.dto.SiteDto;
 
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;

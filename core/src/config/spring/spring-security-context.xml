@@ -37,7 +37,7 @@
   		<beans:property name="userPropertyToUse" value="salt"/>
 	</beans:bean>
 	
- 	<beans:bean id="jdbcUserServiceCustom" class="com.olive.security.CustomJdbcDaoImpl">
+ 	<beans:bean id="jdbcUserServiceCustom" class="com.contento3.security.CustomJdbcDaoImpl">
 		<beans:property name="dataSource" ref="jdbcdataSource"/>
 		 <beans:property name="enableGroups" value="true"/>
  		 <beans:property name="enableAuthorities" value="false"/>
@@ -54,7 +54,7 @@
 	We can create a utility to encrypt uncrypted passwords.
  -->
 <!-- 
-	<beans:bean class="com.olive.security.DatabasePasswordSecurerBean" 
+	<beans:bean class="com.contento3.security.DatabasePasswordSecurerBean" 
              init-method="secureDatabase" depends-on="jdbcdataSource">
   		<beans:property name="dataSource" ref="jdbcdataSource"/>
 	</beans:bean>

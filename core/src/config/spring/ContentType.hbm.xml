@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
- 	<class name="com.olive.cms.content.model.ContentType" table="CONTENT_TYPE">
+ 	<class name="com.contento3.cms.content.model.ContentType" table="CONTENT_TYPE">
 	<cache usage="read-only"/>
  	 	<id column="CONTENT_TYPE_ID" name="id" type="java.lang.Integer">
 			<generator class="increment"/>

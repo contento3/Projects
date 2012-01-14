@@ -45,13 +45,13 @@
     <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
     <init-param>
       <param-name>application</param-name>
-      <param-value>com.olive.web.OliveHome</param-value>
+      <param-value>com.contento3.web.OliveHome</param-value>
     </init-param>
     <init-param>
     	<description>
     	Application widgetset</description>
     	<param-name>widgetset</param-name>
-    	<param-value>com.olive.web.widgetset.CmsadminWidgetset</param-value>
+    	<param-value>com.contento3.web.widgetset.CmsadminWidgetset</param-value>
     </init-param>
   </servlet>
   <servlet>

@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.view.AbstractView;
 
-import com.olive.cms.page.template.dto.TemplateDto;
-import com.olive.cms.page.template.service.TemplateService;
-import com.olive.common.exception.ResourceNotFoundException;
+import com.contento3.cms.page.template.dto.TemplateDto;
+import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.common.exception.ResourceNotFoundException;
 
 public class StaticResourceViewResolver extends AbstractView {
 	private static final Logger LOGGER = Logger.getLogger(StaticResourceViewResolver.class);

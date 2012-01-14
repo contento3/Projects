@@ -1,0 +1,2 @@
+# Module com.contento3.web.widgetset.CmsadminWidgetset
+# RPC service class, partial path of RPC policy file

@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
- 	<class name="com.olive.cms.page.layout.model.PageLayoutType" table="PAGE_LAYOUT_TYPE">
+ 	<class name="com.contento3.cms.page.layout.model.PageLayoutType" table="PAGE_LAYOUT_TYPE">
  	 	<id column="PAGE_LAYOUT_TYPE_ID" name="Id" type="java.lang.Integer">
 			<generator class="increment"/>
  	 	</id>

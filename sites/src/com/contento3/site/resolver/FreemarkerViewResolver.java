@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.view.AbstractView;
 
+import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.site.template.render.engine.RenderingEngine;
-import com.olive.cms.site.structure.dto.SiteDto;
-import com.olive.cms.site.structure.service.SiteService;
 
 public class FreemarkerViewResolver extends AbstractView {
 	private static final Logger LOGGER = Logger.getLogger(FreemarkerViewResolver.class);
