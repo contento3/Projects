@@ -12,6 +12,8 @@ public interface SiteDAO extends GenericDao<Site,Integer> {
 	 * @param accountId
 	 * @return
 	 */
-	public Collection<Site> findByAccount(Integer accountId);
+	Collection<Site> findByAccount(Integer accountId);
+
+	Site findByDomain(String domain);
 
 }
