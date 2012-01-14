@@ -18,14 +18,15 @@ import com.contento3.site.resolver.FreemarkerViewResolver;
 public class PageController extends AbstractController {
 
 	private FreemarkerViewResolver freemarkerView;
-
+	
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		ModelAndView modelAndView = null;
 		
-		if (!request.getRequestURI().equals("/favicon.ico")){
+		String requestURI = request.getRequestURI();
+		if (!requestURI.equals("/favicon.ico")){
 		 modelAndView = new ModelAndView();
 		modelAndView.setView(freemarkerView); 
 		}

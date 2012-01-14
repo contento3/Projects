@@ -14,7 +14,6 @@ import org.springframework.web.servlet.view.AbstractView;
 import com.contento3.site.template.render.engine.RenderingEngine;
 import com.olive.cms.site.structure.dto.SiteDto;
 import com.olive.cms.site.structure.service.SiteService;
-import com.olive.common.aspect.ApplicationLogger;
 
 public class FreemarkerViewResolver extends AbstractView {
 	private static final Logger LOGGER = Logger.getLogger(FreemarkerViewResolver.class);
@@ -61,7 +60,7 @@ public class FreemarkerViewResolver extends AbstractView {
 		this.siteService = siteService;
 	}
 
-	private String fetchDomain(HttpServletRequest request) throws MalformedURLException{
+	private String fetchDomain(HttpServletRequest request) throws MalformedURLException {
 		URL url = new URL(request.getRequestURL().toString());
 		return url.getHost();
 	}

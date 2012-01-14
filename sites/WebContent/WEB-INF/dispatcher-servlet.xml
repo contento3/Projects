@@ -14,7 +14,7 @@
 			/image/**/*=staticResourceController
 			/js/**/*=staticResourceController
 			/css/**/*=staticResourceController
-	 		/*=pageController
+	 	<!-- 	/*=pageController ENABLE IT ON PRODUCTION -->
 		</value>
 	</property>
 </bean>

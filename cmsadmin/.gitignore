@@ -2,7 +2,7 @@
 /log.roo
 
 
-/WEB-INF/classes
+/WEB-INF/**/*
 
 # Java class files
 *.class
