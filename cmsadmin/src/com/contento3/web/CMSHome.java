@@ -11,32 +11,35 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.Application;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Link;
 
-public class OliveHome extends Application 
+public class CMSHome extends Application 
 {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	public WebApplicationContext appContext;
 
 	@Override
 	public void init() {
 
 		SpringContextHelper helper = new SpringContextHelper(this);
-		Button logoutButton = new Button("logout");
-		
-		final OliveMainWindow main = new OliveMainWindow(helper,logoutButton);
-		
-		
-		this.setMainWindow(main);
+		Button logoutButton = new Button("Log Out");
+	
+		logoutButton.addStyleName("link");
 		
 		//TODO put in a properties file
         setLogoutURL("/cms/j_spring_security_logout");
+        
 
+		
+		final CMSMainWindow main = new CMSMainWindow(helper,logoutButton);
+		this.setMainWindow(main);
 //		if (hasAnyRole(Roles.ROLE_ADMIN))
 //		{
 //			label = new Label("You have admin role.");
@@ -46,11 +49,11 @@ public class OliveHome extends Application
 //			label = new Label("You have user role.");
 //		}
 
-		
-		
+
 		//main.addComponent(label);
 		
 		//main.addComponent(logout);
+		
         
 		logoutButton.addListener(new Button.ClickListener()
 		{

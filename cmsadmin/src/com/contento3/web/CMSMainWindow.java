@@ -21,10 +21,13 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UriFragmentUtility;
@@ -34,7 +37,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 
-public class OliveMainWindow extends Window implements Action.Handler,FragmentChangedListener {
+public class CMSMainWindow extends Window implements Action.Handler,FragmentChangedListener {
 	public static String brownFox = "Welcome to Olive Admin"; 
 
     // Actions for the context menu
@@ -46,6 +49,7 @@ public class OliveMainWindow extends Window implements Action.Handler,FragmentCh
     private static final Action[] CONTENT_ACTIONS = new Action[] { ACTION_ADD_CONTENT_TYPE,ACTION_ADD_CONTENT };
 
     private Button logoutButton;
+
     
 	TextField textField = new TextField();
     Tree root;
@@ -62,10 +66,11 @@ public class OliveMainWindow extends Window implements Action.Handler,FragmentCh
 	 */
 	HorizontalSplitPanel horiz;
 	
-	OliveMainWindow(final SpringContextHelper helper,final Button logoutButton){
+	CMSMainWindow(final SpringContextHelper helper,final Button logoutButton){ //change
 	//	super(TM.get("app.title"));
 		this.helper = helper;
 		this.logoutButton = logoutButton;
+		
  		unitUI();
 	}
 	
@@ -102,13 +107,26 @@ public class OliveMainWindow extends Window implements Action.Handler,FragmentCh
         VerticalLayout vLayout = new VerticalLayout();
         setContent(vLayout);
         vLayout.setSizeFull();
-       
-	    final VerticalSplitPanel vert = new VerticalSplitPanel();
-        vert.setSplitPosition(8, Sizeable.UNITS_PERCENTAGE);
-        vert.setLocked(true);
-        vLayout.addComponent(vert);
 
-        vert.addComponent(logoutButton);
+	    final VerticalSplitPanel vert = new VerticalSplitPanel();
+	    vert.setSplitPosition(8, Sizeable.UNITS_PERCENTAGE);
+	    vert.setLocked(true);
+	   
+      
+	   // vert.addComponent(logoutButton);
+	    HorizontalLayout horizTop = new HorizontalLayout();
+       
+	    horizTop.addComponent(logoutButton);
+	    horizTop.setSizeFull();
+	    horizTop.setComponentAlignment(logoutButton, Alignment.TOP_RIGHT);
+	    horizTop.setSpacing(isEnabled());
+	    horizTop.setMargin(false, true, false, true);
+	    vert.addComponent(horizTop);
+       
+	    vLayout.addComponent(vert);
+       
+
+     
         horiz = new HorizontalSplitPanel();
 
         
@@ -189,7 +207,7 @@ public class OliveMainWindow extends Window implements Action.Handler,FragmentCh
     	l.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 
         root.setImmediate(true);
-        vert.addComponent(mainAndContentSplitter);
+       vert.addComponent(mainAndContentSplitter); 
     
         //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done

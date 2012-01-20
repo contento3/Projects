@@ -45,7 +45,7 @@
     <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
     <init-param>
       <param-name>application</param-name>
-      <param-value>com.contento3.web.OliveHome</param-value>
+      <param-value>com.contento3.web.CMSHome</param-value>
     </init-param>
     <init-param>
     	<description>

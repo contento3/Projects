@@ -6,9 +6,9 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
 
 
-CREATE SCHEMA IF NOT EXISTS `cmstest` DEFAULT CHARACTER SET latin1 ;
+CREATE SCHEMA IF NOT EXISTS `cms` DEFAULT CHARACTER SET latin1 ;
 
-USE `cmstest` ;
+USE `cmst` ;
 
 
 
@@ -18,7 +18,7 @@ USE `cmstest` ;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`account` (
+CREATE  TABLE IF NOT EXISTS `cms`.`account` (
 
   `account_id` INT(11) NOT NULL ,
 
@@ -42,7 +42,7 @@ COMMENT = 'Used to represent an account for each of the customer.' ;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`article` (
+CREATE  TABLE IF NOT EXISTS `cms`.`article` (
 
   `ARTICLE_UUID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -74,7 +74,7 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`image` (
+CREATE  TABLE IF NOT EXISTS `cms`.`image` (
 
   `IMAGE_UUID` VARCHAR(75) NOT NULL ,
 
@@ -104,7 +104,7 @@ COMMENT = 'Used to store image and related information.' ;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`page_layout_type` (
+CREATE  TABLE IF NOT EXISTS `cms`.`page_layout_type` (
 
   `PAGE_LAYOUT_TYPE_ID` INT(11) NOT NULL ,
 
@@ -130,7 +130,7 @@ COMMENT = 'Used to specify different type of page layout from which the' ;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`page_layout` (
+CREATE  TABLE IF NOT EXISTS `cms`.`page_layout` (
 
   `PAGE_LAYOUT_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -150,7 +150,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page_layout` (
 
     FOREIGN KEY (`ACCOUNT_ID` )
 
-    REFERENCES `cmstest`.`account` (`account_id` )
+    REFERENCES `cms`.`account` (`account_id` )
 
     ON DELETE NO ACTION
 
@@ -160,7 +160,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page_layout` (
 
     FOREIGN KEY (`PAGE_LAYOUT_TYPE_ID` )
 
-    REFERENCES `cmstest`.`page_layout_type` (`PAGE_LAYOUT_TYPE_ID` )
+    REFERENCES `cms`.`page_layout_type` (`PAGE_LAYOUT_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -184,7 +184,7 @@ COLLATE = utf8_unicode_ci;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`site` (
+CREATE  TABLE IF NOT EXISTS `cms`.`site` (
 
   `SITE_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -202,7 +202,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`site` (
 
     FOREIGN KEY (`ACCOUNT_ID` )
 
-    REFERENCES `cmstest`.`account` (`account_id` )
+    REFERENCES `cms`.`account` (`account_id` )
 
     ON UPDATE NO ACTION)
 
@@ -224,7 +224,7 @@ COLLATE = utf8_unicode_ci;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`page` (
+CREATE  TABLE IF NOT EXISTS `cms`.`page` (
 
   `PAGE_ID` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'ID of a page' ,
 
@@ -248,7 +248,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page` (
 
     FOREIGN KEY (`PAGE_LAYOUT_ID` )
 
-    REFERENCES `cmstest`.`page_layout` (`PAGE_LAYOUT_ID` )
+    REFERENCES `cms`.`page_layout` (`PAGE_LAYOUT_ID` )
 
     ON DELETE NO ACTION
 
@@ -258,7 +258,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page` (
 
     FOREIGN KEY (`SITE_ID` )
 
-    REFERENCES `cmstest`.`site` (`SITE_ID` )
+    REFERENCES `cms`.`site` (`SITE_ID` )
 
     ON DELETE NO ACTION
 
@@ -284,7 +284,7 @@ COMMENT = 'This table represents page of a website' ;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`page_section_type` (
+CREATE  TABLE IF NOT EXISTS `cms`.`page_section_type` (
 
   `PAGE_SECTION_TYPE_ID` INT(11) NOT NULL ,
 
@@ -308,7 +308,7 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`page_section` (
+CREATE  TABLE IF NOT EXISTS `cms`.`page_section` (
 
   `PAGE_SECTION_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -332,7 +332,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page_section` (
 
     FOREIGN KEY (`PAGE_LAYOUT_ID` )
 
-    REFERENCES `cmstest`.`page_layout` (`PAGE_LAYOUT_ID` )
+    REFERENCES `cms`.`page_layout` (`PAGE_LAYOUT_ID` )
 
     ON DELETE NO ACTION
 
@@ -342,7 +342,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page_section` (
 
     FOREIGN KEY (`PAGE_SECTION_TYPE_ID` )
 
-    REFERENCES `cmstest`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
+    REFERENCES `cms`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -366,7 +366,7 @@ COLLATE = utf8_unicode_ci;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`template_directory` (
+CREATE  TABLE IF NOT EXISTS `cms`.`template_directory` (
 
   `TEMPLATE_DIRECTORY_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -394,7 +394,7 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`template_type` (
+CREATE  TABLE IF NOT EXISTS `cms`.`template_type` (
 
   `TEMPLATE_TYPE_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -422,7 +422,7 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`template` (
+CREATE  TABLE IF NOT EXISTS `cms`.`template` (
 
   `TEMPLATE_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -450,7 +450,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`template` (
 
     FOREIGN KEY (`ACCOUNT_ID` )
 
-    REFERENCES `cmstest`.`account` (`account_id` )
+    REFERENCES `cms`.`account` (`account_id` )
 
     ON DELETE NO ACTION
 
@@ -460,7 +460,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`template` (
 
     FOREIGN KEY (`TEMPLATE_DIRECTORY_ID` )
 
-    REFERENCES `cmstest`.`template_directory` (`TEMPLATE_DIRECTORY_ID` )
+    REFERENCES `cms`.`template_directory` (`TEMPLATE_DIRECTORY_ID` )
 
     ON DELETE NO ACTION
 
@@ -470,7 +470,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`template` (
 
     FOREIGN KEY (`TEMPLATE_TYPE_ID` )
 
-    REFERENCES `cmstest`.`template_type` (`TEMPLATE_TYPE_ID` )
+    REFERENCES `cms`.`template_type` (`TEMPLATE_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -492,7 +492,7 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cmstest`.`page_template_association` (
+CREATE  TABLE IF NOT EXISTS `cms`.`page_template_association` (
 
   `PAGE_ID` INT(11) NOT NULL ,
 
@@ -514,7 +514,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page_template_association` (
 
     FOREIGN KEY (`PAGE_ID` )
 
-    REFERENCES `cmstest`.`page` (`PAGE_ID` )
+    REFERENCES `cms`.`page` (`PAGE_ID` )
 
     ON DELETE NO ACTION
 
@@ -524,7 +524,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page_template_association` (
 
     FOREIGN KEY (`PAGE_SECTION_TYPE_ID` )
 
-    REFERENCES `cmstest`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
+    REFERENCES `cms`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -534,7 +534,7 @@ CREATE  TABLE IF NOT EXISTS `cmstest`.`page_template_association` (
 
     FOREIGN KEY (`TEMPLATE_ID` )
 
-    REFERENCES `cmstest`.`template` (`TEMPLATE_ID` )
+    REFERENCES `cms`.`template` (`TEMPLATE_ID` )
 
     ON DELETE NO ACTION
 

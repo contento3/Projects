@@ -72,7 +72,7 @@
   </property>
 </bean>
 
-<bean id="myTestService" class="com.contento3.site.template.test.service.TestServiceImpl">
-</bean>
+<!-- <bean id="myTestService" class="com.contento3.site.template.test.service.TestServiceImpl"> -->
+<!-- </bean> -->
 
 </beans>

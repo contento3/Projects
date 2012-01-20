@@ -1,14 +1,14 @@
---create table users (
+-- create table users (
 --    username varchar(50) not null primary key,
 --    password varchar(50) not null,
 --    enabled boolean not null
---) engine = InnoDb;
+-- ) engine = InnoDb;
 
 create table users(
-  username varchar_ignorecase(50) not null primary key,
-  password varchar_ignorecase(50) not null,
+  username varchar(50) not null primary key,
+  password varchar(50) not null,
   enabled boolean not null,
-  salt varchar_ignorecase(25) not null
+  salt varchar(25) not null
   );
 
 create table authorities (
@@ -44,7 +44,7 @@ create table persistent_logins (
 ) engine = InnoDb;
 
 
-/////////////////////////////////////////////////////////////NOT DONE////////////////////////////////////////////
+-- /////////////////////////////////////////////////////////////NOT DONE////////////////////////////////////////////
 create table acl_sid (
     id bigint unsigned not null auto_increment primary key,
     principal tinyint(1) not null,
