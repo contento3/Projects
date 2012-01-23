@@ -20,7 +20,7 @@
      Template Name : <input type="text" id="templateName" name="templateName">
      </div>
      <div>
-     Template Path : <input type="text" id="templatePath" name="templatePath">
+     Template Path : <input type="text" id="directoryPath" readonly="readonly" name="templatePath">
      </div>
      <textarea id="code" name="code">
 	 </textarea><input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
@@ -29,6 +29,7 @@
     function saveTemplate() {
     	var text = editor.getValue();
     	var templateName = $('#templateName').val();
+    	alert(directoryId);
 		$.post( '/cms/jsp/addTemplate.ajax', { text: text,templateName : templateName,templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId, accountId : accountId },
 		      function( data ) {
 				alert("template saved.");
@@ -64,25 +65,31 @@
     	$('#addEditButton').val('Save template');
     }
 
-	function addTemplateName(templateName){
+	function addTemplateName(templateName,directoryPath){
 		$('#templateName').val(templateName);
+		$('#directoryPath').val(directoryPath);
 	}
 
 	var templateId;
 	var directoryId;
 	var templateTypeId;
 	var accountId;
+	var directoryPath;
+	
 	$(document).ready(function() {
 		var urlVars = $.getUrlVars();
 		templateId = urlVars['templateId'];
 		directoryId = urlVars['directoryId'];
 		templateTypeId = urlVars['templateTypeId'];
 		accountId = urlVars['accountId'];
+		directoryPath = urlVars['directoryPath'];
 		var templateName= urlVars['templateName'];
 
-		addTemplateName(decodeURI(templateName));
+		
+		addTemplateName(decodeURI(templateName),directoryPath);
 		adjustButtonText(templateId);   
 		loadTemplateText(templateId);
+
 	});
 
 	</script>

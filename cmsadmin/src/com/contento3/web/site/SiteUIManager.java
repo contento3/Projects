@@ -21,7 +21,6 @@ import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.common.aspect.ApplicationLogger;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
@@ -47,8 +46,14 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.util.Collections;
 
+/**
+ * Used to render ui related to sites and 
+ * site pages.
+ * @author HAMMAD
+ *
+ */
 public class SiteUIManager implements UIManager {
 	
 	private static final Logger LOGGER = Logger.getLogger(SiteUIManager.class);
@@ -64,9 +69,15 @@ public class SiteUIManager implements UIManager {
 
 	private int selectedPageId;
 	private boolean newPageFlag = false;
+	
+	private SiteService siteService;
+	private PageService pageService;
+
 	public SiteUIManager(final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
 		this.parentWindow = parentWindow;
+		this.siteService = (SiteService) contextHelper.getBean("siteService");
+		this.pageService = (PageService) contextHelper.getBean("pageService");
 	}
 
 	@Override
@@ -120,8 +131,6 @@ public class SiteUIManager implements UIManager {
 					private static final long serialVersionUID = 1L;
 
 					public void buttonClick(ClickEvent event) {
-						SiteService siteService = (SiteService) contextHelper
-								.getBean("siteService");
 						SiteDto siteDto = new SiteDto();
 						siteDto.setSiteName((String) ((TextField) newSiteInputLayout
 								.getComponent(0)).getValue());
@@ -153,8 +162,12 @@ public class SiteUIManager implements UIManager {
 		pagesTab.addComponent(pageLayout);
 		pagesTab.setHeight("675");
 		pagesTab.setWidth("775");
-		final Tab tab1 = pagesTab.addTab(pageLayout, "Pages", null);
-		tab1.setCaption("test");
+		
+		SiteDto siteDto = siteService.findSiteById(siteId);
+		
+		
+		final Tab tab1 = pagesTab.addTab(pageLayout, siteDto.getSiteName(), null);
+		//tab1.setCaption("test");
 		pagesTab.setImmediate(true);
 		pagesTab.addListener(new SelectedTabChangeListener(){
 			private static final long serialVersionUID = 1L;
@@ -203,7 +216,9 @@ public class SiteUIManager implements UIManager {
 		return pagesTab;
 	}
 
-	private void addPageToPageListTable(final PageDto page,final Integer siteId,final TabSheet pagesTab,Button link){
+	private void addPageToPageListTable(final PageDto page,final Integer siteId,
+			final TabSheet pagesTab,Button link){
+		
 		Item item = container.addItem(page.getPageId());
 		item.getItemProperty("Title").setValue(page.getTitle());
 		item.getItemProperty("Uri").setValue(page.getUri());
@@ -243,22 +258,39 @@ public class SiteUIManager implements UIManager {
 		newPageFormLayout.addComponent(titleTxt);
 		newPageFormLayout.addComponent(uriTxt);
 
-		Tab newPageTab = tabSheet.addTab(newPageParentlayout, "Create new page", null);
+		//TODO get it from a property file
+		String pageTabTitle = "Untitled page";
+		String pageButtonTitle = "Add page";
+		PageDto pageDto = null;
+		
+		
+		if (null!=pageId){
+			
+			try {
+				pageDto = pageService.findPageWithLayout(pageId);
+			} catch (PageNotFoundException e) {
+				LOGGER.equals(String.format("Page not found %s",pageId));
+			}
+			
+			pageTabTitle = String.format("Edit %s",pageDto.getTitle()); 
+			pageButtonTitle = "Save";
+		}
+		
+		Tab newPageTab = tabSheet.addTab(newPageParentlayout, pageTabTitle, null);
 		tabSheet.setSelectedTab(newPageParentlayout);
 		newPageTab.setVisible(true);
 		newPageTab.setEnabled(true);
 		newPageTab.setClosable(true);	
 		
 		//List box to select Page layouts
-		SiteService siteService = (SiteService) contextHelper.getBean("siteService");
-		
+
 		final PageLayoutService pageLayoutService = (PageLayoutService) contextHelper.getBean("pageLayoutService");
 		final SiteDto siteDto = siteService.findSiteById(siteId);
 		
 		Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
 		final ComboBox pageLayoutCombo = new ComboBox("Select Page Layouts",getPageLayouts(pageLayoutDto));
 		
-		Button newPageSubmitBtn = new Button("Add page");
+		Button newPageSubmitBtn = new Button(pageButtonTitle);
 		newPageFormLayout.addComponent(pageLayoutCombo);
 		newPageFormLayout.addComponent(newPageSubmitBtn);
 		pageLayoutCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
@@ -289,7 +321,7 @@ public class SiteUIManager implements UIManager {
 		
 		//Call for editing
 		if (null!=pageId){
-			newPageParentlayout.addComponent(populatePage(pageId,newPageFormLayout));
+			newPageParentlayout.addComponent(populatePage(pageDto,newPageFormLayout));
 		}
 	}	
 	
@@ -299,21 +331,13 @@ public class SiteUIManager implements UIManager {
 	 * @param newPageFormLayout
 	 * @return tabsheet with page layout and its section if present or empty pagelayout without page section.
 	 */
-	private TabSheet populatePage(final Integer pageId,final FormLayout newPageFormLayout){
-		PageService pageService = (PageService) contextHelper.getBean("pageService");
-		
-		PageDto pageDto = null;
-		try {
-			pageDto = pageService.findPageWithLayout(pageId);
-		} catch (PageNotFoundException e) {
-			LOGGER.equals(String.format("Page not found %s",pageId));
-		}
+	private TabSheet populatePage(final PageDto pageDto,final FormLayout newPageFormLayout){
 		
 		((TextField)newPageFormLayout.getComponent(0)).setValue(pageDto.getTitle());
 		((TextField)newPageFormLayout.getComponent(1)).setValue(pageDto.getUri());
 		
 		//This will be used to be passed to the template assignment sub window 
-		selectedPageId = pageId;
+		selectedPageId = pageDto.getPageId();
 		
 		if (null!=pageDto.getPageLayoutDto()){
 			((ComboBox)newPageFormLayout.getComponent(2)).select(pageDto.getPageLayoutDto().getId());

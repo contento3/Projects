@@ -1,6 +1,5 @@
 package com.contento3.cms.page.dao.impl;
 
-import java.awt.print.Pageable;
 import java.util.Collection;
 import java.util.List;
 

@@ -18,17 +18,17 @@ import javax.persistence.Table;
 @Table(name = "Category")
 public class Category {
 	@Id @GeneratedValue(strategy= GenerationType.AUTO)
-	@Column(name = "Categoryid")
+	@Column(name = "Category_Id")
 	private Integer id;
 	
 	@Column(name = "Category_Name")
-	private String CategoryName;
+	private String categoryName;
 	
 @ManyToOne
-@JoinColumn(name="Parent_Category")
+@JoinColumn(name="Parent_Category_Id")
 private Category parent;
 
-@OneToMany(mappedBy="Parent_Category")
+@OneToMany(mappedBy="Parent_Category_Id")
 private Collection<Category> child;
 
 public Integer getid()
@@ -40,12 +40,12 @@ return id;
  }
  public String getcategoryname()
  {
-	 return CategoryName;
+	 return categoryName;
 	  }
  
  public void setcategoryname(String CategoryName)
  {
-	 this.CategoryName = CategoryName;
+	 this.categoryName = CategoryName;
 	 }
  public Category getparent()
  {

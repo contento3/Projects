@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -14,7 +15,7 @@ public class PageSectionType implements Serializable {
 	
 	private static final long serialVersionUID = 4973061231287029857L;
 
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "PAGE_SECTION_TYPE_ID")
 	private Integer id;
 	

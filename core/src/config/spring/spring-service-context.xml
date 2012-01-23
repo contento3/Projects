@@ -7,6 +7,9 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+	<bean id="accountAssembler" class="com.contento3.account.service.impl.AccountAssemblerImpl">
+	</bean>
+
 	<bean id="templateDirectoryAssembler" class="com.contento3.cms.page.template.service.impl.TemplateDirectoryAssemblerImpl">
 	</bean>
 
@@ -42,6 +45,7 @@
 
 	<bean id="templateService" class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">
 		<constructor-arg ref="templateAssembler" />
+		<constructor-arg ref="accountDAO" />
 		<constructor-arg ref="templateDAO" />
 		<constructor-arg ref="templateTypeDAO" />
 		<constructor-arg ref="templateDirectoryDAO" />
@@ -67,7 +71,7 @@
 	</bean>
 
 	<bean id="siteService" class="com.contento3.cms.site.structure.service.impl.SiteServiceImpl">
-		<constructor-arg ref="accountService" />
+		<constructor-arg ref="accountAssembler" />
 		<constructor-arg ref="siteDAO" />
 	</bean>
 
@@ -91,6 +95,7 @@
 
 	<bean id="accountService" class="com.contento3.account.service.impl.AccountServiceImpl">
 		<constructor-arg ref="accountDAO" />
+		<constructor-arg ref="accountAssembler" />
 	</bean>
 
 	<bean id="imageService" class="com.contento3.dam.image.service.impl.ImageServiceImpl">

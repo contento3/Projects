@@ -2,12 +2,10 @@ package com.contento3.cms.page.template.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.page.section.model.PageSectionType;
@@ -33,7 +31,7 @@ public class PageTemplatePK implements Serializable{
 		return page;
 	}
 
-	public void setPage(Page page) {
+	public void setPage(final Page page) {
 		this.page = page;
 	}
 
@@ -41,7 +39,7 @@ public class PageTemplatePK implements Serializable{
 		return template;
 	}
 
-	public void setTemplate(Template template) {
+	public void setTemplate(final Template template) {
 		this.template = template;
 	}
 
@@ -49,7 +47,7 @@ public class PageTemplatePK implements Serializable{
 		return sectionType;
 	}
 
-	public void setSectionType(PageSectionType sectionType) {
+	public void setSectionType(final PageSectionType sectionType) {
 		this.sectionType = sectionType;
 	}
 }

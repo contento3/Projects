@@ -29,6 +29,7 @@ public class PageTemplateAssemblerImpl implements PageTemplateAssembler  {
 		PageTemplateDto pageTemplateDto = new PageTemplateDto();
 		pageTemplateDto.setOrder(domain.getTemplateOrder());
 		pageTemplateDto.setTemplateName(domain.getPrimaryKey().getTemplate().getTemplateName());
+		pageTemplateDto.setTemplateId(domain.getPrimaryKey().getTemplate().getTemplateId());
 		return pageTemplateDto;
 	}
 

@@ -1,6 +1,6 @@
 package com.contento3.cms.page.template.dto;
 
-import com.contento3.cms.page.template.model.TemplateType;
+import com.contento3.account.dto.AccountDto;
 
 public class TemplateDto {
 
@@ -16,6 +16,16 @@ public class TemplateDto {
 
 	private TemplateDirectoryDto templateDirectoryDto;
 	
+	private AccountDto accountDto;
+	
+	public AccountDto getAccountDto() {
+		return accountDto;
+	}
+
+	public void setAccountDto(AccountDto accountDto) {
+		this.accountDto = accountDto;
+	}
+
 	public Integer getTemplateId() {
 		return templateId;
 	}

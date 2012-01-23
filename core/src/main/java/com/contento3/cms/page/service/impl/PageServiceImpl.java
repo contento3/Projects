@@ -103,8 +103,14 @@ public class PageServiceImpl implements PageService {
 	}
 
 	@Override
-	public PageDto findByPathForSite(String path, Integer siteId) throws PageNotFoundException{
-		return 	domainToDto(pageDao.findPageByPathAndSiteId(path, siteId));
+	public PageDto findByPathForSite(String path, Integer siteId) throws PageNotFoundException
+	{
+		Page page = pageDao.findPageByPathAndSiteId(path, siteId);
+		
+		if (null==page){
+			throw new PageNotFoundException();
+		}
+		return 	domainToDto(page);
 	}
 
 

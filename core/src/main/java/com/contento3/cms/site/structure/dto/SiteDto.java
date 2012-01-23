@@ -1,8 +1,10 @@
 package com.contento3.cms.site.structure.dto;
 
+import java.io.Serializable;
+
 import com.contento3.account.dto.AccountDto;
 
-public class SiteDto {
+public class SiteDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

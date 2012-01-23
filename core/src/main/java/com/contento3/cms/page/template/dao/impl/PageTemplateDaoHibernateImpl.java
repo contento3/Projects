@@ -3,6 +3,7 @@ package com.contento3.cms.page.template.dao.impl;
 import java.util.Collection;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import com.contento3.cms.page.section.model.PageSectionTypeEnum;
@@ -33,11 +34,13 @@ public class PageTemplateDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@Override
 	public Collection<PageTemplate> findByPageAndPageSectionType(final Integer pageId,final PageSectionTypeEnum pageSectionType) {
 		Criteria criteria = this.getSession()
-		.createCriteria(PageTemplate.class)
-		.add(Restrictions
-		.eq("primaryKey.page.pageId", pageId)).add(Restrictions
-		.eq("primaryKey.sectionType.name", pageSectionType.toString()));
-
+		.createCriteria(PageTemplate.class);
+		
+		Criterion pageCriteria = Restrictions.eq("primaryKey.page.pageId", pageId);
+		Criterion pageSectionTypeCriteria = Restrictions.eq("primaryKey.sectionType.id", 7);
+		
+		criteria.add(Restrictions.and(pageCriteria, pageSectionTypeCriteria));
+		
 		return criteria.list();
 	}
 

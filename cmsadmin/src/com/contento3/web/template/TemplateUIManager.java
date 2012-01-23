@@ -40,13 +40,45 @@ import com.vaadin.ui.Window.Notification;
 
 public class TemplateUIManager implements UIManager{
 
+	/**
+	 * Used to get service beans from spring context.
+	 */
     private SpringContextHelper helper;
+    
+    /**
+     * Template Service to access template related services.
+     */
     private TemplateService templateService;
+    
+    /**
+     * Template Directory Service to access template 
+     * directory related services.
+     */
     private TemplateDirectoryService templateDirectoryService;
+    
+    /**
+     * Represents the root object of a tree that contains template and template directories.
+     */
     private Tree root;
+    
+    /**
+     * Represents the parent window of the template ui
+     */
 	private Window parentWindow;
 
-	private String directoryPath;
+	/**
+	 * Used to hold the id of currently selected
+	 * directory from the tree.
+	 */
+	private Integer selectedDirectoryId;
+
+	TabSheet templateTab;
+
+	/**
+	 * Constructor 
+	 * @param helper
+	 * @param parentWindow
+	 */
 	public TemplateUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
@@ -54,7 +86,6 @@ public class TemplateUIManager implements UIManager{
 	    this.templateDirectoryService = (TemplateDirectoryService)helper.getBean("templateDirectoryService"); 
 	}
 	
-	TabSheet templateTab;
 
 	@Override
 	public void render() {
@@ -83,41 +114,6 @@ public class TemplateUIManager implements UIManager{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	private String getHTML(){
-		return "<!doctype html><html>"+
-		  "<head>"+
-		    "<title>CodeMirror 2dfdf: Active Line Demo</title>"+
-		    "<link rel=\"stylesheet\" href=\"/codemirror.css\">"+
-		    "<script src=\"/codemirror.js\"></script>"+
-		    "<link rel=\"stylesheet\" href=\"/default.css\">"+
-		    "<script src=\"/xml.js\"></script>"+
-		    "<link rel=\"stylesheet\" href=\"/docs.css\">"+
-		    "<style type=\"text/css\">"+
-		      ".CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}"+
-		      ".activeline {background: #f0fcff !important;}"+
-		    "</style>"+
-		  "</head>"+
-		  "<body>"+
-		    "<h1>CodeMirror aaa2: Active Line Demo</h1>"+
-		        "<form><textarea id=\"code\" name=\"code\"></textarea>"+
-		       	"</form>"+
-		    "<script>"+
-		"var editor = CodeMirror.fromTextArea(document.getElementById(\"code\"), {"+
-		  "mode: \"application/xml\","+
-		  "lineNumbers: true,"+
-		  "onCursorActivity: function() {"+
-		    "editor.setLineClass(hlLine, null);"+
-		    "hlLine = editor.setLineClass(editor.getCursor().line, \"activeline\");"+
-		  "}"+
-		"});"+
-		"var hlLine = editor.setLineClass(0, \"activeline\");"+
-		"</script>"+
-		    "<p>Styling the current cursor line.</p>"+
-		  "</body>"+
-		"</html>";
-	}
-	
 	
 	public void renderTemplateListTab(VerticalLayout vLayout){
 		// Create the Accordion.
@@ -218,10 +214,10 @@ public class TemplateUIManager implements UIManager{
 	
 	private void addChildrenToSelectedDirectory(final Item parentItem,
 			final TemplateDirectoryService templateDirectoryService,final HierarchicalContainer templateContainer){
-		Integer itemId = Integer.parseInt(parentItem.getItemProperty("id").getValue().toString());
+		selectedDirectoryId = Integer.parseInt(parentItem.getItemProperty("id").getValue().toString());
 		String name = parentItem.getItemProperty("name").getValue().toString();
 
-		Collection <TemplateDirectoryDto> templateDirectoryDtoList = templateDirectoryService.findChildDirectories(itemId);
+		Collection <TemplateDirectoryDto> templateDirectoryDtoList = templateDirectoryService.findChildDirectories(selectedDirectoryId);
 
 		for (TemplateDirectoryDto templateDirectoryDto: templateDirectoryDtoList){
 				Integer itemToAdd = templateDirectoryDto.getId();
@@ -229,24 +225,24 @@ public class TemplateUIManager implements UIManager{
 					Item item = templateContainer.addItem(itemToAdd);
 					item.getItemProperty("id").setValue(itemToAdd);
 					item.getItemProperty("name").setValue(templateDirectoryDto.getDirectoryName());
-					templateContainer.setParent(templateDirectoryDto.getId(), itemId);
+					templateContainer.setParent(templateDirectoryDto.getId(), selectedDirectoryId);
 					templateContainer.setChildrenAllowed(templateDirectoryDto.getId(), true);
 				}
 			}
 		
 		Collection <TemplateDto> templateDtoList = templateService.findTemplateByDirectoryName(name);
 		
-			for (TemplateDto templateDto: templateDtoList){
-				String templateItemId = String.format("file:%d",templateDto.getTemplateId());
-				if (null==templateContainer.getItem(templateItemId)){
-					Item item = templateContainer.addItem(templateItemId);
-					item.getItemProperty("fileid").setValue(templateItemId);
-					item.getItemProperty("name").setValue(templateDto.getTemplateName());
-					templateContainer.setParent(String.format("file:%d",templateDto.getTemplateId()), itemId);
-					templateContainer.setChildrenAllowed(String.format("file:%d",templateDto.getTemplateId()), true);
-				}
+		for (TemplateDto templateDto: templateDtoList){
+			String templateItemId = String.format("file:%d",templateDto.getTemplateId());
+			if (null==templateContainer.getItem(templateItemId)){
+				Item item = templateContainer.addItem(templateItemId);
+				item.getItemProperty("fileid").setValue(templateItemId);
+				item.getItemProperty("name").setValue(templateDto.getTemplateName());
+				templateContainer.setParent(String.format("file:%d",templateDto.getTemplateId()), selectedDirectoryId);
+				templateContainer.setChildrenAllowed(String.format("file:%d",templateDto.getTemplateId()), true);
 			}
 		}
+ 	}
 	
 	private void renderTemplate(Integer templateId){
 		final VerticalLayout createNewTemplate = new VerticalLayout();
@@ -271,25 +267,46 @@ public class TemplateUIManager implements UIManager{
         			  .append("&templateTypeId=")
 		              .append(templateDto.getTemplateType().getTemplateTypeId())
 		        	  .append("&accountId=")
-				      .append(session.getAttribute("accountId"));
+				      .append(accountId);
+
+            	url = new URL(urlStr.toString());
         	}
-        	url = new URL(urlStr.toString());
+        	else {
+        		//This is a new template to be created we need to get the directory which was selected.
+        		if (null == selectedDirectoryId){
+					parentWindow.showNotification(String.format("Please select template directory to create a new template."),Notification.TYPE_WARNING_MESSAGE);
+        		}
+        		else {
+        			TemplateDirectoryDto directoryDto = templateDirectoryService.findById(selectedDirectoryId);
+        			  urlStr.append("?accountId=")
+  			  	      .append(session.getAttribute("accountId"))
+  			  	      .append("&directoryId=")
+  			  	      .append(directoryDto.getId())
+  			  	      .append("&templateName=")
+  			  	      .append("")
+        			  .append("&directoryPath=")
+  			          .append(String.format("/%s",buildPath(selectedDirectoryId,directoryDto.getDirectoryName())));
+                  	url = new URL(urlStr.toString());
+        		}
+        	}
 		} 
 		catch (MalformedURLException exception) {
 			exception.printStackTrace();
 		}
-		
-		Embedded browser = new Embedded("", new ExternalResource(url));
-    	browser.setType(Embedded.TYPE_BROWSER);
-    	browser.setSizeFull();
 
-    	createNewTemplate.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-    	createNewTemplate.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-    	createNewTemplate.addComponent(browser);
+		if (null!=url){
+			Embedded browser = new Embedded("", new ExternalResource(url));
+			browser.setType(Embedded.TYPE_BROWSER);
+			browser.setSizeFull();
 
-    	Tab tab2= templateTab.addTab(createNewTemplate,"Create template",null);
-    	tab2.setClosable(true);
-    	templateTab.setSelectedTab(createNewTemplate);
+			createNewTemplate.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+			createNewTemplate.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+			createNewTemplate.addComponent(browser);
+
+			Tab tab2= templateTab.addTab(createNewTemplate,"Create template",null);
+			tab2.setClosable(true);
+			templateTab.setSelectedTab(createNewTemplate);
+		}
 	}
 
 	private void renderFolderTab(Integer folderId){

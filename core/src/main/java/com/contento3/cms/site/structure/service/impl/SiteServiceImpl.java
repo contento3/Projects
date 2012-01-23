@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.contento3.account.service.AccountAssembler;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.site.structure.dao.SiteDAO;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -16,11 +17,11 @@ import com.contento3.cms.site.structure.service.SiteService;
 public class SiteServiceImpl implements SiteService {
 
 	private final SiteDAO siteDao;
-	private final AccountService accountService;
+	private final AccountAssembler accountAsembler;
 	
-	public SiteServiceImpl(final AccountService accountService,final SiteDAO siteDao){
+	public SiteServiceImpl(final AccountAssembler accountAsembler,final SiteDAO siteDao){
 		this.siteDao = siteDao;
-		this.accountService = accountService;
+		this.accountAsembler = accountAsembler;
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -53,7 +54,7 @@ public class SiteServiceImpl implements SiteService {
 		site.setSiteId(dto.getSiteId());
 		site.setSiteName(dto.getSiteName());
 		site.setUrl(dto.getUrl());
-		site.setAccount(accountService.dtoToDomain(dto.getAccountDto()));
+		site.setAccount(accountAsembler.dtoToDomain(dto.getAccountDto()));
 		return site;
 	}
 
@@ -62,7 +63,7 @@ public class SiteServiceImpl implements SiteService {
 		dto.setSiteName(domain.getSiteName());
 		dto.setUrl(domain.getUrl());
 		dto.setSiteId(domain.getSiteId());
-		dto.setAccountDto(accountService.domainToDto(domain.getAccount()));
+		dto.setAccountDto(accountAsembler.domainToDto(domain.getAccount()));
 		return dto;
 	}
 
