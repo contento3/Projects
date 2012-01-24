@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
+import com.contento3.cms.page.section.model.PageSectionTypeEnum;
 import com.contento3.cms.page.template.dao.TemplateDao;
 import com.contento3.cms.page.template.dao.TemplateDirectoryDao;
 import com.contento3.cms.page.template.dao.TemplateTypeDao;
@@ -17,6 +18,8 @@ import com.contento3.cms.page.template.model.TemplateDirectory;
 import com.contento3.cms.page.template.model.TemplateType;
 import com.contento3.cms.page.template.service.TemplateAssembler;
 import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.cms.site.structure.dao.SiteDAO;
+import com.contento3.cms.site.structure.model.Site;
 import com.contento3.common.exception.ResourceNotFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -33,16 +36,18 @@ public class TemplateServiceImpl implements TemplateService {
 	private TemplateTypeDao templateTypeDao;
 	private TemplateDirectoryDao templateDirectoryDao;
 	private AccountDao accountDao;
+	private SiteDAO siteDao;
 	
 	TemplateServiceImpl(final TemplateAssembler assembler,
 						final AccountDao accountDao,
 						final TemplateDirectoryDao templateDirectoryDao,
-						final TemplateDao templateDao,final TemplateTypeDao templateTypeDao){
+						final TemplateDao templateDao,final TemplateTypeDao templateTypeDao,final SiteDAO siteDao){
 		this.templateDao = templateDao;
 		this.templateAssembler = assembler;
 		this.templateTypeDao = templateTypeDao;
 		this.templateDirectoryDao = templateDirectoryDao;
 		this.accountDao = accountDao;
+		this.siteDao = siteDao;
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -69,7 +74,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws ResourceNotFoundException {
 		split(templatePath);
-		Collection<Template> templateList = templateDao.findTemplateByPathAndAccount(templateName, parentDirectory, contentType, accountId);
+		Collection<Template> templateList = templateDao.findTemplateByPathAndAccount(templateName, parentDirectory, "text/freemarker", accountId);
 		
 		if (CollectionUtils.isEmpty(templateList)){
 			throw new ResourceNotFoundException();
@@ -82,6 +87,13 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		
 		return templateAssembler.domainToDto(originalTemplate);
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public TemplateDto findTemplateByPathAndSiteId(String templatePath,Integer siteId) throws ResourceNotFoundException {
+		Site site = siteDao.findById(siteId);
+		return findTemplateByPathAndAccount(templatePath,site.getAccount().getAccountId());
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

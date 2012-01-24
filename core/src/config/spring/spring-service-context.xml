@@ -49,6 +49,7 @@
 		<constructor-arg ref="templateDAO" />
 		<constructor-arg ref="templateTypeDAO" />
 		<constructor-arg ref="templateDirectoryDAO" />
+		<constructor-arg ref="siteDAO" />
 	</bean>
 
 	<bean id="pageTemplateService" class="com.contento3.cms.page.template.service.impl.PageTemplateServiceImpl">

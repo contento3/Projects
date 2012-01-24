@@ -52,6 +52,7 @@
 
 <bean id="fmTemplateLoader" class="com.contento3.site.template.loader.FreemarkerTemplateLoader">
 	<property name="pageAssembler" ref="pageAssemb" />
+	<property name="templateService" ref="templateService" />
 </bean>
 
 <bean id="fmConfiguration" class="freemarker.template.Configuration"></bean>

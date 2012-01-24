@@ -30,5 +30,6 @@ public interface TemplateService extends Service<TemplateDto>{
 
 	TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws Exception;
 
+	TemplateDto findTemplateByPathAndSiteId(String templatePath,Integer siteId) throws Exception;
 
 }

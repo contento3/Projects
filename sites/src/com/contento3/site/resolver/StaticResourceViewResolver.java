@@ -29,7 +29,7 @@ public class StaticResourceViewResolver extends AbstractView {
 			response.getWriter().print(templateDto.getTemplateText());
 		}
 		catch(ResourceNotFoundException rnfe){
-			LOGGER.warn(String.format("Unable to fin resource for with path [%s]",request.getRequestURI()));
+			LOGGER.warn(String.format("Unable to find resource for path [%s]",request.getRequestURI()));
 		}
 		
 		response.getWriter().close();

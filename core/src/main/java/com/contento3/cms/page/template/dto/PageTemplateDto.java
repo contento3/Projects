@@ -1,6 +1,8 @@
 package com.contento3.cms.page.template.dto;
 
-public class PageTemplateDto {
+import java.io.Serializable;
+
+public class PageTemplateDto implements Serializable {
 	private Integer pageId;
 	
 	private Integer templateId;
