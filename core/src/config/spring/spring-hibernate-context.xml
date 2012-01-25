@@ -148,4 +148,8 @@
 		<property name="cacheName" value="com.contento3.cms.content.model.ContentType" />
 	</bean>
 	-->
+	<bean id="categoryDao"
+		class="com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 </beans>

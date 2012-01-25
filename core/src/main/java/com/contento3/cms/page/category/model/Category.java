@@ -12,55 +12,56 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
-
 @Entity
 @Table(name = "Category")
 public class Category {
-	@Id @GeneratedValue(strategy= GenerationType.AUTO)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "Category_Id")
-	private Integer id;
-	
+	private Integer categoryId;
+
+
+
 	@Column(name = "Category_Name")
 	private String categoryName;
+
+	@ManyToOne
+	@JoinColumn(name = "Parent_Category_Id")
+	private Category parent;
+
+	@OneToMany(mappedBy = "Parent_Category_Id")
+	private Collection<Category> child;
+//--------------------------------------------------------------------------------------s
+//getters & setters	
 	
-@ManyToOne
-@JoinColumn(name="Parent_Category_Id")
-private Category parent;
+	public Integer getCategoryId() {
+		return categoryId;
+	}
 
-@OneToMany(mappedBy="Parent_Category_Id")
-private Collection<Category> child;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+	public String getCategoryName() {
+		return categoryName;
+	}
 
-public Integer getid()
-{
-return id;
-}
- public void setid(Integer id){
-	 this.id=id;
- }
- public String getcategoryname()
- {
-	 return categoryName;
-	  }
- 
- public void setcategoryname(String CategoryName)
- {
-	 this.categoryName = CategoryName;
-	 }
- public Category getparent()
- {
-	 return parent;
- }
- public void setparent(Category parent)
- {
-	 this.parent=parent;
- }
-public Collection<Category> getchild()
-{
-	return child;
-}
- public void setchild( Collection<Category> child)
- {
-	 this.child=child;
- }
+	public void setCategoryName(final String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public Category getParent() {
+		return parent;
+	}
+
+	public void setParent(final Category parent) {
+		this.parent = parent;
+	}
+
+	public Collection<Category> getChild() {
+		return child;
+	}
+
+	public void setChild(final Collection<Category> child) {
+		this.child = child;
+	}
 }
