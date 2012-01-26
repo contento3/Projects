@@ -50,29 +50,68 @@ public class Site implements Serializable {
 	@OneToOne
 	@JoinColumn(name = "ACCOUNT_ID")
 	private Account account;
-	
+
+	/**
+	 * Returns the siteId
+	 * @return Integer
+	 */
 	public Integer getSiteId() {
 		return siteId;
 	}
+	
+	/**
+	 * Returns the account of this site
+	 * @return Account
+	 */
 	public Account getAccount() {
 		return account;
 	}
+	
+	/**
+	 * Sets the account for this site
+	 * @param account Represents the account for this site
+	 */
 	public void setAccount(final Account account) {
 		this.account = account;
 	}
-	public void setSiteId(Integer siteId) {
+	
+	/**
+	 * Sets the siteId
+	 * @param siteId id of this site
+	 */
+	public void setSiteId(final Integer siteId) {
 		this.siteId = siteId;
 	}
+	
+	/**
+	 * Returns the url
+	 * @return String uri 
+	 */
 	public String getUrl() {
 		return url;
 	}
-	public void setUrl(String url) {
+	
+	/**
+	 * Sets the url
+	 * @param url 
+	 */
+	public void setUrl(final String url) {
 		this.url = url;
 	}
+	
+	/**
+	 * Returns the site name
+	 * @return String 
+	 */
 	public String getSiteName() {
 		return siteName;
 	}
-	public void setSiteName(String siteName) {
+	
+	/**
+	 * Sets the siteName
+	 * @param siteName
+	 */
+	public void setSiteName(final String siteName) {
 		this.siteName = siteName;
 	}
 }

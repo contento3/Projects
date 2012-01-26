@@ -5,24 +5,28 @@ import java.util.Collection;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.model.Page;
-import com.contento3.common.service.Service;
 
+/**
+ * Serves as a service layer for page.
+ * @author HAMMAD
+ *
+ */
 public interface PageService {
 
 	/**
-	 * 
-	 * @param siteId
-	 * @param pageNumber
+	 * Returns the {@link Collection} of PageDto by siteId
+	 * @param siteId unique id for {@link Site} class
+	 * @param pageNumber  
 	 * @param pageSize
-	 * @return
+	 * @return {@link Collection} of PageDto
 	 */
 	//TODO change it to findPageBySiteId
 	Collection <PageDto> getPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize);
 
 	/**
-	 * 
+	 * Returns the {@link Collection} of PageDto by siteId
 	 * @param siteId
-	 * @return
+	 * @return {@link Collection} of PageDto
 	 */
 	//TODO change it to findPageBySiteId
 	Collection <PageDto> getPageBySiteId(Integer siteId);

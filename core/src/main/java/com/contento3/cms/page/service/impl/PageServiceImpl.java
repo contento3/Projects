@@ -14,7 +14,6 @@ import com.contento3.cms.page.layout.service.PageLayoutAssembler;
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.common.aspect.ApplicationLogger;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class PageServiceImpl implements PageService {
