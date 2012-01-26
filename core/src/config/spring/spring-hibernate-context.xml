@@ -34,6 +34,7 @@
 				 <value>com.contento3.cms.page.template.model.TemplateDirectory</value>
 				 <value>com.contento3.dam.image.model.Image</value>
 				 <value>com.contento3.cms.page.template.model.PageTemplate</value>
+			     <value>com.contento3.cms.page.category.model.Category</value>
 			</list>
 		</property>	
 		<property name="mappingResources">

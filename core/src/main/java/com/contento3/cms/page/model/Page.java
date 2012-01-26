@@ -8,11 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.layout.model.PageLayout;
 import com.contento3.cms.page.template.model.TemplateDirectory;
 import com.contento3.cms.site.structure.model.Site;
@@ -73,6 +76,24 @@ public class Page {
 	@JoinColumn(name = "PAGE_LAYOUT_ID")
 	private PageLayout pageLayout;
 	
+	
+	@ManyToMany
+	@JoinTable(name="PAGE_CATEGORY_ASSOCIATION",
+		joinColumns={@JoinColumn(name="PAGE_ID")},
+		inverseJoinColumns={@JoinColumn(name="CATEGORY_ID")})
+	private Collection<Category> categories;
+	
+	
+	
+	
+	public Collection<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(Collection<Category> categories) {
+		this.categories = categories;
+	}
+
 	public String getTitle() {
 		return title;
 	}

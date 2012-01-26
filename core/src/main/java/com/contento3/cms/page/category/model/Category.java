@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
+
 @Entity
 @Table(name = "Category")
 public class Category {
@@ -28,12 +30,16 @@ public class Category {
 	@ManyToOne
 	@JoinColumn(name = "Parent_Category_Id")
 	private Category parent;
-
-	@OneToMany(mappedBy = "Parent_Category_Id")
+	
+	@OneToMany(mappedBy = "parent")
 	private Collection<Category> child;
-//--------------------------------------------------------------------------------------s
+	
+	
+	
+//--------------------------------------------------------------------------------------
 //getters & setters	
 	
+
 	public Integer getCategoryId() {
 		return categoryId;
 	}
