@@ -1,5 +1,6 @@
 package com.contento3.cms.page.category.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -16,13 +17,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Category")
-public class Category {
+public class Category implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "Category_Id")
 	private Integer categoryId;
-
-
 
 	@Column(name = "Category_Name")
 	private String categoryName;
@@ -33,11 +32,6 @@ public class Category {
 	
 	@OneToMany(mappedBy = "parent")
 	private Collection<Category> child;
-	
-	
-	
-//--------------------------------------------------------------------------------------
-//getters & setters	
 	
 
 	public Integer getCategoryId() {

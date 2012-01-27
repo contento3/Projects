@@ -1,5 +1,6 @@
 package com.contento3.cms.page.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ import com.contento3.cms.site.structure.model.Site;
 
 @Entity
 @Table(name = "PAGE")
-public class Page {
+public class Page implements Serializable {
 
 	/**
 	 * URI for the page

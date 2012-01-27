@@ -11,9 +11,7 @@ public class CategoryDto {
 	private CategoryDto parent;
 
 	private Collection<CategoryDto> child;
-	
-//--------------------------------------------------------------------------------
-		//getter & setters
+
 	public Integer getCategoryId() {
 		return categoryId;
 	}
@@ -45,9 +43,6 @@ public class CategoryDto {
 	public void setChild(final Collection<CategoryDto> child) {
 		this.child = child;
 	}
-	
-
-	
 	
 
 }

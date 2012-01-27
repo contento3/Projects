@@ -1,7 +1,5 @@
 package com.contento3.cms.page.category.dao.impl;
 
-//mport java.util.Collection;
-
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -26,12 +24,12 @@ public class CategoryDaoHibernateImpl extends
 				.createCriteria(Category.class)
 				.add(Restrictions.eq("categoryName", categoryName));
 
-		Category cat = null;
+		Category category = null;
 		if (!CollectionUtils.isEmpty(criteria.list())) {
-			cat = (Category) criteria.list().get(0);
+			category = (Category) criteria.list().get(0);
 		}
 
-		return cat;
+		return category;
 	}
 
 }
