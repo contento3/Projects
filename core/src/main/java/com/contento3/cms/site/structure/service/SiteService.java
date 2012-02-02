@@ -35,5 +35,10 @@ public interface SiteService extends Service {
 	Site dtoToDomain(SiteDto dto);
 
 	SiteDto findSiteByDomain(String domain);
+	/**
+	 * Update site data into DB
+	 */
+	void update(SiteDto site);
+	
 
 }

@@ -29,6 +29,17 @@ public class SiteDto implements Serializable {
 	 */
 	private AccountDto accountDto;
 	
+	/**
+	 * layout for site
+	 */
+	private Integer defaultLayoutId;
+	
+	public Integer getDefaultLayoutId() {
+		return defaultLayoutId;
+	}
+	public void setDefaultLayoutId(Integer defaultLayoutId) {
+		this.defaultLayoutId = defaultLayoutId;
+	}
 	public AccountDto getAccountDto() {
 		return accountDto;
 	}

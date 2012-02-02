@@ -52,6 +52,25 @@ public class Site implements Serializable {
 	private Account account;
 
 	/**
+	 * layout for site
+	 */
+	@Column(name="DEFAULT_LAYOUT_ID")
+	private Integer defaultLayoutId;
+	
+	/**
+	 * Returns LayoutId
+	 * @return Integer
+	 */
+	
+	public Integer getDafaultLayoutId() {
+		return defaultLayoutId;
+	}
+
+	public void setDafaultLayoutId(Integer dafaultLayoutId) {
+		this.defaultLayoutId = dafaultLayoutId;
+	}
+
+	/**
 	 * Returns the siteId
 	 * @return Integer
 	 */

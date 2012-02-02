@@ -1,5 +1,6 @@
 package com.contento3.account.dto;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -11,7 +12,7 @@ import javax.persistence.OneToMany;
 
 import com.contento3.cms.site.structure.model.Site;
 
-public class AccountDto {
+public class AccountDto implements Serializable {
 
 	private Integer accountId;
 
