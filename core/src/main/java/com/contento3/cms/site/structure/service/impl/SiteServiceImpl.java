@@ -29,6 +29,12 @@ public class SiteServiceImpl implements SiteService {
 	public void create(SiteDto siteDto){
 		siteDao.persist(dtoToDomain(siteDto));
 	}
+	
+	@Transactional(readOnly = false)
+	@Override
+	public void update(SiteDto siteDto){
+		siteDao.update(dtoToDomain(siteDto));
+	}
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -55,6 +61,7 @@ public class SiteServiceImpl implements SiteService {
 		site.setSiteName(dto.getSiteName());
 		site.setUrl(dto.getUrl());
 		site.setAccount(accountAsembler.dtoToDomain(dto.getAccountDto()));
+		site.setDafaultLayoutId(dto.getDefaultLayoutId());
 		return site;
 	}
 
@@ -64,6 +71,7 @@ public class SiteServiceImpl implements SiteService {
 		dto.setUrl(domain.getUrl());
 		dto.setSiteId(domain.getSiteId());
 		dto.setAccountDto(accountAsembler.domainToDto(domain.getAccount()));
+		dto.setDefaultLayoutId(domain.getDafaultLayoutId());
 		return dto;
 	}
 
