@@ -10,6 +10,10 @@
 	<bean id="accountAssembler" class="com.contento3.account.service.impl.AccountAssemblerImpl">
 	</bean>
 
+	<bean id="siteAssembler" class="com.contento3.cms.site.structure.service.impl.SiteAssemblerImpl">
+		<constructor-arg ref="accountAssembler" />
+	</bean>
+
 	<bean id="templateDirectoryAssembler" class="com.contento3.cms.page.template.service.impl.TemplateDirectoryAssemblerImpl">
 	</bean>
 
@@ -72,13 +76,13 @@
 	</bean>
 
 	<bean id="siteService" class="com.contento3.cms.site.structure.service.impl.SiteServiceImpl">
-		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="siteDAO" />
 	</bean>
 
 	<bean id="pageService" class="com.contento3.cms.page.service.impl.PageServiceImpl">
 		<constructor-arg ref="pageDAO" />
-		<constructor-arg ref="siteService" />
+		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="pageLayoutAssembler" />
 	</bean>
 
@@ -102,6 +106,7 @@
 	<bean id="imageService" class="com.contento3.dam.image.service.impl.ImageServiceImpl">
 		<constructor-arg ref="imageAssembler" />
 		<constructor-arg ref="imageDao" />
+		<constructor-arg ref="accountDAO" />
 	</bean>
 
 	<bean id="layoutBuilder" class="com.contento3.cms.page.layout.impl.LayoutBuilderImpl">

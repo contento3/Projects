@@ -14,6 +14,7 @@ import com.contento3.common.exception.EnitiyAlreadyFoundException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.Application;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Component;
@@ -34,6 +35,8 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
     private SpringContextHelper helper;
 	private Window parentWindow;
 
+	private Application application;
+	
     Panel root;         // Root element for contained components.
     Panel imagePanel;   // Panel that contains the uploaded image.
     File  file;         // File to write to.
@@ -96,13 +99,13 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
             imageDto.setName(filename);
             
             //Get accountId from the session
-            WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
+            WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
             HttpSession session = ctx.getHttpSession();
-            Integer accountId = (Integer)session.getAttribute("accountId");
+            Integer accountId =(Integer)session.getAttribute("accountId");
 
             AccountService accountService = (AccountService)helper.getBean("accountService");
-            AccountDto accountDto = accountService.findAccountById(accountId);
-            
+            AccountDto accountDto = new AccountDto();
+            accountDto.setAccountId(accountId);
             ImageService imageService = (ImageService)helper.getBean("imageService");
             imageDto.setAccountDto(accountDto);
             try {//TODO
@@ -148,9 +151,10 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
     public void attach() {
         super.attach(); // Must call.
 
+        application = this.getApplication();
         // Display the uploaded file in the image panel.
        imageResource =
-                new FileResource(file, this.getApplication());
+                new FileResource(file, application);
     //   imagePanel.addComponent(new Embedded("", imageResource));
        imageResource.setCacheTime(0);
     }
