@@ -112,8 +112,5 @@
 		
 	</bean>
 	
-	<bean id="categoryService" class="com.contento3.cms.page.category.service.impl.CategoryServiceImpl">
-		<constructor-arg ref="categoryAssembler" />
-		<constructor-arg ref="categoryDao" />
-	</bean>
+	
 </beans>
