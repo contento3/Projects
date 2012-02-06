@@ -86,7 +86,6 @@ public class LayoutManagerRenderer
 			}
     	});
     	
-
     	VerticalLayout layout = new VerticalLayout();
     	VerticalLayout createNewLayout = new VerticalLayout();
     	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
@@ -95,7 +94,7 @@ public class LayoutManagerRenderer
     	Tab tab1 = layoutManagerTab.addTab(layoutTypes,"Layout Type",null);
     	Tab tab2 = layoutManagerTab.addTab(layout,"Layout",null);
     	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
-	
+    	
 //    	Button createPageButton = new Button("Create new page");
 //    	createPageButton.addListener(this); // react to clicks
 
@@ -273,9 +272,7 @@ public class LayoutManagerRenderer
 				if (!footer.booleanValue()){
 					layoutBuilder.removeFooter();
 				}	
-				
-				
-				
+	
 //				String selectedValue = (String)mainBodySplit.getValue();
 //				layoutBuilder.addNewBodyRow(selectedValue);
 

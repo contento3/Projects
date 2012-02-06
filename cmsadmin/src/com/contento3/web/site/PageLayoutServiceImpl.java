@@ -7,13 +7,13 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 
-public class PageListRefreshListener implements RefreshListener{
+public class PageLayoutServiceImpl implements RefreshListener{
 
 	private IndexedContainer container;
 	private PageDto pageDtoWithLayout;
 	private boolean flag;
 	
-	public PageListRefreshListener(final IndexedContainer container,final PageDto pageDtoWithLayout,final boolean flag){
+	public PageLayoutServiceImpl(final IndexedContainer container,final PageDto pageDtoWithLayout,final boolean flag){
 		this.container = container;
 		this.pageDtoWithLayout = pageDtoWithLayout;
 		this.flag = flag;
