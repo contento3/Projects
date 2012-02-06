@@ -13,6 +13,7 @@ import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.service.PageLayoutAssembler;
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.page.service.PageService;
+import com.contento3.cms.site.structure.service.SiteAssembler;
 import com.contento3.cms.site.structure.service.SiteService;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -21,7 +22,7 @@ public class PageServiceImpl implements PageService {
 	private static final Logger LOGGER = Logger.getLogger(PageServiceImpl.class);
 
 	private PageDao pageDao;
-	private SiteService siteService;
+	private SiteAssembler siteAssembler;
 	private PageLayoutAssembler pageLayoutAssembler;
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -50,9 +51,9 @@ public class PageServiceImpl implements PageService {
 		return newPageDto;
 	}
 	
-	public PageServiceImpl(final PageDao pageDao,final SiteService siteService,final PageLayoutAssembler pageLayoutAssembler){
+	public PageServiceImpl(final PageDao pageDao,final SiteAssembler siteAssembler,final PageLayoutAssembler pageLayoutAssembler){
 		this.pageDao = pageDao;
-		this.siteService = siteService;
+		this.siteAssembler = siteAssembler;
 		this.pageLayoutAssembler = pageLayoutAssembler;
 	}
 
@@ -74,7 +75,7 @@ public class PageServiceImpl implements PageService {
 		page.setPageId(dto.getPageId());
 		page.setUri(dto.getUri());
 		page.setTitle(dto.getTitle());
-		page.setSite(siteService.dtoToDomain(dto.getSite()));
+		page.setSite(siteAssembler.dtoToDomain(dto.getSite()));
 		
 		if (null!=dto.getPageLayoutDto()){
 			page.setPageLayout(pageLayoutAssembler.dtoToDomainWithPageSections(dto.getPageLayoutDto()));
@@ -87,7 +88,7 @@ public class PageServiceImpl implements PageService {
 		dto.setPageId(domain.getPageId());
 		dto.setUri(domain.getUri());
 		dto.setTitle(domain.getTitle());
-		dto.setSite(siteService.domainToDto(domain.getSite()));
+		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
 		System.out.println("the page is :"+domain.getPageId());
 		dto.setPageLayoutDto(pageLayoutAssembler.domainToDto(domain.getPageLayout()));
 		return dto;

@@ -1,8 +1,7 @@
 package com.contento3.cms.page.template.dto;
 
-import java.io.Serializable;
 
-public class PageTemplateDto implements Serializable {
+public class PageTemplateDto implements Comparable<PageTemplateDto> {
 	private Integer pageId;
 	
 	private Integer templateId;
@@ -53,5 +52,8 @@ public class PageTemplateDto implements Serializable {
 		this.order = order;
 	}
 
-	
+	public int compareTo(final PageTemplateDto pageSection) {
+	    return order.compareTo(pageSection.getOrder());
+	}
+
 }
