@@ -2,20 +2,14 @@ package com.contento3.web.layout;
 
 import java.util.Collection;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
-import org.springframework.util.CollectionUtils;
 
-import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.layout.LayoutBuilder;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.dto.PageLayoutTypeDto;
 import com.contento3.cms.page.layout.service.PageLayoutService;
 import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 import com.contento3.cms.page.section.dto.PageSectionDto;
-import com.contento3.cms.page.service.PageService;
-import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EnitiyAlreadyFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
@@ -25,7 +19,6 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Alignment;
@@ -44,7 +37,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -52,14 +44,9 @@ import com.vaadin.ui.Window;
 
 public class LayoutUIManager implements UIManager {
 	private static final Logger logger = Logger.getLogger(LayoutUIManager.class);
-	private final IndexedContainer container = new IndexedContainer();
-
 
 	public LayoutUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
-		this.parentWindow = parentWindow;
-//		this.layoutService = (SiteService) helper.getBean("layoutService");
-//		this.pageService = (PageService) helper.getBean("pageService");
 	}
 	
 	public void render (){
@@ -89,9 +76,6 @@ public class LayoutUIManager implements UIManager {
     HorizontalSplitPanel horiz;
 	
     private SpringContextHelper helper;
-    private Window parentWindow;
-    private SiteService layoutService;
-	private PageService pageService;
 
 	TabSheet layoutManagerTab;
 	Label layoutHTMLLabel = new Label();
@@ -101,10 +85,7 @@ public class LayoutUIManager implements UIManager {
 	 */
 	@Override
 	public Component render(String command){
-		final PageService pageService = (PageService) helper.getBean("pageService");
-		final Table table = new Table("Layout pages");
-		table.setImmediate(true);
-	//	final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(id);
+		
 		if (null==layoutManagerTab){ 
     	layoutManagerTab = new TabSheet();
     	layoutManagerTab.setHeight("675");
@@ -113,32 +94,6 @@ public class LayoutUIManager implements UIManager {
     	
     	Label layoutTypes = new Label("Layout Type");
     	Label layouts = new Label("Layout");
-    	Label layout2 = new Label("list");
-    	//Get accountId from the session
-
-        WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-
-        HttpSession session = ctx.getHttpSession();
-
-        Integer accountId = (Integer)session.getAttribute("accountId");
-        final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(accountId);
-        if(!CollectionUtils.isEmpty(layoutDtos)){
-        	container.addContainerProperty("Layout Type", String.class, null);
-			container.addContainerProperty("Layout", String.class, null);
-			table.setWidth(100, Sizeable.UNITS_PERCENTAGE);        
-			table.setPageLength(25);
-			Button link = null;
-			for (PageDto page : layoutDtos) {
-				System.out.println("Collection: "+page);
-				//addPageToPageListTable(page, accountId, layoutManagerTab, link);
-				
-        }
-			table.setContainerDataSource(container);
-			layoutManagerTab.addComponent(table);
-		} else {
-			final Label label = new Label("No layout found for this site.");
-			layoutManagerTab.addComponent(label);
-		}
 
         // Add a horizontal SplitPanel for work area and preview area
     	horiz = new HorizontalSplitPanel();
@@ -153,10 +108,11 @@ public class LayoutUIManager implements UIManager {
 		        	horiz.setSplitPosition(35);
 		        else
 					horiz.setSplitPosition(0);
-        	
+		        	
 			}
     	});
     	
+
     	VerticalLayout layout = new VerticalLayout();
     	VerticalLayout createNewLayout = new VerticalLayout();
     	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
@@ -171,12 +127,12 @@ public class LayoutUIManager implements UIManager {
 
     	layout.addComponent(layoutTypes);
     	layout.addComponent(layouts);
-		layout.addComponent(layout2);
+
     	Label createNewLayoutLabel = new Label("Create new layout");
     	createNewLayout.addComponent(createNewLayoutLabel);
     	buildNewLayoutComponent(createNewLayout);
 		}
-		
+	
 		return layoutManagerTab;
 	}
 	

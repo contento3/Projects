@@ -209,8 +209,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         root.setImmediate(true);
        vert.addComponent(mainAndContentSplitter); 
     
-	//Get accountId from the session
-      
         //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
         root.addListener(new ItemClickListener() {
