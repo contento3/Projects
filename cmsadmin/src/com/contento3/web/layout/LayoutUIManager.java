@@ -96,7 +96,6 @@ public class LayoutUIManager implements UIManager {
     private Window parentWindow;
     private SiteService layoutService;
 	private PageService pageService;
-
 	TabSheet layoutManagerTab;
 	Label layoutHTMLLabel = new Label();
 	/**
