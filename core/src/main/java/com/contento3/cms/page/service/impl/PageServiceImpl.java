@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.contento3.cms.page.dao.PageDao;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
+import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.service.PageLayoutAssembler;
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.page.service.PageService;
@@ -110,6 +111,12 @@ public class PageServiceImpl implements PageService {
 			throw new PageNotFoundException();
 		}
 		return 	domainToDto(page);
+	}
+
+	@Override
+	public Collection<PageLayoutDto> getPageByAccountId(Integer accountId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

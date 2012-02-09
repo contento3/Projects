@@ -30,7 +30,7 @@
 	<bean id="pageSectionAssembler" class="com.contento3.cms.page.section.service.impl.PageSectionAssemblerImpl">
 		<constructor-arg ref="pageSectionTypeAssembler" />
 	</bean>
-
+	
 	<bean id="pageLayoutTypeAssembler" class="com.contento3.cms.page.layout.service.impl.PageLayoutTypeAssemblerImpl">
 	</bean>
 

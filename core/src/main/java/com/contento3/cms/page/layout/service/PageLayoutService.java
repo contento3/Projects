@@ -20,6 +20,8 @@ public interface PageLayoutService extends Service<PageLayoutDto> {
 	 * @return
 	 */
 	PageLayoutDto findPageLayoutById(final Integer pageLayoutId);
+	
+	
 
 	
 }
