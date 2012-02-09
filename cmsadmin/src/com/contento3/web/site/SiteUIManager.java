@@ -74,8 +74,7 @@ public class SiteUIManager implements UIManager {
 	private SiteService siteService;
 	private PageService pageService;
 
-	public SiteUIManager(final SpringContextHelper helper,
-			final Window parentWindow) {
+	public SiteUIManager(final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
 		this.parentWindow = parentWindow;
 		this.siteService = (SiteService) contextHelper.getBean("siteService");
@@ -205,10 +204,8 @@ public class SiteUIManager implements UIManager {
 			}
 		});
 		pageLayout.addComponent(horizontalLayout);
-		final PageService pageService = (PageService) contextHelper
-				.getBean("pageService");
-		final Collection<PageDto> pageDtos = pageService
-				.getPageBySiteId(siteId);
+		final PageService pageService = (PageService) contextHelper.getBean("pageService");
+		final Collection<PageDto> pageDtos = pageService.getPageBySiteId(siteId);
 
 		if (!CollectionUtils.isEmpty(pageDtos)) {
 			container.addContainerProperty("Title", String.class, null);

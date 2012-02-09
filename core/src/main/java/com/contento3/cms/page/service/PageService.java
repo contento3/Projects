@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
+import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.model.Page;
 
 /**
@@ -30,12 +31,20 @@ public interface PageService {
 	 */
 	//TODO change it to findPageBySiteId
 	Collection <PageDto> getPageBySiteId(Integer siteId);
+	 Collection <PageLayoutDto> getPageByAccountId(Integer accountId);
+	/**
+	 * 
+	 * @param domains
+	 * @return
+	 */
+	
 
 	/**
 	 * 
 	 * @param domains
 	 * @return
 	 */
+	
 	Collection<PageDto> domainsToDtos(final Collection<Page> domains);
 
 	/**
