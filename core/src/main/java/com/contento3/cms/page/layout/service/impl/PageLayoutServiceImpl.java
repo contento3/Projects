@@ -28,16 +28,19 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 		this.pageSectionAssembler = pageSectionAssembler;
 		this.assembler = assembler;
 	}
+
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public Collection<PageLayoutDto> findPageLayoutByAccount(final Integer accountId){
 		return assembler.domainsToDtos(pageLayoutDao.findPageLayoutByAccount(accountId));
-	}	
+	}
+	
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public PageLayoutDto findPageLayoutById(final Integer pageLayoutId){
 		return assembler.domainToDto(pageLayoutDao.findById(pageLayoutId));
 	}
+
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void create(PageLayoutDto pageLayoutDto){

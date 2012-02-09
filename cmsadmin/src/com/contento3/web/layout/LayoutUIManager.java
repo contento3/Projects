@@ -102,7 +102,6 @@ public class LayoutUIManager implements UIManager {
 	@Override
 	public Component render(String command){
 		final PageService pageService = (PageService) helper.getBean("pageService");
-		final PageLayoutService pageLayoutService = (PageLayoutService) helper.getBean("pageLayoutService");
 		final Table table = new Table("Layout pages");
 		table.setImmediate(true);
 	//	final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(id);
@@ -120,26 +119,25 @@ public class LayoutUIManager implements UIManager {
         WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
 
         HttpSession session = ctx.getHttpSession();
+
         Integer accountId = (Integer)session.getAttribute("accountId");
-        final Collection<PageLayoutDto> layoutDtos = pageLayoutService.findPageLayoutByAccount(accountId);
+        final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(accountId);
         if(!CollectionUtils.isEmpty(layoutDtos)){
-        	container.addContainerProperty("Id", String.class, null);
-        	container.addContainerProperty("Name", String.class, null);
+        	container.addContainerProperty("Layout Type", String.class, null);
+			container.addContainerProperty("Layout", String.class, null);
 			table.setWidth(100, Sizeable.UNITS_PERCENTAGE);        
 			table.setPageLength(25);
 			Button link = null;
-			table.setContainerDataSource(container);
-			layoutManagerTab.addComponent(table);
-			for (PageLayoutDto page : layoutDtos) {
+			for (PageDto page : layoutDtos) {
 				System.out.println("Collection: "+page);
-				addPageToPageListTable(page, accountId, layoutManagerTab, link);
+				//addPageToPageListTable(page, accountId, layoutManagerTab, link);
 				
         }
-			
+			table.setContainerDataSource(container);
+			layoutManagerTab.addComponent(table);
 		} else {
 			final Label label = new Label("No layout found for this site.");
 			layoutManagerTab.addComponent(label);
-			
 		}
 
         // Add a horizontal SplitPanel for work area and preview area
@@ -182,15 +180,6 @@ public class LayoutUIManager implements UIManager {
 		return layoutManagerTab;
 	}
 	
-	private void addPageToPageListTable(PageLayoutDto page, Integer accountId,
-			TabSheet layoutManagerTab2, Button link) {
-		// TODO Auto-generated method stub
-		Item item = container.addItem(page.getId());
-		item.getItemProperty("Id").setValue(page.getId());
-		item.getItemProperty("Name").setValue(page.getName());
-		
-	}
-
 	ComboBox pageLeftSectionCombo;
 	FormLayout pageLeftSectionWidthLayout;
     private void buildNewLayoutComponent(VerticalLayout verticalLayout){
