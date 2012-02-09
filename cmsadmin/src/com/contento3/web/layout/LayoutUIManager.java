@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.LayoutBuilder;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.dto.PageLayoutTypeDto;
@@ -15,6 +16,7 @@ import com.contento3.cms.page.layout.service.PageLayoutService;
 import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 import com.contento3.cms.page.section.dto.PageSectionDto;
 import com.contento3.cms.page.service.PageService;
+import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EnitiyAlreadyFoundException;
 import com.contento3.web.UIManager;
@@ -43,6 +45,7 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TabSheet.Tab;
@@ -53,6 +56,7 @@ import com.vaadin.ui.Window;
 public class LayoutUIManager implements UIManager {
 	private static final Logger logger = Logger.getLogger(LayoutUIManager.class);
 	private final IndexedContainer container = new IndexedContainer();
+	PageLayoutService pageLayoutService;
 
 
 	public LayoutUIManager(final SpringContextHelper helper,final Window parentWindow){
@@ -102,7 +106,7 @@ public class LayoutUIManager implements UIManager {
 	@Override
 	public Component render(String command){
 		final PageService pageService = (PageService) helper.getBean("pageService");
-		final PageLayoutService pageLayoutService = (PageLayoutService) helper.getBean("pageLayoutService");
+		pageLayoutService = (PageLayoutService) helper.getBean("pageLayoutService");
 		final Table table = new Table("Layout pages");
 		table.setImmediate(true);
 	//	final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(id);
@@ -118,13 +122,13 @@ public class LayoutUIManager implements UIManager {
     	//Get accountId from the session
 
         WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-
+       
         HttpSession session = ctx.getHttpSession();
         Integer accountId = (Integer)session.getAttribute("accountId");
         final Collection<PageLayoutDto> layoutDtos = pageLayoutService.findPageLayoutByAccount(accountId);
         if(!CollectionUtils.isEmpty(layoutDtos)){
-        	container.addContainerProperty("Id", String.class, null);
         	container.addContainerProperty("Name", String.class, null);
+        	container.addContainerProperty("Edit", Button.class, null);
 			table.setWidth(100, Sizeable.UNITS_PERCENTAGE);        
 			table.setPageLength(25);
 			Button link = null;
@@ -183,13 +187,26 @@ public class LayoutUIManager implements UIManager {
 	}
 	
 	private void addPageToPageListTable(PageLayoutDto page, Integer accountId,
-			TabSheet layoutManagerTab2, Button link) {
+			TabSheet layoutTab, Button link) {
 		// TODO Auto-generated method stub
 		Item item = container.addItem(page.getId());
-		item.getItemProperty("Id").setValue(page.getId());
 		item.getItemProperty("Name").setValue(page.getName());
-		
+		link = new Button();
+
+		link.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				// Get the item identifier from the user-defined data.
+				// Integer pageId = (Integer)event.getButton().getData();
+				
+			}
+		});
+
+		link.setCaption("Edit");
+		link.setData(page.getId());
+		link.addStyleName("link");
+		item.getItemProperty("Edit").setValue(link);
 	}
+	
 
 	ComboBox pageLeftSectionCombo;
 	FormLayout pageLeftSectionWidthLayout;
@@ -587,7 +604,7 @@ public class LayoutUIManager implements UIManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 
 	
 }
