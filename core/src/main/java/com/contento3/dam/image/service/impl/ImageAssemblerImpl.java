@@ -10,6 +10,7 @@ import com.contento3.dam.image.service.ImageAssembler;
 
 public class ImageAssemblerImpl implements ImageAssembler {
 
+	
 	@Override
 	public Image dtoToDomain(ImageDto dto) {
 		Image domain = new Image();

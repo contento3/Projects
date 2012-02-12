@@ -1,9 +1,7 @@
 package com.contento3.web;
 
 import java.util.Collection;
-
 import javax.servlet.http.HttpSession;
-
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
@@ -178,21 +176,24 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         item0.getItemProperty("name").setValue("Sites");
         item0.getItemProperty("id").setValue(new Integer(-1));
 
-        Item item1 = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
-        item1.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
+        Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
+        contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
 
-        Item item2 = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
-        item2.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
+        Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
+        globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
 
-        Item item3 = hwContainer.addItem("Template");
-        item3.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
+        Item template = hwContainer.addItem("Template");
+        template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
 
-        Item item4 = hwContainer.addItem("Modules");
-        item4.getItemProperty("name").setValue(NavigationConstant.MODULES);
+        Item modules = hwContainer.addItem("Modules");
+        modules.getItemProperty("name").setValue(NavigationConstant.MODULES);
 
-        Item item5 = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
-        item5.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
-        
+        Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
+        layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
+
+        Item userMgmtItem = hwContainer.addItem(NavigationConstant.USER_MGMT);
+        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.USER_MGMT);
+
         Item childItem = null;
 
         hLayout.addComponent(root);
@@ -206,7 +207,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         horiz.addComponent(l);
     	l.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 
-        root.setImmediate(true);
+       root.setImmediate(true);
        vert.addComponent(mainAndContentSplitter); 
     
 	//Get accountId from the session
@@ -229,6 +230,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
     	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(Manager.Content,helper,getWindow());
     	    		horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
+        		}
+        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MGMT) || 
+        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MGMT)))){
+    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(Manager.User,helper,getWindow());
+    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
         		}
         		else if (null!=itemSelected && itemSelected.equals("Template")){
     	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(Manager.Template,helper,getWindow());

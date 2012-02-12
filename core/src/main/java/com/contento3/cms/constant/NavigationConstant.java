@@ -10,6 +10,7 @@ public class NavigationConstant {
 	public static final String TEMPLATE = "Template";          
 	public static final String MODULES = "Modules";          
                                                                               
-	public static final String SITES = "Sites";                              
+	public static final String SITES = "Sites";                   
+	public static final String USER_MGMT = "User Management";                              
 	public static final String GLOBAL_CONFIG = "Global Config";              
 }

@@ -28,13 +28,13 @@ public interface SiteService extends Service {
 	 */
 	SiteDto findSiteById(Integer siteId);
 
-	Collection<SiteDto> domainsToDtos(Collection<Site> domains);
-	
-	SiteDto domainToDto(Site domain);
-
-	Site dtoToDomain(SiteDto dto);
-
+	/**
+	 * Finds the site by domains
+	 * @param domain
+	 * @return
+	 */
 	SiteDto findSiteByDomain(String domain);
+	
 	/**
 	 * Update site data into DB
 	 */
