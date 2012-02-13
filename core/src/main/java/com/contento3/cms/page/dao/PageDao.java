@@ -13,6 +13,7 @@ public interface PageDao extends GenericDao<Page,Integer> {
 	 * @param siteId id for a site
 	 * @return
 	 */
+	
 	Collection <Page> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize);
 
 	/**
