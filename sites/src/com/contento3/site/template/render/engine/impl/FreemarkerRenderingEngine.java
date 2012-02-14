@@ -20,6 +20,7 @@ import freemarker.template.TemplateException;
 
 /**
  * This class is used to render requested freemarker template.
+ * This is THE CORE part of page rendering. 
  * @author HAMMAD
  *
  */

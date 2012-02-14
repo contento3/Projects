@@ -18,7 +18,7 @@ import com.contento3.cms.page.section.dto.PageSectionDto;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
@@ -106,7 +106,7 @@ public class LayoutUIManager implements UIManager {
 	public Component render(String command){
 		final PageService pageService = (PageService) helper.getBean("pageService");
 		pageLayoutService = (PageLayoutService) helper.getBean("pageLayoutService");
-		final Table table = new Table("Layout pages");
+		final Table table = new Table("Layout");
 		table.setImmediate(true);
 	//	final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(id);
 		if (null==layoutManagerTab){ 
@@ -115,11 +115,7 @@ public class LayoutUIManager implements UIManager {
     	layoutManagerTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
     	
     	
-    	Label layoutTypes = new Label("Layout Type");
-    	Label layouts = new Label("Layout");
-    	Label layout2 = new Label("list");
     	//Get accountId from the session
-
         WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
        
         HttpSession session = ctx.getHttpSession();
@@ -167,16 +163,11 @@ public class LayoutUIManager implements UIManager {
     	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
         horiz.addComponent(createNewLayout);
 
-    	Tab tab1 = layoutManagerTab.addTab(layoutTypes,"Layout Type",null);
-    	Tab tab2 = layoutManagerTab.addTab(layout,"Layout",null);
     	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
-	
+    	tab3.setClosable(true);
 //    	Button createPageButton = new Button("Create new page");
 //    	createPageButton.addListener(this); // react to clicks
 
-    	layout.addComponent(layoutTypes);
-    	layout.addComponent(layouts);
-		layout.addComponent(layout2);
     	Label createNewLayoutLabel = new Label("Create new layout");
     	createNewLayout.addComponent(createNewLayoutLabel);
     	buildNewLayoutComponent(createNewLayout);
@@ -406,7 +397,7 @@ public class LayoutUIManager implements UIManager {
 
 	    		try {//TODO
 					pageLayoutService.create(layoutDto);
-				} catch (EnitiyAlreadyFoundException e) {
+				} catch (EntityAlreadyFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

@@ -12,7 +12,7 @@ import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateAssembler;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class CategoryServiceImpl implements CategoryService {

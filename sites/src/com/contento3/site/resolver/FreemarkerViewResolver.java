@@ -26,7 +26,7 @@ public class FreemarkerViewResolver extends AbstractView {
 	protected void renderMergedOutputModel(Map arg0, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String requestURI = request.getRequestURI();
-		String[] pageUri = requestURI.split("page");
+		String[] pageUri = requestURI.split("/page/");
 		String pagePath ="";
 		
 		if (requestURI.contains("page/")){

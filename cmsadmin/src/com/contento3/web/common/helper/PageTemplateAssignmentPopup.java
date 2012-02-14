@@ -9,17 +9,22 @@ import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.template.helper.TemplateListingHelper;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -40,7 +45,8 @@ public class PageTemplateAssignmentPopup extends CustomComponent
     PageTemplateService pageTemplateService;
     boolean isModalWindowClosable = true;
     SpringContextHelper helper;
-    public PageTemplateAssignmentPopup(String label, Window main,SpringContextHelper helper) {
+    
+    public PageTemplateAssignmentPopup(final String label,final Window main,final SpringContextHelper helper) {
         mainwindow = main;
         this.helper = helper;
         // The component contains a button that opens the window.
@@ -49,18 +55,17 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         openbutton = new Button("Add template", this,
                                 "openButtonClick");
         layout.addComponent(openbutton);
-        
         setCompositionRoot(layout);
     }
 
     /** Handle the clicks for the two buttons. */
     public void openButtonClick(Button.ClickEvent event) {
         /* Create a new window. */
-        mywindow = new Window("My Dialog");
+        mywindow = new Window("Template page assignment");
         mywindow.setPositionX(200);
         mywindow.setPositionY(100);
 
-        mywindow.setHeight(50,Sizeable.UNITS_PERCENTAGE);
+        mywindow.setHeight(75,Sizeable.UNITS_PERCENTAGE);
         mywindow.setWidth(50,Sizeable.UNITS_PERCENTAGE);
         /* Add the window inside the main window. */
         mainwindow.addWindow(mywindow);
@@ -70,7 +75,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 
         // Create the Accordion.
 		Accordion accordion = new Accordion();
-		
+
 		// Have it take all space available in the layout.
 		accordion.setSizeFull();
 
@@ -95,7 +100,24 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         /* Add components in the window. */
         mywindow.addComponent(accordion);
         closebutton = new Button("Add template", this, "closeButtonClick");
-        mywindow.addComponent(closebutton);
+        
+        final TextField templateOrdrTxtFld = new TextField();
+        templateOrdrTxtFld.setInputPrompt("Order");
+        templateOrdrTxtFld.setColumns(3);
+        templateOrdrTxtFld.setRequired(true);
+        templateOrdrTxtFld.setNullRepresentation("");
+        templateOrdrTxtFld.addValidator(new RegexpValidator("[0-9]+", "Input should be at least 5 characters long."));
+        templateOrdrTxtFld.setValidationVisible(true);
+        templateOrdrTxtFld.setImmediate(true);
+
+        
+        HorizontalLayout horizontal = new HorizontalLayout();
+        horizontal.setSpacing(true);
+        horizontal.addComponent(templateOrdrTxtFld);
+        horizontal.addComponent(closebutton);
+        
+        mywindow.addComponent(horizontal);
+        
         closebutton.addListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -106,12 +128,19 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 				//otherwise nothing is selected or directory is selected.
 				if (templateId>0){
 					dto.setTemplateId(templateId);
+					
+					Object order = templateOrdrTxtFld.getValue();
+					
+					if (null!=order){
+						dto.setOrder(Integer.parseInt((String)order));
+					}
+					
 					pageTemplateService = (PageTemplateService)helper.getBean("pageTemplateService");
 					try {
 						pageTemplateService.create(dto);
 						mainwindow.showNotification("Template associated to page successfully");
 						isModalWindowClosable = true;
-					} catch (EnitiyAlreadyFoundException e) {
+					} catch (EntityAlreadyFoundException e) {
 						LOGGER.warn(String.format("PageTemplate with templateId [%d],pageId [%d], sectionTypeId[%d]",dto.getTemplateId(),dto.getPageId(),dto.getSectionTypeId()));
 						mainwindow.showNotification("Selected template is already associated to the page)",Notification.TYPE_WARNING_MESSAGE);
 						isModalWindowClosable = false;
@@ -127,21 +156,19 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 
 		/* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
-
-
     }
 
     /** Handle Close button click and close the window. */
     public void closeButtonClick(Button.ClickEvent event) {
-    	
+
+        //Paint the page template listing for the page section
+
     	if (!isModalWindowClosable){
         /* Windows are managed by the application object. */
         mainwindow.removeWindow(mywindow);
 
         /* Return to initial state. */
         openbutton.setEnabled(true);
-
-
         
         if (null!=pageTemplateService){
 			PageTemplateDto dto = (PageTemplateDto)mainwindow.getData();
@@ -156,8 +183,6 @@ public class PageTemplateAssignmentPopup extends CustomComponent
     public void windowClose(CloseEvent e) {
         /* Return to initial state. */
         openbutton.setEnabled(true);
-
-
     }
     
 

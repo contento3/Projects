@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.helper.SpringContextHelper;
@@ -110,7 +110,7 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
             imageDto.setAccountDto(accountDto);
             try {//TODO
 				imageService.create(imageDto);
-			} catch (EnitiyAlreadyFoundException e) {
+			} catch (EntityAlreadyFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

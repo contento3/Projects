@@ -62,6 +62,36 @@ implements PageDao {
 		return page;
 	}
 
+	@Override
+	public Page findPageByTitle(final String title){
+		Criteria criteria = this.getSession()
+		.createCriteria(Page.class)
+		.add(Restrictions
+		.eq("title", title));
+		
+		Page page=null;
+		if (!CollectionUtils.isEmpty(criteria.list())){
+			page = (Page)criteria.list().get(0);
+		}	
+		
+		return page;
+	}
+
+	@Override
+	public Page findPageByUri(final String uri){
+		Criteria criteria = this.getSession()
+		.createCriteria(Page.class)
+		.add(Restrictions
+		.eq("uri", uri));
+		
+		Page page=null;
+		if (!CollectionUtils.isEmpty(criteria.list())){
+			page = (Page)criteria.list().get(0);
+		}	
+		
+		return page;
+	}
+
 	public Long findTotalPagesForSite(Integer siteId){
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)

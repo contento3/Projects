@@ -5,4 +5,7 @@ import com.contento3.site.template.dto.TemplateContentDto;
 
 public interface Assembler {
 	TemplateContentDto assemble(Integer siteId,String path) throws PageNotFoundException;
+
+	TemplateContentDto assembleInclude(Integer siteId, String path)
+			throws PageNotFoundException;
 }
