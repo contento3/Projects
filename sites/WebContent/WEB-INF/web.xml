@@ -16,7 +16,19 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+<!-- 
+  <servlet>
+        <servlet-name>articlefeed</servlet-name>
+        <servlet-class>com.contento3.site.controller.ArticleServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>articlefeed</servlet-name>
+        <url-pattern>/ingestData/article/*</url-pattern>
+  </servlet-mapping>
+
+--> 
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

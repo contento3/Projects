@@ -7,8 +7,6 @@ import com.contento3.dam.image.model.Image;
 
 public interface ImageDao extends GenericDao<Image,Integer>{
 
-	Collection<Image> findByAccountId(Integer accountId);
-
 	/**
 	 * Returns a {@link java.util.Collection} of image for an account
 	 * @param accountId

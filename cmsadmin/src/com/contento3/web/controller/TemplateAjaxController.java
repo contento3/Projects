@@ -14,7 +14,7 @@ import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.dto.TemplateTypeDto;
 import com.contento3.cms.page.template.service.TemplateService;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 @Controller
 public class TemplateAjaxController {
@@ -64,7 +64,7 @@ public class TemplateAjaxController {
     	else {
         	try {
 				templateService.create(templateDto);
-			} catch (EnitiyAlreadyFoundException e) {
+			} catch (EntityAlreadyFoundException e) {
 				LOGGER.error(String.format("Error occured. Template with name [%s] cannot be created ", templateDto.getTemplateName()),e);
 			}
     	}

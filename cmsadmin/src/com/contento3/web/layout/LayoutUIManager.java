@@ -2,6 +2,9 @@ package com.contento3.web.layout;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import com.contento3.cms.page.layout.LayoutBuilder;
@@ -10,7 +13,8 @@ import com.contento3.cms.page.layout.dto.PageLayoutTypeDto;
 import com.contento3.cms.page.layout.service.PageLayoutService;
 import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 import com.contento3.cms.page.section.dto.PageSectionDto;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.cms.page.service.PageService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
@@ -19,6 +23,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Alignment;
@@ -38,6 +43,7 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -85,15 +91,42 @@ public class LayoutUIManager implements UIManager {
 	 */
 	@Override
 	public Component render(String command){
-		
+		final PageService pageService = (PageService) helper.getBean("pageService");
+		pageLayoutService = (PageLayoutService) helper.getBean("pageLayoutService");
+		final Table table = new Table("Layout");
+		table.setImmediate(true);
+	//	final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(id);
 		if (null==layoutManagerTab){ 
     	layoutManagerTab = new TabSheet();
     	layoutManagerTab.setHeight("675");
     	layoutManagerTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
     	
     	
-    	Label layoutTypes = new Label("Layout Type");
-    	Label layouts = new Label("Layout");
+    	//Get accountId from the session
+        WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
+       
+        HttpSession session = ctx.getHttpSession();
+        Integer accountId = (Integer)session.getAttribute("accountId");
+        final Collection<PageLayoutDto> layoutDtos = pageLayoutService.findPageLayoutByAccount(accountId);
+        if(!CollectionUtils.isEmpty(layoutDtos)){
+        	container.addContainerProperty("Name", String.class, null);
+        	container.addContainerProperty("Edit", Button.class, null);
+			table.setWidth(100, Sizeable.UNITS_PERCENTAGE);        
+			table.setPageLength(25);
+			Button link = null;
+			table.setContainerDataSource(container);
+			layoutManagerTab.addComponent(table);
+			for (PageLayoutDto page : layoutDtos) {
+				System.out.println("Collection: "+page);
+				addPageToPageListTable(page, accountId, layoutManagerTab, link);
+				
+        }
+			
+		} else {
+			final Label label = new Label("No layout found for this site.");
+			layoutManagerTab.addComponent(label);
+			
+		}
 
         // Add a horizontal SplitPanel for work area and preview area
     	horiz = new HorizontalSplitPanel();
@@ -118,15 +151,10 @@ public class LayoutUIManager implements UIManager {
     	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
         horiz.addComponent(createNewLayout);
 
-    	Tab tab1 = layoutManagerTab.addTab(layoutTypes,"Layout Type",null);
-    	Tab tab2 = layoutManagerTab.addTab(layout,"Layout",null);
     	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
-	
+    	tab3.setClosable(true);
 //    	Button createPageButton = new Button("Create new page");
 //    	createPageButton.addListener(this); // react to clicks
-
-    	layout.addComponent(layoutTypes);
-    	layout.addComponent(layouts);
 
     	Label createNewLayoutLabel = new Label("Create new layout");
     	createNewLayout.addComponent(createNewLayoutLabel);
@@ -335,7 +363,7 @@ public class LayoutUIManager implements UIManager {
 
 	    		try {//TODO
 					pageLayoutService.create(layoutDto);
-				} catch (EnitiyAlreadyFoundException e) {
+				} catch (EntityAlreadyFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

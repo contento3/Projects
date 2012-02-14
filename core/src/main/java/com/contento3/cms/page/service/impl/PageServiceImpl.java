@@ -2,6 +2,8 @@ package com.contento3.cms.page.service.impl;
 
 import java.util.Collection;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

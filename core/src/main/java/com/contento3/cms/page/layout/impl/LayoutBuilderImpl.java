@@ -90,9 +90,9 @@ public class LayoutBuilderImpl implements LayoutBuilder  {
     	appendDependencies(headTag);
     	Element bodyTag = doc.createElement("body");
     	
-    	doc.appendChild(htmlTag);
     	htmlTag.appendChild(headTag);
     	htmlTag.appendChild(bodyTag);
+    	doc.appendChild(htmlTag);
     	
     	Element bodyMainDivTag = doc.createElement("div");
     	
@@ -459,7 +459,12 @@ public class LayoutBuilderImpl implements LayoutBuilder  {
 	    		bodySection.setTemplateMarkup(html.substring(html.indexOf("<div id=\"bd\">")));
 	    	}
 	    	else {
-	    		bodySection.setTemplateMarkup(html.substring(html.indexOf("<div id=\"bd\">"), html.indexOf("<div id=\"ft\">")));	
+	    		if (html.indexOf("<div id=\"ft\">")!=-1){
+	    			bodySection.setTemplateMarkup(html.substring(html.indexOf("<div id=\"bd\">"), html.indexOf("<div id=\"ft\">")));
+	    		}
+	    		else {
+	    			bodySection.setTemplateMarkup(html.substring(html.indexOf("<div id=\"bd\">"), html.indexOf("</body>")));
+	    		}
 	    	}
     		pageSectionDtoList.add(bodySection);
     	}

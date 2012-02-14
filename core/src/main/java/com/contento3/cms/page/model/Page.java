@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.layout.model.PageLayout;
 import com.contento3.cms.page.template.model.TemplateDirectory;
