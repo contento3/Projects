@@ -5,6 +5,7 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.layout.LayoutUIManager;
 import com.contento3.web.site.SiteUIManager;
 import com.contento3.web.template.TemplateUIManager;
+import com.contento3.web.user.security.UserUIManager;
 import com.vaadin.ui.Window;
 
 public class UIManagerCreator {
@@ -23,6 +24,9 @@ public class UIManagerCreator {
 		}
 		else if (manager.equals(Manager.Template)){
 		 	uiMgr = new TemplateUIManager(helper,parentWindow);
+		}
+		else if (manager.equals(Manager.User)){
+		 	uiMgr = new UserUIManager(helper,parentWindow);
 		}
 	
 		return uiMgr;

@@ -16,6 +16,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import ptv.norway.content.pull.log.model.ContentStatusLog;
+
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.layout.model.PageLayout;
 import com.contento3.cms.page.template.model.TemplateDirectory;
@@ -207,4 +211,40 @@ public class Page implements Serializable {
 	public void setPageLayout(final PageLayout pageLayout) {
 		this.pageLayout = pageLayout;
 	}
+	
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder(23,31)
+                  .append(this.pageId)
+                  .append(this.title)
+                  .append(this.uri)
+                  .toHashCode();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+      boolean isEqual;
+      
+      if(obj == null) {
+        isEqual = false;
+      } else if(this == obj) {
+    	  isEqual = true;
+      } else if(obj instanceof Page) {
+    	  final Page page = (Page)obj;
+    	  isEqual = true;//PTVHelper.equalsSafe(this.id, log.id);
+      } else {
+        isEqual = false;
+      }
+      return isEqual;
+    }
+
+
 }

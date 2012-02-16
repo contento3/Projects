@@ -10,6 +10,7 @@ import org.springframework.security.authentication.dao.SaltSource;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 
@@ -61,4 +62,6 @@ public class CustomJdbcDaoImpl extends JdbcDaoImpl implements IChangePassword {
             }
         });
 	}
+	
+	
 }

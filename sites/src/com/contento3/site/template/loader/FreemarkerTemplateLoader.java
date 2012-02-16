@@ -66,10 +66,9 @@ public class FreemarkerTemplateLoader implements TemplateLoader {
 		// We can safely ignore the pathSplitter 
 		// and then try splitting by '_'
 		else {
-			pathSplitter = path.split("_");
 			try {
-				dto = new TemplateContentDto();
-				dto.setContent(templateService.findTemplateByPathAndSiteId(pathSplitter[0],siteId).getTemplateText());
+				pathSplitter = path.split("_");
+				dto = pageAssembler.assembleInclude(siteId, pathSplitter[0]);
 			} catch (Exception e) {
 				throw new IOException(String.format("Requested template [%s] not found",path),e);
 			}

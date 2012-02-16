@@ -48,6 +48,12 @@
 		<property name="pageService" ref="pageService" />
 		<property name="pageTemplateService" ref="pageTemplateService" />
 		<property name="templateService" ref="templateService" />
+		<property name="htmlResolver" ref="htmlResolver" />
+</bean>
+
+
+<bean id="htmlResolver" class="com.contento3.site.page.section.resolver.impl.YuiHtmlResolver">
+	<property name="templateService" ref="templateService" />
 </bean>
 
 <bean id="fmTemplateLoader" class="com.contento3.site.template.loader.FreemarkerTemplateLoader">
