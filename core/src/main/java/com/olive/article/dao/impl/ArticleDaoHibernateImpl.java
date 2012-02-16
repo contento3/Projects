@@ -54,7 +54,7 @@ public class ArticleDaoHibernateImpl  implements ArticleDao{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
 	public Collection<Article> findByExample(Article exampleInstance) {
 		// TODO Auto-generated method stub
@@ -89,6 +89,9 @@ public class ArticleDaoHibernateImpl  implements ArticleDao{
 	public Article findBySiteId(String siteId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public void findLatestArticles(Integer count){
+		
 	}
 
 }
