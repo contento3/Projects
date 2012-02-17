@@ -24,13 +24,12 @@ implements GroupDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Group> findByGroupName(String GroupName)
+	public Collection<Group> findByGroupName(String groupName)
 	{
 		Criteria criteria = this.getSession()
 		.createCriteria(Group.class)
-		.addOrder(Order.desc("name"))
 		.add(Restrictions
-		.eq("name.group_name", GroupName));
+		.eq("name", groupName));
 		return criteria.list();
 		
 	}
