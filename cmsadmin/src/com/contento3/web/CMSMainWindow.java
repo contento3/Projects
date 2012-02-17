@@ -1,9 +1,7 @@
 package com.contento3.web;
 
 import java.util.Collection;
-
 import javax.servlet.http.HttpSession;
-
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
