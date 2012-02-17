@@ -1,8 +1,11 @@
 package com.contento3.cms.site.structure.dto;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
+import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
+import com.contento3.cms.site.structure.domain.model.SiteDomain;
 
 public class SiteDto implements Serializable {
 
@@ -34,6 +37,18 @@ public class SiteDto implements Serializable {
 	 */
 	private Integer defaultLayoutId;
 	
+	/**
+	 * sitedomains for site
+	 */
+	private Collection<SiteDomainDto> siteDomainDto;
+	
+	
+	public Collection<SiteDomainDto> getSiteDomainDto() {
+		return siteDomainDto;
+	}
+	public void setSiteDomainDto(Collection<SiteDomainDto> siteDomainDto) {
+		this.siteDomainDto = siteDomainDto;
+	}
 	public Integer getDefaultLayoutId() {
 		return defaultLayoutId;
 	}

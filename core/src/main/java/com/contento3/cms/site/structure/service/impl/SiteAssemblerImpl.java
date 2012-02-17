@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.account.service.AccountAssembler;
+import com.contento3.cms.site.structure.domain.service.SiteDomainAssembler;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteAssembler;
@@ -19,9 +20,11 @@ public class SiteAssemblerImpl implements SiteAssembler {
 	 * Transform Account to AccountDto and vice versa.
 	 */
 	private AccountAssembler accountAssembler;
+	private SiteDomainAssembler siteDomainAssembler;
 	
-	public SiteAssemblerImpl(final AccountAssembler accountAssembler){
+	public SiteAssemblerImpl(final AccountAssembler accountAssembler,final SiteDomainAssembler siteDomainAssembler ){
 		this.accountAssembler = accountAssembler;
+		this.siteDomainAssembler = siteDomainAssembler;
 	}
 	
 	@Override
@@ -32,6 +35,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		site.setUrl(dto.getUrl());
 		site.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		site.setDafaultLayoutId(dto.getDefaultLayoutId());
+		site.setSiteDomain(siteDomainAssembler.dtosToDomains(dto.getSiteDomainDto()));
 		return site;
 	}
 
@@ -43,6 +47,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		dto.setSiteId(domain.getSiteId());
 		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setDefaultLayoutId(domain.getDafaultLayoutId());
+		dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
 		return dto;
 	}
 

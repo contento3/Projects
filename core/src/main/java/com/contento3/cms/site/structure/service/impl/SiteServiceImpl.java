@@ -34,7 +34,8 @@ public class SiteServiceImpl implements SiteService {
 	public void update(SiteDto siteDto){
 		siteDao.update(siteAssembler.dtoToDomain(siteDto));
 	}
-
+	
+	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public SiteDto findSiteById(Integer siteId){

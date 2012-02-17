@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
@@ -19,7 +20,11 @@ import com.contento3.cms.page.section.service.PageSectionTypeService;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
+import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
+import com.contento3.cms.site.structure.domain.model.SiteDomain;
+import com.contento3.cms.site.structure.domain.service.SiteDomainService;
 import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
@@ -29,15 +34,18 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
@@ -47,6 +55,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 
 import java.util.Collections;
 
@@ -65,6 +74,7 @@ public class SiteUIManager implements UIManager {
 	public static final String NEWPAGE = "newpage";
 	private SpringContextHelper contextHelper;
 	private final IndexedContainer container = new IndexedContainer();
+	private final IndexedContainer domainsContainer = new IndexedContainer();
 	private PageDto newPageDtoWithLayout;
 	private Window parentWindow;
 
@@ -73,6 +83,9 @@ public class SiteUIManager implements UIManager {
 
 	private SiteService siteService;
 	private PageService pageService;
+	private Integer siteid;
+	private  Collection <SiteDomainDto> siteDomainDto;
+	
 
 	public SiteUIManager(final SpringContextHelper helper,
 			final Window parentWindow) {
@@ -265,24 +278,78 @@ public class SiteUIManager implements UIManager {
 
 	private void renderSiteConfig(final Integer siteId,
 			final TabSheet tabSheet, final Integer pageId) {
-
+		
+		this.siteid = siteId;
 		final SiteDto siteDto = siteService.findSiteById(siteId);
+		siteDomainDto = siteDto.getSiteDomainDto();
 		VerticalLayout verticalLayout = new VerticalLayout();
-		final FormLayout newPageFormLayout = new FormLayout();
-		verticalLayout.addComponent(newPageFormLayout);
-
+		final FormLayout configSiteFormLayout = new FormLayout();
+		verticalLayout.addComponent(configSiteFormLayout);
+		
 		final String siteNameTxt = siteDto.getSiteName();
-		Label siteNameLabel = new Label("Site Name: " + "<b>" + siteNameTxt + "</b>");
+		Label siteNameLabel = new Label("Site Name: " + "<b>" + siteNameTxt
+				+ "</b>");
 		siteNameLabel.setContentMode(Label.CONTENT_XML);
+		configSiteFormLayout.addComponent(siteNameLabel);
+
+		final Table domainsTable = new Table();
+		//adding rows in Domains Table from DB
+		if (!CollectionUtils.isEmpty(siteDto.getSiteDomainDto())) {
+			
+			domainsContainer.addContainerProperty("Domains", String.class, null);
+			domainsContainer.addContainerProperty("Delete", Button.class, null);
+
+			for (SiteDomainDto domain : siteDto.getSiteDomainDto()) {
+				Button delete = new Button();
+				addDomainsListTable(domain, domainsTable, delete, siteId);
+			}
+
+			domainsTable.setContainerDataSource(domainsContainer);
+			domainsTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+			domainsTable.setPageLength(5);
+			configSiteFormLayout.addComponent(domainsTable);
+		} else {
+			final Label label = new Label("No domains found for this site.");
+			configSiteFormLayout.addComponent(label);
+		}
 		
-		final TextField domainTxt = new TextField();
-		domainTxt.setCaption("Domain"); 
+		HorizontalLayout horizLayout = new HorizontalLayout();
 		
-		newPageFormLayout.addComponent(siteNameLabel);
-		newPageFormLayout.addComponent(domainTxt);
+		final Button editButton = new Button();
+		final Button addDomainButton = new Button();
+		String saveButtonTitle = "Save";
+		final Button siteSaveButton = new Button(saveButtonTitle);
+		
+		editButton.setCaption("Edit");
+		editButton.addStyleName("edit");
+		editButton.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+
+				domainsTable.setEditable(!domainsTable.isEditable());
+				editButton.setCaption((domainsTable.isEditable() ? "Done"
+						: "Edit"));
+				if(editButton.getCaption().equals("Done")){
+					addDomainButton.setEnabled(false);
+				}
+				else{
+					addDomainButton.setEnabled(true);
+					parentWindow.showNotification(String.format(
+							"Domains have been changed successfully"));
+				}
+				
+			}
+		});
+		
+		addDomainButton.setCaption("Add");
+		addDomainButton.addStyleName("add");
+		 
+		horizLayout.addComponent(addDomainButton);
+		
+		horizLayout.addComponent(editButton);
+		configSiteFormLayout.addComponent(horizLayout);
 
 		String pageTabTitle = "Site Config: [" + siteNameTxt + "]";
-		String saveButtonTitle = "Save";
+		
 		Tab newPageTab = tabSheet.addTab(verticalLayout, pageTabTitle, null);
 		tabSheet.setSelectedTab(verticalLayout);
 		newPageTab.setVisible(true);
@@ -290,6 +357,7 @@ public class SiteUIManager implements UIManager {
 		newPageTab.setClosable(true);
 
 		// List box to select Page layouts
+		
 		final PageLayoutService pageLayoutService = (PageLayoutService) contextHelper
 				.getBean("pageLayoutService");
 
@@ -297,40 +365,224 @@ public class SiteUIManager implements UIManager {
 				.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
 		final ComboBox pageLayoutCombo = new ComboBox("Select Page Layouts",
 				getPageLayouts(pageLayoutDto));
-
-		Button siteSaveButton = new Button(saveButtonTitle);
-		newPageFormLayout.addComponent(pageLayoutCombo);
-		newPageFormLayout.addComponent(siteSaveButton);
+		HorizontalLayout horiz = new HorizontalLayout();
+		horiz.addComponent(pageLayoutCombo);
+		configSiteFormLayout.addComponent(horiz);
+		configSiteFormLayout.addComponent(siteSaveButton);
 		pageLayoutCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 		pageLayoutCombo.setValue(siteDto.getDefaultLayoutId());
-
-		siteSaveButton.addListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-			AccountDto accountDto = siteDto.getAccountDto();
+		
+		/* addDomainButton Listener*/
+		addDomainButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				if (null != pageLayoutCombo.getValue()) {
-					siteDto.setSiteId(siteId);
-					siteDto.setSiteName(siteNameTxt);
-					siteDto.setUrl(siteDto.getUrl());
-					siteDto.setAccountDto(accountDto);
-					siteDto.setDefaultLayoutId(	pageLayoutService
-							.findPageLayoutById(Integer
-									.parseInt(pageLayoutCombo.getValue()
-											.toString()))
-												.getId());
-					
-					siteService.update(siteDto);
-					
-					
-				}//end if
-			}//end buttonClick
+				int index=-1;
+				final SiteDto siteDto = siteService.findSiteById(siteId);
+				siteDomainDto = siteDto.getSiteDomainDto();
+				final Button deleteLink = new Button();
+				domainsTable.setEditable(!domainsTable.isEditable());
+				
+				addDomainButton.setCaption((domainsTable.isEditable() ? "Done"
+						: "Add"));
+				
 
-		});//end siteSaveButton listener
+				if(addDomainButton.getCaption().equals("Add")){
 
+					editButton.setEnabled(true);
+					String domainName = (String) domainsTable
+							.getContainerProperty(index, "Domains").getValue();
+					SiteDomainDto domaindto = new SiteDomainDto();
+					domaindto.setDomainId(null);
+					domaindto.setDomainName(domainName);
+					siteDomainDto.add(domaindto);
+					saveSiteDto(siteDto,siteDomainDto, domainsTable, pageLayoutService, pageLayoutCombo, siteNameTxt);
+					parentWindow.showNotification(String.format(
+							"Domain %s added successfullly",
+								domainName));
+					
+				}
+				else {
+
+					final Item item = domainsContainer.addItem(index);
+					item.getItemProperty("Domains")
+							.setValue("Enter new domain");
+					deleteLink.setCaption("Delete");
+					deleteLink.setData(index);
+					deleteLink.addStyleName("delete");
+					deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+					item.getItemProperty("Delete").setValue(deleteLink);
+					editButton.setEnabled(false);
+					deleteLink.addListener(new Button.ClickListener() {
+						public void buttonClick(ClickEvent event) {
+
+							SiteDomainService siteDomainService = (SiteDomainService) contextHelper
+									.getBean("siteDomainService");
+
+							Object id = deleteLink.getData();
+							String domainName = (String) domainsTable
+									.getContainerProperty(id, "Domains")
+									.getValue();
+
+							Iterator<SiteDomainDto> itr = siteDomainDto
+									.iterator();
+							while (itr.hasNext()) {
+								SiteDomainDto dto = itr.next();
+								if (dto.getDomainName().equals(domainName)) {
+									System.out.println(dto.getDomainId());
+									itr.remove();
+									siteDomainService.delete(dto);
+									domainsTable.removeItem(id);
+									break;
+								}
+							}//end while()
+							parentWindow.showNotification(String.format(
+									"Domain %s deleted successfullly",
+										domainName));
+						}
+					}); //end deleteLink listener
+
+				}//end else
+			}
+		});//end addDomainButton listener
+		
+		/* siteSaveButton Listener*/
+		siteSaveButton.addListener(new ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			public void buttonClick(ClickEvent event) {
+				
+				saveSiteDto(siteDto,siteDomainDto, domainsTable, pageLayoutService, pageLayoutCombo, siteNameTxt);
+				parentWindow.showNotification(String.format(
+						"SiteConfig for %s saved successfullly",
+								siteNameTxt));
+				
+			}// end buttonClick
+
+		});// end siteSaveButton listener
+		
+	}// end renderSiteConfig()
+	
+	/**
+	 * save siteDto into DB
+	 * 
+	 * @param siteDto
+	 * @param siteDomainDto
+	 * @param domainsTable
+	 * @param pageLayoutService
+	 * @param pageLayoutCombo
+	 * @param siteNameTxt
+	 */
+	
+	private void saveSiteDto(final SiteDto siteDto,final Collection<SiteDomainDto> siteDomainDto, final Table domainsTable,final PageLayoutService pageLayoutService,
+			final ComboBox pageLayoutCombo, final String siteNameTxt) {
+		
+		Integer siteId=this.siteid;
+		//collSiteDomainDto siteDomaindto =siteDomainDto;
+		final AccountDto accountDto = siteDto.getAccountDto();
+		Iterator<SiteDomainDto> itr= siteDomainDto.iterator();
+		for (Iterator i = domainsTable.getItemIds().iterator(); i.hasNext();) {
+
+			int iid = (Integer) i.next();
+			Item item = domainsTable.getItem(iid);
+			SiteDomainDto domain = (SiteDomainDto)itr.next();
+			domain.setDomainName(item.getItemProperty("Domains").getValue()
+					.toString());
+
+		}
+
+		if (null != pageLayoutCombo.getValue()) {
+			siteDto.setSiteId(siteId);
+			siteDto.setSiteName(siteNameTxt);
+			siteDto.setUrl(siteDto.getUrl());
+			siteDto.setAccountDto(accountDto);
+			siteDto.setSiteDomainDto(siteDomainDto);
+			siteDto.setDefaultLayoutId(pageLayoutService
+					.findPageLayoutById(
+							Integer.parseInt(pageLayoutCombo.getValue()
+									.toString())).getId());
+			siteService.update(siteDto);
+			
+
+	/*
+	 * delete row which has id=-1 and
+	 *  re insert previously deleted row into Table by getting its new id from DB
+	 */		
+			Object id=-1;
+			Item item = domainsTable.getItem(id);
+			if(item!=null){
+				String domainName = (String) domainsTable.getContainerProperty(id,
+						"Domains").getValue();
+
+				SiteDomainService siteDomainService = (SiteDomainService) contextHelper
+						.getBean("siteDomainService");
+				SiteDomainDto dto = siteDomainService
+						.findSiteDomainByName(domainName);
+
+				if (dto.getDomainName().equals(domainName)) {
+					final Button deleteLink = new Button();
+					addDomainsListTable(dto, domainsTable, deleteLink, siteId);
+					domainsTable.removeItem(id);
+				}
+			}
+
+		}// end if
+
+	}//end saveSiteDto
+	
+	
+
+	/**
+	 * Used to add domain name in container
+	 * and delete rows from table
+	 * @param domain
+	 * @param table
+	 * @param deleteLink
+	 * @param siteId 
+	 */
+	private void addDomainsListTable(final SiteDomainDto domain,
+			final Table table,final  Button deleteLink,final Integer siteId) {
+		
+		final Item item = domainsContainer.addItem(domain.getDomainId());
+		item.getItemProperty("Domains").setValue(domain.getDomainName());
+		
+		deleteLink.setCaption("Delete");
+		deleteLink.setData(domain.getDomainId());
+		deleteLink.addStyleName("delete");
+		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+		item.getItemProperty("Delete").setValue(deleteLink);
 		
 		
-	}//end renderSiteConfig()
+		deleteLink.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+			
+				final SiteDto siteDto = siteService.findSiteById(siteId);
+				siteDomainDto = siteDto.getSiteDomainDto();
+				SiteDomainService siteDomainService = (SiteDomainService) contextHelper
+						.getBean("siteDomainService");
+				
+				Object id = deleteLink.getData();
+				String domainName = (String) table.getContainerProperty(id,
+						"Domains").getValue();
+				
+				Iterator<SiteDomainDto> itr = siteDomainDto.iterator();
+				while(itr.hasNext()){
+					SiteDomainDto dto = itr.next();
+					if(dto.getDomainName().equals(domainName)){
+						System.out.println(dto.getDomainId());
+						itr.remove();
+						siteDomainService.delete(dto);
+						table.removeItem(id);
+						break;
+					}
+				}
+				
+			}
+		});
+	
+	}
+	
+	
 
 	/**
 	 * Used to render a tab to create a new page.This includes selecting layout

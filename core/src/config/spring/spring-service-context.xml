@@ -10,35 +10,45 @@
 	<bean id="accountAssembler" class="com.contento3.account.service.impl.AccountAssemblerImpl">
 	</bean>
 
-	<bean id="siteAssembler" class="com.contento3.cms.site.structure.service.impl.SiteAssemblerImpl">
+	<bean id="siteAssembler"
+		class="com.contento3.cms.site.structure.service.impl.SiteAssemblerImpl">
 		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="siteDomainAssembler" />
 	</bean>
 
-	<bean id="templateDirectoryAssembler" class="com.contento3.cms.page.template.service.impl.TemplateDirectoryAssemblerImpl">
+	<bean id="templateDirectoryAssembler"
+		class="com.contento3.cms.page.template.service.impl.TemplateDirectoryAssemblerImpl">
 	</bean>
 
-	<bean id="templateTypeAssembler" class="com.contento3.cms.page.template.service.impl.TemplateTypeAssemblerImpl">
+	<bean id="templateTypeAssembler"
+		class="com.contento3.cms.page.template.service.impl.TemplateTypeAssemblerImpl">
 	</bean>
 
-	<bean id="templateAssembler" class="com.contento3.cms.page.template.service.impl.TemplateAssemblerImpl">
+	<bean id="templateAssembler"
+		class="com.contento3.cms.page.template.service.impl.TemplateAssemblerImpl">
 		<constructor-arg ref="templateTypeAssembler" />
 		<constructor-arg ref="templateDirectoryAssembler" />
 	</bean>
 
-	<bean id="pageTemplateAssembler" class="com.contento3.cms.page.template.service.impl.PageTemplateAssemblerImpl">
+	<bean id="pageTemplateAssembler"
+		class="com.contento3.cms.page.template.service.impl.PageTemplateAssemblerImpl">
 	</bean>
 
-	<bean id="pageSectionTypeAssembler" class="com.contento3.cms.page.section.service.impl.PageSectionTypeAssemblerImpl">
+	<bean id="pageSectionTypeAssembler"
+		class="com.contento3.cms.page.section.service.impl.PageSectionTypeAssemblerImpl">
 	</bean>
 
-	<bean id="pageSectionAssembler" class="com.contento3.cms.page.section.service.impl.PageSectionAssemblerImpl">
+	<bean id="pageSectionAssembler"
+		class="com.contento3.cms.page.section.service.impl.PageSectionAssemblerImpl">
 		<constructor-arg ref="pageSectionTypeAssembler" />
 	</bean>
 
-	<bean id="pageLayoutTypeAssembler" class="com.contento3.cms.page.layout.service.impl.PageLayoutTypeAssemblerImpl">
+	<bean id="pageLayoutTypeAssembler"
+		class="com.contento3.cms.page.layout.service.impl.PageLayoutTypeAssemblerImpl">
 	</bean>
 
-	<bean id="pageLayoutAssembler" class="com.contento3.cms.page.layout.service.impl.PageLayoutAssemblerImpl">
+	<bean id="pageLayoutAssembler"
+		class="com.contento3.cms.page.layout.service.impl.PageLayoutAssemblerImpl">
 		<constructor-arg ref="pageSectionAssembler" />
 		<constructor-arg ref="pageLayoutTypeAssembler" />
 	</bean>
@@ -47,7 +57,8 @@
 	</bean>
 
 
-	<bean id="templateService" class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">
+	<bean id="templateService"
+		class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">
 		<constructor-arg ref="templateAssembler" />
 		<constructor-arg ref="accountDAO" />
 		<constructor-arg ref="templateDAO" />
@@ -56,7 +67,8 @@
 		<constructor-arg ref="siteDAO" />
 	</bean>
 
-	<bean id="pageTemplateService" class="com.contento3.cms.page.template.service.impl.PageTemplateServiceImpl">
+	<bean id="pageTemplateService"
+		class="com.contento3.cms.page.template.service.impl.PageTemplateServiceImpl">
 		<constructor-arg ref="pageTemplateDAO" />
 		<constructor-arg ref="templateDAO" />
 		<constructor-arg ref="pageSectionTypeDAO" />
@@ -64,18 +76,21 @@
 		<constructor-arg ref="pageTemplateAssembler" />
 	</bean>
 
-	<bean id="templateDirectoryService" class="com.contento3.cms.page.template.service.impl.TemplateDirectoryServiceImpl">
+	<bean id="templateDirectoryService"
+		class="com.contento3.cms.page.template.service.impl.TemplateDirectoryServiceImpl">
 		<constructor-arg ref="templateDirectoryAssembler" />
 		<constructor-arg ref="templateDirectoryDAO" />
 	</bean>
 
 
-	<bean id="pageSectionTypeService" class="com.contento3.cms.page.section.service.impl.PageSectionTypeServiceImpl">
+	<bean id="pageSectionTypeService"
+		class="com.contento3.cms.page.section.service.impl.PageSectionTypeServiceImpl">
 		<constructor-arg ref="pageSectionTypeDAO" />
 		<constructor-arg ref="pageSectionTypeAssembler" />
 	</bean>
 
-	<bean id="siteService" class="com.contento3.cms.site.structure.service.impl.SiteServiceImpl">
+	<bean id="siteService"
+		class="com.contento3.cms.site.structure.service.impl.SiteServiceImpl">
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="siteDAO" />
 	</bean>
@@ -86,14 +101,16 @@
 		<constructor-arg ref="pageLayoutAssembler" />
 	</bean>
 
-	<bean id="pageLayoutService" class="com.contento3.cms.page.layout.service.impl.PageLayoutServiceImpl">
+	<bean id="pageLayoutService"
+		class="com.contento3.cms.page.layout.service.impl.PageLayoutServiceImpl">
 		<constructor-arg ref="pageLayoutDAO" />
 		<constructor-arg ref="pageSectionDAO" />
 		<constructor-arg ref="pageLayoutAssembler" />
 		<constructor-arg ref="pageSectionAssembler" />
 	</bean>
 
-	<bean id="pageLayoutTypeService" class="com.contento3.cms.page.layout.service.impl.PageLayoutTypeServiceImpl">
+	<bean id="pageLayoutTypeService"
+		class="com.contento3.cms.page.layout.service.impl.PageLayoutTypeServiceImpl">
 		<constructor-arg ref="pageLayoutTypeDAO" />
 		<constructor-arg ref="pageLayoutTypeAssembler" />
 	</bean>
@@ -112,10 +129,25 @@
 	<bean id="layoutBuilder" class="com.contento3.cms.page.layout.impl.LayoutBuilderImpl">
 		<constructor-arg ref="pageSectionTypeService" />
 	</bean>
-	
-	<bean id="categoryAssembler" class="com.contento3.cms.page.category.service.impl.CategoryAssemblerImpl">
-		
+
+	<bean id="categoryAssembler"
+		class="com.contento3.cms.page.category.service.impl.CategoryAssemblerImpl">
 	</bean>
-	
-	
+
+	<bean id="categoryService"
+		class="com.contento3.cms.page.category.service.impl.CategoryServiceImpl">
+		<constructor-arg ref="categoryAssembler" />
+		<constructor-arg ref="categoryDao" />
+	</bean>
+
+	<bean id="siteDomainAssembler"
+		class="com.contento3.cms.site.structure.domain.service.impl.SiteDomainAssemblerImpl">
+	</bean>
+
+	<bean id="siteDomainService"
+		class="com.contento3.cms.site.structure.domain.service.impl.SiteDomainServiceImpl">
+		<constructor-arg ref="siteDomainAssembler" />
+		<constructor-arg ref="siteDomainDao" />
+	</bean>
+
 </beans>

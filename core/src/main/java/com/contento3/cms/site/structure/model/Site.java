@@ -1,17 +1,22 @@
 package com.contento3.cms.site.structure.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.contento3.account.model.Account;
+import com.contento3.cms.site.structure.domain.model.SiteDomain;
 
 /**
  * A model class that represents a site entity
@@ -57,6 +62,23 @@ public class Site implements Serializable {
 	@Column(name="DEFAULT_LAYOUT_ID")
 	private Integer defaultLayoutId;
 	
+	/**
+	 * siteDomains which site contains
+	 * @return
+	 */
+	@OneToMany(fetch=FetchType.EAGER, cascade={CascadeType.ALL})
+	@JoinColumn(name="SITE_ID",nullable=false)
+	private Collection<SiteDomain> siteDomain;
+	
+	
+	public Collection<SiteDomain> getSiteDomain() {
+		return siteDomain;
+	}
+
+	public void setSiteDomain(Collection<SiteDomain> siteDomain) {
+		this.siteDomain = siteDomain;
+	}
+
 	/**
 	 * Returns LayoutId
 	 * @return Integer

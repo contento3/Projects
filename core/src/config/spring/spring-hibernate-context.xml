@@ -35,6 +35,7 @@
 				 <value>com.contento3.dam.image.model.Image</value>
 				 <value>com.contento3.cms.page.template.model.PageTemplate</value>
 			     <value>com.contento3.cms.page.category.model.Category</value>
+			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -149,8 +150,15 @@
 		<property name="cacheName" value="com.contento3.cms.content.model.ContentType" />
 	</bean>
 	-->
+	<!-- CategoryDao -->
 	<bean id="categoryDao"
 		class="com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	
+	<!-- SiteDomainDao -->
+	<bean id="siteDomainDao"
+		class="com.contento3.cms.site.structure.domain.dao.impl.SiteDomainDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
 </beans>
