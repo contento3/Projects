@@ -141,36 +141,6 @@ public class LayoutUIManager implements UIManager {
 			
 		}
 
-        // Add a horizontal SplitPanel for work area and preview area
-    	horiz = new HorizontalSplitPanel();
-        horiz.setSplitPosition(35);
-
-        horiz.addListener(new SplitterClickListener(){
-			public void splitterClick(SplitterClickEvent event){
-				
-				int splitPosition = horiz.getSplitPosition();
-				
-		        if (splitPosition==0)
-		        	horiz.setSplitPosition(35);
-		        else
-					horiz.setSplitPosition(0);
-        	
-			}
-    	});
-    	
-    	VerticalLayout layout = new VerticalLayout();
-    	VerticalLayout createNewLayout = new VerticalLayout();
-    	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-        horiz.addComponent(createNewLayout);
-
-    	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
-    	tab3.setClosable(true);
-//    	Button createPageButton = new Button("Create new page");
-//    	createPageButton.addListener(this); // react to clicks
-
-    	Label createNewLayoutLabel = new Label("Create new layout");
-    	createNewLayout.addComponent(createNewLayoutLabel);
-    	buildNewLayoutComponent(createNewLayout);
 		}
 		
 		return layoutManagerTab;
@@ -178,7 +148,7 @@ public class LayoutUIManager implements UIManager {
 	
 	private void addPageToPageListTable(PageLayoutDto page, Integer accountId,
 			TabSheet layoutTab, Button link) {
-		// TODO Auto-generated method stub
+
 		Item item = container.addItem(page.getId());
 		item.getItemProperty("Name").setValue(page.getName());
 		link = new Button();
@@ -187,7 +157,38 @@ public class LayoutUIManager implements UIManager {
 			public void buttonClick(ClickEvent event) {
 				// Get the item identifier from the user-defined data.
 				// Integer pageId = (Integer)event.getButton().getData();
-				
+		        // Add a horizontal SplitPanel for work area and preview area
+		    	horiz = new HorizontalSplitPanel();
+		        horiz.setSplitPosition(35);
+
+		        horiz.addListener(new SplitterClickListener(){
+					public void splitterClick(SplitterClickEvent event){
+						
+						int splitPosition = horiz.getSplitPosition();
+						
+				        if (splitPosition==0)
+				        	horiz.setSplitPosition(35);
+				        else
+							horiz.setSplitPosition(0);
+		        	
+					}
+		    	});
+		    	
+		    	VerticalLayout createNewLayout = new VerticalLayout();
+		    	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		        horiz.addComponent(createNewLayout);
+
+		    	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
+		    	tab3.setClosable(true);
+		    	layoutManagerTab.setSelectedTab(horiz);
+		    	
+		    	//		    	Button createPageButton = new Button("Create new page");
+//		    	createPageButton.addListener(this); // react to clicks
+
+		    	Label createNewLayoutLabel = new Label("Create new layout");
+		    	createNewLayout.addComponent(createNewLayoutLabel);
+		    	buildNewLayoutComponent(createNewLayout);
+
 			}
 		});
 

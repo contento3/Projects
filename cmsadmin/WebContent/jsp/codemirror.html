@@ -29,7 +29,6 @@
     function saveTemplate() {
     	var text = editor.getValue();
     	var templateName = $('#templateName').val();
-    	alert(directoryId);
 		$.post( '/cms/jsp/addTemplate.ajax', { text: text,templateName : templateName,templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId, accountId : accountId },
 		      function( data ) {
 				alert("template saved.");

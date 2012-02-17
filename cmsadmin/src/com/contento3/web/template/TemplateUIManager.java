@@ -247,6 +247,7 @@ public class TemplateUIManager implements UIManager{
 	private void renderTemplate(Integer templateId){
 		final VerticalLayout createNewTemplate = new VerticalLayout();
 		URL url = null;
+        TemplateDto templateDto = new TemplateDto();
 
     	try {
         	StringBuffer urlStr = new StringBuffer("http://localhost:8080/cms/jsp/codemirror");
@@ -255,9 +256,9 @@ public class TemplateUIManager implements UIManager{
             WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
             HttpSession session = ctx.getHttpSession();
             Integer accountId = (Integer)session.getAttribute("accountId");
-
+            
         	if (null != templateId){
-        		TemplateDto templateDto = templateService.findTemplateById(templateId);
+        		templateDto = templateService.findTemplateById(templateId);
         		urlStr.append("?templateId=")
         			  .append(templateId)
         			  .append("&templateName=")
@@ -304,6 +305,10 @@ public class TemplateUIManager implements UIManager{
 			createNewTemplate.addComponent(browser);
 
 			Tab tab2= templateTab.addTab(createNewTemplate,"Create template",null);
+			if (null != templateId){
+				tab2.setCaption(String.format("Editing template: %s",templateDto.getTemplateName()));
+			}
+			
 			tab2.setClosable(true);
 			templateTab.setSelectedTab(createNewTemplate);
 		}
