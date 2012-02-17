@@ -18,7 +18,6 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import ptv.norway.content.pull.log.model.ContentStatusLog;
 
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.layout.model.PageLayout;
