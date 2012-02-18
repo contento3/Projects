@@ -1,9 +1,9 @@
-package com.olive.article.dao.impl;
+package com.contento3.cms.article.dao.impl;
 
 import java.util.Collection;
 
-import com.contento3.cms.content.model.Article;
-import com.olive.article.dao.ArticleDao;
+import com.contento3.cms.article.dao.ArticleDao;
+import com.contento3.cms.article.model.Article;
 
 public class ArticleDaoHibernateImpl  implements ArticleDao{
 

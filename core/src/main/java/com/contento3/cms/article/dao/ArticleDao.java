@@ -1,8 +1,8 @@
-package com.olive.article.dao;
+package com.contento3.cms.article.dao;
 
 import java.util.Collection;
 
-import com.contento3.cms.content.model.Article;
+import com.contento3.cms.article.model.Article;
 import com.contento3.common.dao.GenericDao;
 
 public interface ArticleDao extends GenericDao<Article,Integer> {

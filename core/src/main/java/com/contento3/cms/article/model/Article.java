@@ -1,4 +1,4 @@
-package com.contento3.cms.content.model;
+package com.contento3.cms.article.model;
 
 import java.util.Date;
 
