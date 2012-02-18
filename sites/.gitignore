@@ -3,5 +3,7 @@
 # Java class files
 *.class
 /classes/**/*
-/.classpath
-/.settings
+
+.classpath
+
+.settings
