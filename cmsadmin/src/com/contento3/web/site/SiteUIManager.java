@@ -1,6 +1,7 @@
 package com.contento3.web.site;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
@@ -35,9 +37,9 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
@@ -47,8 +49,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-
-import java.util.Collections;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * Used to render ui related to sites and site pages.
@@ -161,6 +162,8 @@ public class SiteUIManager implements UIManager {
 		// tab
 		final VerticalLayout pageLayout = new VerticalLayout();
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
+		horizontalLayout.setSpacing(true);
+		
 		pagesTab.addComponent(pageLayout);
 		pagesTab.setHeight("675");
 		pagesTab.setWidth("775");
@@ -205,7 +208,7 @@ public class SiteUIManager implements UIManager {
 		});
 		pageLayout.addComponent(horizontalLayout);
 		final PageService pageService = (PageService) contextHelper.getBean("pageService");
-		final Collection<PageDto> pageDtos = pageService.getPageBySiteId(siteId);
+		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
 
 		if (!CollectionUtils.isEmpty(pageDtos)) {
 			container.addContainerProperty("Title", String.class, null);
@@ -409,19 +412,35 @@ public class SiteUIManager implements UIManager {
 											.toString())));
 				}
 
-				// Create a new page,get page dto with its layout.
-				newPageDtoWithLayout = pageService.createAndReturn(pageDto);
-				parentWindow.showNotification(String.format(
-						"Page %s added successfullly",
-						newPageDtoWithLayout.getTitle()));
-				addPageToPageListTable(newPageDtoWithLayout, siteId, pagesTab,
-						new Button());
-
-				// Render the page layout by splitting them with page sections
-				// and add them to the parent layout i.e. VerticalLayout
-				newPageParentlayout
-						.addComponent(renderPageLayouts(newPageDtoWithLayout));
+				try{
+				String notificationMsg = "Page %s %s successfullly";
+				if (null!=pageId){
+					pageDto.setPageId(pageId);
+					pageService.update(pageDto);	
+					notificationMsg = String.format(notificationMsg,pageDto.getTitle(),"updated");
+				}
+				else {
+					// Create a new page,get page dto with its layout.
+					newPageDtoWithLayout = pageService.createAndReturn(pageDto);
+					addPageToPageListTable(newPageDtoWithLayout, siteId, pagesTab,
+							new Button());
+	
+					// Render the page layout by splitting them with page sections
+					// and add them to the parent layout i.e. VerticalLayout
+					newPageParentlayout
+							.addComponent(renderPageLayouts(newPageDtoWithLayout));
+					notificationMsg = String.format(
+							"Page %s added successfullly",
+							newPageDtoWithLayout.getTitle());
+				}
+				
+				parentWindow.showNotification(notificationMsg);
+				}
+				catch(EntityAlreadyFoundException e){
+					parentWindow.showNotification("Page already exists with this title or uri",Notification.TYPE_ERROR_MESSAGE);
+				}
 			}
+				
 		});
 
 		// Call for editing
@@ -487,6 +506,7 @@ public class SiteUIManager implements UIManager {
 			while (pageSectionIterator.hasNext()) {
 				final VerticalLayout pageSectionLayout = new VerticalLayout();
 				pageLayoutsTab.addComponent(pageSectionLayout);
+				pageLayoutsTab.setSizeFull();
 				renderPageSection(pageLayoutsTab, pageSectionLayout,
 						pageSectionIterator.next(), pageTemplateDto);
 			}
@@ -497,8 +517,7 @@ public class SiteUIManager implements UIManager {
 			pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
 			renderPageTemplateList(pageSectionLayout,
 					PageSectionTypeEnum.CUSTOM);
-			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup(
-					"Open", parentWindow, contextHelper));
+			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper));
 		}
 		return pageLayoutsTab;
 	}
@@ -515,11 +534,47 @@ public class SiteUIManager implements UIManager {
 				.findByPageAndPageSectionType(selectedPageId,
 						sectionTypeDto.getId());
 
-		for (PageTemplateDto dto : newPageTemplates) {
-			Label label = new Label(dto.getTemplateName());
-			pageSectionLayout.addComponent(label);
-		}
+		if (!CollectionUtils.isEmpty(newPageTemplates)){
+		Panel panel;
+		IndexedContainer templateContainer = new IndexedContainer();
+		
+		templateContainer.addContainerProperty("Template", String.class, null);
+		templateContainer.addContainerProperty("Order", String.class, null);
+		templateContainer.addContainerProperty("Remove", Button.class, null);
 
+		Table templateTable = new Table();
+		Button link = null;
+
+		templateTable.setContainerDataSource(templateContainer);
+		templateTable.setSizeFull();
+		templateTable.setSortContainerPropertyId("Order");
+		templateTable.setPageLength(newPageTemplates.size());
+
+		for (PageTemplateDto dto : newPageTemplates) {
+			Item item = templateContainer.addItem(dto.getTemplateId());
+			item.getItemProperty("Template").setValue(dto.getTemplateName());
+			item.getItemProperty("Order").setValue(dto.getOrder());
+			link = new Button();
+
+			link.addListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+				}
+			});
+
+			link.setCaption("Remove");
+			link.setData(dto.getTemplateId());
+			link.addStyleName("link");
+			item.getItemProperty("Remove").setValue(link);
+		}
+		
+		pageSectionLayout.addComponent(templateTable);
+		}
+		else {
+			final Label label = new Label("No template found for this page.");
+			pageSectionLayout.addComponent(label);
+			pageSectionLayout.setSpacing(true);
+			pageSectionLayout.setSizeFull();
+		}
 	}
 
 	public void renderPageSection(final TabSheet pageLayoutsTab,
