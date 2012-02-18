@@ -1,7 +1,6 @@
 package com.contento3.web.site;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
@@ -37,6 +35,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
@@ -48,6 +47,8 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+
+import java.util.Collections;
 
 /**
  * Used to render ui related to sites and site pages.
@@ -204,7 +205,7 @@ public class SiteUIManager implements UIManager {
 		});
 		pageLayout.addComponent(horizontalLayout);
 		final PageService pageService = (PageService) contextHelper.getBean("pageService");
-		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
+		final Collection<PageDto> pageDtos = pageService.getPageBySiteId(siteId);
 
 		if (!CollectionUtils.isEmpty(pageDtos)) {
 			container.addContainerProperty("Title", String.class, null);
@@ -409,12 +410,7 @@ public class SiteUIManager implements UIManager {
 				}
 
 				// Create a new page,get page dto with its layout.
-				try {
-					newPageDtoWithLayout = pageService.createAndReturn(pageDto);
-				} catch (EntityAlreadyFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				newPageDtoWithLayout = pageService.createAndReturn(pageDto);
 				parentWindow.showNotification(String.format(
 						"Page %s added successfullly",
 						newPageDtoWithLayout.getTitle()));
