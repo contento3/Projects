@@ -5,6 +5,7 @@ import com.contento3.dam.image.dto.ImageDto;
 
 public interface ImageService extends Service<ImageDto> {
 
-	ImageDto findImageById(Integer imageId);
+	
+	ImageDto findImageById(String imageId);
 	
 }

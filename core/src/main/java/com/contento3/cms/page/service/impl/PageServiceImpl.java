@@ -97,29 +97,41 @@ public class PageServiceImpl implements PageService {
 		pageDao.update(pageAssembler.dtoToDomain(pageDto,pageToUpdate));
 	}
 
-	/**
+	/**\
 	 * Return true if the title or uri already exists
 	 * @param title
 	 * @param url
 	 * @return
 	 */
 	private boolean isPageExists(final PageDto pageDto){
-		Page pageForTitle = pageDao.findPageByTitle(pageDto.getTitle());
+		
+		Integer siteId = pageDto.getSite().getSiteId();
+		Page pageForTitle = pageDao.findPageByTitleAndSiteId(pageDto.getTitle(),siteId);
+		boolean isExists = false;
+		
 		if (null==pageForTitle){
-			return false;
+			isExists = false;
 		}
 		else if (pageDto.getTitle().equals(pageForTitle.getTitle())) {
-			return true;
+			isExists = true; 	
 		}
 		
-		Page pageForUrl = pageDao.findPageByUri(pageDto.getUri());
-		if (null==pageForUrl){
+		Page pageForUrl=null;
+		if (!isExists || (pageDto.getPageId()!=null && pageDto.getPageId().equals(pageDto.getPageId()))){ //No need to check the uri as title is already present meaning we cant create this page anyway.
+			pageForUrl = pageDao.findPageByPathAndSiteId(pageDto.getUri(),siteId);
+			if (null==pageForUrl){
+				isExists = false;
+			}
+			else if (pageDto.getUri().equals(pageForUrl.getUri()) && null==pageDto.getPageId()){
+				isExists = true;
+			}
+		}
+		
+		if (pageDto.getPageId()!=null && pageForTitle!=null && pageForTitle.getPageId().equals(pageDto.getPageId()) && pageForTitle.getTitle().equals(pageDto.getTitle()) && (pageForUrl==null || (pageForUrl!=null && pageForUrl.getPageId().equals(pageDto.getPageId()) && pageForUrl.getUri().equals(pageDto.getUri())) )){
 			return false;
 		}
-		else if (pageDto.getUri().equals(pageForUrl.getUri())){
-			return true;
-		}
 		
-		return false;
+		
+		return isExists;
 	}
 }
