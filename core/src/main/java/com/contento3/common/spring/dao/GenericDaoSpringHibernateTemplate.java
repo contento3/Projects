@@ -2,10 +2,8 @@ package com.contento3.common.spring.dao;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.hibernate.LockMode;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
 import com.contento3.common.dao.GenericDao;
 
 public class GenericDaoSpringHibernateTemplate<T, PK extends Serializable>  

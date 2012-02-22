@@ -7,8 +7,12 @@ import com.contento3.common.dao.GenericDao;
 
 public interface ArticleDao extends GenericDao<Article,Integer> {
 
-	Collection<Article> findByAccount(Integer accountId);
 
-	Article findByAccountId(String accountId);
-	Article findBySiteId(String siteId);
+	/**
+	 * Returns the collection of Article for a given accountId provided
+	 * @param accountId id for a site
+	 * @return
+	 */
+
+	Collection<Article> findByAccountId(String accountId);
 }

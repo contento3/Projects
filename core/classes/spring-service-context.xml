@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springmodules.org/schema/ehcache http://www.springmodules.org/schema/cache/springmodules-ehcache.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean id="accountAssembler" class="com.contento3.account.service.impl.AccountAssemblerImpl">
+	</bean>
+
+	<bean id="siteAssembler" class="com.contento3.cms.site.structure.service.impl.SiteAssemblerImpl">
+		<constructor-arg ref="accountAssembler" />
+	</bean>
+
+	<bean id="templateDirectoryAssembler" class="com.contento3.cms.page.template.service.impl.TemplateDirectoryAssemblerImpl">
+	</bean>
+
+	<bean id="templateTypeAssembler" class="com.contento3.cms.page.template.service.impl.TemplateTypeAssemblerImpl">
+	</bean>
+
+	<bean id="templateAssembler" class="com.contento3.cms.page.template.service.impl.TemplateAssemblerImpl">
+		<constructor-arg ref="templateTypeAssembler" />
+		<constructor-arg ref="templateDirectoryAssembler" />
+	</bean>
+
+	<bean id="pageTemplateAssembler" class="com.contento3.cms.page.template.service.impl.PageTemplateAssemblerImpl">
+	</bean>
+
+	<bean id="pageSectionTypeAssembler" class="com.contento3.cms.page.section.service.impl.PageSectionTypeAssemblerImpl">
+	</bean>
+
+	<bean id="pageSectionAssembler" class="com.contento3.cms.page.section.service.impl.PageSectionAssemblerImpl">
+		<constructor-arg ref="pageSectionTypeAssembler" />
+	</bean>
+	
+	<bean id="pageLayoutTypeAssembler" class="com.contento3.cms.page.layout.service.impl.PageLayoutTypeAssemblerImpl">
+	</bean>
+
+	<bean id="pageLayoutAssembler" class="com.contento3.cms.page.layout.service.impl.PageLayoutAssemblerImpl">
+		<constructor-arg ref="pageSectionAssembler" />
+		<constructor-arg ref="pageLayoutTypeAssembler" />
+	</bean>
+
+	<bean id="pageAssembler" class="com.contento3.cms.page.service.impl.PageAssemblerImpl">
+		<constructor-arg ref="siteAssembler" />
+		<constructor-arg ref="pageLayoutAssembler" />
+	</bean>
+
+	<bean id="imageAssembler" class="com.contento3.dam.image.service.impl.ImageAssemblerImpl">
+	</bean>
+
+
+	<bean id="templateService" class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">
+		<constructor-arg ref="templateAssembler" />
+		<constructor-arg ref="accountDAO" />
+		<constructor-arg ref="templateDAO" />
+		<constructor-arg ref="templateTypeDAO" />
+		<constructor-arg ref="templateDirectoryDAO" />
+		<constructor-arg ref="siteDAO" />
+	</bean>
+
+	<bean id="pageTemplateService" class="com.contento3.cms.page.template.service.impl.PageTemplateServiceImpl">
+		<constructor-arg ref="pageTemplateDAO" />
+		<constructor-arg ref="templateDAO" />
+		<constructor-arg ref="pageSectionTypeDAO" />
+		<constructor-arg ref="pageDAO" />
+		<constructor-arg ref="pageTemplateAssembler" />
+	</bean>
+
+	<bean id="templateDirectoryService" class="com.contento3.cms.page.template.service.impl.TemplateDirectoryServiceImpl">
+		<constructor-arg ref="templateDirectoryAssembler" />
+		<constructor-arg ref="templateDirectoryDAO" />
+	</bean>
+
+
+	<bean id="pageSectionTypeService" class="com.contento3.cms.page.section.service.impl.PageSectionTypeServiceImpl">
+		<constructor-arg ref="pageSectionTypeDAO" />
+		<constructor-arg ref="pageSectionTypeAssembler" />
+	</bean>
+
+	<bean id="siteService" class="com.contento3.cms.site.structure.service.impl.SiteServiceImpl">
+		<constructor-arg ref="siteAssembler" />
+		<constructor-arg ref="siteDAO" />
+	</bean>
+
+	<bean id="pageService" class="com.contento3.cms.page.service.impl.PageServiceImpl">
+		<constructor-arg ref="pageDAO" />
+		<constructor-arg ref="pageAssembler" />
+	</bean>
+
+	<bean id="pageLayoutService" class="com.contento3.cms.page.layout.service.impl.PageLayoutServiceImpl">
+		<constructor-arg ref="pageLayoutDAO" />
+		<constructor-arg ref="pageSectionDAO" />
+		<constructor-arg ref="pageLayoutAssembler" />
+		<constructor-arg ref="pageSectionAssembler" />
+	</bean>
+
+	<bean id="pageLayoutTypeService" class="com.contento3.cms.page.layout.service.impl.PageLayoutTypeServiceImpl">
+		<constructor-arg ref="pageLayoutTypeDAO" />
+		<constructor-arg ref="pageLayoutTypeAssembler" />
+	</bean>
+
+	<bean id="accountService" class="com.contento3.account.service.impl.AccountServiceImpl">
+		<constructor-arg ref="accountDAO" />
+		<constructor-arg ref="accountAssembler" />
+	</bean>
+
+	<bean id="imageService" class="com.contento3.dam.image.service.impl.ImageServiceImpl">
+		<constructor-arg ref="imageAssembler" />
+		<constructor-arg ref="imageDao" />
+		<constructor-arg ref="accountDAO" />
+	</bean>
+
+	<bean id="layoutBuilder" class="com.contento3.cms.page.layout.impl.LayoutBuilderImpl">
+		<constructor-arg ref="pageSectionTypeService" />
+	</bean>
+	
+	<bean id="categoryAssembler" class="com.contento3.cms.page.category.service.impl.CategoryAssemblerImpl">
+		
+	</bean>
+	
+	<bean id="categoryService" class="com.contento3.cms.page.category.service.impl.CategoryServiceImpl">
+		<constructor-arg ref="categoryAssembler" />
+		<constructor-arg ref="categoryDao" />
+	</bean>
+</beans>
