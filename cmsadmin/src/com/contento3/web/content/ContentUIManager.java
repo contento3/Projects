@@ -104,6 +104,9 @@ public class ContentUIManager implements UIManager{
 		verticalLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		elementTab.addTab(verticalLayout, String.format("%s Management",element));
 
+		final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(helper,parentWindow);
+		imageMgmtUIMgr.listImage(1);
+
 		button.addListener(new ClickListener(){
 			public void buttonClick(ClickEvent event){
 				if (element.equals("Article")){
@@ -116,7 +119,6 @@ public class ContentUIManager implements UIManager{
 					newArticleLayout.setHeight("100%");
 				}
 				else if (element.equals("Image")){
-					ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(helper,parentWindow);
 					VerticalLayout newArticleLayout = new VerticalLayout();
 					Tab createNew = elementTab.addTab(newArticleLayout, String.format("Create new %s",element));
 					createNew.setClosable(true);

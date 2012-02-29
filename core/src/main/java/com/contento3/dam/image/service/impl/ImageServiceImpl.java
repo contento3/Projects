@@ -1,5 +1,7 @@
 package com.contento3.dam.image.service.impl;
 
+import java.util.Collection;
+
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
 import com.contento3.dam.image.dao.ImageDao;
@@ -25,7 +27,12 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public void create(ImageDto imageDto) {
+	public Collection<ImageDto> findImageByAccountId(final Integer accountId){
+		return imageAssembler.domainsToDtos(imageDao.findByAccountId(accountId));
+	}
+
+	@Override
+	public void create(final ImageDto imageDto) {
 		Image image = imageAssembler.dtoToDomain(imageDto);
 		Account account = accountDao.findById(imageDto.getAccountDto().getAccountId());
 		image.setAccount(account);
