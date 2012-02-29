@@ -36,6 +36,7 @@
 				 <value>com.contento3.cms.page.template.model.PageTemplate</value>
 			     <value>com.contento3.cms.page.category.model.Category</value>
 			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
+			     <value>com.contento3.cms.article.model.Article</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -161,4 +162,10 @@
 		class="com.contento3.cms.site.structure.domain.dao.impl.SiteDomainDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	<!-- ArtcileDao -->
+	<bean id="ArtcileDao"
+		class=" com.contento3.cms.article.dao.impl.ArticleDaoHibernateImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	
 </beans>

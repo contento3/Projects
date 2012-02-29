@@ -1,5 +1,6 @@
 package com.contento3.cms.article.model;
 
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -7,7 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.contento3.cms.site.structure.model.Site;
 
 @Entity
 @Table(name = "ARTICLE")
@@ -32,6 +39,23 @@ public class Article {
 	
 	@Column (name = "DATE_POSTED")
 	private Date datePosted;
+	
+	/**
+	 * articles which are associated to site
+	 */
+	@ManyToMany
+	@JoinTable(name="SITE_ARTICLE",
+	joinColumns={@JoinColumn(name="ARTICLE_ID")},
+	inverseJoinColumns={@JoinColumn(name="SITE_ID")})
+	private Collection<Site> site;
+
+	public Collection<Site> getSite() {
+		return site;
+	}
+
+	public void setSite(Collection<Site> site) {
+		this.site = site;
+	}
 
 	public Integer getUuid() {
 		return uuid;
