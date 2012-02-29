@@ -9,4 +9,6 @@ public interface ImageDao extends GenericDao<Image,Integer>{
 
 	Collection<Image> findByAccountId(Integer accountId);
 
+	Collection<Image> findByAccountId(Integer accountId);
+
 }
