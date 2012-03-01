@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
@@ -22,10 +21,8 @@ import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
-import com.contento3.cms.site.structure.domain.model.SiteDomain;
 import com.contento3.cms.site.structure.domain.service.SiteDomainService;
 import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
@@ -36,18 +33,15 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
@@ -294,37 +288,32 @@ public class SiteUIManager implements UIManager {
 		configSiteFormLayout.addComponent(siteNameLabel);
 
 		final Table domainsTable = new Table();
-		domainsTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
-		domainsTable.setPageLength(5);
-		final Button editButton = new Button();
-		final Button addDomainButton = new Button();
-		String saveButtonTitle = "Save";
-		final Button siteSaveButton = new Button(saveButtonTitle);
-		final Label label = new Label("No domains found for this site.");
-		
-		domainsContainer.addContainerProperty("Domains", String.class, null);
-		domainsContainer.addContainerProperty("Delete", Button.class, null);
-		
 		//adding rows in Domains Table from DB
 		if (!CollectionUtils.isEmpty(siteDto.getSiteDomainDto())) {
 			
+			domainsContainer.addContainerProperty("Domains", String.class, null);
+			domainsContainer.addContainerProperty("Delete", Button.class, null);
+
 			for (SiteDomainDto domain : siteDto.getSiteDomainDto()) {
 				Button delete = new Button();
 				addDomainsListTable(domain, domainsTable, delete, siteId);
 			}
 
 			domainsTable.setContainerDataSource(domainsContainer);
+			domainsTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+			domainsTable.setPageLength(5);
 			configSiteFormLayout.addComponent(domainsTable);
-			editButton.setEnabled(false);
 		} else {
-			//label = new Label("No domains found for this site.");
-			editButton.setEnabled(false);
+			final Label label = new Label("No domains found for this site.");
 			configSiteFormLayout.addComponent(label);
-			configSiteFormLayout.addComponent(domainsTable);
-			domainsTable.setContainerDataSource(domainsContainer);
-			domainsTable.setVisible(false);
 		}
+		
 		HorizontalLayout horizLayout = new HorizontalLayout();
+		
+		final Button editButton = new Button();
+		final Button addDomainButton = new Button();
+		String saveButtonTitle = "Save";
+		final Button siteSaveButton = new Button(saveButtonTitle);
 		
 		editButton.setCaption("Edit");
 		editButton.addStyleName("edit");
@@ -346,7 +335,7 @@ public class SiteUIManager implements UIManager {
 			}
 		});
 		
-		addDomainButton.setCaption("Add Domain");
+		addDomainButton.setCaption("Add");
 		addDomainButton.addStyleName("add");
 		 
 		horizLayout.addComponent(addDomainButton);
@@ -389,10 +378,10 @@ public class SiteUIManager implements UIManager {
 				domainsTable.setEditable(!domainsTable.isEditable());
 				
 				addDomainButton.setCaption((domainsTable.isEditable() ? "Done"
-						: "Add Domain"));
+						: "Add"));
 				
 
-				if(addDomainButton.getCaption().equals("Add Domain")){
+				if(addDomainButton.getCaption().equals("Add")){
 
 					editButton.setEnabled(true);
 					String domainName = (String) domainsTable
@@ -407,8 +396,7 @@ public class SiteUIManager implements UIManager {
 								domainName));
 				}
 				else {
-					label.setVisible(false);
-					domainsTable.setVisible(true);
+
 					final Item item = domainsContainer.addItem(index);
 					item.getItemProperty("Domains").setValue("Enter new domain");
 					deleteLink.setCaption("Delete");
@@ -417,18 +405,17 @@ public class SiteUIManager implements UIManager {
 					deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 					item.getItemProperty("Delete").setValue(deleteLink);
 					editButton.setEnabled(false);
-					
 					deleteLink.addListener(new Button.ClickListener() {
 						public void buttonClick(ClickEvent event) {
-	
+
 							SiteDomainService siteDomainService = (SiteDomainService) contextHelper
 									.getBean("siteDomainService");
-	
+
 							Object id = deleteLink.getData();
 							String domainName = (String) domainsTable
 									.getContainerProperty(id, "Domains")
 									.getValue();
-	
+
 							Iterator<SiteDomainDto> itr = siteDomainDto
 									.iterator();
 							while (itr.hasNext()) {
@@ -446,11 +433,10 @@ public class SiteUIManager implements UIManager {
 										domainName));
 						}
 					}); //end deleteLink listener
-	
+
 				}//end else
 			}
 		});//end addDomainButton listener
-
 		
 		/* siteSaveButton Listener*/
 		siteSaveButton.addListener(new ClickListener() {
@@ -485,6 +471,7 @@ public class SiteUIManager implements UIManager {
 			final ComboBox pageLayoutCombo, final String siteNameTxt) {
 		
 		Integer siteId=this.siteid;
+		//collSiteDomainDto siteDomaindto =siteDomainDto;
 		final AccountDto accountDto = siteDto.getAccountDto();
 		Iterator<SiteDomainDto> itr= siteDomainDto.iterator();
 		for (Iterator i = domainsTable.getItemIds().iterator(); i.hasNext();) {
@@ -534,7 +521,8 @@ public class SiteUIManager implements UIManager {
 
 		}// end if
 
-	}//end saveSiteDto	
+	}//end saveSiteDto
+	
 	
 
 	/**
