@@ -1,9 +1,9 @@
 package com.contento3.common.service;
 
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 public interface Service<T> {
 
-	void create(T dto) throws EnitiyAlreadyFoundException ;
+	public void create(T dto) throws EntityAlreadyFoundException;
 
 }

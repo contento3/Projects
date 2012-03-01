@@ -16,6 +16,7 @@ import com.contento3.cms.page.template.model.Template;
 import com.contento3.cms.page.template.service.PageTemplateAssembler;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.common.exception.EnitiyAlreadyFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 public class PageTemplateServiceImpl implements PageTemplateService {
 
@@ -39,7 +40,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 	}
 	
 	@Override
-	public void create(PageTemplateDto dto) throws EnitiyAlreadyFoundException {
+	public void create(PageTemplateDto dto) throws EntityAlreadyFoundException {
 		PageTemplate pageTemplate = assembler.dtoToDomain(dto);
 		PageSectionType pageSectionType;
 		
@@ -65,7 +66,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 			dao.persist(pageTemplate);
 		}
 		else {
-			throw new EnitiyAlreadyFoundException("Page template already exist.");
+			throw new EntityAlreadyFoundException("Page template already exist.");
 		}
 	}
 	
