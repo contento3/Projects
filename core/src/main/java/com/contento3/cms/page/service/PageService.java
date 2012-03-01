@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
+import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.model.Page;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 /**
  * Serves as a service layer for page.
@@ -20,40 +22,17 @@ public interface PageService {
 	 * @param pageSize
 	 * @return {@link Collection} of PageDto
 	 */
-	//TODO change it to findPageBySiteId
-	Collection <PageDto> getPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize);
+	Collection <PageDto> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize);
 
 	/**
-	 * Returns the {@link Collection} of PageDto by siteId
+	 * Returns the {@link Collection} of {@link PageDto} by siteId
 	 * @param siteId
 	 * @return {@link Collection} of PageDto
 	 */
-	//TODO change it to findPageBySiteId
-	Collection <PageDto> getPageBySiteId(Integer siteId);
-
-	/**
-	 * 
-	 * @param domains
-	 * @return
-	 */
-	Collection<PageDto> domainsToDtos(final Collection<Page> domains);
-
-	/**
-	 * 
-	 * @param domain
-	 * @return
-	 */
-	PageDto domainToDto(final Page domain);
-
-	/**
-	 * 
-	 * @param dto
-	 * @return
-	 */
-    Page dtoToDomain(final PageDto dto);
-	
+	 Collection <PageDto> findPageBySiteId(Integer siteId);
+	 
     /**
-     * 
+     * Finds Number of pages for a site
      * @param siteId
      * @return
      */
@@ -67,25 +46,33 @@ public interface PageService {
     Integer create(final PageDto pageDto);
 
     /**
-     * 
+     * Finds the Page with its layout info by id 
      * @param pageId
-     * @return
+     * @return PageDto
      */
     PageDto findPageWithLayout(final Integer pageId)  throws PageNotFoundException;
 
     /**
-     * 
+     * Creates a new page and an returns the PageDto
      * @param pageDto
-     * @return
+     * @return PageDto
+     * @throws EntityAlreadyFoundException 
      */
-    PageDto createAndReturn(final PageDto pageDto)  ;
+    PageDto createAndReturn(final PageDto pageDto) throws EntityAlreadyFoundException  ;
 
     /**
-     * 
+     * Finds the page by path and siteId
      * @param path
      * @param siteId
-     * @return
+     * @return PageDto
      */
 	PageDto findByPathForSite(String path, Integer siteId)  throws PageNotFoundException;
+
+    /**
+     * Used to update the page.
+     * @param pageId
+     * @throws EntityAlreadyFoundException 
+     */
+    void update(final PageDto pageDto) throws EntityAlreadyFoundException;
 
 }

@@ -1,6 +1,5 @@
 package com.contento3.cms.page.service.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -10,37 +9,45 @@ import org.springframework.transaction.annotation.Transactional;
 import com.contento3.cms.page.dao.PageDao;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
-import com.contento3.cms.page.layout.service.PageLayoutAssembler;
 import com.contento3.cms.page.model.Page;
+import com.contento3.cms.page.service.PageAssembler;
 import com.contento3.cms.page.service.PageService;
-import com.contento3.cms.site.structure.service.SiteAssembler;
-import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class PageServiceImpl implements PageService {
 
 	private static final Logger LOGGER = Logger.getLogger(PageServiceImpl.class);
 
+	private PageAssembler pageAssembler;
 	private PageDao pageDao;
-	private SiteAssembler siteAssembler;
-	private PageLayoutAssembler pageLayoutAssembler;
+
+	public PageServiceImpl(final PageDao pageDao,final PageAssembler pageAssembler){
+		this.pageDao = pageDao;
+		this.pageAssembler = pageAssembler;
+	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
     public Integer create(final PageDto pageDto){
-    	return pageDao.persist(dtoToDomain(pageDto));
+    	return pageDao.persist(pageAssembler.dtoToDomain(pageDto));
     }
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public PageDto findPageWithLayout(final Integer pageId)  throws PageNotFoundException{
     	Page page = pageDao.findById(pageId);
-    	return domainToDto(page);
+    	return pageAssembler.domainToDto(page);
     }
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public PageDto createAndReturn(final PageDto pageDto){
+	public PageDto createAndReturn(final PageDto pageDto) throws EntityAlreadyFoundException{
+		
+		if (isPageExists(pageDto)){
+			throw new EntityAlreadyFoundException();
+		}
+
 		Integer id = create(pageDto);
 		PageDto newPageDto = null;
 		try {
@@ -51,56 +58,19 @@ public class PageServiceImpl implements PageService {
 		return newPageDto;
 	}
 	
-	public PageServiceImpl(final PageDao pageDao,final SiteAssembler siteAssembler,final PageLayoutAssembler pageLayoutAssembler){
-		this.pageDao = pageDao;
-		this.siteAssembler = siteAssembler;
-		this.pageLayoutAssembler = pageLayoutAssembler;
-	}
-
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-	public Collection<PageDto> getPageBySiteId(Integer siteId){
-		return domainsToDtos(pageDao.findPageBySiteId(siteId)); 
+	public Collection<PageDto> findPageBySiteId(Integer siteId){
+		return pageAssembler.domainsToDtos(pageDao.findPageBySiteId(siteId)); 
 	}
 
-	public Collection<PageDto> getPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize){
-		return domainsToDtos(pageDao.findPageBySiteId(siteId,pageNumber,pageSize)); 
+	public Collection<PageDto> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize){
+		return pageAssembler.domainsToDtos(pageDao.findPageBySiteId(siteId,pageNumber,pageSize)); 
 	}
 
 	public Long findTotalPagesForSite(Integer siteId){
 		return pageDao.findTotalPagesForSite(siteId);
 	}
 	
-	public Page dtoToDomain(final PageDto dto){
-		Page page = new Page();
-		page.setPageId(dto.getPageId());
-		page.setUri(dto.getUri());
-		page.setTitle(dto.getTitle());
-		page.setSite(siteAssembler.dtoToDomain(dto.getSite()));
-		
-		if (null!=dto.getPageLayoutDto()){
-			page.setPageLayout(pageLayoutAssembler.dtoToDomainWithPageSections(dto.getPageLayoutDto()));
-		}
-		return page;
-	}
-
-	public PageDto domainToDto(final Page domain){
-		PageDto dto = new PageDto();
-		dto.setPageId(domain.getPageId());
-		dto.setUri(domain.getUri());
-		dto.setTitle(domain.getTitle());
-		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
-		System.out.println("the page is :"+domain.getPageId());
-		dto.setPageLayoutDto(pageLayoutAssembler.domainToDto(domain.getPageLayout()));
-		return dto;
-	}
-
-	public Collection<PageDto> domainsToDtos(final Collection<Page> domains){
-		Collection<PageDto> dtos = new ArrayList<PageDto>();
-		for (Page page : domains){
-			dtos.add(domainToDto(page));
-		}
-		return dtos;
-	}
 
 	@Override
 	public PageDto findByPathForSite(String path, Integer siteId) throws PageNotFoundException
@@ -110,8 +80,56 @@ public class PageServiceImpl implements PageService {
 		if (null==page){
 			throw new PageNotFoundException();
 		}
-		return 	domainToDto(page);
+		return 	pageAssembler.domainToDto(page);
 	}
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void update(final PageDto pageDto) throws EntityAlreadyFoundException {
+		
+		if (isPageExists(pageDto)){
+			throw new EntityAlreadyFoundException();
+		}
+		
+		Page pageToUpdate = pageDao.findById(pageDto.getPageId());
+		pageDao.update(pageAssembler.dtoToDomain(pageDto,pageToUpdate));
+	}
 
+	/**\
+	 * Return true if the title or uri already exists
+	 * @param title
+	 * @param url
+	 * @return
+	 */
+	private boolean isPageExists(final PageDto pageDto){
+		
+		Integer siteId = pageDto.getSite().getSiteId();
+		Page pageForTitle = pageDao.findPageByTitleAndSiteId(pageDto.getTitle(),siteId);
+		boolean isExists = false;
+		
+		if (null==pageForTitle){
+			isExists = false;
+		}
+		else if (pageDto.getTitle().equals(pageForTitle.getTitle())) {
+			isExists = true; 	
+		}
+		
+		Page pageForUrl=null;
+		if (!isExists || (pageDto.getPageId()!=null && pageDto.getPageId().equals(pageDto.getPageId()))){ //No need to check the uri as title is already present meaning we cant create this page anyway.
+			pageForUrl = pageDao.findPageByPathAndSiteId(pageDto.getUri(),siteId);
+			if (null==pageForUrl){
+				isExists = false;
+			}
+			else if (pageDto.getUri().equals(pageForUrl.getUri()) && null==pageDto.getPageId()){
+				isExists = true;
+			}
+		}
+		
+		if (pageDto.getPageId()!=null && pageForTitle!=null && pageForTitle.getPageId().equals(pageDto.getPageId()) && pageForTitle.getTitle().equals(pageDto.getTitle()) && (pageForUrl==null || (pageForUrl!=null && pageForUrl.getPageId().equals(pageDto.getPageId()) && pageForUrl.getUri().equals(pageDto.getUri())) )){
+			return false;
+		}
+		
+		
+		return isExists;
+	}
 }
