@@ -1,7 +1,5 @@
 package com.contento3.cms.site.structure.domain.service.impl;
 
-import java.util.Collection;
-
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,8 +8,6 @@ import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
 import com.contento3.cms.site.structure.domain.model.SiteDomain;
 import com.contento3.cms.site.structure.domain.service.SiteDomainAssembler;
 import com.contento3.cms.site.structure.domain.service.SiteDomainService;
-import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class SiteDomainServiceImpl implements SiteDomainService {

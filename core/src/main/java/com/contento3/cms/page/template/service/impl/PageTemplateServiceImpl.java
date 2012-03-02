@@ -15,7 +15,6 @@ import com.contento3.cms.page.template.model.PageTemplatePK;
 import com.contento3.cms.page.template.model.Template;
 import com.contento3.cms.page.template.service.PageTemplateAssembler;
 import com.contento3.cms.page.template.service.PageTemplateService;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 
 public class PageTemplateServiceImpl implements PageTemplateService {

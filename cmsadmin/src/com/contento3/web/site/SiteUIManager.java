@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
@@ -21,8 +22,10 @@ import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
+import com.contento3.cms.site.structure.domain.model.SiteDomain;
 import com.contento3.cms.site.structure.domain.service.SiteDomainService;
 import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
@@ -33,15 +36,18 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
@@ -398,7 +404,8 @@ public class SiteUIManager implements UIManager {
 				else {
 
 					final Item item = domainsContainer.addItem(index);
-					item.getItemProperty("Domains").setValue("Enter new domain");
+					item.getItemProperty("Domains")
+							.setValue("Enter new domain");
 					deleteLink.setCaption("Delete");
 					deleteLink.setData(index);
 					deleteLink.addStyleName("delete");

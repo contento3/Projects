@@ -8,11 +8,6 @@ import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.category.service.CategoryAssembler;
 import com.contento3.cms.page.category.service.CategoryService;
-import com.contento3.cms.page.dto.PageDto;
-import com.contento3.cms.page.model.Page;
-import com.contento3.cms.page.template.dto.TemplateDto;
-import com.contento3.cms.page.template.service.TemplateAssembler;
-import com.contento3.common.exception.EnitiyAlreadyFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class CategoryServiceImpl implements CategoryService {
