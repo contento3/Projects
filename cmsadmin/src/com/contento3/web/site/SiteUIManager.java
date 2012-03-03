@@ -294,32 +294,37 @@ public class SiteUIManager implements UIManager {
 		configSiteFormLayout.addComponent(siteNameLabel);
 
 		final Table domainsTable = new Table();
+		domainsTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+		domainsTable.setPageLength(5);
+		final Button editButton = new Button();
+		final Button addDomainButton = new Button();
+		String saveButtonTitle = "Save";
+		final Button siteSaveButton = new Button(saveButtonTitle);
+		final Label label = new Label("No domains found for this site.");
+		
+		domainsContainer.addContainerProperty("Domains", String.class, null);
+		domainsContainer.addContainerProperty("Delete", Button.class, null);
+		
 		//adding rows in Domains Table from DB
 		if (!CollectionUtils.isEmpty(siteDto.getSiteDomainDto())) {
 			
-			domainsContainer.addContainerProperty("Domains", String.class, null);
-			domainsContainer.addContainerProperty("Delete", Button.class, null);
-
 			for (SiteDomainDto domain : siteDto.getSiteDomainDto()) {
 				Button delete = new Button();
 				addDomainsListTable(domain, domainsTable, delete, siteId);
 			}
 
 			domainsTable.setContainerDataSource(domainsContainer);
-			domainsTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
-			domainsTable.setPageLength(5);
 			configSiteFormLayout.addComponent(domainsTable);
+			editButton.setEnabled(false);
 		} else {
-			final Label label = new Label("No domains found for this site.");
+			//label = new Label("No domains found for this site.");
+			editButton.setEnabled(false);
 			configSiteFormLayout.addComponent(label);
+			configSiteFormLayout.addComponent(domainsTable);
+			domainsTable.setContainerDataSource(domainsContainer);
+			domainsTable.setVisible(false);
 		}
-		
 		HorizontalLayout horizLayout = new HorizontalLayout();
-		
-		final Button editButton = new Button();
-		final Button addDomainButton = new Button();
-		String saveButtonTitle = "Save";
-		final Button siteSaveButton = new Button(saveButtonTitle);
 		
 		editButton.setCaption("Edit");
 		editButton.addStyleName("edit");
@@ -341,7 +346,7 @@ public class SiteUIManager implements UIManager {
 			}
 		});
 		
-		addDomainButton.setCaption("Add");
+		addDomainButton.setCaption("Add Domain");
 		addDomainButton.addStyleName("add");
 		 
 		horizLayout.addComponent(addDomainButton);
@@ -384,10 +389,10 @@ public class SiteUIManager implements UIManager {
 				domainsTable.setEditable(!domainsTable.isEditable());
 				
 				addDomainButton.setCaption((domainsTable.isEditable() ? "Done"
-						: "Add"));
+						: "Add Domain"));
 				
 
-				if(addDomainButton.getCaption().equals("Add")){
+				if(addDomainButton.getCaption().equals("Add Domain")){
 
 					editButton.setEnabled(true);
 					String domainName = (String) domainsTable
@@ -402,27 +407,28 @@ public class SiteUIManager implements UIManager {
 								domainName));
 				}
 				else {
-
+					label.setVisible(false);
+					domainsTable.setVisible(true);
 					final Item item = domainsContainer.addItem(index);
-					item.getItemProperty("Domains")
-							.setValue("Enter new domain");
+					item.getItemProperty("Domains").setValue("Enter new domain");
 					deleteLink.setCaption("Delete");
 					deleteLink.setData(index);
 					deleteLink.addStyleName("delete");
 					deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 					item.getItemProperty("Delete").setValue(deleteLink);
 					editButton.setEnabled(false);
+					
 					deleteLink.addListener(new Button.ClickListener() {
 						public void buttonClick(ClickEvent event) {
-
+	
 							SiteDomainService siteDomainService = (SiteDomainService) contextHelper
 									.getBean("siteDomainService");
-
+	
 							Object id = deleteLink.getData();
 							String domainName = (String) domainsTable
 									.getContainerProperty(id, "Domains")
 									.getValue();
-
+	
 							Iterator<SiteDomainDto> itr = siteDomainDto
 									.iterator();
 							while (itr.hasNext()) {
@@ -440,10 +446,11 @@ public class SiteUIManager implements UIManager {
 										domainName));
 						}
 					}); //end deleteLink listener
-
+	
 				}//end else
 			}
 		});//end addDomainButton listener
+
 		
 		/* siteSaveButton Listener*/
 		siteSaveButton.addListener(new ClickListener() {
@@ -478,7 +485,6 @@ public class SiteUIManager implements UIManager {
 			final ComboBox pageLayoutCombo, final String siteNameTxt) {
 		
 		Integer siteId=this.siteid;
-		//collSiteDomainDto siteDomaindto =siteDomainDto;
 		final AccountDto accountDto = siteDto.getAccountDto();
 		Iterator<SiteDomainDto> itr= siteDomainDto.iterator();
 		for (Iterator i = domainsTable.getItemIds().iterator(); i.hasNext();) {
@@ -528,8 +534,7 @@ public class SiteUIManager implements UIManager {
 
 		}// end if
 
-	}//end saveSiteDto
-	
+	}//end saveSiteDto	
 	
 
 	/**
