@@ -10,7 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.contento3.account.model.Account;
 
 @Entity
 @Table(name = "TEMPLATE_DIRECTORY")
@@ -22,6 +25,10 @@ public class TemplateDirectory {
 	
 	@Column(name = "DIRECTORY_NAME")
 	private String directoryName;
+	
+	@OneToOne
+	@JoinColumn(name = "ACCOUNT_ID")
+	private Account account;
 	
 	@ManyToOne
 	@JoinColumn(name="parent")
@@ -71,5 +78,13 @@ public class TemplateDirectory {
 
 	public void setGlobal(boolean isGlobal) {
 		this.isGlobal = isGlobal;
+	}
+	
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public Account getAccount() {
+		return account;
 	}
 }
