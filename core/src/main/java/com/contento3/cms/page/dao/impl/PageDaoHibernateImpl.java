@@ -39,6 +39,8 @@ implements PageDao {
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
 		.addOrder(Order.desc("title"))
+		.setCacheable(true)
+		.setCacheRegion("com.contento3.cms.page.model.Page")
 		.add(Restrictions
 		.eq("site.siteId", siteId));
 		return criteria.list();

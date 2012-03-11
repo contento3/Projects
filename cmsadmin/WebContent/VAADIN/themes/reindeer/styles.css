@@ -485,6 +485,20 @@ div.v-app-loading {
 .v-csslayout {
 	overflow: hidden;
 }
+
+/* Put the components in a single line */
+.csslayoutexample .v-csslayout-container > div {
+   vertical-align: top;
+}
+
+/* Put the components in a single line */
+.csslayoutinnercomponent {
+   vertical-align: top;
+   display:inline-block; 
+   margin-left: 10px;
+   margin-bottom: 10px;
+}
+
 .v-csslayout-margin-top {
 	padding-top: 12px;	
 }

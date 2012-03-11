@@ -484,6 +484,7 @@ div.v-app-loading {
 
 .v-csslayout {
 	overflow: hidden;
+	display:inline-block;
 }
 .v-csslayout-margin-top {
 	padding-top: 12px;	
@@ -3110,6 +3111,8 @@ div.v-csslayout-box-shadow {
 	background: transparent url(shadow/img/bottom.png) repeat-x bottom;
 	position: relative;
 	top: 8px;
+	display: inline-block;
+   	vertical-align: top;
 }
 .v-csslayout-box-shadow > .v-csslayout-margin > .v-csslayout-container > * {
 	margin-left: -6px;

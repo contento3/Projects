@@ -9,7 +9,7 @@
             diskPersistent="false"
             diskExpiryThreadIntervalSeconds="120"/>
 
-  <cache name="com.contento3.cms.content.model.ContentType"
+  <cache name="com.contento3.cms.page.model.Page"
     maxElementsInMemory="10000"
     eternal="false"
     timeToIdleSeconds="300"

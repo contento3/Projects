@@ -1,6 +1,8 @@
 package com.contento3.web.content;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,8 +11,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Iterator;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.servlet.http.HttpSession;
+
+import org.imgscalr.Scalr;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -22,13 +31,14 @@ import com.vaadin.Application;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
@@ -53,6 +63,7 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
     FileResource imageResource;
 
     TextField altTextField;
+    TextField imageNameField;
     
     ImageService imageService;
     
@@ -72,6 +83,11 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
 	
 		imageLayout.addComponent(altTextField);
 		
+		imageNameField = new TextField();
+		imageNameField.setCaption("Image name");
+	
+		imageLayout.addComponent(imageNameField);
+
 		// Create the Upload component.
 		Upload upload = new Upload("Upload Image", this);
 		// Listen for events regarding the success of upload.
@@ -142,7 +158,7 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
             ImageDto imageDto = new ImageDto();
             imageDto.setAltText(altTextField.getValue().toString());
             imageDto.setImage(bFile);
-            imageDto.setName("asdfasds");
+            imageDto.setName(imageNameField.getValue().toString());
             
             //Get accountId from the session
             WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
@@ -200,38 +216,88 @@ imageResource.setCacheTime(0);
 
     }
 
-    public void listImage(final Integer accountId){
+    public Component listImage(final Integer accountId){
     	Collection <ImageDto> imageList =  imageService.findImageByAccountId(accountId);
     	CssLayout layout = new CssLayout();
-        
     	for (ImageDto dto:imageList){
-	    	// Component with a layout-managed caption and icon
-	    	Panel imagePanel = new Panel("A TextField");
+	    	Panel imagePanel = new Panel();
 	    	imagePanel.addComponent(loadImage(dto));
-	    	layout.addComponent(imagePanel);
-	
-//	    	// Labels are 100% wide by default so must unset width
-//	    	Label label = new Label("A Label");
-//	    	label.setWidth(Sizeable.SIZE_UNDEFINED, 0);
-//	    	layout.addComponent(label);
-//	    	        
-//	    	layout.addComponent(new Button("A Button"));
-    	}
-    }
+	    	imagePanel.setScrollable(false);
+	    	
+	    	VerticalLayout imageLayout = new VerticalLayout();
+	    	imageLayout.addComponent(imagePanel);
+	    	imagePanel.setHeight("165");
+	    	imagePanel.setWidth("160");
+	    	
+	    	VerticalLayout imageInfoLayout = new VerticalLayout();
+
+	    	Button viewImageDetail = new Button("View Image");
+	    	viewImageDetail.setStyleName("link");
+
+	    	Button editImageDetail = new Button("Edit Image");
+	    	editImageDetail.setStyleName("link");
+
+	    	imageInfoLayout.setSpacing(true);
+	    	
+	    	imageInfoLayout.addComponent(viewImageDetail);
+	    	imageInfoLayout.setComponentAlignment(viewImageDetail, Alignment.MIDDLE_CENTER);
+
+	    	imageInfoLayout.addComponent(editImageDetail);
+	    	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
+
+	    	Panel mainPanel = new Panel();
+	    	mainPanel.addComponent(imageLayout);
+	    	mainPanel.addComponent(imageInfoLayout);
+
+	    	mainPanel.setHeight("245");
+	    	mainPanel.setWidth("200");
+	    	mainPanel.setScrollable(false);
+	    	mainPanel.addStyleName("csslayoutinnercomponent");
+	    	layout.addComponent(mainPanel);
+	 	}
+    	
+    	layout.setSizeUndefined();
+    	layout.setMargin(true);
+    	return layout;
+    } 
     
     
 	public Embedded loadImage(final ImageDto imageDto) {
 		StreamResource.StreamSource imageSource = new StreamResource.StreamSource() {
 			@Override
 			public InputStream getStream() {
-			return new ByteArrayInputStream(imageDto.getImage());
+				BufferedImage thumbnail;
+				InputStream bigInputStream = null;
+				try {
+					ByteArrayInputStream in = new ByteArrayInputStream(imageDto.getImage());
+					ImageReader imageReader;
+			        Object source = in; // File or InputStream, it seems file is OK
+			        
+			        ImageInputStream iis = ImageIO.createImageInputStream(source);
+					Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
+
+					if ( imageReaders.hasNext() ) {
+					    imageReader = (ImageReader)imageReaders.next();
+					    imageReader.setInput(iis, true);
+					    ImageReadParam param = imageReader.getDefaultReadParam();
+						BufferedImage bImageFromConvert = imageReader.read(0, param);
+						thumbnail = Scalr.resize(bImageFromConvert, 125,125);
+						ByteArrayOutputStream os = new ByteArrayOutputStream();
+						ImageIO.write(thumbnail, "gif", os);
+						bigInputStream = new ByteArrayInputStream(os.toByteArray());
+					}
+				}
+				catch(IOException ioe){
+				}
+			return bigInputStream;
 			}
 			};
 		
-			StreamResource imageResource = new StreamResource(imageSource, "abc.png", parentWindow.getApplication());
-			imageResource.setCacheTime(0);
+		StreamResource imageResource = new StreamResource(imageSource, "abc.png", parentWindow.getApplication());
+		imageResource.setCacheTime(0);
 
-		Embedded embeded = new Embedded("test image",imageResource);
+		Embedded embeded = new Embedded("",imageResource);
+		embeded.setImmediate(true);
 		embeded.requestRepaint();
 		return embeded;
 	}

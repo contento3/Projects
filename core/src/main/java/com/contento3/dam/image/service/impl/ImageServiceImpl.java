@@ -32,6 +32,11 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
+	public ImageDto findImageByNameAndAccountId(final String name,final Integer accountId){
+		return imageAssembler.domainToDto(imageDao.findByNameAndAccountId(name, accountId));
+	}
+
+	@Override
 	public void create(final ImageDto imageDto) {
 		Image image = imageAssembler.dtoToDomain(imageDto);
 		Account account = accountDao.findById(imageDto.getAccountDto().getAccountId());

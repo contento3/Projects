@@ -10,10 +10,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class ContentUIManager implements UIManager{
 
@@ -97,16 +98,15 @@ public class ContentUIManager implements UIManager{
 		final TabSheet elementTab = new TabSheet();
 		elementTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 
-		final VerticalLayout verticalLayout = new VerticalLayout();
+		final CssLayout verticalLayout = new CssLayout();
 
 		Button button = new Button();
 		verticalLayout.addComponent(button);
-		verticalLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		elementTab.addTab(verticalLayout, String.format("%s Management",element));
+		verticalLayout.setSizeFull();
 
 		final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(helper,parentWindow);
-		imageMgmtUIMgr.listImage(1);
-
+		elementTab.addTab(verticalLayout, String.format("%s Management",element));
+		verticalLayout.addComponent(imageMgmtUIMgr.listImage(1));
 		button.addListener(new ClickListener(){
 			public void buttonClick(ClickEvent event){
 				if (element.equals("Article")){

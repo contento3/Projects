@@ -35,17 +35,18 @@ public class StaticResourceViewResolver extends AbstractView {
 			resourcePath = pageUri[1];
 			ImageDto imageDto = imageService.findImageByNameAndAccountId(resourcePath,new Integer(1));
 			response.getOutputStream().write(imageDto.getImage());
+			response.getOutputStream().close();
 		}
 		else {
 			try {
 				TemplateDto templateDto = templateService.findTemplateByPathAndAccount(request.getRequestURI(),new Integer(1));
 				response.getWriter().print(templateDto.getTemplateText());
+				response.getWriter().close();
 			}
 			catch(ResourceNotFoundException rnfe){
 				LOGGER.warn(String.format("Unable to find resource for path [%s]",request.getRequestURI()));
 			}
 		}
-		response.getWriter().close();
 	}
 	
 	public void setTemplateService(final TemplateService templateService){
