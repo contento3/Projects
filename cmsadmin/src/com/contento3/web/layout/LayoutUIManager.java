@@ -4,9 +4,11 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 
+import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.LayoutBuilder;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.dto.PageLayoutTypeDto;
@@ -14,6 +16,8 @@ import com.contento3.cms.page.layout.service.PageLayoutService;
 import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 import com.contento3.cms.page.section.dto.PageSectionDto;
 import com.contento3.cms.page.service.PageService;
+import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
@@ -41,18 +45,25 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class LayoutUIManager implements UIManager {
 	private static final Logger logger = Logger.getLogger(LayoutUIManager.class);
+	private final IndexedContainer container = new IndexedContainer();
+	PageLayoutService pageLayoutService;
+
 
 	public LayoutUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
+		this.parentWindow = parentWindow;
+//		this.layoutService = (SiteService) helper.getBean("layoutService");
+//		this.pageService = (PageService) helper.getBean("pageService");
 	}
 	
 	public void render (){
@@ -82,7 +93,9 @@ public class LayoutUIManager implements UIManager {
     HorizontalSplitPanel horiz;
 	
     private SpringContextHelper helper;
-
+    private Window parentWindow;
+    private SiteService layoutService;
+	private PageService pageService;
 	TabSheet layoutManagerTab;
 	Label layoutHTMLLabel = new Label();
 	/**
@@ -128,42 +141,64 @@ public class LayoutUIManager implements UIManager {
 			
 		}
 
-        // Add a horizontal SplitPanel for work area and preview area
-    	horiz = new HorizontalSplitPanel();
-        horiz.setSplitPosition(35);
-
-        horiz.addListener(new SplitterClickListener(){
-			public void splitterClick(SplitterClickEvent event){
-				
-				int splitPosition = horiz.getSplitPosition();
-				
-		        if (splitPosition==0)
-		        	horiz.setSplitPosition(35);
-		        else
-					horiz.setSplitPosition(0);
-		        	
-			}
-    	});
-    	
-
-    	VerticalLayout layout = new VerticalLayout();
-    	VerticalLayout createNewLayout = new VerticalLayout();
-    	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-        horiz.addComponent(createNewLayout);
-
-    	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
-    	tab3.setClosable(true);
-//    	Button createPageButton = new Button("Create new page");
-//    	createPageButton.addListener(this); // react to clicks
-
-    	Label createNewLayoutLabel = new Label("Create new layout");
-    	createNewLayout.addComponent(createNewLayoutLabel);
-    	buildNewLayoutComponent(createNewLayout);
 		}
-	
+		
 		return layoutManagerTab;
 	}
 	
+	private void addPageToPageListTable(PageLayoutDto page, Integer accountId,
+			TabSheet layoutTab, Button link) {
+
+		Item item = container.addItem(page.getId());
+		item.getItemProperty("Name").setValue(page.getName());
+		link = new Button();
+
+		link.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				// Get the item identifier from the user-defined data.
+				// Integer pageId = (Integer)event.getButton().getData();
+		        // Add a horizontal SplitPanel for work area and preview area
+		    	horiz = new HorizontalSplitPanel();
+		        horiz.setSplitPosition(35);
+
+		        horiz.addListener(new SplitterClickListener(){
+					public void splitterClick(SplitterClickEvent event){
+						
+						int splitPosition = horiz.getSplitPosition();
+						
+				        if (splitPosition==0)
+				        	horiz.setSplitPosition(35);
+				        else
+							horiz.setSplitPosition(0);
+		        	
+					}
+		    	});
+		    	
+		    	VerticalLayout createNewLayout = new VerticalLayout();
+		    	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		        horiz.addComponent(createNewLayout);
+
+		    	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
+		    	tab3.setClosable(true);
+		    	layoutManagerTab.setSelectedTab(horiz);
+		    	
+		    	//		    	Button createPageButton = new Button("Create new page");
+//		    	createPageButton.addListener(this); // react to clicks
+
+		    	Label createNewLayoutLabel = new Label("Create new layout");
+		    	createNewLayout.addComponent(createNewLayoutLabel);
+		    	buildNewLayoutComponent(createNewLayout);
+
+			}
+		});
+
+		link.setCaption("Edit");
+		link.setData(page.getId());
+		link.addStyleName("link");
+		item.getItemProperty("Edit").setValue(link);
+	}
+	
+
 	ComboBox pageLeftSectionCombo;
 	FormLayout pageLeftSectionWidthLayout;
     private void buildNewLayoutComponent(VerticalLayout verticalLayout){
@@ -560,7 +595,7 @@ public class LayoutUIManager implements UIManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 
 	
 }

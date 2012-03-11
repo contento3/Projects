@@ -5,7 +5,7 @@ import java.util.Collection;
 import com.contento3.common.dao.GenericDao;
 import com.contento3.dam.image.model.Image;
 
-public interface ImageDao extends GenericDao<Image,Integer>{
+public interface ImageDao extends GenericDao<Image,String>{
 
 	/**
 	 * Returns a {@link java.util.Collection} of image for an account

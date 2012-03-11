@@ -22,7 +22,7 @@ public class ImageServiceImpl implements ImageService {
 		this.accountDao = accountDao;
 	}
 	
-	public ImageDto findImageById(final Integer imageId){
+	public ImageDto findImageById(final String imageId){
 		return imageAssembler.domainToDto(imageDao.findById(imageId));
 	}
 
