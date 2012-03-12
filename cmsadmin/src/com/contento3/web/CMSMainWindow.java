@@ -282,7 +282,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
      * Returns the set of available actions
      */
     public Action[] getActions(Object target, Object sender) {
-    	System.out.println(target);
     	if (null!=target){
     	if (target.equals("Sites")){
         return SITE_ACTIONS;

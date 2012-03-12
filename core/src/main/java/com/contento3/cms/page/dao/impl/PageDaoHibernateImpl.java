@@ -16,6 +16,8 @@ import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 public class PageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Page,Integer>
 implements PageDao {
 
+	private static final String CACHE_REGION = "com.contento3.cms.page.model.Page";
+
 	PageDaoHibernateImpl(){
 		super(Page.class);
 	}
@@ -40,7 +42,7 @@ implements PageDao {
 		.createCriteria(Page.class)
 		.addOrder(Order.desc("title"))
 		.setCacheable(true)
-		.setCacheRegion("com.contento3.cms.page.model.Page")
+		.setCacheRegion(CACHE_REGION)
 		.add(Restrictions
 		.eq("site.siteId", siteId));
 		return criteria.list();

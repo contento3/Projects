@@ -150,12 +150,22 @@
 		<property name="configLocation" value="classpath:ehcache.xml" />
 	</bean>
 
-	<!--  
+<!-- 
 	<bean id="contentTypeCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
 		<property name="cacheManager" ref="cacheManager" />
 		<property name="cacheName" value="com.contento3.cms.content.model.ContentType" />
 	</bean>
-	-->
+ -->
+	<bean id="pageCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.cms.page.model.Page" />
+	</bean>
+
+	<bean id="siteCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.cms.site.structure.model.Site" />
+	</bean>
+
 	<!-- CategoryDao -->
 	<bean id="categoryDao"
 		class="com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl">

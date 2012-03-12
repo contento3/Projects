@@ -14,15 +14,20 @@ import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site,Integer> 
 								  implements SiteDAO {
 
+	private static final String CACHE_REGION = "com.contento3.cms.site.structure.model.Site";
+	
 	public SiteDAOHibernateImpl(){
 		super(Site.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Site> findByAccount(Integer accountId){
 		Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
 								.createCriteria("account")
+								.setCacheable(true)
+								.setCacheRegion(CACHE_REGION)
 								.add(Restrictions
 								.eq("accountId", accountId));
 		return criteria.list();
