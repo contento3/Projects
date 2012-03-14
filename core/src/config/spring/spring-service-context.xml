@@ -56,6 +56,7 @@
 	<bean id="pageAssembler" class="com.contento3.cms.page.service.impl.PageAssemblerImpl">
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="pageLayoutAssembler" />
+		<constructor-arg ref="categoryAssembler" />
 	</bean>
 
 	<bean id="imageAssembler" class="com.contento3.dam.image.service.impl.ImageAssemblerImpl">

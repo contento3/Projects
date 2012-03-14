@@ -22,7 +22,7 @@ public class ContentUIManager implements UIManager{
 	private Window parentWindow;
 
 	private String[] navigationItems = {NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT};
-	
+
 	public ContentUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
@@ -31,7 +31,7 @@ public class ContentUIManager implements UIManager{
 	public void render(){
 		System.out.println("Rendering content ui ......");
 	}
-	
+
 	@Override
 	public Component render(final String command){
 		Component componentToReturn = null;
@@ -39,7 +39,7 @@ public class ContentUIManager implements UIManager{
 
 		return componentToReturn;
 	}
-	
+
 	@Override
 	public Component render(final String command,final Integer id){
 		System.out.println("Rendering content ui ......");
@@ -69,7 +69,7 @@ public class ContentUIManager implements UIManager{
 
 	public void renderContentNavigationItems(final HierarchicalContainer hwContainer){
 		System.out.println("Rendering content ui 123......");
-		
+
 		for (String navigationItem : navigationItems){
 			Item item = hwContainer.addItem(navigationItem);
 			if (null != item){
@@ -83,7 +83,7 @@ public class ContentUIManager implements UIManager{
 	private Component renderArticleUI(){
 		return renderContentElementUI("Article");
 	}
-	
+
 	private Component renderVideoUI(){
 		TabSheet videoTab = new TabSheet();
 		return renderContentElementUI("Video");
@@ -129,10 +129,10 @@ public class ContentUIManager implements UIManager{
 
    	        }
     	});
-		
+
 		button.setCaption(String.format("Add %s",element));
-		
+
 		return elementTab;
 	}
-	
+
 }

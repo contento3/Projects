@@ -3,6 +3,7 @@ package com.contento3.cms.page.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.contento3.cms.page.category.service.CategoryAssembler;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.layout.service.PageLayoutAssembler;
 import com.contento3.cms.page.model.Page;
@@ -13,10 +14,13 @@ public class PageAssemblerImpl implements PageAssembler {
 
 	private SiteAssembler siteAssembler;
 	private PageLayoutAssembler pageLayoutAssembler;
+	private CategoryAssembler categoryAssembler;
 
-	public PageAssemblerImpl(final SiteAssembler siteAssembler,final PageLayoutAssembler pageLayoutAssembler){
+	public PageAssemblerImpl(final SiteAssembler siteAssembler,final PageLayoutAssembler pageLayoutAssembler,
+			final CategoryAssembler categoryAssembler){
 		this.siteAssembler = siteAssembler;
 		this.pageLayoutAssembler = pageLayoutAssembler;
+		this.categoryAssembler = categoryAssembler;
 	}
 		
 	public Page dtoToDomain(final PageDto dto){
@@ -25,7 +29,7 @@ public class PageAssemblerImpl implements PageAssembler {
 		page.setUri(dto.getUri());
 		page.setTitle(dto.getTitle());
 		page.setSite(siteAssembler.dtoToDomain(dto.getSite()));
-		
+		page.setCategories(categoryAssembler.dtosToDomains(dto.getCategories()));
 		if (null!=dto.getPageLayoutDto()){
 			page.setPageLayout(pageLayoutAssembler.dtoToDomainWithPageSections(dto.getPageLayoutDto()));
 		}
@@ -37,6 +41,7 @@ public class PageAssemblerImpl implements PageAssembler {
 		domain.setUri(dto.getUri());
 		domain.setTitle(dto.getTitle());
 		domain.setSite(siteAssembler.dtoToDomain(dto.getSite()));
+		domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategories()));
 		
 		if (null!=dto.getPageLayoutDto()){
 			domain.setPageLayout(pageLayoutAssembler.dtoToDomainWithPageSections(dto.getPageLayoutDto()));
@@ -50,6 +55,8 @@ public class PageAssemblerImpl implements PageAssembler {
 		dto.setUri(domain.getUri());
 		dto.setTitle(domain.getTitle());
 		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
+		dto.setCategories(categoryAssembler.domainsToDtos(domain.getCategories()));
+		System.out.println("the page is :"+domain.getPageId());
 		dto.setPageLayoutDto(pageLayoutAssembler.domainToDto(domain.getPageLayout()));
 		return dto;
 	}

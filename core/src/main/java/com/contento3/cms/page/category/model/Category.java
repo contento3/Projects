@@ -16,18 +16,18 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "Category")
+@Table(name = "CATEGORY")
 public class Category implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "Category_Id")
+	@Column(name = "CATEGORY_ID")
 	private Integer categoryId;
 
-	@Column(name = "Category_Name")
+	@Column(name = "CATEGORY_NAME")
 	private String categoryName;
 
 	@ManyToOne
-	@JoinColumn(name = "Parent_Category_Id")
+	@JoinColumn(name = "PARENT_CATEGORY_ID")
 	private Category parent;
 	
 	@OneToMany(mappedBy = "parent")

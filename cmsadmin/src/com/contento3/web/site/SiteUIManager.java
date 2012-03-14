@@ -1,5 +1,6 @@
 package com.contento3.web.site;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -10,6 +11,9 @@ import org.springframework.util.CollectionUtils;
 
 
 import com.contento3.account.dto.AccountDto;
+import com.contento3.cms.page.category.dto.CategoryDto;
+import com.contento3.cms.page.category.model.Category;
+import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
@@ -35,6 +39,8 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -48,6 +54,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
@@ -55,10 +62,14 @@ import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.BaseTheme;
+import java.util.Collections;
+import com.vaadin.ui.Window.Notification;
+
 
 /**
  * Used to render ui related to sites and site pages.
@@ -86,10 +97,9 @@ public class SiteUIManager implements UIManager {
 	private PageService pageService;
 	private Integer siteid;
 	private  Collection <SiteDomainDto> siteDomainDto;
-	
+	private Collection<CategoryDto> categories;
 
-	public SiteUIManager(final SpringContextHelper helper,
-			final Window parentWindow) {
+	public SiteUIManager(final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
 		this.parentWindow = parentWindow;
 		this.siteService = (SiteService) contextHelper.getBean("siteService");
@@ -176,6 +186,8 @@ public class SiteUIManager implements UIManager {
 		// tab
 		final VerticalLayout pageLayout = new VerticalLayout();
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
+		horizontalLayout.setSpacing(true);
+
 		pagesTab.addComponent(pageLayout);
 		pagesTab.setHeight("675");
 		pagesTab.setWidth("775");
@@ -218,11 +230,12 @@ public class SiteUIManager implements UIManager {
 				renderSiteConfig(siteId, pagesTab, null);
 			}
 		});
+
+
+
 		pageLayout.addComponent(horizontalLayout);
-		final PageService pageService = (PageService) contextHelper
-				.getBean("pageService");
-		final Collection<PageDto> pageDtos = pageService
-				.findPageBySiteId(siteId);
+		final PageService pageService = (PageService) contextHelper.getBean("pageService");
+		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
 
 		if (!CollectionUtils.isEmpty(pageDtos)) {
 			container.addContainerProperty("Title", String.class, null);
@@ -269,6 +282,7 @@ public class SiteUIManager implements UIManager {
 		item.getItemProperty("Edit").setValue(link);
 	}
 
+
 	/**
 	 * Used to render a tab to configure site.This includes selecting layout for
 	 * page and other site related information.
@@ -279,14 +293,14 @@ public class SiteUIManager implements UIManager {
 
 	private void renderSiteConfig(final Integer siteId,
 			final TabSheet tabSheet, final Integer pageId) {
-		
+
 		this.siteid = siteId;
 		final SiteDto siteDto = siteService.findSiteById(siteId);
 		siteDomainDto = siteDto.getSiteDomainDto();
 		VerticalLayout verticalLayout = new VerticalLayout();
 		final FormLayout configSiteFormLayout = new FormLayout();
 		verticalLayout.addComponent(configSiteFormLayout);
-		
+
 		final String siteNameTxt = siteDto.getSiteName();
 		Label siteNameLabel = new Label("Site Name: " + "<b>" + siteNameTxt
 				+ "</b>");
@@ -301,13 +315,13 @@ public class SiteUIManager implements UIManager {
 		String saveButtonTitle = "Save";
 		final Button siteSaveButton = new Button(saveButtonTitle);
 		final Label label = new Label("No domains found for this site.");
-		
+
 		domainsContainer.addContainerProperty("Domains", String.class, null);
 		domainsContainer.addContainerProperty("Delete", Button.class, null);
-		
+
 		//adding rows in Domains Table from DB
 		if (!CollectionUtils.isEmpty(siteDto.getSiteDomainDto())) {
-			
+
 			for (SiteDomainDto domain : siteDto.getSiteDomainDto()) {
 				Button delete = new Button();
 				addDomainsListTable(domain, domainsTable, delete, siteId);
@@ -325,7 +339,8 @@ public class SiteUIManager implements UIManager {
 			domainsTable.setVisible(false);
 		}
 		HorizontalLayout horizLayout = new HorizontalLayout();
-		
+
+
 		editButton.setCaption("Edit");
 		editButton.addStyleName("edit");
 		editButton.addListener(new Button.ClickListener() {
@@ -342,20 +357,20 @@ public class SiteUIManager implements UIManager {
 					parentWindow.showNotification(String.format(
 							"Domains have been changed successfully"));
 				}
-				
+
 			}
 		});
-		
+
 		addDomainButton.setCaption("Add Domain");
 		addDomainButton.addStyleName("add");
-		 
+
 		horizLayout.addComponent(addDomainButton);
-		
+
 		horizLayout.addComponent(editButton);
 		configSiteFormLayout.addComponent(horizLayout);
 
 		String pageTabTitle = "Site Config: [" + siteNameTxt + "]";
-		
+
 		Tab newPageTab = tabSheet.addTab(verticalLayout, pageTabTitle, null);
 		tabSheet.setSelectedTab(verticalLayout);
 		newPageTab.setVisible(true);
@@ -363,7 +378,7 @@ public class SiteUIManager implements UIManager {
 		newPageTab.setClosable(true);
 
 		// List box to select Page layouts
-		
+
 		final PageLayoutService pageLayoutService = (PageLayoutService) contextHelper
 				.getBean("pageLayoutService");
 
@@ -378,7 +393,7 @@ public class SiteUIManager implements UIManager {
 		pageLayoutCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 		pageLayoutCombo.setValue(siteDto.getDefaultLayoutId());
-		
+
 		/* addDomainButton Listener*/
 		addDomainButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -387,10 +402,10 @@ public class SiteUIManager implements UIManager {
 				siteDomainDto = siteDto.getSiteDomainDto();
 				final Button deleteLink = new Button();
 				domainsTable.setEditable(!domainsTable.isEditable());
-				
+
 				addDomainButton.setCaption((domainsTable.isEditable() ? "Done"
 						: "Add Domain"));
-				
+
 
 				if(addDomainButton.getCaption().equals("Add Domain")){
 
@@ -401,10 +416,11 @@ public class SiteUIManager implements UIManager {
 					domaindto.setDomainId(null);
 					domaindto.setDomainName(domainName);
 					siteDomainDto.add(domaindto);
-					saveSiteDto(siteDto,siteDomainDto, domainsTable, pageLayoutService, pageLayoutCombo, siteNameTxt);
+					//saveSiteDto(siteDto,siteDomainDto, domainsTable, pageLayoutService, pageLayoutCombo, siteNameTxt);
 					parentWindow.showNotification(String.format(
 							"Domain %s added successfullly",
 								domainName));
+
 				}
 				else {
 					label.setVisible(false);
@@ -417,18 +433,18 @@ public class SiteUIManager implements UIManager {
 					deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 					item.getItemProperty("Delete").setValue(deleteLink);
 					editButton.setEnabled(false);
-					
+
 					deleteLink.addListener(new Button.ClickListener() {
 						public void buttonClick(ClickEvent event) {
-	
+
 							SiteDomainService siteDomainService = (SiteDomainService) contextHelper
 									.getBean("siteDomainService");
-	
+
 							Object id = deleteLink.getData();
 							String domainName = (String) domainsTable
 									.getContainerProperty(id, "Domains")
 									.getValue();
-	
+
 							Iterator<SiteDomainDto> itr = siteDomainDto
 									.iterator();
 							while (itr.hasNext()) {
@@ -446,30 +462,30 @@ public class SiteUIManager implements UIManager {
 										domainName));
 						}
 					}); //end deleteLink listener
-	
+
 				}//end else
 			}
 		});//end addDomainButton listener
 
-		
+
 		/* siteSaveButton Listener*/
 		siteSaveButton.addListener(new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			public void buttonClick(ClickEvent event) {
-				
+
 				saveSiteDto(siteDto,siteDomainDto, domainsTable, pageLayoutService, pageLayoutCombo, siteNameTxt);
 				parentWindow.showNotification(String.format(
 						"SiteConfig for %s saved successfullly",
 								siteNameTxt));
-				
+
 			}// end buttonClick
 
 		});// end siteSaveButton listener
-		
+
 	}// end renderSiteConfig()
-	
+
 	/**
 	 * save siteDto into DB
 	 * 
@@ -480,10 +496,10 @@ public class SiteUIManager implements UIManager {
 	 * @param pageLayoutCombo
 	 * @param siteNameTxt
 	 */
-	
+
 	private void saveSiteDto(final SiteDto siteDto,final Collection<SiteDomainDto> siteDomainDto, final Table domainsTable,final PageLayoutService pageLayoutService,
 			final ComboBox pageLayoutCombo, final String siteNameTxt) {
-		
+
 		Integer siteId=this.siteid;
 		final AccountDto accountDto = siteDto.getAccountDto();
 		Iterator<SiteDomainDto> itr= siteDomainDto.iterator();
@@ -508,7 +524,7 @@ public class SiteUIManager implements UIManager {
 							Integer.parseInt(pageLayoutCombo.getValue()
 									.toString())).getId());
 			siteService.update(siteDto);
-			
+
 
 	/*
 	 * delete row which has id=-1 and
@@ -535,7 +551,7 @@ public class SiteUIManager implements UIManager {
 		}// end if
 
 	}//end saveSiteDto	
-	
+
 
 	/**
 	 * Used to add domain name in container
@@ -547,29 +563,29 @@ public class SiteUIManager implements UIManager {
 	 */
 	private void addDomainsListTable(final SiteDomainDto domain,
 			final Table table,final  Button deleteLink,final Integer siteId) {
-		
+
 		final Item item = domainsContainer.addItem(domain.getDomainId());
 		item.getItemProperty("Domains").setValue(domain.getDomainName());
-		
+
 		deleteLink.setCaption("Delete");
 		deleteLink.setData(domain.getDomainId());
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("Delete").setValue(deleteLink);
-		
-		
+
+
 		deleteLink.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-			
+
 				final SiteDto siteDto = siteService.findSiteById(siteId);
 				siteDomainDto = siteDto.getSiteDomainDto();
 				SiteDomainService siteDomainService = (SiteDomainService) contextHelper
 						.getBean("siteDomainService");
-				
+
 				Object id = deleteLink.getData();
 				String domainName = (String) table.getContainerProperty(id,
 						"Domains").getValue();
-				
+
 				Iterator<SiteDomainDto> itr = siteDomainDto.iterator();
 				while(itr.hasNext()){
 					SiteDomainDto dto = itr.next();
@@ -581,13 +597,12 @@ public class SiteUIManager implements UIManager {
 						break;
 					}
 				}
-				
+
 			}
 		});
-	
+
 	}
-	
-	
+
 
 	/**
 	 * Used to render a tab to create a new page.This includes selecting layout
@@ -602,12 +617,29 @@ public class SiteUIManager implements UIManager {
 
 		final FormLayout newPageFormLayout = new FormLayout();
 		newPageParentlayout.addComponent(newPageFormLayout);
+
 		final TextField titleTxt = new TextField();
 		titleTxt.setCaption("Title");
 
 		final TextField uriTxt = new TextField();
 		uriTxt.setCaption("Uri");
+		final Label categoryLabel = new Label();
 
+		// Button for assigning category 
+		String addCateogryButtonText = "Assign Category";
+		Button addCateogryButton = new Button(addCateogryButtonText);
+		addCateogryButton.addListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+
+			public void buttonClick(ClickEvent event) {
+				renderCategory(siteId, pagesTab, pageId,categoryLabel);
+			}
+		});
+		HorizontalLayout horiz = new HorizontalLayout();
+		horiz.setSpacing(true);
+		horiz.addComponent(categoryLabel);
+		horiz.addComponent(addCateogryButton);
+		newPageFormLayout.addComponent(horiz);
 		newPageFormLayout.addComponent(titleTxt);
 		newPageFormLayout.addComponent(uriTxt);
 
@@ -627,7 +659,16 @@ public class SiteUIManager implements UIManager {
 			pageTabTitle = String.format("Edit %s", pageDto.getTitle());
 			pageButtonTitle = "Save";
 		}
-
+		Iterator<CategoryDto> itr=pageDto.getCategories().iterator();
+		if(itr.hasNext()){
+			CategoryDto dto = itr.next();
+			categoryLabel.setValue("Category: " + dto.getCategoryName());
+			addCateogryButton.setCaption("Change Category");
+		}
+		else{
+			categoryLabel.setValue("No Category Assigned");
+			addCateogryButton.setCaption("Assign Category");
+		}
 		Tab newPageTab = tabSheet.addTab(newPageParentlayout, pageTabTitle,
 				null);
 		tabSheet.setSelectedTab(newPageParentlayout);
@@ -651,6 +692,7 @@ public class SiteUIManager implements UIManager {
 		newPageFormLayout.addComponent(newPageSubmitBtn);
 		pageLayoutCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
+
 		newPageSubmitBtn.addListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 
@@ -661,6 +703,7 @@ public class SiteUIManager implements UIManager {
 				pageDto.setTitle(titleTxt.getValue().toString());
 				pageDto.setUri(uriTxt.getValue().toString());
 				pageDto.setSite(siteDto);
+				pageDto.setCategories(categories);
 
 				if (null != pageLayoutCombo.getValue()) {
 					pageDto.setPageLayoutDto(pageLayoutService
@@ -681,7 +724,7 @@ public class SiteUIManager implements UIManager {
 					newPageDtoWithLayout = pageService.createAndReturn(pageDto);
 					addPageToPageListTable(newPageDtoWithLayout, siteId, pagesTab,
 							new Button());
-	
+
 					// Render the page layout by splitting them with page sections
 					// and add them to the parent layout i.e. VerticalLayout
 					newPageParentlayout
@@ -690,7 +733,7 @@ public class SiteUIManager implements UIManager {
 							"Page %s added successfullly",
 							newPageDtoWithLayout.getTitle());
 				}
-				
+
 				parentWindow.showNotification(notificationMsg);
 				}
 				catch(EntityAlreadyFoundException e){
@@ -698,6 +741,7 @@ public class SiteUIManager implements UIManager {
 				}
 
 			}
+
 		});
 
 		// Call for editing
@@ -706,6 +750,63 @@ public class SiteUIManager implements UIManager {
 					newPageFormLayout));
 		}
 	}
+
+	/**
+	 * Used to render a tab to assign acategory to page.
+	 * 
+	 * @param siteId
+	 * @param tabSheet
+	 * @param pageId
+	 * @param categoryLabel
+	 */
+
+	private void renderCategory(final Integer siteId,
+			final TabSheet tabSheet, final Integer pageId,final Label categoryLabel) {
+
+		VerticalLayout verticalLayout = new VerticalLayout();
+		final FormLayout categoryFormLayout = new FormLayout();
+		verticalLayout.addComponent(categoryFormLayout);
+		CategoryService categoryService = (CategoryService)contextHelper.getBean("categoryService");
+		Collection<CategoryDto> categoryDto = categoryService.findNullParentIdCategory();
+		final Tree categoryTree = new Tree("Categories");
+		categoryTree.setImmediate(true);
+		categoryTree.setContainerDataSource(getParentCategories(categoryDto));
+		categoryFormLayout.addComponent(categoryTree);
+		categoryTree.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		categoryTree.setItemCaptionPropertyId("name");
+		categoryTree.addListener(new ItemClickListener() {
+			private static final long serialVersionUID = -4607219466099528006L;
+
+        	public void itemClick(ItemClickEvent event) {
+        		
+        		categoryTree.expandItem(event.getItemId());
+        		Integer itemId = (Integer) event.getItemId();
+        		String name = (String) categoryTree.getContainerProperty(itemId, "name").getValue();
+
+        		PageDto pageDto = pageService.findPageBySiteId(siteId, pageId);
+        		
+				categories = pageDto.getCategories();//new ArrayList<CategoryDto>();
+				CategoryDto category = new CategoryDto();
+				category.setCategoryId(itemId);
+				category.setCategoryName(name);
+				category.setParent(null);
+				category.setChild(null);
+				categories.add(category);
+				//pageDto.setCategory(categories);
+                categoryLabel.setValue("Category: "+name);
+        		
+        	}//end itemClick
+        });
+
+		final String pageTabTitle = "New Category";
+		Tab newPageTab = tabSheet.addTab(verticalLayout, pageTabTitle, null);
+		tabSheet.setSelectedTab(verticalLayout);
+		newPageTab.setVisible(true);
+		newPageTab.setEnabled(true);
+		newPageTab.setClosable(true);
+
+
+	}//end renderCategory()
 
 	/**
 	 * Populate the page ui if the tab is opened for editing.
@@ -718,16 +819,16 @@ public class SiteUIManager implements UIManager {
 	private TabSheet populatePage(final PageDto pageDto,
 			final FormLayout newPageFormLayout) {
 
-		((TextField) newPageFormLayout.getComponent(0)).setValue(pageDto
-				.getTitle());
 		((TextField) newPageFormLayout.getComponent(1)).setValue(pageDto
+				.getTitle());
+		((TextField) newPageFormLayout.getComponent(2)).setValue(pageDto
 				.getUri());
 
 		// This will be used to be passed to the template assignment sub window
 		selectedPageId = pageDto.getPageId();
 
 		if (null != pageDto.getPageLayoutDto()) {
-			((ComboBox) newPageFormLayout.getComponent(2)).select(pageDto
+			((ComboBox) newPageFormLayout.getComponent(3)).select(pageDto
 					.getPageLayoutDto().getId());
 		}
 		return renderPageLayouts(pageDto);
@@ -763,6 +864,7 @@ public class SiteUIManager implements UIManager {
 			while (pageSectionIterator.hasNext()) {
 				final VerticalLayout pageSectionLayout = new VerticalLayout();
 				pageLayoutsTab.addComponent(pageSectionLayout);
+				pageLayoutsTab.setSizeFull();
 				renderPageSection(pageLayoutsTab, pageSectionLayout,
 						pageSectionIterator.next(), pageTemplateDto);
 			}
@@ -773,8 +875,7 @@ public class SiteUIManager implements UIManager {
 			pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
 			renderPageTemplateList(pageSectionLayout,
 					PageSectionTypeEnum.CUSTOM);
-			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup(
-					"Open", parentWindow, contextHelper));
+			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper));
 		}
 		return pageLayoutsTab;
 	}
@@ -791,8 +892,7 @@ public class SiteUIManager implements UIManager {
 				.findByPageAndPageSectionType(selectedPageId,
 						sectionTypeDto.getId());
 
-	if (!CollectionUtils.isEmpty(newPageTemplates)){		Panel panel;		IndexedContainer templateContainer = new IndexedContainer();				templateContainer.addContainerProperty("Template", String.class, null);		templateContainer.addContainerProperty("Order", String.class, null);		templateContainer.addContainerProperty("Remove", Button.class, null);		Table templateTable = new Table();		Button link = null;		templateTable.setContainerDataSource(templateContainer);		templateTable.setSizeFull();		templateTable.setSortContainerPropertyId("Order");		templateTable.setPageLength(newPageTemplates.size());		for (PageTemplateDto dto : newPageTemplates) {			Item item = templateContainer.addItem(dto.getTemplateId());			item.getItemProperty("Template").setValue(dto.getTemplateName());			item.getItemProperty("Order").setValue(dto.getOrder());			link = new Button();			link.addListener(new Button.ClickListener() {				public void buttonClick(ClickEvent event) {				}			});			link.setCaption("Remove");			link.setData(dto.getTemplateId());			link.addStyleName("link");			item.getItemProperty("Remove").setValue(link);		}				pageSectionLayout.addComponent(templateTable);		}		else {			final Label label = new Label("No template found for this page.");			pageSectionLayout.addComponent(label);			pageSectionLayout.setSpacing(true);			pageSectionLayout.setSizeFull();			}
-
+		if (!CollectionUtils.isEmpty(newPageTemplates)){
 	}
 
 	public void renderPageSection(final TabSheet pageLayoutsTab,
@@ -854,6 +954,31 @@ public class SiteUIManager implements UIManager {
 		}
 
 		container.sort(new Object[] { "name" }, new boolean[] { true });
+		return container;
+	}
+
+	/**
+	 * Returns a Container with all the Parent Categories.
+	 * 
+	 * @param categoryList
+	 * @return
+	 */
+	private IndexedContainer getParentCategories(
+			final Collection<CategoryDto> categoryList) {
+		IndexedContainer container = new IndexedContainer();
+		container.addContainerProperty("name", String.class, null);
+		container.addContainerProperty("value", String.class, null);
+		Iterator<CategoryDto> categoryIterator = categoryList.iterator();
+
+		for(CategoryDto categoryDto :categoryList){
+			Integer catId = categoryDto.getCategoryId();
+			Item categoryItem = container.addItem(catId);
+			categoryItem.getItemProperty("name").setValue(
+					categoryDto.getCategoryName());
+			categoryItem.getItemProperty("value").setValue(catId);
+		}
+
+		container.sort(new Object[] { "Categories" }, new boolean[] { true });
 		return container;
 	}
 

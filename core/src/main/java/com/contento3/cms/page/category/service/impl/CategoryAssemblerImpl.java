@@ -7,6 +7,7 @@ import java.util.Iterator;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.category.service.CategoryAssembler;
+import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.Template;
 
@@ -47,10 +48,9 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 	@Override
 	public Collection<Category> dtosToDomains(Collection<CategoryDto> dtos) {
 		Collection <Category> domains = new ArrayList<Category>();
-		
-		Iterator<Category> iterator = domains.iterator();
-		while (iterator.hasNext()){
-			dtos.add(domainToDto(iterator.next()));
+
+		for (CategoryDto category : dtos){
+			domains.add(dtoToDomain(category));
 		}
 		return domains;
 	}//end dtosToDomains()

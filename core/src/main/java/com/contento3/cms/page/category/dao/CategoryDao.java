@@ -2,6 +2,8 @@ package com.contento3.cms.page.category.dao;
 
 
 
+import java.util.Collection;
+
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.common.dao.GenericDao;
 
@@ -14,6 +16,9 @@ public interface CategoryDao extends GenericDao<Category,Integer>{
 	 */
 	Category findCategoryByName(String categoryName);
 		
-	
-
+	/**
+	 * Returns the categories whose parentId = null
+	 * @return 
+	 */
+	Collection<Category> findNullParentIdCategory();
 }

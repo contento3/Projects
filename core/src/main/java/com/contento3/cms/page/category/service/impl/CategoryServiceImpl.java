@@ -1,5 +1,7 @@
 package com.contento3.cms.page.category.service.impl;
 
+import java.util.Collection;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,6 +10,11 @@ import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.category.service.CategoryAssembler;
 import com.contento3.cms.page.category.service.CategoryService;
+import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.model.Page;
+import com.contento3.cms.page.template.dto.TemplateDto;
+import com.contento3.cms.page.template.service.TemplateAssembler;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class CategoryServiceImpl implements CategoryService {
@@ -32,6 +39,11 @@ public class CategoryServiceImpl implements CategoryService {
 		Category category = categoryAssembler.dtoToDomain(dto);
 		return category;
 	}//end dtoToDomain()
+	
+	public Collection<Category> dtosToDomains(final Collection<CategoryDto> dtos){
+		Collection<Category> category = categoryAssembler.dtosToDomains(dtos);
+		return category;
+	}//end dtosToDomains()
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -40,5 +52,12 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryAssembler.domainToDto(category);
 	}//end findCategoryByName()
 
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Collection<CategoryDto> findNullParentIdCategory(){
+		Collection<Category> category = categoryDao.findNullParentIdCategory();
+		return categoryAssembler.domainsToDtos(category);
+		
+	}//end findNullParentIdCategory()
 	
 }//end CategoryServiceImpl class

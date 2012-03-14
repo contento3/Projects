@@ -1,5 +1,8 @@
 package com.contento3.cms.page.dto;
 
+import java.util.Collection;
+
+import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -35,6 +38,20 @@ public class PageDto {
 	 * site to which this page is associated
 	 */
 	private SiteDto site;
+	
+	/**
+	 * categories to which this page is associated
+	 */
+	private Collection<CategoryDto> categories;
+
+
+	public Collection<CategoryDto> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(Collection<CategoryDto> categories) {
+		this.categories = categories;
+	}
 
 	public String getTitle() {
 		return title;
