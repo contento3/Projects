@@ -18,5 +18,5 @@ public interface GroupDao extends GenericDao <Group, String> {
 	 * @return
 	 */
 	Collection <Group> findByGroupName(String groupName);
-
+	
 }

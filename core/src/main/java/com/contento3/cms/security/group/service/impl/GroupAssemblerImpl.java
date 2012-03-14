@@ -27,7 +27,6 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		GroupDto dto = new GroupDto();
 		dto.setGroupId(domain.getGroupId());
 		dto.setGroupName(domain.getGroupName());
-		System.out.println("the group is :"+domain.getGroupId());
 		return dto;
 	}
 
