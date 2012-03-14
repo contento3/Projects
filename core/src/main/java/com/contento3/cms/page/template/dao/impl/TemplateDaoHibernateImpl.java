@@ -12,6 +12,8 @@ import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Template,Integer> 
  implements  TemplateDao {
 
+	private static final String CACHE_REGION = "com.contento3.cms.page.template.model.Template";
+
 	public TemplateDaoHibernateImpl() {
 		super(Template.class);
 	}
@@ -20,6 +22,8 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 	public Collection<Template> findTemplateByDirectoryName(final String name){
 		Criteria criteria = this.getSession()
 		.createCriteria(Template.class)
+		.setCacheable(true)
+		.setCacheRegion(CACHE_REGION)
 		.createCriteria("directory")
 		.add(Restrictions
 		.eq("directoryName", name));
@@ -31,7 +35,10 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 	public Collection<Template> findTemplateByPathAndAccount(final String templateName,final String parentDirectory,
 			final String templateType,final Integer accountId){
 		Criteria criteria = this.getSession()
-		.createCriteria(Template.class,"template").add(Restrictions
+		.createCriteria(Template.class,"template")
+		.setCacheable(true)
+		.setCacheRegion(CACHE_REGION)
+		.add(Restrictions
 		.eq("template.templateName", templateName));
 		
 		

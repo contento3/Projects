@@ -19,11 +19,11 @@ public class CacheMonitor {
 	  
 	private SessionFactory sessionFactory;
 	   
-	@Around("execution(* com.contento3.cms.dao..*.*.dao..*.*(..))")
+	@Around("execution(* com.contento3.cms..**.dao.*.*(..))")
 	public Object log(ProceedingJoinPoint pjp) throws Throwable {
-	      if (!LOG.isDebugEnabled()) {
-	         return pjp.proceed();
-	      }
+//	      if (!LOG.isDebugEnabled()) {
+//	         return pjp.proceed();
+//	      }
 	      
 		Statistics statistics = sessionFactory.getStatistics();
 		statistics.setStatisticsEnabled(true);
@@ -39,13 +39,13 @@ public class CacheMonitor {
 		double ratio = (double) hit1 / (hit1 + miss1);
 
 	    if (hit1 > hit0) {
-	    	LOG.debug(String.format("CACHE HIT; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
+	    	LOG.info(String.format("CACHE HIT; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
 	    }
 	    else if (miss1 > miss0){
-	    	LOG.debug(String.format("CACHE MISS; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
+	    	LOG.info(String.format("CACHE MISS; Ratio=%s; Signature=%s#%s()", NF.format(ratio), pjp.getTarget().getClass().getName(), pjp.getSignature().toShortString()));
 	    }
 	    else {
-	    	LOG.debug("query cache not used");
+	    	LOG.info("query cache not used");
 	    }
 	      
       return result;

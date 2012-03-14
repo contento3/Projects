@@ -37,6 +37,7 @@
 			     <value>com.contento3.cms.page.category.model.Category</value>
 			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
 			     <value>com.contento3.cms.article.model.Article</value>
+			     <value>com.contento3.cms.security.group.model.Group</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -48,7 +49,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
@@ -150,22 +151,6 @@
 		<property name="configLocation" value="classpath:ehcache.xml" />
 	</bean>
 
-<!-- 
-	<bean id="contentTypeCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-		<property name="cacheManager" ref="cacheManager" />
-		<property name="cacheName" value="com.contento3.cms.content.model.ContentType" />
-	</bean>
- -->
-	<bean id="pageCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-		<property name="cacheManager" ref="cacheManager" />
-		<property name="cacheName" value="com.contento3.cms.page.model.Page" />
-	</bean>
-
-	<bean id="siteCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-		<property name="cacheManager" ref="cacheManager" />
-		<property name="cacheName" value="com.contento3.cms.site.structure.model.Site" />
-	</bean>
-
 	<!-- CategoryDao -->
 	<bean id="categoryDao"
 		class="com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl">
@@ -181,6 +166,21 @@
 	<bean id="ArtcileDao"
 		class=" com.contento3.cms.article.dao.impl.ArticleDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="templateCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.cms.page.template.model.Template" />
+	</bean>
+
+	<bean id="pageCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.cms.page.model.Page" />
+	</bean>
+
+	<bean id="siteCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.cms.site.structure.model.Site" />
 	</bean>
 	
 </beans>

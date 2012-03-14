@@ -15,6 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.contento3.account.model.Account;
 import com.contento3.cms.site.structure.domain.model.SiteDomain;
 
@@ -24,6 +27,7 @@ import com.contento3.cms.site.structure.domain.model.SiteDomain;
  *
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "SITE")
 public class Site implements Serializable {
 
