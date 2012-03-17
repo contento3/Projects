@@ -94,7 +94,6 @@ implements PageDao {
 		List result = criteria.list();
 		if (!result.isEmpty()) {
 		rowCount = (Long) result.get(0);
-		System.out.println("Total records: " + rowCount);
 
 	//http://www.kodejava.org/examples/397.html
 //	.setProjection(Projections.rowCount());

@@ -67,13 +67,11 @@ public class LayoutUIManager implements UIManager {
 	}
 	
 	public void render (){
-		System.out.println("Rendering the layout manager");
 	}
 	
 	
 	@Override
 	public Component render(final String command,final Integer id){
-		System.out.println("Rendering the layout manager");
 		return null;
 	}
 	
@@ -130,7 +128,6 @@ public class LayoutUIManager implements UIManager {
 			table.setContainerDataSource(container);
 			layoutManagerTab.addComponent(table);
 			for (PageLayoutDto page : layoutDtos) {
-				System.out.println("Collection: "+page);
 				addPageToPageListTable(page, accountId, layoutManagerTab, link);
 				
         }
@@ -316,7 +313,6 @@ public class LayoutUIManager implements UIManager {
 				String selectedValue = (String)mainBodySplit.getValue();
 				layoutBuilder.addNewBodyRow(selectedValue);
 				layoutHTMLLabel.setCaption(selectedValue);
-				System.out.print(layoutBuilder.getLayoutHTML());
 			//	refreshPreview();
 			}
     	});
@@ -373,7 +369,6 @@ public class LayoutUIManager implements UIManager {
 //				layoutBuilder.addNewBodyRow(selectedValue);
 
 				layoutHTMLLabel.setCaption(layoutBuilder.getLayoutHTML());
-				//System.out.print(layoutBuilder.getLayoutHTML());
 				
 				refreshPreview();
 				

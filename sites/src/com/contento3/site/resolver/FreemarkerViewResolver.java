@@ -1,8 +1,6 @@
 package com.contento3.site.resolver;
 
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +12,7 @@ import org.springframework.web.servlet.view.AbstractView;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.site.template.render.engine.RenderingEngine;
+import com.contento3.util.DomainUtil;
 
 public class FreemarkerViewResolver extends AbstractView {
 	private static final Logger LOGGER = Logger.getLogger(FreemarkerViewResolver.class);
@@ -36,7 +35,7 @@ public class FreemarkerViewResolver extends AbstractView {
 			pagePath = pageUri[0];
 		}
 			
-		SiteDto siteDto = siteService.findSiteByDomain(fetchDomain(request));	
+		SiteDto siteDto = siteService.findSiteByDomain(DomainUtil.fetchDomain(request));	
 		PrintWriter writer = response.getWriter();
 
 		// Read the data file and process the template using FreeMarker
@@ -58,11 +57,6 @@ public class FreemarkerViewResolver extends AbstractView {
 
 	public void setSiteService(final SiteService siteService){
 		this.siteService = siteService;
-	}
-
-	private String fetchDomain(HttpServletRequest request) throws MalformedURLException {
-		URL url = new URL(request.getRequestURL().toString());
-		return url.getHost();
 	}
 
 }

@@ -225,7 +225,6 @@ public class LayoutManagerRenderer
 				String selectedValue = (String)mainBodySplit.getValue();
 				layoutBuilder.addNewBodyRow(selectedValue);
 				layoutHTMLLabel.setCaption(selectedValue);
-				System.out.print(layoutBuilder.getLayoutHTML());
 			//	refreshPreview();
 			}
     	});
@@ -280,7 +279,6 @@ public class LayoutManagerRenderer
 //				layoutBuilder.addNewBodyRow(selectedValue);
 
 				layoutHTMLLabel.setCaption(layoutBuilder.getLayoutHTML());
-				System.out.print(layoutBuilder.getLayoutHTML());
 				
 				refreshPreview();
    	        }

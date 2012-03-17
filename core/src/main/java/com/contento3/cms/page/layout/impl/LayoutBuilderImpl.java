@@ -469,7 +469,6 @@ public class LayoutBuilderImpl implements LayoutBuilder  {
     		pageSectionDtoList.add(bodySection);
     	}
 
-//    	System.out.print(html);
     	return pageSectionDtoList;
     }
 

@@ -56,7 +56,6 @@ public class PageAssemblerImpl implements PageAssembler {
 		dto.setTitle(domain.getTitle());
 		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
 		dto.setCategories(categoryAssembler.domainsToDtos(domain.getCategories()));
-		System.out.println("the page is :"+domain.getPageId());
 		dto.setPageLayoutDto(pageLayoutAssembler.domainToDto(domain.getPageLayout()));
 		return dto;
 	}

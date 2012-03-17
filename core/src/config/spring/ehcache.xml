@@ -9,6 +9,17 @@
             diskPersistent="false"
             diskExpiryThreadIntervalSeconds="120"/>
 
+  <!-- Page Caching -->
+  <diskStore path="java.io.tmpdir" />
+  <cache name="SimplePageCachingFilter"
+         maxElementsInMemory="0"
+         eternal="false"
+         timeToIdleSeconds="600"
+         timeToLiveSeconds="600"
+         overflowToDisk="true"/>
+
+
+  <!-- 2nd Level Cachee -->
   <cache name="com.contento3.cms.page.model.Page"
     maxElementsInMemory="10000"
     eternal="false"
@@ -21,7 +32,7 @@
     eternal="false"
     timeToIdleSeconds="300"
     timeToLiveSeconds="600"
-	overflowToDisk="true"/>
+  	overflowToDisk="true"/>
 
   <cache name="com.contento3.cms.page.template.model.Template"
     maxElementsInMemory="10000"

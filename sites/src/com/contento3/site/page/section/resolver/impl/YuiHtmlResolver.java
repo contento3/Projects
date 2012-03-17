@@ -60,7 +60,6 @@ public class YuiHtmlResolver implements HtmlResolver {
 				
 				else if (event.isCharacters()){
 					if (event.toString().trim().length()>0){
-						System.out.println("value="+event.toString());
 						if (pageTemplateIterator.hasNext()){
 							PageTemplateDto pageTemplateDto = pageTemplateIterator.next();
 							TemplateDto templateDto = templateService.findTemplateById(pageTemplateDto.getTemplateId());

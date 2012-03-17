@@ -94,7 +94,6 @@ public class TemplateUIManager implements UIManager{
 	@Override
 	public Component render(String command) {
 
-		System.out.print("we are in template");
 		if (null==templateTab){ 
 			templateTab = new TabSheet();
 			templateTab.setHeight("585");

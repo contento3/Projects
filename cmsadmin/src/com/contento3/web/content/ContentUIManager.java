@@ -29,20 +29,17 @@ public class ContentUIManager implements UIManager{
 	}
  
 	public void render(){
-		System.out.println("Rendering content ui ......");
 	}
 
 	@Override
 	public Component render(final String command){
 		Component componentToReturn = null;
-		System.out.println("Rendering content ui ......");
-
+		
 		return componentToReturn;
 	}
 
 	@Override
 	public Component render(final String command,final Integer id){
-		System.out.println("Rendering content ui ......");
 
 		return null;
 	}
@@ -68,8 +65,6 @@ public class ContentUIManager implements UIManager{
 	}
 
 	public void renderContentNavigationItems(final HierarchicalContainer hwContainer){
-		System.out.println("Rendering content ui 123......");
-
 		for (String navigationItem : navigationItems){
 			Item item = hwContainer.addItem(navigationItem);
 			if (null != item){

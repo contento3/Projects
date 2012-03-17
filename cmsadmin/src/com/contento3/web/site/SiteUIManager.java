@@ -450,7 +450,6 @@ public class SiteUIManager implements UIManager {
 							while (itr.hasNext()) {
 								SiteDomainDto dto = itr.next();
 								if (dto.getDomainName().equals(domainName)) {
-									System.out.println(dto.getDomainId());
 									itr.remove();
 									siteDomainService.delete(dto);
 									domainsTable.removeItem(id);
@@ -590,7 +589,6 @@ public class SiteUIManager implements UIManager {
 				while(itr.hasNext()){
 					SiteDomainDto dto = itr.next();
 					if(dto.getDomainName().equals(domainName)){
-						System.out.println(dto.getDomainId());
 						itr.remove();
 						siteDomainService.delete(dto);
 						table.removeItem(id);
@@ -946,7 +944,6 @@ public class SiteUIManager implements UIManager {
 		while (pageLayoutIterator.hasNext()) {
 			PageLayoutDto pageLayoutDto = pageLayoutIterator.next();
 			Item pageLayoutItem = container.addItem(pageLayoutDto.getId());
-			System.out.println("page layout:" + pageLayoutDto.getId());
 			pageLayoutItem.getItemProperty("name").setValue(
 					pageLayoutDto.getName());
 			pageLayoutItem.getItemProperty("value").setValue(
