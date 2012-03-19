@@ -1,11 +1,11 @@
-package com.contento3.cms.security.group.service.impl;
+package com.contento3.security.group.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.contento3.cms.security.group.dto.GroupDto;
-import com.contento3.cms.security.group.model.Group;
-import com.contento3.cms.security.group.service.GroupAssembler;
+import com.contento3.security.group.dto.GroupDto;
+import com.contento3.security.group.model.Group;
+import com.contento3.security.group.service.GroupAssembler;
 
 
 public class GroupAssemblerImpl implements GroupAssembler {

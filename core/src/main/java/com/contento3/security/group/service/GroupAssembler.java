@@ -1,8 +1,8 @@
-package com.contento3.cms.security.group.service;
+package com.contento3.security.group.service;
 
-import com.contento3.cms.security.group.dto.GroupDto;
-import com.contento3.cms.security.group.model.Group;
 import com.contento3.common.assembler.Assembler;
+import com.contento3.security.group.dto.GroupDto;
+import com.contento3.security.group.model.Group;
 
 public interface GroupAssembler extends Assembler<GroupDto,Group> {
 

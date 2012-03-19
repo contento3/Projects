@@ -1,27 +1,9 @@
-package com.contento3.cms.security.group.model;
+package com.contento3.security.group.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-
-/**
- * 
- * Enable users to add groups
- * 
- */
-@Entity
-@Table(name= "groups")
-public class Group {
+public class GroupDto {
 	
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="id")
 	private Integer id;
 	
-	@Column(name="group_name")
 	private String name;
 	
 	/**
@@ -63,5 +45,5 @@ public class Group {
 	{
 		return(id);
 	}
-	
+
 }
