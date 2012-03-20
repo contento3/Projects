@@ -37,7 +37,7 @@
 			     <value>com.contento3.cms.page.category.model.Category</value>
 			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
 			     <value>com.contento3.cms.article.model.Article</value>
-			     <value>com.contento3.cms.security.group.model.Group</value>
+			     <value>com.contento3.security.group.model.Group</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
