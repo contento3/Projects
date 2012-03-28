@@ -21,4 +21,11 @@ public interface CategoryDao extends GenericDao<Category,Integer>{
 	 * @return 
 	 */
 	Collection<Category> findNullParentIdCategory();
+	
+	/**
+	 * Returns the child categories by using parentId
+	 * @param parentId
+	 * @return 
+	 */
+	Collection<Category> findChildCategories(final Integer parentId);
 }

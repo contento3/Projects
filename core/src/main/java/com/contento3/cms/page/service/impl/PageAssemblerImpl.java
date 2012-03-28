@@ -29,7 +29,12 @@ public class PageAssemblerImpl implements PageAssembler {
 		page.setUri(dto.getUri());
 		page.setTitle(dto.getTitle());
 		page.setSite(siteAssembler.dtoToDomain(dto.getSite()));
-		page.setCategories(categoryAssembler.dtosToDomains(dto.getCategories()));
+		
+		if(dto.getCategories() != null)
+			page.setCategories(categoryAssembler.dtosToDomains(dto.getCategories()));
+		else 
+			page.setCategories(null);
+		
 		if (null!=dto.getPageLayoutDto()){
 			page.setPageLayout(pageLayoutAssembler.dtoToDomainWithPageSections(dto.getPageLayoutDto()));
 		}
@@ -41,7 +46,11 @@ public class PageAssemblerImpl implements PageAssembler {
 		domain.setUri(dto.getUri());
 		domain.setTitle(dto.getTitle());
 		domain.setSite(siteAssembler.dtoToDomain(dto.getSite()));
-		domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategories()));
+		
+		if(dto.getCategories() != null)
+			domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategories()));
+		else
+			domain.setCategories(null);
 		
 		if (null!=dto.getPageLayoutDto()){
 			domain.setPageLayout(pageLayoutAssembler.dtoToDomainWithPageSections(dto.getPageLayoutDto()));
@@ -55,7 +64,11 @@ public class PageAssemblerImpl implements PageAssembler {
 		dto.setUri(domain.getUri());
 		dto.setTitle(domain.getTitle());
 		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
-		dto.setCategories(categoryAssembler.domainsToDtos(domain.getCategories()));
+		
+		if(domain.getCategories()!=null)
+			dto.setCategories(categoryAssembler.domainsToDtos(domain.getCategories()));
+		else 
+			dto.setCategories(null);
 		dto.setPageLayoutDto(pageLayoutAssembler.domainToDto(domain.getPageLayout()));
 		return dto;
 	}

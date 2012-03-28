@@ -30,6 +30,14 @@ public interface PageService {
 	 * @return {@link Collection} of PageDto
 	 */
 	 Collection <PageDto> findPageBySiteId(Integer siteId);
+	 /**
+	  * return page 
+	  * @param siteId
+	  * @param pageId
+	  * @return
+	  */
+	 PageDto findPageBySiteId(final Integer siteId,final Integer pageId) ;
+	 
 	 
     /**
      * Finds Number of pages for a site

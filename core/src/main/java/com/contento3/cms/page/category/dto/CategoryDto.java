@@ -1,6 +1,10 @@
 package com.contento3.cms.page.category.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import com.contento3.cms.page.category.model.Category;
 
 public class CategoryDto {
 	
@@ -8,9 +12,9 @@ public class CategoryDto {
 
 	private String categoryName;
 	
-	private CategoryDto parent;
+	private Category parent;
 
-	private Collection<CategoryDto> child;
+	private Collection<Category> child= new ArrayList<Category>();
 
 	public Integer getCategoryId() {
 		return categoryId;
@@ -28,19 +32,19 @@ public class CategoryDto {
 		this.categoryName = categoryName;
 	}
 
-	public CategoryDto getParent() {
+	public Category getParent() {
 		return parent;
 	}
 
-	public void setParent(final CategoryDto parent) {
+	public void setParent(final Category parent) {
 		this.parent = parent;
 	}
 
-	public Collection<CategoryDto> getChild() {
+	public 	Collection<Category> getChild() {
 		return child;
 	}
 
-	public void setChild(final Collection<CategoryDto> child) {
+	public void setChild(final 	Collection<Category> child) {
 		this.child = child;
 	}
 	

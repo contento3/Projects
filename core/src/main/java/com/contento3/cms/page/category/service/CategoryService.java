@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.model.Category;
+import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.Service;
 
 public interface CategoryService extends Service<CategoryDto>{
@@ -21,5 +23,24 @@ public interface CategoryService extends Service<CategoryDto>{
 	 * @return CategoryDto
 	 */
 	Collection<CategoryDto> findNullParentIdCategory();
+	
+	/**
+	 * Finds the child categories by their parentId
+	 * @return CategoryDto
+	 */
+	Collection<CategoryDto> findChildCategories(final Integer parentId);
+	
+	/**
+	 * convert dto to domain
+	 * @return Category
+	 */
+	Category dtoToDomain(final CategoryDto dto);
+	
+	 /**
+     * Used to update the category.
+     * @param categoryDto
+     * @throws EntityAlreadyFoundException 
+     */
+    void update(final CategoryDto categoryDto) ;
 	
 }//end

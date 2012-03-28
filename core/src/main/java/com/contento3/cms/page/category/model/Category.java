@@ -1,10 +1,14 @@
 package com.contento3.cms.page.category.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,10 +18,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
-
 @Entity
 @Table(name = "CATEGORY")
 public class Category implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "CATEGORY_ID")
@@ -26,12 +34,12 @@ public class Category implements Serializable {
 	@Column(name = "CATEGORY_NAME")
 	private String categoryName;
 
-	@ManyToOne
+	@ManyToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name = "PARENT_CATEGORY_ID")
 	private Category parent;
 	
 	@OneToMany(mappedBy = "parent")
-	private Collection<Category> child;
+	private Collection<Category> child= new ArrayList<Category>();
 	
 
 	public Integer getCategoryId() {
@@ -57,11 +65,11 @@ public class Category implements Serializable {
 		this.parent = parent;
 	}
 
-	public Collection<Category> getChild() {
+	public 	Collection<Category> getChild() {
 		return child;
 	}
 
-	public void setChild(final Collection<Category> child) {
+	public void setChild(final 	Collection<Category> child) {
 		this.child = child;
 	}
 }

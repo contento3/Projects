@@ -48,5 +48,14 @@ public class CategoryDaoHibernateImpl extends
 		return criteria.list();
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<Category> findChildCategories(final Integer parentId){
+		Criteria criteria = this.getSession()
+				.createCriteria(Category.class)
+				.add(Restrictions.eq("parent.categoryId", parentId));
+		return criteria.list();
+	}
 
 }

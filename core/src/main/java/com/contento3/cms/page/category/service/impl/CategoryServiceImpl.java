@@ -41,8 +41,8 @@ public class CategoryServiceImpl implements CategoryService {
 	}//end dtoToDomain()
 	
 	public Collection<Category> dtosToDomains(final Collection<CategoryDto> dtos){
-		Collection<Category> category = categoryAssembler.dtosToDomains(dtos);
-		return category;
+		Collection<Category> categories = categoryAssembler.dtosToDomains(dtos);
+		return categories;
 	}//end dtosToDomains()
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
@@ -55,9 +55,24 @@ public class CategoryServiceImpl implements CategoryService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findNullParentIdCategory(){
-		Collection<Category> category = categoryDao.findNullParentIdCategory();
-		return categoryAssembler.domainsToDtos(category);
+		Collection<Category> categories = categoryDao.findNullParentIdCategory();
+		return categoryAssembler.domainsToDtos(categories);
 		
 	}//end findNullParentIdCategory()
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Collection<CategoryDto> findChildCategories(final Integer parentId){
+		Collection<Category> categories = categoryDao.findChildCategories(parentId);
+		return categoryAssembler.domainsToDtos(categories);
+	}//end findChildCategories()
+	
+	
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void update(final CategoryDto categoryDto){
+		
+		 categoryDao.update(categoryAssembler.dtoToDomain(categoryDto));
+	}
 	
 }//end CategoryServiceImpl class

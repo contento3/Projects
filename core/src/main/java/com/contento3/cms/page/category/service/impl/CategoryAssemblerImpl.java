@@ -16,11 +16,20 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 	@Override
 	public Category dtoToDomain(CategoryDto dto) {
 		Category domain = new Category();
-		
-		if (null!=dto.getCategoryId()){
-			domain.setCategoryId((dto.getCategoryId()));
+	
+		if(dto.getParent()!=null){
+			domain.setParent(dto.getParent());
 		}
+		if(dto.getChild()!=null){
+			domain.setChild(dto.getChild());
+		}
+//		if(dto.getCategoryId()!=null){
+//			domain.setCategoryId((dto.getCategoryId()));
+//		}
+		domain.setCategoryId((dto.getCategoryId()));
 		domain.setCategoryName(dto.getCategoryName());
+		//domain.setParent(dto.getParent());
+		//domain.setChild(dto.getChild());
 		return domain;
 	}//end dtoToDomain()
 
@@ -28,6 +37,15 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 	public CategoryDto domainToDto(Category domain) {
 		CategoryDto dto = new CategoryDto();
 		
+		if(domain.getParent()!=null){
+			dto.setParent(domain.getParent());
+		}
+		if(domain.getChild()!=null){
+			dto.setChild(domain.getChild());
+		}
+//		if(domain.getCategoryId()!=null){
+//			dto.setCategoryId(domain.getCategoryId());
+//		}
 		dto.setCategoryId(domain.getCategoryId());
 		dto.setCategoryName(domain.getCategoryName());
 		return dto;	
