@@ -30,11 +30,6 @@ public interface CategoryService extends Service<CategoryDto>{
 	 */
 	Collection<CategoryDto> findChildCategories(final Integer parentId);
 	
-	/**
-	 * convert dto to domain
-	 * @return Category
-	 */
-	Category dtoToDomain(final CategoryDto dto);
 	
 	 /**
      * Used to update the category.

@@ -12,9 +12,9 @@ public class CategoryDto {
 
 	private String categoryName;
 	
-	private Category parent;
+	private CategoryDto parent;
 
-	private Collection<Category> child= new ArrayList<Category>();
+	private Collection<CategoryDto> child; 
 
 	public Integer getCategoryId() {
 		return categoryId;
@@ -32,19 +32,19 @@ public class CategoryDto {
 		this.categoryName = categoryName;
 	}
 
-	public Category getParent() {
+	public CategoryDto getParent() {
 		return parent;
 	}
 
-	public void setParent(final Category parent) {
+	public void setParent(final CategoryDto parent) {
 		this.parent = parent;
 	}
 
-	public 	Collection<Category> getChild() {
+	public 	Collection<CategoryDto> getChild() {
 		return child;
 	}
 
-	public void setChild(final 	Collection<Category> child) {
+	public void setChild(final 	Collection<CategoryDto> child) {
 		this.child = child;
 	}
 	

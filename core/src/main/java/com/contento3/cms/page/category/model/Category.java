@@ -39,7 +39,7 @@ public class Category implements Serializable {
 	private Category parent;
 	
 	@OneToMany(mappedBy = "parent")
-	private Collection<Category> child= new ArrayList<Category>();
+	private Collection<Category> child; 
 	
 
 	public Integer getCategoryId() {

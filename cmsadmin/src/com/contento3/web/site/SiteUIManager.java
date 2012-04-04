@@ -749,7 +749,7 @@ public class SiteUIManager implements UIManager, Handler{
 					newPageParentlayout
 							.addComponent(renderPageLayouts(newPageDtoWithLayout));
 					notificationMsg = String.format(
-							"Page %s added successfullly",
+							"Page %s added successfully",
 							newPageDtoWithLayout.getTitle());
 				}
 
@@ -788,28 +788,48 @@ public class SiteUIManager implements UIManager, Handler{
 		horiz.addComponent(categoryFormLayout);
 		verticalLayout.addComponent(horiz);
 		horiz.setSpacing(true);
-		// text-field
-		final TextField editor = new TextField("Rename item name");
-        editor.setImmediate(true);
-        horiz.addComponent(editor);
-        // apply-button
-        final Button applyButton = new Button("Apply");
-        horiz.addComponent(applyButton);
+	
+        
+     
+        
+        
 		final CategoryService categoryService = (CategoryService)contextHelper.getBean("categoryService");
 		Collection<CategoryDto> categoryDto = categoryService.findNullParentIdCategory();
-		categoryTree = new Tree("Categories");
+		categoryTree = new Tree("Categories");// creating tree
 		categoryTree.addActionHandler(this);
 		categoryTree.setImmediate(true);
+		categoryTree.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		categoryTree.setItemCaptionPropertyId("name");
 		categoryContainer = getParentCategories(categoryDto);
 		categoryTree.setContainerDataSource(categoryContainer);
-
+		categoryFormLayout.addComponent(categoryTree);
+		
+		// Rename-button
+        final Button renameCategoryButton = new Button("Rename");
+        renameCategoryButton.setEnabled(false);
+		final TextField selectedCategoryField = new TextField();
+		final Button assignCategoryButton = new Button("Assign");
+	
+		final HorizontalLayout assigncategoryHorizLayout = new HorizontalLayout();
+		assigncategoryHorizLayout.addComponent(selectedCategoryField);
+		assigncategoryHorizLayout.addComponent(assignCategoryButton);
+		assigncategoryHorizLayout.addComponent(renameCategoryButton);
+		assigncategoryHorizLayout.setSpacing(true);
+		assigncategoryHorizLayout.setEnabled(false);
+		categoryFormLayout.addComponent(assigncategoryHorizLayout);
+		final PageDto pageDto = pageService.findPageBySiteId(siteId, pageId);
+		categories = pageDto.getCategories();
+		
 		categoryTree.addListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
         	public void itemClick(ItemClickEvent event) {
         		
+        		
+        		
+        		
         		categoryTree.expandItem(event.getItemId());
-        		String itemId = event.getItemId().toString();
-        		Collection<CategoryDto> childCategoryDtoList = categoryService.findChildCategories(Integer.parseInt(itemId));
+        		Integer itemId = (Integer) event.getItemId();
+        		Collection<CategoryDto> childCategoryDtoList = categoryService.findChildCategories(itemId);
         		//Check if the itemId is for a directory
         		if (itemId!=null){
         			Item parentItem = event.getItem();
@@ -817,41 +837,66 @@ public class SiteUIManager implements UIManager, Handler{
         			addChildrenToCategoryTree(parentItem,childCategoryDtoList);
         		
         		}//end if
+        		
+        		/* finding category which is slected in tree*/
+        		categoryTree.expandItem(event.getItemId());
+        		String name = (String) categoryTree.getContainerProperty(itemId, "name").getValue();
+              
+        		
+        		if(name.equals("New Item")){
+        			renameCategoryButton.setEnabled(true);
+        			assignCategoryButton.setEnabled(false);
+        		}
+        		
+        		
+                categoryLabel.setValue("Category: "+name);
+                assigncategoryHorizLayout.setEnabled(true);
+            	selectedCategoryField.setValue(name);
+        		
         	}//end 	itemClick
         });
-		categoryFormLayout.addComponent(categoryTree);
-		categoryTree.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
-		categoryTree.setItemCaptionPropertyId("name");
 		
-		PageDto pageDto = pageService.findPageBySiteId(siteId, pageId);
-		categories = pageDto.getCategories();
-		categoryTree.addListener(new ItemClickListener() {
-			private static final long serialVersionUID = -4607219466099528006L;
-
-        	public void itemClick(ItemClickEvent event) {
+		assignCategoryButton.addListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				
+				
+				String name = selectedCategoryField.getValue().toString();
+        		CategoryDto categoryDto = categoryService.findCategoryByName(name);
+        		//check if category already assign to the page if it is assigned then no action take place
+        		for( CategoryDto cat : categories){
+        			if(cat.getCategoryName().equals(name)){
+        				
+        				parentWindow.showNotification("Category "+ name +" is already assigned to "
+    							+ pageDto.getTitle()+" page" );
+        				return;
+        			}
+        		}
+        			
+        		categories.add(categoryDto);
+        		pageDto.setCategories(categories);
         		
-        		categoryTree.expandItem(event.getItemId());
-        		Integer itemId = (Integer) event.getItemId();
-        		String name = (String) categoryTree.getContainerProperty(itemId, "name").getValue();
-
-				CategoryDto category = new CategoryDto();
-				category.setCategoryId(itemId);
-				category.setCategoryName(name);
-				category.setParent(null);
-				category.setChild(null);
-				categories.add(category);
-                categoryLabel.setValue("Category: "+name);
-               
-        		editor.setValue(name);
-        	}//end itemClick
-        });
+        		try {
+        			
+					pageService.update(pageDto);
+					parentWindow.showNotification("Category "+ name +" is successfully assigned to "
+								+ pageDto.getTitle()+" page" );
+				} catch (EntityAlreadyFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+				}
+  
+			}
+		});
 		
-		applyButton.addListener(new ClickListener() {
+		renameCategoryButton.addListener(new ClickListener() {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
 
-				String catName=(String) editor.getValue();
+				String catName=(String) selectedCategoryField.getValue();
 				if(!catName.equals("")){
 					/*parent data*/
 					Object parentId =  categoryTree.getParent(categoryTree.getValue());
@@ -866,26 +911,28 @@ public class SiteUIManager implements UIManager, Handler{
 					 
 					  CategoryDto parentCategoryDto = categoryService
 							  .findCategoryByName(parentName);
-					  //convert dto to domain
-					 Category parentCategory = categoryService.dtoToDomain(parentCategoryDto);
+					
 
 					CategoryDto categoryDto = new CategoryDto();
 					//categoryDto.setCategoryId(null);
 					categoryDto.setCategoryName(catName);
-					categoryDto.setParent(parentCategory);
-					//categoryDto.setChild(null);
+					//categoryDto.setParent(null);
+					//categoryDto.setChild(new ArrayList<CategoryDto>());
 						
-//					Collection<Category> catList = parentCategoryDto.getChild();
-//					//convert dto to domain
-//					Category cat =	categoryService.dtoToDomain(categoryDto);
-//					catList.add(cat);
+//					Collection<CategoryDto> catList = parentCategoryDto.getChild();
+//					catList.add(categoryDto);
 //					parentCategoryDto.setChild(catList);
-					categories.add(categoryDto);
+					
 					categoryService.update(categoryDto);
-				
+					
+					
+					categories.add(categoryDto);
 						
+
 					//	category = categoryService.findCategoryByName(catName);
 					//	item.getItemProperty("id").setValue(category.getCategoryId());
+					assignCategoryButton.setEnabled(true);
+					renameCategoryButton.setEnabled(false);
 				}
 				
 			}
@@ -1125,7 +1172,7 @@ public class SiteUIManager implements UIManager, Handler{
 					item.getItemProperty("id").setValue(itemToAdd);
 					item.getItemProperty("name").setValue(childCategoryDto.getCategoryName());
 					categoryContainer.setParent(childCategoryDto.getCategoryId(), parentCategoryId);
-					categoryContainer.setChildrenAllowed(childCategoryDto.getCategoryId(), false);
+					categoryContainer.setChildrenAllowed(childCategoryDto.getCategoryId(), true);
 				}//end if
 			}//end for
 		

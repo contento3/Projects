@@ -31,19 +31,9 @@ public class CategoryServiceImpl implements CategoryService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void create(final CategoryDto categoryDto)  {
-		 categoryDao.persist(dtoToDomain(categoryDto));
+		 categoryDao.persist(categoryAssembler.dtoToDomain(categoryDto));
 	}//end create()
 	
-	
-	public Category dtoToDomain(final CategoryDto dto){
-		Category category = categoryAssembler.dtoToDomain(dto);
-		return category;
-	}//end dtoToDomain()
-	
-	public Collection<Category> dtosToDomains(final Collection<CategoryDto> dtos){
-		Collection<Category> categories = categoryAssembler.dtosToDomains(dtos);
-		return categories;
-	}//end dtosToDomains()
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -68,11 +58,12 @@ public class CategoryServiceImpl implements CategoryService {
 	}//end findChildCategories()
 	
 	
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false)
 	@Override
 	public void update(final CategoryDto categoryDto){
 		
 		 categoryDao.update(categoryAssembler.dtoToDomain(categoryDto));
+		
 	}
 	
 }//end CategoryServiceImpl class

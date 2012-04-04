@@ -22,7 +22,7 @@ public class CategoryDaoHibernateImpl extends
 	public CategoryDaoHibernateImpl() {
 		super(Category.class);
 	}
-
+	
 	@Override
 	public Category findCategoryByName(String categoryName) {
 
