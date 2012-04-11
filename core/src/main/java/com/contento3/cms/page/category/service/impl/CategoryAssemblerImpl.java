@@ -25,27 +25,27 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		
 		domain.setCategoryName(dto.getCategoryName());
 		
-//		if(dto.getParent()!=null ){
-//			//if(!(dto.getParent().getCategoryName().equals(parentName))){
-//				domain.setParent(dtoToDomain(dto.getParent()));
-//			//}
-//		}
-//		
-		//parentName=dto.getCategoryName();
-		//parentStack.push(parentName);
-//		if(dto.getChild()!=null){
-//			if(!(dto.getChild().isEmpty())){
-//				domain.setChild(dtosToDomains(dto.getChild()));
-//			}
-//		}//end if
+		if(dto.getParent()!=null ){
+			if(!(dto.getParent().getCategoryName().equals(parentName))){
+				domain.setParent(dtoToDomain(dto.getParent()));
+			}
+		}
 		
-//		if(!parentStack.empty()){
-//			parentStack.pop();
-//			if(!parentStack.empty()){
-//				parentName = parentStack.pop();
-//			}
-//				parentStack.push(parentName);	
-//		}//end if
+		parentName=dto.getCategoryName();
+		parentStack.push(parentName);
+		if(dto.getChild()!=null){
+			if(!(dto.getChild().isEmpty())){
+				domain.setChild(dtosToDomains(dto.getChild()));
+			}
+		}//end if
+		
+		if(!parentStack.empty()){
+			parentStack.pop();
+			if(!parentStack.empty()){
+				parentName = parentStack.pop();
+			}
+				parentStack.push(parentName);	
+		}//end if
 		
 		return domain;
 	}//end dtoToDomain()
@@ -88,8 +88,7 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		for (Category category : domains){
 			dtos.add(domainToDto(category));
 		}
-		parentStack.clear();
-		parentName=null;
+		clearStack();
 		return dtos;
 	}//end domainsToDtos()
 
@@ -100,9 +99,12 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		for (CategoryDto category : dtos){
 			domains.add(dtoToDomain(category));
 		}
-		parentStack.clear();
-		parentName=null;
+		clearStack();
 		return domains;
 	}//end dtosToDomains()
-
+	
+	public void clearStack(){
+		parentStack.clear();
+		parentName=null;
+	}
 }//end class

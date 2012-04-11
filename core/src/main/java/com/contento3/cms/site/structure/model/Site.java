@@ -74,7 +74,20 @@ public class Site implements Serializable {
 	@JoinColumn(name="SITE_ID",nullable=false)
 	private Collection<SiteDomain> siteDomain;
 	
+	/**
+	 * laguage for the site
+	 */
+	@Column(name = "LANGUAGE")
+	private String language;
 	
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
 	public Collection<SiteDomain> getSiteDomain() {
 		return siteDomain;
 	}

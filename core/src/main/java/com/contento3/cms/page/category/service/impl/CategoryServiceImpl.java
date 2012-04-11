@@ -39,22 +39,27 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public CategoryDto findCategoryByName(final String categoryName) {
 		Category category = categoryDao.findCategoryByName(categoryName);
-		return categoryAssembler.domainToDto(category);
+		CategoryDto categoryDto = categoryAssembler.domainToDto(category);
+		categoryAssembler.clearStack();
+		 return categoryDto;
 	}//end findCategoryByName()
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findNullParentIdCategory(){
 		Collection<Category> categories = categoryDao.findNullParentIdCategory();
-		return categoryAssembler.domainsToDtos(categories);
-		
+		Collection<CategoryDto> categoryDtos = categoryAssembler.domainsToDtos(categories);
+		categoryAssembler.clearStack();
+		return categoryDtos;
 	}//end findNullParentIdCategory()
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findChildCategories(final Integer parentId){
 		Collection<Category> categories = categoryDao.findChildCategories(parentId);
-		return categoryAssembler.domainsToDtos(categories);
+		Collection<CategoryDto> categoryDtos = categoryAssembler.domainsToDtos(categories);
+		categoryAssembler.clearStack();
+		return categoryDtos;
 	}//end findChildCategories()
 	
 	

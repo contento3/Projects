@@ -36,6 +36,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		site.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		site.setDafaultLayoutId(dto.getDefaultLayoutId());
 		site.setSiteDomain(siteDomainAssembler.dtosToDomains(dto.getSiteDomainDto()));
+		site.setLanguage(dto.getLanguage());
 		return site;
 	}
 
@@ -48,6 +49,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setDefaultLayoutId(domain.getDafaultLayoutId());
 		dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
+		dto.setLanguage(domain.getLanguage());
 		return dto;
 	}
 

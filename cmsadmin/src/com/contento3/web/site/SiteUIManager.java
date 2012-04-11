@@ -5,14 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
-
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.page.category.dto.CategoryDto;
-import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
@@ -24,17 +20,13 @@ import com.contento3.cms.page.section.model.PageSectionTypeEnum;
 import com.contento3.cms.page.section.service.PageSectionTypeService;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.page.template.dto.PageTemplateDto;
-import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
-import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
-import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
-import com.contento3.cms.site.structure.domain.model.SiteDomain;
 import com.contento3.cms.site.structure.domain.service.SiteDomainService;
 import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
@@ -47,19 +39,14 @@ import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
@@ -72,8 +59,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.BaseTheme;
-import java.util.Collections;
-import com.vaadin.ui.Window.Notification;
+
 
 
 /**
@@ -82,7 +68,7 @@ import com.vaadin.ui.Window.Notification;
  * @author HAMMAD
  * 
  */
-public class SiteUIManager implements UIManager, Handler{
+public class SiteUIManager implements UIManager {
 
 	private static final Logger LOGGER = Logger.getLogger(SiteUIManager.class);
 
@@ -94,19 +80,13 @@ public class SiteUIManager implements UIManager, Handler{
 	private final IndexedContainer domainsContainer = new IndexedContainer();
 	private PageDto newPageDtoWithLayout;
 	private Window parentWindow;
-
 	private int selectedPageId;
-	private boolean newPageFlag = false;
-
 	private SiteService siteService;
 	private PageService pageService;
 	private Integer siteid;
 	private  Collection <SiteDomainDto> siteDomainDto;
 	private Collection<CategoryDto> categories;
-	private Tree categoryTree;
 	private HierarchicalContainer categoryContainer;
-	private static final Action ADD_CATEGORY =new Action("Add category");
-	private static final Action[] CATEGORY_ACTION = new Action[]{ADD_CATEGORY}; 
 
 	public SiteUIManager(final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
@@ -214,7 +194,7 @@ public class SiteUIManager implements UIManager, Handler{
 				table.requestRepaint();
 			}
 		});
-		//
+		
 
 		// Button that when clicked rendered a new page tab.
 		Button newPageButton = new Button("Create new page");
@@ -238,9 +218,18 @@ public class SiteUIManager implements UIManager, Handler{
 				renderSiteConfig(siteId, pagesTab, null);
 			}
 		});
-
-
-
+		
+		Button addNewCategoryButton = new Button("Add New Category");
+		horizontalLayout.addComponent(addNewCategoryButton);
+		addNewCategoryButton.addListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				CategoryTreeRender categoryTree = new CategoryTreeRender(contextHelper, parentWindow);
+				categoryTree.renderTreeToAddNewCategory(siteId, pagesTab, null);
+				
+			}
+		});
 		pageLayout.addComponent(horizontalLayout);
 		final PageService pageService = (PageService) contextHelper.getBean("pageService");
 		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
@@ -297,6 +286,7 @@ public class SiteUIManager implements UIManager, Handler{
 	 * 
 	 * @param accountId
 	 * @param tabSheet
+	 * @throws ClassNotFoundException 
 	 */
 
 	private void renderSiteConfig(final Integer siteId,
@@ -394,14 +384,39 @@ public class SiteUIManager implements UIManager, Handler{
 				.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
 		final ComboBox pageLayoutCombo = new ComboBox("Select Page Layouts",
 				getPageLayouts(pageLayoutDto));
-		HorizontalLayout horiz = new HorizontalLayout();
-		horiz.addComponent(pageLayoutCombo);
-		configSiteFormLayout.addComponent(horiz);
-		configSiteFormLayout.addComponent(siteSaveButton);
+		
 		pageLayoutCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 		pageLayoutCombo.setValue(siteDto.getDefaultLayoutId());
+		HorizontalLayout horiz = new HorizontalLayout();
+		horiz.addComponent(pageLayoutCombo);
+		configSiteFormLayout.addComponent(horiz);
+		
+		/* Reading CachedTypedProperties file :"language.propeties" */
+		final Collection<String> languages = new ArrayList<String>();
+		String presetLanguage = "";
+		try {
+			CachedTypedProperties languageProperties = CachedTypedProperties
+					.getInstance("languages.properties");
+			Collection<Object> langProperties = languageProperties.keySet();
+			for (Object t : langProperties) {
+				languages.add(t.toString());
+				if (languageProperties.get(t).equals(siteDto.getLanguage())) {
+					presetLanguage = t.toString();
+				}
+			}
 
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		final ComboBox languageCombo = new ComboBox("Select Language",
+				languages);
+
+		languageCombo.setValue(presetLanguage);
+		configSiteFormLayout.addComponent(languageCombo);
+		configSiteFormLayout.addComponent(siteSaveButton);
+		
 		/* addDomainButton Listener*/
 		addDomainButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -474,14 +489,28 @@ public class SiteUIManager implements UIManager, Handler{
 			}
 		});//end addDomainButton listener
 
-
 		/* siteSaveButton Listener*/
 		siteSaveButton.addListener(new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
 			public void buttonClick(ClickEvent event) {
-
+				
+				String lang = languageCombo.getValue().toString();
+				if(!lang.equals("")){
+					CachedTypedProperties languageProperties;
+					try {
+						languageProperties = CachedTypedProperties
+								.getInstance("languages.properties");
+						String val =languageProperties.getProperty(lang);
+						siteDto.setLanguage(val);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
 				saveSiteDto(siteDto,siteDomainDto, domainsTable, pageLayoutService, pageLayoutCombo, siteNameTxt);
 				parentWindow.showNotification(String.format(
 						"SiteConfig for %s saved successfullly",
@@ -490,7 +519,8 @@ public class SiteUIManager implements UIManager, Handler{
 			}// end buttonClick
 
 		});// end siteSaveButton listener
-
+		
+		
 	}// end renderSiteConfig()
 
 	/**
@@ -782,201 +812,13 @@ public class SiteUIManager implements UIManager, Handler{
 	private void renderCategory(final Integer siteId,
 			final TabSheet tabSheet, final Integer pageId,final Label categoryLabel) {
 
-		VerticalLayout verticalLayout = new VerticalLayout();
-		final FormLayout categoryFormLayout = new FormLayout();
-		HorizontalLayout horiz = new HorizontalLayout();
-		horiz.addComponent(categoryFormLayout);
-		verticalLayout.addComponent(horiz);
-		horiz.setSpacing(true);
-	
-        
-     
-        
-        
-		final CategoryService categoryService = (CategoryService)contextHelper.getBean("categoryService");
-		Collection<CategoryDto> categoryDto = categoryService.findNullParentIdCategory();
-		categoryTree = new Tree("Categories");// creating tree
-		categoryTree.addActionHandler(this);
-		categoryTree.setImmediate(true);
-		categoryTree.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
-		categoryTree.setItemCaptionPropertyId("name");
-		categoryContainer = getParentCategories(categoryDto);
-		categoryTree.setContainerDataSource(categoryContainer);
-		categoryFormLayout.addComponent(categoryTree);
 		
-		// Rename-button
-        final Button renameCategoryButton = new Button("Rename");
-        renameCategoryButton.setEnabled(false);
-		final TextField selectedCategoryField = new TextField();
-		final Button assignCategoryButton = new Button("Assign");
-	
-		final HorizontalLayout assigncategoryHorizLayout = new HorizontalLayout();
-		assigncategoryHorizLayout.addComponent(selectedCategoryField);
-		assigncategoryHorizLayout.addComponent(assignCategoryButton);
-		assigncategoryHorizLayout.addComponent(renameCategoryButton);
-		assigncategoryHorizLayout.setSpacing(true);
-		assigncategoryHorizLayout.setEnabled(false);
-		categoryFormLayout.addComponent(assigncategoryHorizLayout);
-		final PageDto pageDto = pageService.findPageBySiteId(siteId, pageId);
-		categories = pageDto.getCategories();
+		CategoryTreeRender tree = new CategoryTreeRender(contextHelper, parentWindow);
+		tree.renderTreeToAssign(siteId, tabSheet, pageId, categoryLabel);
 		
-		categoryTree.addListener(new ItemClickListener() {
-			private static final long serialVersionUID = -4607219466099528006L;
-        	public void itemClick(ItemClickEvent event) {
-        		
-        		
-        		
-        		
-        		categoryTree.expandItem(event.getItemId());
-        		Integer itemId = (Integer) event.getItemId();
-        		Collection<CategoryDto> childCategoryDtoList = categoryService.findChildCategories(itemId);
-        		//Check if the itemId is for a directory
-        		if (itemId!=null){
-        			Item parentItem = event.getItem();
-        			//adding child categories in tree
-        			addChildrenToCategoryTree(parentItem,childCategoryDtoList);
-        		
-        		}//end if
-        		
-        		/* finding category which is slected in tree*/
-        		categoryTree.expandItem(event.getItemId());
-        		String name = (String) categoryTree.getContainerProperty(itemId, "name").getValue();
-              
-        		
-        		if(name.equals("New Item")){
-        			renameCategoryButton.setEnabled(true);
-        			assignCategoryButton.setEnabled(false);
-        		}
-        		
-        		
-                categoryLabel.setValue("Category: "+name);
-                assigncategoryHorizLayout.setEnabled(true);
-            	selectedCategoryField.setValue(name);
-        		
-        	}//end 	itemClick
-        });
-		
-		assignCategoryButton.addListener(new ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-				
-				String name = selectedCategoryField.getValue().toString();
-        		CategoryDto categoryDto = categoryService.findCategoryByName(name);
-        		//check if category already assign to the page if it is assigned then no action take place
-        		for( CategoryDto cat : categories){
-        			if(cat.getCategoryName().equals(name)){
-        				
-        				parentWindow.showNotification("Category "+ name +" is already assigned to "
-    							+ pageDto.getTitle()+" page" );
-        				return;
-        			}
-        		}
-        			
-        		categories.add(categoryDto);
-        		pageDto.setCategories(categories);
-        		
-        		try {
-        			
-					pageService.update(pageDto);
-					parentWindow.showNotification("Category "+ name +" is successfully assigned to "
-								+ pageDto.getTitle()+" page" );
-				} catch (EntityAlreadyFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					
-				}
-  
-			}
-		});
-		
-		renameCategoryButton.addListener(new ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-
-				String catName=(String) selectedCategoryField.getValue();
-				if(!catName.equals("")){
-					/*parent data*/
-					Object parentId =  categoryTree.getParent(categoryTree.getValue());
-					Item parentItem = categoryTree.getItem(parentId);
-					String parentName = (String) parentItem.getItemProperty("name").getValue();
-					System.out.println(parentId.toString() + " " + parentName);
-					/* child data */
-					Item item = categoryTree.getItem(categoryTree.getValue());
-					item.getItemProperty("name").setValue(catName);
-				 
-					 categoryLabel.setValue("Category: "+catName);
-					 
-					  CategoryDto parentCategoryDto = categoryService
-							  .findCategoryByName(parentName);
-					
-
-					CategoryDto categoryDto = new CategoryDto();
-					//categoryDto.setCategoryId(null);
-					categoryDto.setCategoryName(catName);
-					//categoryDto.setParent(null);
-					//categoryDto.setChild(new ArrayList<CategoryDto>());
-						
-//					Collection<CategoryDto> catList = parentCategoryDto.getChild();
-//					catList.add(categoryDto);
-//					parentCategoryDto.setChild(catList);
-					
-					categoryService.update(categoryDto);
-					
-					
-					categories.add(categoryDto);
-						
-
-					//	category = categoryService.findCategoryByName(catName);
-					//	item.getItemProperty("id").setValue(category.getCategoryId());
-					assignCategoryButton.setEnabled(true);
-					renameCategoryButton.setEnabled(false);
-				}
-				
-			}
-		});
-
-		final String pageTabTitle = "New Category";
-		Tab newPageTab = tabSheet.addTab(verticalLayout, pageTabTitle, null);
-		tabSheet.setSelectedTab(verticalLayout);
-		newPageTab.setVisible(true);
-		newPageTab.setEnabled(true);
-		newPageTab.setClosable(true);
-
-
 	}//end renderCategory()
 	
 	
-	/*
-     * Returns the set of available actions
-     */
-    public Action[] getActions(Object target, Object sender) {
-        return CATEGORY_ACTION;
-    }
-    
-    
-    /*
-     * Handle actions
-     */
-    public void handleAction(Action action, Object sender, Object target) {
-       
-    	if(action.equals(ADD_CATEGORY)){
-    		 categoryTree.setChildrenAllowed(target, true);
-    		 categoryTree.expandItem(target);
-             // Create new item, set parent, disallow children (= leaf node)
-             Object itemId = categoryTree.addItem();
-             categoryTree.setParent(itemId, target);
-             categoryTree.setChildrenAllowed(itemId, false);
-             // Set the name for this item (we use it as item caption)
-             Item item = categoryTree.getItem(itemId);
-             item.getItemProperty("id").setValue("-1");
-             item.getItemProperty("name").setValue("New Item");
-    	}	
-    	
-    }
-
 	/**
 	 * Populate the page ui if the tab is opened for editing.
 	 * 
@@ -1150,33 +992,6 @@ public class SiteUIManager implements UIManager, Handler{
 		container.sort(new Object[] { "Categories" }, new boolean[] { true });
 		return container;
 	}//end getParentCategories()
-	
-	/**
-	 * Add child categories to categoryTree using their parent info
-	 * 
-	 * @param parentItem
-	 * @param categoryService
-	 * @param categoryContainer
-	 * 
-	 */
-	
-	private void addChildrenToCategoryTree(final Item parentItem,
-			final Collection<CategoryDto> childCategoryDtoList){
-		Integer parentCategoryId = Integer.parseInt(parentItem.getItemProperty("id").getValue().toString());
-		//String name = parentItem.getItemProperty("name").getValue().toString();
-
-		for (CategoryDto childCategoryDto: childCategoryDtoList){
-				Integer itemToAdd = childCategoryDto.getCategoryId();
-				if (null==categoryContainer.getItem(itemToAdd)) {
-					Item item = categoryContainer.addItem(itemToAdd);
-					item.getItemProperty("id").setValue(itemToAdd);
-					item.getItemProperty("name").setValue(childCategoryDto.getCategoryName());
-					categoryContainer.setParent(childCategoryDto.getCategoryId(), parentCategoryId);
-					categoryContainer.setChildrenAllowed(childCategoryDto.getCategoryId(), true);
-				}//end if
-			}//end for
-		
- 	}//end addChildrenToCategoryTree()
 	
 	@Override
 	public Component render(String command,

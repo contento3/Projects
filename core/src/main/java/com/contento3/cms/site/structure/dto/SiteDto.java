@@ -43,6 +43,19 @@ public class SiteDto implements Serializable {
 	private Collection<SiteDomainDto> siteDomainDto;
 	
 	
+	/**
+	 *langugae for the site
+	 */
+	private String language;
+	
+	
+	public String getLanguage() {
+		return language;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	
 	public Collection<SiteDomainDto> getSiteDomainDto() {
 		return siteDomainDto;
 	}
