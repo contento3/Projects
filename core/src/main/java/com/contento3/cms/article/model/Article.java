@@ -1,7 +1,9 @@
 package com.contento3.cms.article.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,17 +16,24 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.contento3.account.model.Account;
 import com.contento3.cms.site.structure.model.Site;
 
 @Entity
 @Table(name = "ARTICLE")
-public class Article {
+public class Article implements Serializable  {
+
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column (name = "ARTICLE_UUID")
-	//TODO Change to string based custom uuid genereated.
-	private Integer uuid;
+	@Column (name = "ARTICLE_ID")
+	private Integer articleId;
 
+	@Column(columnDefinition="TEXT", length = 100, name = "ARTICLE_UUID",
+			unique=true, nullable=false)
+    private String uuid = UUID.randomUUID().toString();
+	
 	@Column (name = "HEAD")
 	private String head;
 	
@@ -40,14 +49,33 @@ public class Article {
 	@Column (name = "DATE_POSTED")
 	private Date datePosted;
 	
+	@Column (name = "LAST_UPDATED")
+	private Date lastUpdated;
+	
+	@Column (name = "EXPIRY_DATE")
+	private Date expiryDate;
+	
 	/**
 	 * articles which are associated to site
 	 */
-	@ManyToMany
+	@ManyToMany //uni directional
 	@JoinTable(name="SITE_ARTICLE",
 	joinColumns={@JoinColumn(name="ARTICLE_ID")},
 	inverseJoinColumns={@JoinColumn(name="SITE_ID")})
 	private Collection<Site> site;
+
+	@ManyToOne //uni directional many-to-one(foreign-key)
+	@JoinColumn(name="ACCOUNT_ID")
+	private Account account;
+	
+	
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
 
 	public Collection<Site> getSite() {
 		return site;
@@ -55,14 +83,6 @@ public class Article {
 
 	public void setSite(Collection<Site> site) {
 		this.site = site;
-	}
-
-	public Integer getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(Integer uuid) {
-		this.uuid = uuid;
 	}
 
 	public String getHead() {
@@ -104,5 +124,36 @@ public class Article {
 	public void setDatePosted(Date datePosted) {
 		this.datePosted = datePosted;
 	}
+	public Integer getArticleId() {
+		return articleId;
+	}
+
+	public void setArticleId(Integer articleId) {
+		this.articleId = articleId;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+		
+	}
 	
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public Date getExpiryDate() {
+		return expiryDate;
+	}
+
+	public void setExpiryDate(Date expiryDate) {
+		this.expiryDate = expiryDate;
+	}
 }

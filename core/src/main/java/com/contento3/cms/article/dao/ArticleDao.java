@@ -14,7 +14,7 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	 * @return
 	 */
 
-	Collection<Article> findByAccountId(String accountId);
+	Collection<Article> findByAccountId(Integer accountId);
 	/**
 	 * Returns the Article for a given count
 	 * @param count 
@@ -22,4 +22,13 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	 */
 
 	Collection<Article> findLatestArticle(int count);
+	
+	
+	/**
+	 * return article
+	 * @param uuid
+	 * @return
+	 */
+	Article findByUuid(String uuid);
+		
 }

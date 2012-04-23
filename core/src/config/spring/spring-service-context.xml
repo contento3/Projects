@@ -154,5 +154,17 @@
 		<constructor-arg ref="siteDomainAssembler" />
 		<constructor-arg ref="siteDomainDao" />
 	</bean>
-
+	
+	<bean id="articleAssembler"
+		class="com.contento3.cms.article.service.impl.ArticleAssemblerImpl">
+		<constructor-arg ref="siteAssembler" />
+		<constructor-arg ref="accountAssembler" />
+	</bean>
+	
+	<bean id="articleService"
+		class="com.contento3.cms.article.service.impl.ArticleServiceImpl">
+		<constructor-arg ref="articleAssembler" />
+		<constructor-arg ref="articleDao" />
+	</bean>
+	
 </beans>

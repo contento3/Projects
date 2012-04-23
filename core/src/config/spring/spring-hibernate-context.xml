@@ -163,7 +163,7 @@
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
 	<!-- ArtcileDao -->
-	<bean id="ArtcileDao"
+	<bean id="articleDao"
 		class=" com.contento3.cms.article.dao.impl.ArticleDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>

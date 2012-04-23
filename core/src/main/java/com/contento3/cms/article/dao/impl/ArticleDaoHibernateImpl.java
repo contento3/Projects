@@ -4,8 +4,11 @@ import java.util.Collection;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.util.CollectionUtils;
+
 import com.contento3.cms.article.dao.ArticleDao;
 import com.contento3.cms.article.model.Article;
+import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.template.model.Template;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
@@ -16,12 +19,11 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 
 	
 	@Override
-	public Collection<Article> findByAccountId(String accountId) {
+	public Collection<Article> findByAccountId(Integer accountId) {
 		// TODO Auto-generated method stub
 		Criteria criteria = this.getSession()
-		.createCriteria(Template.class)
-		.createCriteria("AccountID")
-		.add(Restrictions.eq("AccountID", accountId));
+		.createCriteria(Article.class)
+		.add(Restrictions.eq("account.accountId", accountId));
 		return criteria.list();
 	}
 
@@ -30,7 +32,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	public Collection<Article> findLatestArticle(int count) {
 		// TODO Auto-generated method stub
 		Criteria criteria = this.getSession()
-		.createCriteria(Template.class)
+		.createCriteria(Article.class)
 		.createCriteria("Count")
 		.add(Restrictions.eq("Count", count))
 		.setFirstResult(0).setMaxResults(count);
@@ -38,7 +40,25 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	}
 	
 
+	@Override
+	public Article findByUuid(String uuid) {
+		
+		Criteria criteria = this.getSession()
+				.createCriteria(Article.class)
+				.add(Restrictions.eq("uuid", uuid));
+		Article article = null;
+		if (!CollectionUtils.isEmpty(criteria.list())) {
+			article = (Article) criteria.list().get(0);
+		}
 
-	
+		return article;
+		
+	}
+
+	@Override
+	public Article findById(Integer id) {
+		// TODO Auto-generated method stub
+		return super.findById(id);
+	}
 
 }
