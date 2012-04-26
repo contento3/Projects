@@ -15,6 +15,7 @@ public class AccountAssemblerImpl implements AccountAssembler {
 		Account account = new Account();
 		account.setAccountId(dto.getAccountId());
 		account.setName(dto.getName());
+		account.setEnabled(dto.isEnabled());
 		return account;
 	}
 
@@ -23,6 +24,7 @@ public class AccountAssemblerImpl implements AccountAssembler {
 		AccountDto dto = new AccountDto();
 		dto.setName(dto.getName());
 		dto.setAccountId(domain.getAccountId());
+		dto.setEnabled(domain.isEnabled());
 		return dto;
 	}
 

@@ -77,7 +77,7 @@ public class SiteUIManager implements UIManager {
 	public static final String NEWPAGE = "newpage";
 	private SpringContextHelper contextHelper;
 	private final IndexedContainer container = new IndexedContainer();
-	private final IndexedContainer domainsContainer = new IndexedContainer();
+	private IndexedContainer domainsContainer; 
 	private PageDto newPageDtoWithLayout;
 	private Window parentWindow;
 	private int selectedPageId;
@@ -295,6 +295,7 @@ public class SiteUIManager implements UIManager {
 		this.siteid = siteId;
 		final SiteDto siteDto = siteService.findSiteById(siteId);
 		siteDomainDto = siteDto.getSiteDomainDto();
+		domainsContainer = new IndexedContainer();
 		VerticalLayout verticalLayout = new VerticalLayout();
 		final FormLayout configSiteFormLayout = new FormLayout();
 		verticalLayout.addComponent(configSiteFormLayout);
