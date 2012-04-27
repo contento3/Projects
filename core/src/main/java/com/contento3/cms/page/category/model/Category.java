@@ -21,23 +21,32 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "CATEGORY")
 public class Category implements Serializable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * Primary key for category
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "CATEGORY_ID")
 	private Integer categoryId;
 
+	/**
+	 * Name for category
+	 */
 	@Column(name = "CATEGORY_NAME")
 	private String categoryName;
 
+	/**
+	 * Parent category
+	 */
 	@ManyToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name = "PARENT_CATEGORY_ID")
 	private Category parent;
 	
+	/**
+	 * Child category
+	 */
 	@OneToMany(mappedBy = "parent")
 	private Collection<Category> child; 
 	

@@ -50,8 +50,6 @@ public class ContentUIManager implements UIManager{
 		this.helper = helper;
 		this.parentWindow = parentWindow;
 		this.articleService = (ArticleService) helper.getBean("articleService");
-		
-
 	}
  
 	public void render(){
@@ -173,6 +171,7 @@ public class ContentUIManager implements UIManager{
 	}
 	/**
 	 * display articles 
+	 * @param articleTable
 	 */
 	private void renderArticles(final Table articleTable){
 		articleContainer.addContainerProperty("Article", String.class, null);
@@ -191,10 +190,15 @@ public class ContentUIManager implements UIManager{
 			articleTable.setContainerDataSource(articleContainer);
 		} else {
 			final Label label = new Label("No article found for this site");
-			//VerticalLayout
 		}
-	}
+	}//end renderArticles
 	
+	/**
+	 * add articles to articleContainer 
+	 * which will be provided as source to table 
+	 * @param article
+	 * @param editLink
+	 */
 	private void addArticlesToTable(final ArticleDto article,final Button editLink ){
 		final Item item = articleContainer.addItem(article.getArticleId().toString());
 
@@ -228,8 +232,6 @@ public class ContentUIManager implements UIManager{
 			}
 		});
 
-
-		
-	}
+	}//end addArticlesToTable
 
 }

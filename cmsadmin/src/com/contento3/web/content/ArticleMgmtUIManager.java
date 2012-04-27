@@ -41,9 +41,17 @@ public class ArticleMgmtUIManager {
 	private final PopupDateField lastUpdatedDatefield = new PopupDateField("Last Updated Date");
 	private final PopupDateField expiryDatefield = new PopupDateField("Article Expiry Date");
 	private VerticalLayout formLayout = null;
+	/**
+	 * default constructor
+	 */
 	public ArticleMgmtUIManager() {
 		// TODO Auto-generated constructor stub
 	}
+	/**
+	 * constructor
+	 * @param helper
+	 * @param parentWindow
+	 */
 	public ArticleMgmtUIManager(final SpringContextHelper helper,final Window parentWindow) {
 		this.helper= helper;
 		this.parentWindow = parentWindow;
@@ -56,31 +64,18 @@ public class ArticleMgmtUIManager {
         accountId =(Integer)session.getAttribute("accountId");
 	}
 
+	/**
+	 * render screen for adding article
+	 * @return
+	 */
 	public Component renderAddScreen(){
 		formLayout = new VerticalLayout();
 		formlayoutSettings();
-  
-       // final CKEditorTextField bodyTextField = new CKEditorTextField(config);
-     //   bodyTextField.setCaption("Article Body");
-        
         final String editorInitialValue = 
                   "<p>Thanks TinyMCEEditor for getting us started on the CKEditor integration.</p><h1>Like TinyMCEEditor said, &quot;Vaadin rocks!&quot;</h1><h1>And CKEditor is no slouch either.</h1>";
-
         bodyTextField.setValue(editorInitialValue);
-        
-          //ckEditorTextField.setReadOnly(true);
-          //ckEditorTextField.addListener(new Property.ValueChangeListener() {
-
-//                  public void valueChange(ValueChangeEvent event) {
-//                          getMainWindow().showNotification("CKEditor contents: " + event.getProperty().toString().replaceAll("<", "&lt;"));
-//                  }
-       //   });
-        
-
         postedDatefield.setValue(new Date());
-        
-    	
-        
+
         final Button saveButton = new Button("Save");
         saveButton.addListener(new ClickListener() {
 			
@@ -90,7 +85,7 @@ public class ArticleMgmtUIManager {
 				article.setHead(articleHeading.getValue().toString());
 				article.setTeaser(articleTeaser.getValue().toString());
 				article.setBody(bodyTextField.getValue().toString());
-			postedDatefield.getValue();
+				postedDatefield.getValue();
 				article.setDatePosted((Date)postedDatefield.getValue());
 				Date createdDate= new Date();
 				article.setDateCreated(createdDate);
@@ -105,14 +100,15 @@ public class ArticleMgmtUIManager {
 				
 			}
 		});
-       
-       
+
         formLayout.addComponent(saveButton);
-        
-        
         return formLayout;
       }
-
+	/**
+	 * render screen for editing article
+	 * @param article
+	 * @return
+	 */
 	public Component renderEditScreen(final ArticleDto article){
 		
 		formlayoutSettings();
@@ -146,7 +142,9 @@ public class ArticleMgmtUIManager {
 	    formLayout.addComponent(editButton);
 		return formLayout;
 	}
-	
+	/**
+	 * setting formLayout for showing edit & add article screen
+	 */
 	public void formlayoutSettings(){
 		formLayout = new VerticalLayout();
 		formLayout.setHeight("100%");

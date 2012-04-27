@@ -44,15 +44,20 @@ public class CategoryTreeRender implements UIManager, Handler{
 	private PageService pageService;
 	private Window parentWindow;
 	private Collection<CategoryDto> categories;
-	private Integer siteId=null;
+	//private Integer siteId=null;
 	private TabSheet tabSheet=null;
 	private Integer pageId=null;
-	private Label categoryLabel=null;
 	private PageDto pageDto = null;
 	private	String name =null;
 	private final Button assignCategoryButton = new Button("Assign");
 	private final Button renameCategoryButton = new Button("Rename");
 	private final TextField selectedCategoryField = new TextField();
+	private boolean addCategoryEnable=false; // allow or disallow to provide add category option
+	/**
+	 * Constructor
+	 * @param helper
+	 * @param parentWindow
+	 */
 	public CategoryTreeRender(final SpringContextHelper helper,final Window parentWindow) {
 		this.verticalLayout = new VerticalLayout();
 		this.categoryFormLayout = new FormLayout();
@@ -62,14 +67,18 @@ public class CategoryTreeRender implements UIManager, Handler{
 		categoryService = (CategoryService)contextHelper.getBean("categoryService");
 		this.pageService = (PageService) contextHelper.getBean("pageService");
 	}
-	
+	/**
+	 * render category tree screen to assign category to page
+	 * @param siteId
+	 * @param tabSheet
+	 * @param pageId
+	 * @param categoryLabel
+	 */
 	public void renderTreeToAssign(final Integer siteId,
 			final TabSheet tabSheet, final Integer pageId,final Label categoryLabel){
 		
-		this.siteId = siteId;
 		this.tabSheet = tabSheet;
 		this.pageId = pageId;
-		this.categoryLabel = categoryLabel;
 		pageDto = pageService.findPageBySiteId(siteId, pageId);
 		categories = pageDto.getCategories();
 		renderCategory();
@@ -110,13 +119,17 @@ public class CategoryTreeRender implements UIManager, Handler{
 		});
 		
 	}
-	
+	/**
+	 * render category screen to add some new categories to tree.
+	 * @param siteId
+	 * @param tabSheet
+	 * @param pageId
+	 */
 	public void renderTreeToAddNewCategory(final Integer siteId,
 			final TabSheet tabSheet, final Integer pageId){
-		this.siteId = siteId;
 		this.tabSheet = tabSheet;
 		this.pageId = pageId;
-
+		addCategoryEnable = true; //allow to addCategry
 		renderCategory();
 
 		renameCategoryButton.setEnabled(false);
@@ -161,6 +174,9 @@ public class CategoryTreeRender implements UIManager, Handler{
 		});
 	}
 
+	/**
+	 * render category screen 
+	 */
 	private void renderCategory(){
 
 		verticalLayout.addComponent(categoryFormLayout);
@@ -168,7 +184,8 @@ public class CategoryTreeRender implements UIManager, Handler{
 
 		Collection<CategoryDto> categoryDto = categoryService.findNullParentIdCategory();
 		categoryTree = new Tree("Categories");// creating tree
-		categoryTree.addActionHandler(this);
+		if(addCategoryEnable)
+			categoryTree.addActionHandler(this);
 		categoryTree.setImmediate(true);
 		categoryTree.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 		categoryTree.setItemCaptionPropertyId("name");
@@ -219,16 +236,20 @@ public class CategoryTreeRender implements UIManager, Handler{
 		
 	}//end renderCategory()
 
-		
-	/*
-     * Returns the set of available actions
-     */
+	/**
+	 * return the set of available actions
+	 * @param target
+	 * @param sender
+	 */
     public Action[] getActions(Object target, Object sender) {
         return CATEGORY_ACTION;
     }
     
-    /*
-     * Handle actions
+    /**
+     * handle actions
+     * @param action
+     * @param sender
+     * @param target
      */
     public void handleAction(Action action, Object sender, Object target) {
        
@@ -247,9 +268,8 @@ public class CategoryTreeRender implements UIManager, Handler{
     	
     }
 
-	/*		
-	* Returns a Container with all the Parent Categories.
-	 * 
+	/**	
+	 * Returns a Container with all the Parent Categories.
 	 * @param categoryList
 	 * @return
 	 */
