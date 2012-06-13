@@ -1,10 +1,7 @@
 package com.contento3.web.content;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,9 +10,6 @@ import org.springframework.util.CollectionUtils;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.constant.NavigationConstant;
-import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
-import com.contento3.cms.site.structure.domain.service.SiteDomainService;
-import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
@@ -31,42 +25,76 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 
+/**
+ * Entry point for all the logic related to CONTENT MANAGER functionality.
+ * @author HAMMAD
+ *
+ */
 public class ContentUIManager implements UIManager{
 
+	/**
+	 * Helper class to get beans from the spring application context.
+	 */
     private SpringContextHelper helper;
+    
+    /**
+     * Parent window that contains all the ui components.Used primarily to set notifications.
+     */
 	private Window parentWindow;
+	
+	/**
+	 * Article service to perform article related tasks.
+	 */
 	private ArticleService articleService;
+	
+	/**
+	 * Account id for the account that is currently in use.
+	 */
 	private Integer accountId=null;
+	
+	/**
+	 * Article Container to hold article listing
+	 */
 	private final IndexedContainer articleContainer = new IndexedContainer();
+	
+	/**
+	 * Main tabsheet that hold all the content.
+	 */
 	final TabSheet elementTab = new TabSheet();
+	
+	/**
+	 * Represents the navigation items in the Content Manager section.
+	 */
 	private String[] navigationItems = {NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT};
 
+	/**
+	 * Class contructor
+	 * @param helper
+	 * @param parentWindow
+	 */
 	public ContentUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
 		this.articleService = (ArticleService) helper.getBean("articleService");
-		
-
 	}
- 
+
+	@Override
 	public void render(){
 	}
 
 	@Override
 	public Component render(final String command){
 		Component componentToReturn = null;
-		
 		return componentToReturn;
 	}
 
 	@Override
 	public Component render(final String command,final Integer id){
-
 		return null;
 	}
 
@@ -90,6 +118,10 @@ public class ContentUIManager implements UIManager{
 		return tabsheet;
 	}
 
+	/**
+	 * Renders all the navigation items in the Content Manager section
+	 * @param hwContainer
+	 */
 	public void renderContentNavigationItems(final HierarchicalContainer hwContainer){
 		for (String navigationItem : navigationItems){
 			Item item = hwContainer.addItem(navigationItem);
@@ -115,6 +147,11 @@ public class ContentUIManager implements UIManager{
 		return renderContentElementUI("Image");
 	}
 
+	/**
+	 * Calls the appropiate sub ui manager based on the argument.
+	 * @param element Tells what sub ui manager is require to be returned.
+	 * @return
+	 */
 	private Component renderContentElementUI(final String element){
 		//final TabSheet elementTab = new TabSheet();
 		elementTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
@@ -124,10 +161,9 @@ public class ContentUIManager implements UIManager{
 		Button button = new Button();
 		verticalLayout.addComponent(button);
 		verticalLayout.setSizeFull();
-
 		final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(helper,parentWindow);
+
 		elementTab.addTab(verticalLayout, String.format("%s Management",element));
-		verticalLayout.addComponent(imageMgmtUIMgr.listImage(1));
 		button.addListener(new ClickListener(){
 			public void buttonClick(ClickEvent event){
 				if (element.equals("Article")){
@@ -147,7 +183,6 @@ public class ContentUIManager implements UIManager{
 					newArticleLayout.addComponent(imageMgmtUIMgr.renderAddScreen());
 					newArticleLayout.setHeight("100%");
 				}
-
    	        }
     	});
 
@@ -168,6 +203,9 @@ public class ContentUIManager implements UIManager{
 
 			verticalLayout.addComponent(articleTable);
 		}
+		else if (element.equals("Image")){
+			verticalLayout.addComponent(imageMgmtUIMgr.listImage(1));
+		}
 
 		return elementTab;
 	}
@@ -176,9 +214,9 @@ public class ContentUIManager implements UIManager{
 	 */
 	private void renderArticles(final Table articleTable){
 		articleContainer.addContainerProperty("Article", String.class, null);
-		articleContainer.addContainerProperty("Date_created", String.class, null);
-		articleContainer.addContainerProperty("Date_posted", String.class, null);
-		articleContainer.addContainerProperty("Expiry_Date", String.class, null);
+		articleContainer.addContainerProperty("Date Created", String.class, null);
+		articleContainer.addContainerProperty("Date Posted", String.class, null);
+		articleContainer.addContainerProperty("Expiry Date", String.class, null);
 		articleContainer.addContainerProperty("Edit", Button.class, null);
 		Collection<ArticleDto> articleDto = articleService.findByAccountId(accountId);
 		if (!CollectionUtils.isEmpty(articleDto)) {
@@ -190,7 +228,7 @@ public class ContentUIManager implements UIManager{
 
 			articleTable.setContainerDataSource(articleContainer);
 		} else {
-			final Label label = new Label("No article found for this site");
+			final Label label = new Label("No article found.");
 			//VerticalLayout
 		}
 	}
@@ -202,15 +240,14 @@ public class ContentUIManager implements UIManager{
 		//Date date = new Date();
 		String DATE_FORMAT = "dd/MM/yyyy";
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		item.getItemProperty("Date_created").setValue(sdf.format(article.getDateCreated()));
-		item.getItemProperty("Date_posted").setValue(sdf.format(article.getDatePosted()));
-		item.getItemProperty("Expiry_Date").setValue(sdf.format(article.getExpiryDate()));
+		item.getItemProperty("Date Created").setValue(sdf.format(article.getDateCreated()));
+		item.getItemProperty("Date Posted").setValue(sdf.format(article.getDatePosted()));
+		item.getItemProperty("Expiry Date").setValue(sdf.format(article.getExpiryDate()));
 		editLink.setCaption("Edit");
 		editLink.setData(article.getArticleId());
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("Edit").setValue(editLink);
-
 
 		editLink.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -218,18 +255,14 @@ public class ContentUIManager implements UIManager{
 				
 				ArticleDto article = (ArticleDto) articleService.findById(Integer.parseInt(id.toString()));
 				elementTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-					ArticleMgmtUIManager artMgmtUIMgr = new ArticleMgmtUIManager(helper,parentWindow);
-					VerticalLayout newArticleLayout = new VerticalLayout();
-					Tab createNew = elementTab.addTab(newArticleLayout, "Edit Article");
-					createNew.setClosable(true);
-					elementTab.setSelectedTab(newArticleLayout);
-					newArticleLayout.addComponent(artMgmtUIMgr.renderEditScreen(article));
-					newArticleLayout.setHeight("100%");
+				ArticleMgmtUIManager artMgmtUIMgr = new ArticleMgmtUIManager(helper,parentWindow);
+				VerticalLayout newArticleLayout = new VerticalLayout();
+				Tab createNew = elementTab.addTab(newArticleLayout, "Edit Article");
+				createNew.setClosable(true);
+				elementTab.setSelectedTab(newArticleLayout);
+				newArticleLayout.addComponent(artMgmtUIMgr.renderEditScreen(article));
+				newArticleLayout.setHeight("100%");
 			}
 		});
-
-
-		
 	}
-
 }
