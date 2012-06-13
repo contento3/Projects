@@ -26,10 +26,19 @@ public class Account implements Serializable {
 
 	@Column(name = "account_name")
 	private String name;
+	
+	@Column(name="IS_ENABLED")
+	private boolean isEnabled;
 
 	
 //	private String description;
 	
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 	public String getName() {
 		return name;
 	}

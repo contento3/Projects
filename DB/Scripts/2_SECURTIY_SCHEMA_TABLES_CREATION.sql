@@ -4,6 +4,10 @@
 --    enabled boolean not null
 -- ) engine = InnoDb;
 
+create schema platform_users;
+
+use platform_users;
+
 create table users(
   username varchar(50) not null primary key,
   password varchar(50) not null,

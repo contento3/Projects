@@ -211,6 +211,7 @@ public class ContentUIManager implements UIManager{
 	}
 	/**
 	 * display articles 
+	 * @param articleTable
 	 */
 	private void renderArticles(final Table articleTable){
 		articleContainer.addContainerProperty("Article", String.class, null);
@@ -228,11 +229,16 @@ public class ContentUIManager implements UIManager{
 
 			articleTable.setContainerDataSource(articleContainer);
 		} else {
-			final Label label = new Label("No article found.");
-			//VerticalLayout
+			final Label label = new Label("No article found for this site");
 		}
-	}
+	}//end renderArticles
 	
+	/**
+	 * add articles to articleContainer 
+	 * which will be provided as source to table 
+	 * @param article
+	 * @param editLink
+	 */
 	private void addArticlesToTable(final ArticleDto article,final Button editLink ){
 		final Item item = articleContainer.addItem(article.getArticleId().toString());
 
@@ -264,5 +270,7 @@ public class ContentUIManager implements UIManager{
 				newArticleLayout.setHeight("100%");
 			}
 		});
-	}
+
+	}//end addArticlesToTable
+
 }

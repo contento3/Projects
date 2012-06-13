@@ -25,7 +25,6 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		
 		Article domain = new Article();
 		domain.setArticleId(dto.getArticleId());
-		//domain.setUuid(); //dont need to set here 
 		domain.setHead(dto.getHead());
 		domain.setBody(dto.getBody());
 		domain.setTeaser(dto.getTeaser());

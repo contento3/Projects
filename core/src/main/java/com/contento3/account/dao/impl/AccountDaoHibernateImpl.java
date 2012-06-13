@@ -21,7 +21,9 @@ public class AccountDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<A
 		Criteria criteria = this.getSession()
 		.createCriteria(Account.class)
 		.add(Restrictions
-		.eq("siteId", siteId));
+		.eq("siteId", siteId))
+		.add(Restrictions
+				.eq("IS_ENABLED", 1));
 		return criteria.list();
 	}
 

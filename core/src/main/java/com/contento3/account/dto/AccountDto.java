@@ -17,6 +17,8 @@ public class AccountDto implements Serializable {
 	private Integer accountId;
 
 	private String name;
+	
+	private boolean isEnabled;
 
 	public String getName() {
 		return name;
@@ -31,5 +33,12 @@ public class AccountDto implements Serializable {
 	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
 	}
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 
+	
 }

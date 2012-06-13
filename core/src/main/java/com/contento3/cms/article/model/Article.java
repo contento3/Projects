@@ -25,33 +25,57 @@ public class Article implements Serializable  {
 
 	
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * Primary key for article
+	 */
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column (name = "ARTICLE_ID")
 	private Integer articleId;
 
+	/**
+	 * unique random UUID
+	 */
 	@Column(columnDefinition="TEXT", length = 100, name = "ARTICLE_UUID",
 			unique=true, nullable=false)
     private String uuid = UUID.randomUUID().toString();
 	
+	/**
+	 * Head section of article
+	 */
 	@Column (name = "HEAD")
 	private String head;
-	
+	/**
+	 * Teaser section of article
+	 */
 	@Column (name = "TEASER")
 	private String teaser;
 	
+	/**
+	 * Body section of article
+	 */
 	@Column (name = "BODY")
 	private String body;
 	
+	/**
+	 * Article created date
+	 */
 	@Column (name = "DATE_CREATED")
 	private Date dateCreated;
 	
+	/**
+	 * Article posted date
+	 */
 	@Column (name = "DATE_POSTED")
 	private Date datePosted;
 	
+	/**
+	 * Article last updated date
+	 */
 	@Column (name = "LAST_UPDATED")
 	private Date lastUpdated;
-	
+	/**
+	 * Expiry date for article
+	 */
 	@Column (name = "EXPIRY_DATE")
 	private Date expiryDate;
 	
@@ -64,6 +88,9 @@ public class Article implements Serializable  {
 	inverseJoinColumns={@JoinColumn(name="SITE_ID")})
 	private Collection<Site> site;
 
+	/**
+	 * account on which articles are created
+	 */
 	@ManyToOne //uni directional many-to-one(foreign-key)
 	@JoinColumn(name="ACCOUNT_ID")
 	private Account account;
