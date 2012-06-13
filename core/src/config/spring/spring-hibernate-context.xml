@@ -38,6 +38,7 @@
 			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
 			     <value>com.contento3.cms.article.model.Article</value>
 			     <value>com.contento3.security.group.model.Group</value>
+			     <value>com.contento3.site.user.model.User</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -157,12 +158,17 @@
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
 	
+	<bean id="siteUserDao"
+		class="com.contento3.site.user.dao.impl.UserDaoHibernateImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	
 	<!-- SiteDomainDao -->
 	<bean id="siteDomainDao"
 		class="com.contento3.cms.site.structure.domain.dao.impl.SiteDomainDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
-	<!-- ArtcileDao -->
+	<!-- ArticleDao -->
 	<bean id="articleDao"
 		class=" com.contento3.cms.article.dao.impl.ArticleDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />

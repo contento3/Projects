@@ -7,14 +7,19 @@
   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
   ">
 
+<!-- 
+ <import resource="applicationContext-site-security.xml"/>
+  -->
+  
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<value>
-			/page/**/*=pageController
+	<!--  	 	/register/**/*=registrationController -->
+	 		/page/**/*=pageController  
 			/image/**/*=staticResourceController
 			/js/**/*=staticResourceController
 			/css/**/*=staticResourceController
-	 	<!-- 	/*=pageController ENABLE IT ON PRODUCTION -->
+	 	 	/*=pageController
 		</value>
 	</property>
 </bean>
@@ -23,14 +28,32 @@
 	<property name="freeMarkerView" ref="fmView" />
 </bean>
 
+
+<!-- 
+<bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
+	<property name="freeMarkerView" ref="fmView" />
+	<property name="registrationService" ref="userRegistrationService" />
+</bean>
+ -->
 <!-- This is used to return the javascript,css and images that are stored in the database and potentially stored on amazon s3  -->
 <bean id="staticResourceController" class="com.contento3.site.controller.StaticResourceController">
 	<property name="staticResourceViewResolver" ref="staticResourceView" />
 </bean>
 
-<bean id="fmView" class="com.contento3.site.resolver.FreemarkerViewResolver">
+<!-- 
+<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+  <property name="cache" value="true"/>
+  <property name="prefix" value="/"/>
+  <property name="suffix" value=""/>
+  
+  <property name="exposeSpringMacroHelpers" value="true"/>
+</bean>
+ -->
+
+<bean id="fmView" class="com.contento3.site.resolver.ExtendedFreemarkerView">
 	<property name="freemarkerRenderingEngine" ref="fmRenderingEngine" />
 	<property name="siteService" ref="siteService" />
+	<property name="url" value="" />
 </bean>
 
 
@@ -40,7 +63,7 @@
 </bean>
 
 <bean id="fmRenderingEngine" class="com.contento3.site.template.render.engine.impl.FreemarkerRenderingEngine">
-	<property name="templateLoader" ref="fmTemplateLoader" />
+	<property name="customTemplateLoader" ref="fmTemplateLoader" />
 	<property name="configuration" ref="fmConfiguration" />
 	<property name="modelContext" ref="modelContext" />
 </bean>
@@ -52,7 +75,29 @@
 		<property name="htmlResolver" ref="htmlResolver" />
 </bean>
 
+<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+  <property name="templateLoaderPath" value="/WEB-INF/"/>
+  <property name="freemarkerVariables">
+    <map>
+      <entry key="xml_escape" value-ref="fmXmlEscape"/>
+    </map>
+  </property>
+  <property name="freemarkerSettings">
+        <props>
+            <prop key="auto_import">/spring.ftl as spring</prop>
+        </props>
+    </property>
+</bean>
 
+<!-- 
+<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+    <property name="cache" value="true"/>
+    <property name="prefix" value=""/>
+    <property name="suffix" value=".ftl"/>
+    <property name="exposeSpringMacroHelpers" value="true" />
+</bean>
+-->
+<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>
 <bean id="htmlResolver" class="com.contento3.site.page.section.resolver.impl.YuiHtmlResolver">
 	<property name="templateService" ref="templateService" />
 </bean>
