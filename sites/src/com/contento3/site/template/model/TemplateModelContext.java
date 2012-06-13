@@ -38,13 +38,13 @@ public class TemplateModelContext implements TemplateHashModel {
 		}
 
 		// finally check if some model exist
-		if (model == null) {
-			// this method is declared from Freemarker API so cannot throw
-			// anything else than TemplateModelException
-			// so I build cause first and then pass it to
-			// TemplateModelException
-			throw new TemplateModelException();
-		}
+//		if (model == null) {
+//			// this method is declared from Freemarker API so cannot throw
+//			// anything else than TemplateModelException
+//			// so I build cause first and then pass it to
+//			// TemplateModelException
+//			throw new TemplateModelException();
+//		}
 		return model;
 	}
 

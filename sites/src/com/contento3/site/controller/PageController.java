@@ -5,8 +5,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.view.AbstractTemplateView;
 
-import com.contento3.site.resolver.FreemarkerViewResolver;
+import com.contento3.site.registration.model.User;
+
 
 
 /**
@@ -17,24 +19,23 @@ import com.contento3.site.resolver.FreemarkerViewResolver;
  */
 public class PageController extends AbstractController {
 
-	private FreemarkerViewResolver freemarkerView;
+	private AbstractTemplateView freemarkerView;
 	
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		ModelAndView modelAndView = null;
-		
 		String requestURI = request.getRequestURI();
 		if (!requestURI.equals("/favicon.ico")){
-		 modelAndView = new ModelAndView();
-		modelAndView.setView(freemarkerView); 
+			modelAndView = new ModelAndView();
+			modelAndView.setView(freemarkerView); 
 		}
 
 		return modelAndView;
 	}
 
-	public void setFreeMarkerView(final FreemarkerViewResolver freemarkerView){
+	public void setFreeMarkerView(final AbstractTemplateView freemarkerView){
 		this.freemarkerView = freemarkerView;
 	} 
 }

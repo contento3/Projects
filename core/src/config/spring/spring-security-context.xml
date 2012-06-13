@@ -28,8 +28,7 @@
 		<form-login login-page='/jsp/login' default-target-url="/home" authentication-failure-url="/jsp/login_error" />
         <logout invalidate-session="true" logout-success-url="/jsp/login"/>
         <session-management>
-    		<concurrency-control max-sessions="1" expired-url= 
-    "/jsp/login?error=expired"/>
+    		<concurrency-control max-sessions="1" expired-url="/jsp/login?error=expired"/>
   		</session-management>
 	</http>
 

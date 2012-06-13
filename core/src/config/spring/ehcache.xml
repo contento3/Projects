@@ -14,8 +14,8 @@
   <cache name="SimplePageCachingFilter"
          maxElementsInMemory="0"
          eternal="false"
-         timeToIdleSeconds="600"
-         timeToLiveSeconds="600"
+         timeToIdleSeconds="60"
+         timeToLiveSeconds="60"
          overflowToDisk="true"/>
 
 
@@ -24,7 +24,7 @@
     maxElementsInMemory="10000"
     eternal="false"
     timeToIdleSeconds="300"
-    timeToLiveSeconds="600"
+    timeToLiveSeconds="6"
 	overflowToDisk="true"/>
 
   <cache name="com.contento3.cms.site.structure.model.Site"
@@ -38,7 +38,7 @@
     maxElementsInMemory="10000"
     eternal="false"
     timeToIdleSeconds="300"
-    timeToLiveSeconds="600"
+    timeToLiveSeconds="6"
 	overflowToDisk="true"/>
 
 </ehcache>

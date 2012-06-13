@@ -84,7 +84,7 @@ public class PageServiceImpl implements PageService {
 		Page page = pageDao.findPageByPathAndSiteId(path, siteId);
 		
 		if (null==page){
-			throw new PageNotFoundException();
+			throw new PageNotFoundException(String.format("Page not found for path [%s] for site id [%d]",path,siteId));
 		}
 		return 	pageAssembler.domainToDto(page);
 	}

@@ -34,7 +34,7 @@ public class CachingFilter extends SimplePageCachingFilter {
         
 	    try {
 	    	site = siteService.findSiteByDomain(DomainUtil.fetchDomain(httpRequest));
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			LOGGER.error("Invalid request",e);
 			throw new IllegalArgumentException(e);
 		}

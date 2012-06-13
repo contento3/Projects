@@ -20,11 +20,11 @@ public class DatabasePasswordSecurerBean extends JdbcDaoSupport {
 	@Autowired
 	private SaltSource saltSource;
 	  
-	  @Autowired
-	  private UserDetailsService userDetailsService;
+	@Autowired
+	private UserDetailsService userDetailsService;
 	  
 	  
-	  public void secureDatabase() {
+	public void secureDatabase() {
 	    getJdbcTemplate().query("select username, password from users", 
 	                             new RowCallbackHandler(){
 	      @Override

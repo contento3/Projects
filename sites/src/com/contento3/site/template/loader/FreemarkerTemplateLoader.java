@@ -56,7 +56,7 @@ public class FreemarkerTemplateLoader implements TemplateLoader {
 			try {
 				dto = pageAssembler.assemble(siteId,String.format("/%s",pathSplitter[0]));
 			} catch (PageNotFoundException e) {
-				throw new IOException("Request page not found",e);
+				throw new IOException("Requested page not found",e);
 			}
 		}
 		//Otherwise the path is actually a template 

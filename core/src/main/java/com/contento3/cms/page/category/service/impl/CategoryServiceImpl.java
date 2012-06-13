@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void update(final CategoryDto categoryDto){
 		
-		 categoryDao.update(categoryAssembler.dtoToDomain(categoryDto));
+		 categoryDao.persist(categoryAssembler.dtoToDomain(categoryDto));
 		
 	}
 	

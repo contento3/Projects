@@ -29,17 +29,17 @@ public class CustomJdbcDaoImpl extends JdbcDaoImpl implements IChangePassword {
 	@Autowired
 	private SaltSource saltSource;
 
-	public void changePassword(String username, String password) {
-		UserDetails user = loadUserByUsername(username);
-		String encodedPassword = passwordEncoder.encodePassword(password, saltSource.getSalt(user));
+	public void changePassword(final String username,final String password) {
+		final UserDetails user = loadUserByUsername(username);
+		final String encodedPassword = passwordEncoder.encodePassword(password, saltSource.getSalt(user));
 		getJdbcTemplate().update("UPDATE USERS SET PASSWORD = ? WHERE USERNAME = ?",
 				encodedPassword, username);
 	}
 
 	@Override
-	protected UserDetails createUserDetails(String username,
-			UserDetails userFromUserQuery,
-			List<GrantedAuthority> combinedAuthorities) {
+	protected UserDetails createUserDetails(final String username,
+			final UserDetails userFromUserQuery,
+			final List<GrantedAuthority> combinedAuthorities) {
         String returnUsername = userFromUserQuery.getUsername();
 
         if (!isUsernameBasedPrimaryKey()) {
