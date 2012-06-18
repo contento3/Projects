@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.contento3.account.model.Account;
 import com.contento3.cms.site.structure.domain.model.SiteDomain;
+import com.contento3.dam.image.model.Image;
 
 /**
  * A model class that represents a site entity
@@ -80,6 +83,8 @@ public class Site implements Serializable {
 	@Column(name = "LANGUAGE")
 	private String language;
 	
+
+
 	public String getLanguage() {
 		return language;
 	}

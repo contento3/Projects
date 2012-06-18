@@ -1,6 +1,9 @@
 package com.contento3.dam.image.dto;
 
+import java.util.Collection;
+
 import com.contento3.account.dto.AccountDto;
+import com.contento3.cms.site.structure.dto.SiteDto;
 
 public class ImageDto {
 
@@ -13,6 +16,19 @@ public class ImageDto {
 	private AccountDto accountDto;
 	
 	private byte[] image;
+	
+	/**
+	 * sites that contains image
+	 */
+	private Collection<SiteDto> siteDto;
+
+	public Collection<SiteDto> getSiteDto() {
+		return siteDto;
+	}
+
+	public void setSiteDto(Collection<SiteDto> siteDto) {
+		this.siteDto = siteDto;
+	}
 
 	public String getImageId() {
 		return imageUuid;

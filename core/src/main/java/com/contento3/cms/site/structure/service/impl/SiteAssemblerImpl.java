@@ -8,6 +8,7 @@ import com.contento3.cms.site.structure.domain.service.SiteDomainAssembler;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteAssembler;
+import com.contento3.dam.image.service.ImageAssembler;
 
 /**
  * Transform Site to SiteDto and vice versa.
@@ -21,10 +22,12 @@ public class SiteAssemblerImpl implements SiteAssembler {
 	 */
 	private AccountAssembler accountAssembler;
 	private SiteDomainAssembler siteDomainAssembler;
+
 	
-	public SiteAssemblerImpl(final AccountAssembler accountAssembler,final SiteDomainAssembler siteDomainAssembler ){
+	public SiteAssemblerImpl(final AccountAssembler accountAssembler,final SiteDomainAssembler siteDomainAssembler){
 		this.accountAssembler = accountAssembler;
 		this.siteDomainAssembler = siteDomainAssembler;
+
 	}
 	
 	@Override
@@ -37,6 +40,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		site.setDafaultLayoutId(dto.getDefaultLayoutId());
 		site.setSiteDomain(siteDomainAssembler.dtosToDomains(dto.getSiteDomainDto()));
 		site.setLanguage(dto.getLanguage());
+		
 		return site;
 	}
 
@@ -50,6 +54,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		dto.setDefaultLayoutId(domain.getDafaultLayoutId());
 		dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
 		dto.setLanguage(domain.getLanguage());
+		
 		return dto;
 	}
 

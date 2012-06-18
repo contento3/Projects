@@ -4,13 +4,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.contento3.cms.site.structure.service.SiteAssembler;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.model.Image;
 import com.contento3.dam.image.service.ImageAssembler;
 
 public class ImageAssemblerImpl implements ImageAssembler {
 
+	private SiteAssembler siteAssembler;
 	
+	
+	public ImageAssemblerImpl(final SiteAssembler siteAssembler) {
+		
+		this.siteAssembler = siteAssembler;
+	}
+
 	@Override
 	public Image dtoToDomain(ImageDto dto) {
 		Image domain = new Image();
@@ -22,6 +30,7 @@ public class ImageAssemblerImpl implements ImageAssembler {
 		domain.setAltText(dto.getAltText());
 		domain.setImage(dto.getImage());
 		domain.setName(dto.getName());
+		domain.setSites(siteAssembler.dtosToDomains(dto.getSiteDto()));
 		return domain;
 	}
 
@@ -32,6 +41,7 @@ public class ImageAssemblerImpl implements ImageAssembler {
 		dto.setImage(domain.getImage());
 		dto.setImageId(domain.getImageUuid());
 		dto.setName(domain.getName());
+		dto.setSiteDto(siteAssembler.domainsToDtos(domain.getSites()));
 		return dto;
 	}
 
