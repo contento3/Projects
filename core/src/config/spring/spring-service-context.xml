@@ -60,6 +60,7 @@
 	</bean>
 
 	<bean id="imageAssembler" class="com.contento3.dam.image.service.impl.ImageAssemblerImpl">
+		<constructor-arg ref="siteAssembler" />
 	</bean>
 
 

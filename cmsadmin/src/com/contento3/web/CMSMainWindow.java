@@ -241,7 +241,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     	    		horiz.setSecondComponent(templateUIMgr.render(null));
         		}
         		else if (null!=itemSelected && itemSelected.equals("Sites")) {
-            		hwContainer.setChildrenAllowed("Sites", true);
+            		hwContainer.setChildrenAllowed("Sites", true);	
             		
             		//TODO no need to go to fetch sites if they are not null
             		// but need to handle the situation where a new site is added 
@@ -251,6 +251,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             			sites = siteService.findSiteByAccountId(1);
             		//}
             	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
+            			
+            			UIManager siteUIMgr = UIManagerCreator.createUIManager(Manager.Site,helper,getWindow());
+            			horiz.setSecondComponent(siteUIMgr.render(null));
+            			
+            			
             		for (SiteDto site: sites){
             				Item item = hwContainer.addItem(site.getSiteName());
             				if (null != item){
@@ -267,7 +272,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             		Integer selectedSiteId = (Integer)event.getItem().getItemProperty("id").getValue();
             		for (SiteDto siteDto : sites){
             			if (selectedSiteId == siteDto.getSiteId()){
-            				
             	    		UIManager siteUIMgr = UIManagerCreator.createUIManager(Manager.Site,helper,getWindow());
             	    		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.SITEDASHBOARD,selectedSiteId));
             			}

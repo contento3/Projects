@@ -7,7 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 
-import com.contento3.site.registration.model.User;
+//import com.contento3.site.registration.model.User;
 
 
 

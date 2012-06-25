@@ -1,17 +1,13 @@
 package com.contento3.cms.article.service.impl;
 
 import java.util.Collection;
-
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.contento3.cms.article.dao.ArticleDao;
 import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.model.Article;
 import com.contento3.cms.article.service.ArticleAssembler;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.common.exception.EntityAlreadyFoundException;
+
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class ArticleServiceImpl implements ArticleService {
 
@@ -60,6 +56,14 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleDto findById(Integer id) {
 		
 		return articleAssembler.domainToDto(articleDao.findById(id));
+	}
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId,Integer count) {
+		// TODO Auto-generated method stub
+		
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count));
+		
 	}
 
 }

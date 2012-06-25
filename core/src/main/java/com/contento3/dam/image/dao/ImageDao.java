@@ -22,5 +22,14 @@ public interface ImageDao extends GenericDao<Image,String>{
 	 * @return 
 	 */
 	Image findByNameAndAccountId(String name,Integer accountId);
+	
+	/**
+	 * return  latest images by site id and count is number of rows 
+	 * @param siteId
+	 * @param count
+	 * @return
+	 */
+	
+	Collection<Image> findLatestImagesBySiteId(Integer siteId,Integer count);
 
 }

@@ -15,7 +15,6 @@ import com.contento3.cms.site.structure.service.SiteService;
 public class SiteServiceImpl implements SiteService {
 
 	private final SiteDAO siteDao;
-
 	private SiteAssembler siteAssembler;
 	
 	public SiteServiceImpl(final SiteAssembler siteAssembler,final SiteDAO siteDao){

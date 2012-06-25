@@ -46,4 +46,11 @@ public interface ArticleService extends Service<ArticleDto>{
 	 * @return
 	 */
 	ArticleDto findById(Integer id);
+	
+	/**
+	 * find latest article by site id
+	 * @param siteId
+	 * @return
+	 */
+	Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId,Integer count);
 }

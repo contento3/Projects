@@ -20,5 +20,7 @@ public interface SiteDAO extends GenericDao<Site,Integer> {
 	 * @return
 	 */
 	Site findByDomain(String domain);
+	
+
 
 }

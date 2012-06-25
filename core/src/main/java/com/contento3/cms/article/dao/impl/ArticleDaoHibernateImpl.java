@@ -3,6 +3,7 @@ package com.contento3.cms.article.dao.impl;
 import java.util.Collection;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
 
@@ -13,6 +14,9 @@ import com.contento3.cms.page.template.model.Template;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
 public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<Article, Integer> implements ArticleDao{
+	
+
+	
 	ArticleDaoHibernateImpl(){
 		super(Article.class);
 	}
@@ -59,6 +63,18 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	public Article findById(Integer id) {
 		// TODO Auto-generated method stub
 		return super.findById(id);
+	}
+	
+	@Override
+	public Collection<Article> findLatestArticleBySiteId(Integer siteId,Integer count) {
+		Criteria criteria = this.getSession()
+				.createCriteria(Article.class)
+				.addOrder(Order.desc("dateCreated"))
+				.setMaxResults(count)
+				.createCriteria("site")
+				.add(Restrictions.eq("siteId", siteId));
+				
+		return criteria.list();
 	}
 
 }
