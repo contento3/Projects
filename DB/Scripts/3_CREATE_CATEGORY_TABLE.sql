@@ -1,9 +1,9 @@
 
 
-CREATE TABLE `category` (
-  `Categoryid` int(11) NOT NULL,
-  `Category_Name` varchar(45) DEFAULT NULL,
-  `Parent_Category` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`Categoryid`)
+CREATE TABLE `CATEGORY` (
+  `CATEGORYID` int(11) NOT NULL,
+  `CATEGORY_NAME` varchar(45) DEFAULT NULL,
+  `PARENT_CATEGORY` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`CATEGORYID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 

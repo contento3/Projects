@@ -1,12 +1,12 @@
-Alter table article  change ARTICLE_UUID  ARTICLE_ID 
+Alter table ARTICLE  change ARTICLE_UUID  ARTICLE_ID 
 INT NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE article ADD ARTICLE_UUID varchar(45) not null AFTER ARTICLE_ID;
-alter table article add unique (ARTICLE_UUID);
+ALTER TABLE ARTICLE ADD ARTICLE_UUID varchar(45) not null AFTER ARTICLE_ID;
+alter table ARTICLE add unique (ARTICLE_UUID);
 
-Alter table article  Modify date_created  date;
-Alter table article  Modify date_posted  date;
-Alter table article Modify body LONGTEXT;
+Alter table ARTICLE  Modify DATE_CREATED  date;
+Alter table ARTICLE  Modify DATE_POSTED  date;
+Alter table ARTICLE Modify body LONGTEXT;
 
-ALTER TABLE article ADD  LAST_UPDATED DATE AFTER DATE_POSTED;
-ALTER TABLE article ADD  EXPIRY_DATE DATE AFTER LAST_UPDATED;
+ALTER TABLE ARTICLE ADD  LAST_UPDATED DATE AFTER DATE_POSTED;
+ALTER TABLE ARTICLE ADD  EXPIRY_DATE DATE AFTER LAST_UPDATED;

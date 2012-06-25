@@ -1,5 +1,5 @@
-ALTER TABLE site_domain ADD CONSTRAINT site_site_domain FOREIGN KEY (site_id) REFERENCES site(site_id);
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.market.org",3);
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.contento.com",4);
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.baazaar.com",3);
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.baazaar.pk",3);
+ALTER TABLE SITE_DOMAIN ADD CONSTRAINT SITE_SITE_DOMAIN FOREIGN KEY (SITE_ID) REFERENCES SITE(SITE_ID);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.market.org",3);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.contento.com",4);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.baazaar.com",3);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.baazaar.pk",3);

@@ -4,47 +4,47 @@
 --    enabled boolean not null
 -- ) engine = InnoDb;
 
-create schema platform_users;
+create schema PLATFORM_USERS;
 
-use platform_users;
+use PLATFORM_USERS;
 
-create table users(
-  username varchar(50) not null primary key,
-  password varchar(50) not null,
-  enabled boolean not null,
-  salt varchar(25) not null
+create table USERS(
+  USERNAME varchar(50) not null primary key,
+  PASSWORD varchar(50) not null,
+  ENABLED boolean not null,
+  SALT varchar(25) not null
   );
 
-create table authorities (
-    username varchar(50) not null,
-    authority varchar(50) not null,
-    foreign key (username) references users (username),
-    unique index authorities_idx_1 (username, authority)
+create table AUTHORITIES (
+    USERNAME varchar(50) not null,
+    AUTHORITY varchar(50) not null,
+    foreign key (USERNAME) references USERS (USERNAME),
+    unique index AUTHORITIES_IDX_1 (USERNAME, AUTHORITY)
 ) engine = InnoDb;
 
-create table groups (
-    id bigint unsigned not null auto_increment primary key,
-    group_name varchar(50) not null
+create table GROUPS (
+    ID bigint unsigned not null auto_increment primary key,
+    GROUP_NAME varchar(50) not null
 ) engine = InnoDb;
 
-create table group_authorities (
-    group_id bigint unsigned not null,
-    authority varchar(50) not null,
-    foreign key (group_id) references groups (id)
+create table GROUP_AUTHORITIES (
+    GROUP_ID bigint unsigned not null,
+    AUTHORITY varchar(50) not null,
+    foreign key (GROUP_ID) references GROUPS (ID)
 ) engine = InnoDb;
 
-create table group_members (
-    id bigint unsigned not null auto_increment primary key,
-    username varchar(50) not null,
-    group_id bigint unsigned not null,
-    foreign key (group_id) references groups (id)
+create table GROUP_MEMBERS (
+    ID bigint unsigned not null auto_increment primary key,
+    USERNAME varchar(50) not null,
+    GROUP_ID bigint unsigned not null,
+    foreign key (GROUP_ID) references GROUPS (ID)
 ) engine = InnoDb;
 
-create table persistent_logins (
-    username varchar(64) not null,
-    series varchar(64) primary key,
-    token varchar(64) not null,
-    last_used timestamp not null
+create table PERSISTENT_LOGIN (
+    USERNAME varchar(64) not null,
+    SERIES varchar(64) primary key,
+    TOKEN varchar(64) not null,
+    LAST_USED timestamp not null
 ) engine = InnoDb;
 
 

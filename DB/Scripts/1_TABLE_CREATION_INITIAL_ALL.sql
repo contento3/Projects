@@ -6,25 +6,25 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
 
 
-CREATE SCHEMA IF NOT EXISTS `cms` DEFAULT CHARACTER SET latin1 ;
+CREATE SCHEMA IF NOT EXISTS `CMS` DEFAULT CHARACTER SET latin1 ;
 
-USE `cms` ;
+USE `CMS` ;
 
 
-
--- -----------------------------------------------------
-
--- Table `cmstest`.`account`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`account` (
+-- Table `CMStest`.`account`
 
-  `account_id` INT(11) NOT NULL ,
+-- -----------------------------------------------------
 
-  `account_name` VARCHAR(45) NOT NULL ,
+CREATE  TABLE IF NOT EXISTS `CMS`.`ACCOUNT` (
 
-  PRIMARY KEY (`account_id`) )
+  `ACCOUNT_ID` INT(11) NOT NULL ,
+
+  `ACCOUNT_NAME` VARCHAR(45) NOT NULL ,
+
+  PRIMARY KEY (`ACCOUNT_ID`) )
 
 ENGINE = InnoDB
 
@@ -38,11 +38,11 @@ COMMENT = 'Used to represent an account for each of the customer.' ;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`article`
+-- Table `CMStest`.`article`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`article` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`ARTICLE` (
 
   `ARTICLE_UUID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -70,11 +70,11 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`image`
+-- Table `CMStest`.`image`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`image` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`IMAGE` (
 
   `IMAGE_UUID` VARCHAR(75) NOT NULL ,
 
@@ -100,11 +100,11 @@ COMMENT = 'Used to store image and related information.' ;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`page_layout_type`
+-- Table `CMStest`.`page_layout_type`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`page_layout_type` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`PAGE_LAYOUT_TYPE` (
 
   `PAGE_LAYOUT_TYPE_ID` INT(11) NOT NULL ,
 
@@ -126,11 +126,11 @@ COMMENT = 'Used to specify different type of page layout from which the' ;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`page_layout`
+-- Table `CMStest`.`page_layout`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`page_layout` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`PAGE_LAYOUT` (
 
   `PAGE_LAYOUT_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -150,7 +150,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_layout` (
 
     FOREIGN KEY (`ACCOUNT_ID` )
 
-    REFERENCES `cms`.`account` (`account_id` )
+    REFERENCES `CMS`.`ACCOUNT` (`ACCOUNT_ID` )
 
     ON DELETE NO ACTION
 
@@ -160,7 +160,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_layout` (
 
     FOREIGN KEY (`PAGE_LAYOUT_TYPE_ID` )
 
-    REFERENCES `cms`.`page_layout_type` (`PAGE_LAYOUT_TYPE_ID` )
+    REFERENCES `CMS`.`PAGE_LAYOUT_TYPE` (`PAGE_LAYOUT_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -168,7 +168,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_layout` (
 
 ENGINE = InnoDB
 
-AUTO_INCREMENT = 17
+AUTO_INCREMENT = 1
 
 DEFAULT CHARACTER SET = utf8
 
@@ -180,11 +180,11 @@ COLLATE = utf8_unicode_ci;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`site`
+-- Table `CMS`.`SITE`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`site` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`SITE` (
 
   `SITE_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -196,19 +196,19 @@ CREATE  TABLE IF NOT EXISTS `cms`.`site` (
 
   PRIMARY KEY (`SITE_ID`) ,
 
-  INDEX `account_id` (`ACCOUNT_ID` ASC) ,
+  INDEX `ACCOUNT_ID` (`ACCOUNT_ID` ASC) ,
 
-  CONSTRAINT `account_id`
+  CONSTRAINT `ACCOUNT_ID`
 
     FOREIGN KEY (`ACCOUNT_ID` )
 
-    REFERENCES `cms`.`account` (`account_id` )
+    REFERENCES `CMS`.`ACCOUNT` (`ACCOUNT_ID` )
 
     ON UPDATE NO ACTION)
 
 ENGINE = InnoDB
 
-AUTO_INCREMENT = 9
+AUTO_INCREMENT = 1
 
 DEFAULT CHARACTER SET = utf8
 
@@ -220,11 +220,11 @@ COLLATE = utf8_unicode_ci;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`page`
+-- Table `CMStest`.`page`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`page` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`PAGE` (
 
   `PAGE_ID` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'ID of a page' ,
 
@@ -240,25 +240,25 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page` (
 
   PRIMARY KEY (`PAGE_ID`) ,
 
-  INDEX `site_page_fk` (`SITE_ID` ASC) ,
+  INDEX `SITE_PAGE_FK` (`SITE_ID` ASC) ,
 
-  INDEX `page_layout_fk` (`PAGE_LAYOUT_ID` ASC) ,
+  INDEX `PAGE_LAYOUT_FK` (`PAGE_LAYOUT_ID` ASC) ,
 
-  CONSTRAINT `page_layout_fk`
+  CONSTRAINT `PAGE_LAYOUT_FK`
 
     FOREIGN KEY (`PAGE_LAYOUT_ID` )
 
-    REFERENCES `cms`.`page_layout` (`PAGE_LAYOUT_ID` )
+    REFERENCES `CMS`.`PAGE_LAYOUT` (`PAGE_LAYOUT_ID` )
 
     ON DELETE NO ACTION
 
     ON UPDATE NO ACTION,
 
-  CONSTRAINT `site_page_fk`
+  CONSTRAINT `SITE_PAGE_FK`
 
     FOREIGN KEY (`SITE_ID` )
 
-    REFERENCES `cms`.`site` (`SITE_ID` )
+    REFERENCES `CMS`.`SITE` (`SITE_ID` )
 
     ON DELETE NO ACTION
 
@@ -266,7 +266,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page` (
 
 ENGINE = InnoDB
 
-AUTO_INCREMENT = 102
+AUTO_INCREMENT = 1
 
 DEFAULT CHARACTER SET = utf8
 
@@ -280,11 +280,11 @@ COMMENT = 'This table represents page of a website' ;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`page_section_type`
+-- Table `CMS`.`PAGE_SECTION_TYPE`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`page_section_type` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`PAGE_SECTION_TYPE` (
 
   `PAGE_SECTION_TYPE_ID` INT(11) NOT NULL ,
 
@@ -304,11 +304,11 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`page_section`
+-- Table `CMS`.`PAGE_SECTION`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`page_section` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`PAGE_SECTION` (
 
   `PAGE_SECTION_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -332,7 +332,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_section` (
 
     FOREIGN KEY (`PAGE_LAYOUT_ID` )
 
-    REFERENCES `cms`.`page_layout` (`PAGE_LAYOUT_ID` )
+    REFERENCES `CMS`.`page_layout` (`PAGE_LAYOUT_ID` )
 
     ON DELETE NO ACTION
 
@@ -342,7 +342,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_section` (
 
     FOREIGN KEY (`PAGE_SECTION_TYPE_ID` )
 
-    REFERENCES `cms`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
+    REFERENCES `CMS`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -350,7 +350,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_section` (
 
 ENGINE = InnoDB
 
-AUTO_INCREMENT = 7
+AUTO_INCREMENT = 1
 
 DEFAULT CHARACTER SET = utf8
 
@@ -362,11 +362,11 @@ COLLATE = utf8_unicode_ci;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`template_directory`
+-- Table `CMStest`.`TEMPLATE`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`template_directory` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`TEMPLATE_DIRECTORY` (
 
   `TEMPLATE_DIRECTORY_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -380,7 +380,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`template_directory` (
 
 ENGINE = InnoDB
 
-AUTO_INCREMENT = 7
+AUTO_INCREMENT = 1
 
 DEFAULT CHARACTER SET = latin1;
 
@@ -390,11 +390,11 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`template_type`
+-- Table `CMS`.`TEMPLATE_TYPE`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`template_type` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`TEMPLATE_TYPE` (
 
   `TEMPLATE_TYPE_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -408,7 +408,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`template_type` (
 
 ENGINE = InnoDB
 
-AUTO_INCREMENT = 7
+AUTO_INCREMENT = 1
 
 DEFAULT CHARACTER SET = latin1;
 
@@ -418,11 +418,11 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`template`
+-- Table `CMStest`.`template`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`template` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`TEMPLATE` (
 
   `TEMPLATE_ID` INT(11) NOT NULL AUTO_INCREMENT ,
 
@@ -450,7 +450,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`template` (
 
     FOREIGN KEY (`ACCOUNT_ID` )
 
-    REFERENCES `cms`.`account` (`account_id` )
+    REFERENCES `CMS`.`ACCOUNT` (`ACCOUNT_ID` )
 
     ON DELETE NO ACTION
 
@@ -460,7 +460,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`template` (
 
     FOREIGN KEY (`TEMPLATE_DIRECTORY_ID` )
 
-    REFERENCES `cms`.`template_directory` (`TEMPLATE_DIRECTORY_ID` )
+    REFERENCES `CMS`.`template_directory` (`TEMPLATE_DIRECTORY_ID` )
 
     ON DELETE NO ACTION
 
@@ -470,7 +470,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`template` (
 
     FOREIGN KEY (`TEMPLATE_TYPE_ID` )
 
-    REFERENCES `cms`.`template_type` (`TEMPLATE_TYPE_ID` )
+    REFERENCES `CMS`.`TEMPLATE_TYPE` (`TEMPLATE_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -478,7 +478,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`template` (
 
 ENGINE = InnoDB
 
-AUTO_INCREMENT = 7
+AUTO_INCREMENT = 1
 
 DEFAULT CHARACTER SET = latin1;
 
@@ -488,11 +488,11 @@ DEFAULT CHARACTER SET = latin1;
 
 -- -----------------------------------------------------
 
--- Table `cmstest`.`page_template_association`
+-- Table `CMS`.`PAGE_TEMPLATE_ASSOCIATION`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `cms`.`page_template_association` (
+CREATE  TABLE IF NOT EXISTS `CMS`.`PAGE_TEMPLATE_ASSOCIATION` (
 
   `PAGE_ID` INT(11) NOT NULL ,
 
@@ -514,7 +514,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_template_association` (
 
     FOREIGN KEY (`PAGE_ID` )
 
-    REFERENCES `cms`.`page` (`PAGE_ID` )
+    REFERENCES `CMS`.`page` (`PAGE_ID` )
 
     ON DELETE NO ACTION
 
@@ -524,7 +524,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_template_association` (
 
     FOREIGN KEY (`PAGE_SECTION_TYPE_ID` )
 
-    REFERENCES `cms`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
+    REFERENCES `CMS`.`page_section_type` (`PAGE_SECTION_TYPE_ID` )
 
     ON DELETE NO ACTION
 
@@ -534,7 +534,7 @@ CREATE  TABLE IF NOT EXISTS `cms`.`page_template_association` (
 
     FOREIGN KEY (`TEMPLATE_ID` )
 
-    REFERENCES `cms`.`template` (`TEMPLATE_ID` )
+    REFERENCES `CMS`.`template` (`TEMPLATE_ID` )
 
     ON DELETE NO ACTION
 
