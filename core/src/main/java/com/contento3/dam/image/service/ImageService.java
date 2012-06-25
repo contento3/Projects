@@ -30,4 +30,12 @@ public interface ImageService extends Service<ImageDto> {
 	ImageDto findImageByNameAndAccountId(String name,
 			Integer accountId);
 	
+	/**
+	 * Returns latest images by account id and count is number of rows 
+	 * @param siteId
+	 * @param count
+	 * @return
+	 */
+	Collection<ImageDto> findLatestImagesBySiteId(Integer imageId,Integer count);
+	
 }

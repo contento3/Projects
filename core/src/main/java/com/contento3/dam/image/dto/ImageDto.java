@@ -9,6 +9,8 @@ public class ImageDto {
 
 	private String imageUuid;
 	
+	private Integer imageId;
+	
 	private String name;
 	
 	private String altText;
@@ -16,6 +18,7 @@ public class ImageDto {
 	private AccountDto accountDto;
 	
 	private byte[] image;
+	
 	
 	/**
 	 * sites that contains image
@@ -30,13 +33,7 @@ public class ImageDto {
 		this.siteDto = siteDto;
 	}
 
-	public String getImageId() {
-		return imageUuid;
-	}
 
-	public void setImageId(String imageUuid) {
-		this.imageUuid = imageUuid;
-	}
 
 	public String getName() {
 		return name;
@@ -68,6 +65,22 @@ public class ImageDto {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public Integer getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(Integer imageId) {
+		this.imageId = imageId;
+	}
+
+	public String getImageUuid() {
+		return imageUuid;
+	}
+
+	public void setImageUuid(String imageUuid) {
+		this.imageUuid = imageUuid;
 	}
 
 }

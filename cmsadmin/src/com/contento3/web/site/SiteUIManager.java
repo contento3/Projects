@@ -86,7 +86,6 @@ public class SiteUIManager implements UIManager {
 	private Integer siteid;
 	private  Collection <SiteDomainDto> siteDomainDto;
 	private Collection<CategoryDto> categories;
-	private HierarchicalContainer categoryContainer;
 
 	public SiteUIManager(final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
@@ -102,9 +101,16 @@ public class SiteUIManager implements UIManager {
 	@Override
 	public Component render(String command) {
 		Component componentToReturn = null;
-		if (command.equals(NEWSITE)) {
+		 if(command == null){
+				SitesDashBoard sitesDashBoard = new SitesDashBoard(contextHelper,parentWindow);
+				componentToReturn = sitesDashBoard.render(null);
+				
+			}
+		 else if (command.equals(NEWSITE)) {
 			componentToReturn = renderNewSite();
+			
 		}
+		
 		return componentToReturn;
 	}
 
@@ -968,31 +974,7 @@ public class SiteUIManager implements UIManager {
 		return container;
 	}
 
-	/**
-	 * Returns a Container with all the Parent Categories.
-	 * 
-	 * @param categoryList
-	 * @return
-	 */
-	private HierarchicalContainer getParentCategories(
-			final Collection<CategoryDto> categoryList) {
-		final HierarchicalContainer container = new HierarchicalContainer();
-		container.addContainerProperty("id", Integer.class, null);
-		container.addContainerProperty("name", String.class, null);
 
-		for(CategoryDto categoryDto :categoryList){
-			Integer catId = categoryDto.getCategoryId();
-			Item categoryItem = container.addItem(catId);
-			categoryItem.getItemProperty("name").setValue(
-					categoryDto.getCategoryName());
-			categoryItem.getItemProperty("id").setValue(catId);
-			container.setChildrenAllowed(catId, true);
-			
-		}//end for
-		
-		container.sort(new Object[] { "Categories" }, new boolean[] { true });
-		return container;
-	}//end getParentCategories()
 	
 	@Override
 	public Component render(String command,

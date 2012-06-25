@@ -2,6 +2,9 @@ package com.contento3.dam.image.service.impl;
 
 import java.util.Collection;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
 import com.contento3.dam.image.dao.ImageDao;
@@ -9,7 +12,7 @@ import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.model.Image;
 import com.contento3.dam.image.service.ImageAssembler;
 import com.contento3.dam.image.service.ImageService;
-
+@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class ImageServiceImpl implements ImageService {
 
 	private ImageAssembler imageAssembler;
@@ -42,6 +45,14 @@ public class ImageServiceImpl implements ImageService {
 		Account account = accountDao.findById(imageDto.getAccountDto().getAccountId());
 		image.setAccount(account);
 		imageDao.persist(image);
+	}
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Collection<ImageDto> findLatestImagesBySiteId(Integer siteId,
+			Integer count) {
+	
+		return imageAssembler.domainsToDtos(imageDao.findLatestImagesBySiteId(siteId, count));
 	}
 
 }

@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
 
+import com.contento3.cms.article.model.Article;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.model.Image;
@@ -47,6 +49,19 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 		}
 		
 		return image;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Collection<Image> findLatestImagesBySiteId(Integer siteId,
+			Integer count) {
+		Criteria criteria = this.getSession()
+				.createCriteria(Image.class)
+				.addOrder(Order.desc("imageId"))
+				.setMaxResults(count)
+				.createCriteria("sites")
+				.add(Restrictions.eq("siteId", siteId));
+		return criteria.list();
 	}
 	
 }

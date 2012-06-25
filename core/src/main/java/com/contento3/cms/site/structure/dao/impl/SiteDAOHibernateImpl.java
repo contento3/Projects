@@ -49,4 +49,6 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 		return site;
 	}
 
+
+
 }

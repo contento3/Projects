@@ -1,15 +1,11 @@
 package com.contento3.cms.article.dto;
 
-import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.Date;
-
-import javax.persistence.Column;
-
 import com.contento3.account.dto.AccountDto;
-import com.contento3.account.model.Account;
 import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.cms.site.structure.model.Site;
+
 
 public class ArticleDto {
 

@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -22,11 +23,16 @@ import com.contento3.cms.site.structure.model.Site;
 @Table(name = "IMAGE")
 public class Image {
 
-	@Id
+	//@Id
 	@GeneratedValue(generator="system-uuid")
 	@GenericGenerator(name="system-uuid", strategy="com.contento3.hibernate.UUIDGenerator")
 	@Column(name="IMAGE_UUID") 
 	private String imageUuid;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="IMAGE_ID")
+	private Integer imageId;
 	
 	@Column(name="NAME") 
 	private String name;
@@ -60,13 +66,7 @@ public class Image {
 		this.sites = sites;
 	}
 
-	public String getImageUuid() {
-		return imageUuid;
-	}
-
-	public void setImageId(String imageUuid) {
-		this.imageUuid = imageUuid;
-	}
+	
 
 	public String getName() {
 		return name;
@@ -98,5 +98,21 @@ public class Image {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public Integer getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(Integer imageId) {
+		this.imageId = imageId;
+	}
+
+	public String getImageUuid() {
+		return imageUuid;
+	}
+
+	public void setImageUuid(String imageUuid) {
+		this.imageUuid = imageUuid;
 	}
 }
