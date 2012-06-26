@@ -1,5 +1,5 @@
-insert into category values (1,"Sports",null);
-insert into category values (2,"News",null);
-insert into category values (3,"Education",null);
-insert into category values (4,"Tennis",1);
-insert into category values (5,"Cricket",1);
+INSERT INTO CATEGORY VALUES (1,"Sports",null);
+INSERT INTO CATEGORY VALUES (2,"News",null);
+INSERT INTO CATEGORY VALUES (3,"Education",null);
+INSERT INTO CATEGORY VALUES (4,"Tennis",1);
+INSERT INTO CATEGORY VALUES (5,"Cricket",1);

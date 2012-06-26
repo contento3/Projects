@@ -1,25 +1,25 @@
 
-insert into users values ('admin','b3db3f53dca38ed59900a392b9c7c4cef22b5894',1,888945365);
-insert into users values ('guest','939e8cd90868c2cf578d973e9a739f601288b7b4',1,435083678);
-insert into users values ('superadmin','a15c33fa2254e79971934faa29ac07afc85a8023',1,508582327);
+INSERT INTO USERS VALUES ('admin','b3db3f53dca38ed59900a392b9c7c4cef22b5894',1,888945365);
+INSERT INTO USERS VALUES ('guest','939e8cd90868c2cf578d973e9a739f601288b7b4',1,435083678);
+INSERT INTO USERS VALUES ('superadmin','a15c33fa2254e79971934faa29ac07afc85a8023',1,508582327);
 
-insert into authorities values ('admin','ROLE_ADMIN');
-insert into authorities values ('admin','ROLE_USER');
-insert into authorities values ('guest','ROLE_USER');
-insert into authorities values ('superadmin','ROLE_ADMIN');
-insert into authorities values ('superadmin','ROLE_USER');
+INSERT INTO AUTHORITIES VALUES ('admin','ROLE_ADMIN');
+INSERT INTO AUTHORITIES VALUES ('admin','ROLE_USER');
+INSERT INTO AUTHORITIES VALUES ('guest','ROLE_USER');
+INSERT INTO AUTHORITIES VALUES ('superadmin','ROLE_ADMIN');
+INSERT INTO AUTHORITIES VALUES ('superadmin','ROLE_USER');
 
-insert into groups values (1,'Users');
-insert into groups values (2,'Administrators');
-
-
-insert into group_Authorities values (1,'ROLE_USER');
-insert into group_Authorities values (2,'ROLE_USER');
-insert into group_Authorities values (2,'ROLE_ADMIN');
+INSERT INTO GROUPS VALUES (1,'Users');
+INSERT INTO GROUPS VALUES (2,'Administrators');
 
 
-insert into group_members values (1,'guest',1);
-insert into group_members values (2,'admin',2);
+INSERT INTO GROUP_AUTHORITIES VALUES (1,'ROLE_USER');
+INSERT INTO GROUP_AUTHORITIES VALUES (2,'ROLE_USER');
+INSERT INTO GROUP_AUTHORITIES VALUES (2,'ROLE_ADMIN');
+
+
+INSERT INTO GROUP_MEMBERS VALUES (1,'guest',1);
+INSERT INTO GROUP_MEMBERS VALUES (2,'admin',2);
 
 
 

@@ -1,4 +1,4 @@
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.market.org",3);
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.contento.com",4);
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.baazaar.com",3);
-INSERT INTO site_domain (domain_name,site_id) VALUES ("www.baazaar.pk",3);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.market.org",3);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.contento.com",4);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.baazaar.com",3);
+INSERT INTO SITE_DOMAIN (DOMAIN_NAME,SITE_ID) VALUES ("www.baazaar.pk",3);

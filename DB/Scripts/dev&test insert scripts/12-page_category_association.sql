@@ -1,2 +1,2 @@
-insert into page_category_association values (1,1);
-insert into page_category_association values (2,1);
+INSERT INTO PAGE_CATEGORY_ASSOCIATION VALUES (1,1);
+INSERT INTO PAGE_CATEGORY_ASSOCIATION VALUES (2,1);

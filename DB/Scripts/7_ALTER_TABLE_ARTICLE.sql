@@ -1,7 +1,7 @@
-create table ARTICLE 
+CREATE TABLE ARTICLE 
 (
-    NUMBER_ID int(11) not null,
-    UUID varchar(45) not null,
-    primary key (NUMBER_ID),
-    unique index (UUID)
+    NUMBER_ID INT(11) NOT NULL,
+    UUID VARCHAR(45) NOT NULL,
+    PRIMARY KEY (NUMBER_ID),
+    UNIQUE INDEX (UUID)
 );
