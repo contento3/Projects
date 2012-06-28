@@ -20,7 +20,7 @@ public interface SiteService extends Service {
 	 * Finds all the sites for a given account
 	 * @return
 	 */
-	Collection<SiteDto> findSiteByAccountId(Integer accountId);
+	Collection<SiteDto> findSitesByAccountId(Integer accountId);
 
 	/**
 	 * Finds the site by site id

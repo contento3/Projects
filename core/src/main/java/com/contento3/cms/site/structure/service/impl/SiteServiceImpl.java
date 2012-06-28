@@ -50,7 +50,7 @@ public class SiteServiceImpl implements SiteService {
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<SiteDto> findSiteByAccountId(Integer accountId) {
+	public Collection<SiteDto> findSitesByAccountId(Integer accountId) {
 		return siteAssembler.domainsToDtos(siteDao.findByAccount(accountId));
 	}
 	

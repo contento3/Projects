@@ -107,7 +107,18 @@ public class SiteUIManager implements UIManager {
 				
 			}
 		 else if (command.equals(NEWSITE)) {
-			componentToReturn = renderNewSite();
+			 TabSheet newsiteTab = new TabSheet();
+
+				newsiteTab = new TabSheet();
+				newsiteTab.setHeight("675");
+				newsiteTab.setWidth("775");
+				VerticalLayout layout = renderNewSite();
+				newsiteTab.addComponent(layout);
+
+			
+				Tab tab1 = newsiteTab.addTab(layout, "Create site", null);
+				tab1.setClosable(true);
+			componentToReturn =newsiteTab ;
 			
 		}
 		
@@ -125,21 +136,21 @@ public class SiteUIManager implements UIManager {
 	/**
 	 * Used to render a screen (tab) for creating a new site
 	 */
-	private TabSheet renderNewSite() {
-		TabSheet newsiteTab = new TabSheet();
+	public VerticalLayout renderNewSite() {
+		//TabSheet newsiteTab = new TabSheet();
 
-		newsiteTab = new TabSheet();
-		newsiteTab.setHeight("675");
-		newsiteTab.setWidth("775");
+		//newsiteTab = new TabSheet();
+		//newsiteTab.setHeight("675");
+		//newsiteTab.setWidth("775");
 
 		// Create a new layout and add as a the main component for the new site
 		// tab
 		final VerticalLayout newSiteInputLayout = new VerticalLayout();
-		newsiteTab.addComponent(newSiteInputLayout);
+		//newsiteTab.addComponent(newSiteInputLayout);
 
-		//
-		Tab tab1 = newsiteTab.addTab(newSiteInputLayout, "Create site", null);
-		tab1.setClosable(true);
+		
+		//Tab tab1 = newsiteTab.addTab(newSiteInputLayout, "Create site", null);
+		//tab1.setClosable(true);
 
 		// Now add the input controls to get the new site,
 		TextFieldRendererHelper txtHelper = new TextFieldRendererHelper();
@@ -167,7 +178,7 @@ public class SiteUIManager implements UIManager {
 					}
 				});
 
-		return newsiteTab;
+		return newSiteInputLayout;
 	}
 
 	final TabSheet pagesTab = new TabSheet();

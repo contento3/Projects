@@ -21,14 +21,20 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.themes.BaseTheme;
 
 public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	/**
@@ -51,6 +57,8 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	private Table articleTable ,imageTable;
 	private IndexedContainer articleContainer , imageContainer;
 	private Collection<SiteDto> siteDto;
+	private Collection<ArticleDto> articleDto;
+	private Collection<ImageDto> imageDto;
 	
 	/**
 	 * constructor
@@ -75,7 +83,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public Component render(String command) {
 		// TODO Auto-generated method stub
@@ -84,10 +92,12 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 			siteTab.setHeight("585");
 			siteTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 	    	
-	    	
+			verticalLayout.setSpacing(true);
 			verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			renderSiteContent();
-	    	Tab tab2 = siteTab.addTab(verticalLayout,"Site Dashboard",null);
+			Tab tab2 =  siteTab.addTab(verticalLayout,"Site Dashboard",null);
+			tab2.setClosable(true);
+			siteTab.setSelectedTab(verticalLayout);
 	    	
 		}
 			return siteTab;
@@ -109,10 +119,29 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 * render site contents com box,article table,image table
 	 */
 	public void  renderSiteContent(){
-		siteDto = (Collection<SiteDto>) siteService.findSiteByAccountId(accountId);
-		renderCombobox();
-		renderArtilceTable();
-		renderImageTable();
+	
+		siteDto = (Collection<SiteDto>) siteService.findSitesByAccountId(accountId);
+		if(!(siteDto.isEmpty())){
+			renderCombobox();
+			renderArtilceTable();
+			renderImageTable();
+		}else{
+			
+			Button linkButton = new Button("Create new site");
+			linkButton.setStyleName(BaseTheme.BUTTON_LINK);
+			linkButton.addListener(new ClickListener() {
+				
+				public void buttonClick(ClickEvent event) {
+					final SiteUIManager siteUiManager = new SiteUIManager(helper, parentWindow);
+
+					VerticalLayout newlayout = siteUiManager.renderNewSite();
+					Tab tab1 = siteTab.addTab(newlayout, "Create site", null);
+					tab1.setClosable(true);
+					siteTab.setSelectedTab(newlayout);
+				}
+			});
+			verticalLayout.addComponent(linkButton);
+		}
 		
 	}
 
@@ -122,9 +151,12 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	private void renderCombobox(){
 
 		Collection<String> sitesName= new ArrayList<String>();
-		for(SiteDto site : siteDto){
-			sitesName.add(site.getSiteName());
-		}
+		
+			for(SiteDto site : siteDto){
+				sitesName.add(site.getSiteName());
+			}
+		
+		
 		ComboBox siteComboBox = new ComboBox("Select Site",sitesName);
 		siteName = sitesName.iterator().next();
 		siteComboBox.setValue(siteName);
@@ -152,8 +184,12 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		articleTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
 		articleTable.setPageLength(5);
 		articleTable.setContainerDataSource(getLatestArticles());
-		
-		verticalLayout.addComponent(articleTable);
+		if(articleDto.isEmpty()){
+			Label label = new Label("No article found");
+			verticalLayout.addComponent(label);
+		}else {
+			verticalLayout.addComponent(articleTable);
+		}
 		
 	}
 	/**
@@ -161,26 +197,29 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 * @return
 	 */
 	private IndexedContainer getLatestArticles() {
+		articleDto=null;
 		articleContainer = new IndexedContainer();
 		articleContainer.addContainerProperty("head", String.class, null);
 		articleContainer.addContainerProperty("date_created", String.class, null);
 		articleContainer.addContainerProperty("expiry_date", String.class, null);
 		
-		for(SiteDto site : siteDto){
-			if(site.getSiteName().equals(siteName)){
-				siteId = site.getSiteId();
+			for(SiteDto site : siteDto){
+				if(site.getSiteName().equals(siteName)){
+					siteId = site.getSiteId();
+				}
 			}
-		}
-		Collection<ArticleDto> articleDto = articleSerivce.findLatestArticleBySiteId(siteId, 5);
 		
-		for(ArticleDto article: articleDto){
-			
-			Item item = articleContainer.addItem(article.getArticleId());
-			item.getItemProperty("head").setValue(article.getHead());
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-			item.getItemProperty("date_created").setValue( formatter.format(article.getDateCreated()));
-			item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
-			break; //remove this break when exception remove
+		articleDto = articleSerivce.findLatestArticleBySiteId(siteId, 5);
+		if(!articleDto.isEmpty()){
+			for(ArticleDto article: articleDto){
+				
+				Item item = articleContainer.addItem(article.getArticleId());
+				item.getItemProperty("head").setValue(article.getHead());
+				SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+				item.getItemProperty("date_created").setValue( formatter.format(article.getDateCreated()));
+				item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
+				break; //remove this break when exception remove
+			}
 		}
 
 		articleContainer.sort(new Object[] { "date_created" }, new boolean[] { true });
@@ -194,34 +233,40 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		imageTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
 		imageTable.setPageLength(5);
 		imageTable.setContainerDataSource(getLatestImages());
+		if(imageDto.isEmpty()){
+			Label label = new Label("No Image found");
+			verticalLayout.addComponent(label);
+		}else {
+			verticalLayout.addComponent(imageTable);
+		}
 		
-		verticalLayout.addComponent(imageTable);
 	}
 	/**
 	 * Return latest Images
 	 * @return
 	 */
 	private IndexedContainer getLatestImages() {
+		imageDto = null;
 		imageContainer = new IndexedContainer();
 		imageContainer.addContainerProperty("name", String.class, null);
 		imageContainer.addContainerProperty("alt_text", String.class, null);
-
-		for(SiteDto site : siteDto){
-			if(site.getSiteName().equals(siteName)){
-				siteId = site.getSiteId();
+		
+			for(SiteDto site : siteDto){
+				if(site.getSiteName().equals(siteName)){
+					siteId = site.getSiteId();
+				}
+			}
+		
+		imageDto = imageService.findLatestImagesBySiteId(siteId, 5);
+		if(!imageDto.isEmpty()){
+			for(ImageDto image: imageDto){
+				
+				Item item = imageContainer.addItem(image.getImageId());
+				item.getItemProperty("name").setValue(image.getName());
+				item.getItemProperty("alt_text").setValue(image.getAltText());
+				break; //remove this break when exception remove
 			}
 		}
-		
-		Collection<ImageDto> imageDto = imageService.findLatestImagesBySiteId(siteId, 5);
-		
-		for(ImageDto image: imageDto){
-			
-			Item item = imageContainer.addItem(image.getImageId());
-			item.getItemProperty("name").setValue(image.getName());
-			item.getItemProperty("alt_text").setValue(image.getAltText());
-			break; //remove this break when exception remove
-		}
-
 		imageContainer.sort(new Object[] { "name" }, new boolean[] { true });
 		return imageContainer;
 	}
