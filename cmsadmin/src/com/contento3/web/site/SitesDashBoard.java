@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import javax.servlet.http.HttpSession;
 import com.contento3.cms.article.dto.ArticleDto;
+import com.contento3.cms.article.dto.RelatedArticleLinkDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
@@ -210,15 +211,16 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 			}
 		
 		articleDto = articleSerivce.findLatestArticleBySiteId(siteId, 5);
+		
 		if(!articleDto.isEmpty()){
 			for(ArticleDto article: articleDto){
-				
 				Item item = articleContainer.addItem(article.getArticleId());
 				item.getItemProperty("head").setValue(article.getHead());
 				SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 				item.getItemProperty("date_created").setValue( formatter.format(article.getDateCreated()));
 				item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
-				break; //remove this break when exception remove
+				
+
 			}
 		}
 
@@ -264,7 +266,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 				Item item = imageContainer.addItem(image.getImageId());
 				item.getItemProperty("name").setValue(image.getName());
 				item.getItemProperty("alt_text").setValue(image.getAltText());
-				break; //remove this break when exception remove
+		
 			}
 		}
 		imageContainer.sort(new Object[] { "name" }, new boolean[] { true });

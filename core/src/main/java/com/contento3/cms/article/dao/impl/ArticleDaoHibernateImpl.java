@@ -70,7 +70,8 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		Criteria criteria = this.getSession()
 				.createCriteria(Article.class)
 				.addOrder(Order.desc("dateCreated"))
-				.setMaxResults(count)
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+				.setFirstResult(0).setMaxResults(count)
 				.createCriteria("site")
 				.add(Restrictions.eq("siteId", siteId));
 				
