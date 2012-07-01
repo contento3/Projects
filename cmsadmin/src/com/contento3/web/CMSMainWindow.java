@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.web.content.ImageLoader;
+import com.contento3.web.content.SearchUI;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.layout.LayoutManagerRenderer;
 import com.contento3.web.site.SiteMainAreaRenderer;
@@ -16,18 +18,16 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UriFragmentUtility;
@@ -36,6 +36,7 @@ import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 
 public class CMSMainWindow extends Window implements Action.Handler,FragmentChangedListener {
 	public static String brownFox = "Welcome to Olive Admin"; 
@@ -61,7 +62,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	UIManager uiMgr;
 	
 	/**
-	 * Horizontal split panel that containts the navigation 
+	 * Horizontal split panel that contains the navigation 
 	 * tree on one end and the main working area on the other hand
 	 */
 	HorizontalSplitPanel horiz;
@@ -115,7 +116,12 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
       
 	   // vert.addComponent(logoutButton);
 	    HorizontalLayout horizTop = new HorizontalLayout();
-       
+
+	    ImageLoader imageLoader = new ImageLoader();
+	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
+		embedded.setHeight(90, Sizeable.UNITS_PERCENTAGE);
+		horizTop.addComponent(embedded);
+		
 	    horizTop.addComponent(logoutButton);
 	    horizTop.setSizeFull();
 	    horizTop.setComponentAlignment(logoutButton, Alignment.TOP_RIGHT);
@@ -135,10 +141,10 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         final HorizontalSplitPanel mainAndContentSplitter = new HorizontalSplitPanel();
         mainAndContentSplitter.addComponent(horiz);
         
-        //Then add the content ui verticall layout
-        VerticalLayout contentLayout = new VerticalLayout();
-        mainAndContentSplitter.addComponent(contentLayout);
-        mainAndContentSplitter.setSplitPosition(96,Sizeable.UNITS_PERCENTAGE);
+        //Then add the content SearchUI object that renders the content search ui
+        final SearchUI searchUI = new SearchUI();
+        mainAndContentSplitter.addComponent(searchUI.render());
+        mainAndContentSplitter.setSplitPosition(75,Sizeable.UNITS_PERCENTAGE);
         
         mainAndContentSplitter.addListener(new SplitterClickListener(){
 			public void splitterClick(SplitterClickEvent event){
@@ -173,6 +179,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         hwContainer.addContainerProperty("id", Integer.class, null);
         
         root = new Tree("",hwContainer);
+        root.setStyleName(BaseTheme.TREE_CONNECTORS);
         root.addActionHandler(this);
         Item item0 = hwContainer.addItem("Sites");
         item0.getItemProperty("name").setValue("Sites");
@@ -248,7 +255,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             		// so that this new site is added and hence displayed to the tree 
             		//if (CollectionUtils.isEmpty(sites)){
             			SiteService siteService = (SiteService) helper.getBean("siteService");
-            			sites = siteService.findSiteByAccountId(1);
+            			sites = siteService.findSitesByAccountId(1);
             		//}
             	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
             			

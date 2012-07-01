@@ -19,6 +19,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.imgscalr.Scalr;
 
 import com.contento3.account.dto.AccountDto;
@@ -26,7 +27,9 @@ import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.SiteUIManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.StreamResource;
@@ -44,27 +47,70 @@ import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-public class ImageMgmtUIManager extends CustomComponent implements Upload.SucceededListener,
+public class ImageMgmtUIManager extends CustomComponent 
+			implements Upload.SucceededListener,
 											Upload.FailedListener,
 											Upload.Receiver{
 
+	private static final Logger LOGGER = Logger.getLogger(ImageMgmtUIManager.class);
+	
 	private static final long serialVersionUID = 5131819177752243660L;
-
+	
+	/**
+	 * Helper to load the spring context
+	 */
     private SpringContextHelper helper;
+    
+    /**
+     * ParentWindow that holds this screen
+     */
 	private Window parentWindow;
 
+	/**
+	 * Vaadin Application instance.
+	 */
 	private Application application;
 	
-    Panel root;         // Root element for contained components.
-    Panel imagePanel;   // Panel that contains the uploaded image.
-    File  file;         // File to write to.
+	/**
+	 * Root element for contained components.
+	 */
+    Panel root;         
+    
+    /**
+     * Panel that contains the uploaded image.
+     */
+    Panel imagePanel;   
+    
+    /**
+     * File to write to.
+     */
+    File  file;         
+    
+    /**
+     * File Resource for image
+     */
     FileResource imageResource;
 
+    /**
+     * Alt text text-field to display
+     */
     TextField altTextField;
+    
+    /**
+     * Image name text field to display
+     */
     TextField imageNameField;
     
+    /**
+     * Service layer for image
+     */
     ImageService imageService;
-    
+
+    /**
+     * FileOutputStream used in image upload.
+     */
+    FileOutputStream fos ;
+
     public ImageMgmtUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
@@ -99,55 +145,49 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
 
         // Create a panel for displaying the uploaded image.
         imagePanel = new Panel("Uploaded image");
-        imagePanel.addComponent(
-                         new Label("No image uploaded yet"));
+        imagePanel.addComponent(new Label("No image uploaded yet"));
         root.addComponent(imagePanel);
-        
         imageLayout.addComponent(root);
         return imageLayout;
 	}
 	
-    FileOutputStream fos ;
-	// Callback method to begin receiving the upload.
-    public OutputStream receiveUpload(String filename,
-                                      String MIMEType) {
+    /**
+     * Callback method to begin receiving the upload.
+     * @param filename
+     * @param MIMEType
+     * @return
+     */
+    public OutputStream receiveUpload(final String filename,final String MIMEType) {
         fos = null; // Output stream to write to
         file = new File(filename);
         try {
             // Open the file for writing.
             fos = new FileOutputStream(file);
-        } catch(Exception e){} 
-            
-
+        } catch(Exception e){
+        	LOGGER.error("Unable to upload the image",e);
+        } 
+        
         return fos; // Return the output stream to write to
     }
     
     // This is called if the upload is finished.
+    /**
+     * 
+     */
     public void uploadSucceeded(Upload.SucceededEvent event) {
         // Log the upload on screen.
-        root.addComponent(new Label("File " + event.getFilename()
-                + " of type '" + event.getMIMEType()
-                + "' uploaded."));
-
-      
-        
-        
-        imageResource =
-            new FileResource(file, parentWindow.getApplication());
-   imagePanel.addComponent(new Embedded("", imageResource));
-   imageResource.setCacheTime(0);
-        // Display the uploaded file in the image panel.
-      //  imagePanel.addComponent(new Embedded("", imageResource));
-
+        root.addComponent(new Label(String.format("File %s of type ' %s ' uploaded.",event.getFilename(),event.getMIMEType())));
+        imageResource = new FileResource(file, parentWindow.getApplication());
+        imagePanel.addComponent(new Embedded("", imageResource));
+        imageResource.setCacheTime(0);
         
         FileInputStream fis = null;
     	byte[] bFile = new byte[(int) file.length()];
  		try {
  			fis = new FileInputStream(file);
-
- 		} catch (FileNotFoundException e) {
-// 			// TODO Auto-generated catch block
- 			e.printStackTrace();
+ 		} 
+ 		catch (FileNotFoundException e) {
+ 			LOGGER.error("Unable to upload the image.",e);
  		}
         try {
         	
@@ -159,61 +199,56 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
             imageDto.setName(imageNameField.getValue().toString());
             
             //Get accountId from the session
-            WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-            HttpSession session = ctx.getHttpSession();
-            Integer accountId =(Integer)session.getAttribute("accountId");
-
-            AccountService accountService = (AccountService)helper.getBean("accountService");
-            AccountDto accountDto = new AccountDto();
+            final Integer accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
+            final AccountService accountService = (AccountService)helper.getBean("accountService");
+            final AccountDto accountDto = new AccountDto();
             accountDto.setAccountId(accountId);
-            ImageService imageService = (ImageService)helper.getBean("imageService");
+            final ImageService imageService = (ImageService)helper.getBean("imageService");
             imageDto.setAccountDto(accountDto);
  	        fis.close();
-
-				imageService.create(imageDto);
+ 	        imageService.create(imageDto);
 			} catch (EntityAlreadyFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Unable to create the image as it is already created",e);
 			}
         catch (final java.io.FileNotFoundException e) {
-            // Error while opening the file. Not reported here.
-            e.printStackTrace();
+			LOGGER.error("Unable to create the image.",e);
         }
         catch(IOException ioe){
-            ioe.printStackTrace();
-      
+			LOGGER.error("Unable to create the image.",ioe);
 		}
 
-    imagePanel.removeAllComponents();
-    imagePanel.setSizeFull();
-    imageResource =
-        new FileResource(file, parentWindow.getApplication());
-imagePanel.addComponent(new Embedded("", imageResource));
-imageResource.setCacheTime(0);
+	    imagePanel.removeAllComponents();
+	    imagePanel.setSizeFull();
+	    imageResource = new FileResource(file, parentWindow.getApplication());
+	    imagePanel.addComponent(new Embedded("", imageResource));
+	    imageResource.setCacheTime(0);
+	}
 
-            }
-
-    // This is called if the upload fails.
+    /**
+     * This is called if the upload fails.
+     */
     public void uploadFailed(Upload.FailedEvent event) {
         // Log the failure on screen.
-        root.addComponent(new Label("Uploading "
-                + event.getFilename() + " of type '"
-                + event.getMIMEType() + "' failed."));
+        root.addComponent(new Label(String.format("Uploading of %s of type %s failed.",event.getFilename(),event.getMIMEType())));
     }
     
     @Override
     public void attach() {
         super.attach(); // Must call.
-
         application = this.getApplication();
+        
         // Display the uploaded file in the image panel.
-       imageResource =
-                new FileResource(file, application);
-       imagePanel.addComponent(new Embedded("", imageResource));
-       imageResource.setCacheTime(0);
-
+        imageResource = new FileResource(file, application);
+        imagePanel.addComponent(new Embedded("", imageResource));
+        imageResource.setCacheTime(0);
     }
-
+    
+    /**
+     * List all the images associated to this account
+     * TODO This should be filtered by library and ideally paged.
+     * @param accountId
+     * @return
+     */
     public Component listImage(final Integer accountId){
     	Collection <ImageDto> imageList =  imageService.findImageByAccountId(accountId);
     	CssLayout layout = new CssLayout();
@@ -259,45 +294,16 @@ imageResource.setCacheTime(0);
     	return layout;
     } 
     
-    
+    /**
+     * Loads the image using the Image loader class based on width and height provided.
+     * @param imageDto
+     * @return
+     */
 	public Embedded loadImage(final ImageDto imageDto) {
-		StreamResource.StreamSource imageSource = new StreamResource.StreamSource() {
-			@Override
-			public InputStream getStream() {
-				BufferedImage thumbnail;
-				InputStream bigInputStream = null;
-				try {
-					ByteArrayInputStream in = new ByteArrayInputStream(imageDto.getImage());
-					ImageReader imageReader;
-			        Object source = in; // File or InputStream, it seems file is OK
-			        
-			        ImageInputStream iis = ImageIO.createImageInputStream(source);
-					Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
-
-					if ( imageReaders.hasNext() ) {
-					    imageReader = (ImageReader)imageReaders.next();
-					    imageReader.setInput(iis, true);
-					    ImageReadParam param = imageReader.getDefaultReadParam();
-						BufferedImage bImageFromConvert = imageReader.read(0, param);
-						thumbnail = Scalr.resize(bImageFromConvert, 125,125);
-						ByteArrayOutputStream os = new ByteArrayOutputStream();
-						ImageIO.write(thumbnail, "gif", os);
-						bigInputStream = new ByteArrayInputStream(os.toByteArray());
-					}
-				}
-				catch(IOException ioe){
-				}
-			return bigInputStream;
-			}
-			};
-		
-		StreamResource imageResource = new StreamResource(imageSource, "abc.png", parentWindow.getApplication());
-		imageResource.setCacheTime(0);
-
-		Embedded embeded = new Embedded("",imageResource);
-		embeded.setImmediate(true);
-		embeded.requestRepaint();
-		return embeded;
+		final ImageLoader imageLoader = new ImageLoader();
+		final Embedded embedded = imageLoader.loadImage(parentWindow.getApplication(), imageDto.getImage(), 125, 125);
+		return embedded;
 	}
 
+	
 }
