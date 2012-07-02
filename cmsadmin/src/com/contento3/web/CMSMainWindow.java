@@ -248,7 +248,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             		// so that this new site is added and hence displayed to the tree 
             		//if (CollectionUtils.isEmpty(sites)){
             			SiteService siteService = (SiteService) helper.getBean("siteService");
-            			sites = siteService.findSiteByAccountId(1);
+            			sites = siteService.findSitesByAccountId(1);
             		//}
             	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
             			

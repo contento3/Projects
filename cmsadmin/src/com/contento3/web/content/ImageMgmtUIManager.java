@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -23,6 +24,8 @@ import org.imgscalr.Scalr;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
+import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
@@ -166,6 +169,7 @@ public class ImageMgmtUIManager extends CustomComponent implements Upload.Succee
             AccountService accountService = (AccountService)helper.getBean("accountService");
             AccountDto accountDto = new AccountDto();
             accountDto.setAccountId(accountId);
+            
             ImageService imageService = (ImageService)helper.getBean("imageService");
             imageDto.setAccountDto(accountDto);
  	        fis.close();
