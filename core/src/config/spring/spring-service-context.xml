@@ -62,7 +62,8 @@
 	<bean id="imageAssembler" class="com.contento3.dam.image.service.impl.ImageAssemblerImpl">
 		<constructor-arg ref="siteAssembler" />
 	</bean>
-
+	
+	
 
 	<bean id="templateService"
 		class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">
@@ -166,6 +167,17 @@
 		class="com.contento3.cms.article.service.impl.ArticleServiceImpl">
 		<constructor-arg ref="articleAssembler" />
 		<constructor-arg ref="articleDao" />
+	</bean>
+	  
+	<bean id="relatedArticleAssembler"
+		class="com.contento3.cms.article.service.impl.RelatedArticleAssemblerImpl">
+			<constructor-arg ref="articleAssembler" />
+	</bean>
+	
+	<bean id="relatedArticleService"
+		class="com.contento3.cms.article.service.impl.RelatedArticleServiceImpl">
+		<constructor-arg ref="relatedArticleAssembler" />
+		<constructor-arg ref="relatedArticleDao" />
 	</bean>
 	
 </beans>
