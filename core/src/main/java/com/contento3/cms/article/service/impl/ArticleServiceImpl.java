@@ -61,7 +61,9 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId,Integer count) {
 		// TODO Auto-generated method stub
+		
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count));
+		
 	}
 
 }

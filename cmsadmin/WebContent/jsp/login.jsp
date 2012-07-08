@@ -7,14 +7,8 @@
 </head>
 <body>
 <div align="center">
+Login here
 <form action="/cms/j_spring_security_check" method="post">
-<table style="height:250px;">
-<tr>
-<td colspan="2">
-<img alt="" src="../images/logo.png">
-</td>
-</tr>
-</table>
 <table>
 <tr>
 <td>

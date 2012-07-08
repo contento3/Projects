@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,22 +15,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.contento3.account.model.Account;
+import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.site.structure.model.Site;
+
 
 @Entity
 @Table(name = "ARTICLE")
 public class Article implements Serializable  {
 
-	
 	private static final long serialVersionUID = 1L;
 	/**
 	 * Primary key for article
 	 */
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column (name = "ARTICLE_ID")
+
 	private Integer articleId;
 
 	/**
@@ -95,7 +99,18 @@ public class Article implements Serializable  {
 	@JoinColumn(name="ACCOUNT_ID")
 	private Account account;
 	
+	@OneToMany(cascade=CascadeType.ALL,mappedBy="article")
+	private Collection<RelatedArticle> relatedArticles;
 	
+
+	public Collection<RelatedArticle> getRelatedArticles() {
+		return relatedArticles;
+	}
+
+	public void setRelatedArticles(Collection<RelatedArticle> relatedArticles) {
+		this.relatedArticles = relatedArticles;
+	}
+
 	public Account getAccount() {
 		return account;
 	}
