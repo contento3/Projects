@@ -15,7 +15,8 @@
 		<property name="password" value="root" />
 	</bean>
 
-	<!-- PROD - Do not use it 
+	<!-- 
+ 
 	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -23,7 +24,7 @@
 		<property name="username" value="" />
 		<property name="password" value="" />
 	</bean>
-	-->
+   -->
 	
 	
 	<bean id="mySessionFactory"
