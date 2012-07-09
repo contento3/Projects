@@ -22,7 +22,7 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Site> findByAccount(Integer accountId){
+	public Collection<Site> findByAccount(final Integer accountId){
 		Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
 								.createCriteria("account")
@@ -48,7 +48,5 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 		
 		return site;
 	}
-
-
 
 }

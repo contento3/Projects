@@ -305,5 +305,4 @@ public class ImageMgmtUIManager extends CustomComponent
 		return embedded;
 	}
 
-	
 }
