@@ -11,6 +11,8 @@ import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
 public class AccountDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Account,Integer> 
 								  	 implements AccountDao {
+	
+	public static final String CACHE_REGION = "com.contento3.account.model.Account";
 
 	public AccountDaoHibernateImpl(){
 		super(Account.class);
@@ -20,6 +22,8 @@ public class AccountDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<A
 	public Collection<Account> findAccountBySiteId(final Integer siteId){
 		Criteria criteria = this.getSession()
 		.createCriteria(Account.class)
+		.setCacheable(true)
+		.setCacheRegion(CACHE_REGION)
 		.add(Restrictions
 		.eq("siteId", siteId))
 		.add(Restrictions

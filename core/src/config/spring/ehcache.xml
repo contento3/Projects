@@ -38,7 +38,21 @@
     maxElementsInMemory="10000"
     eternal="false"
     timeToIdleSeconds="300"
-    timeToLiveSeconds="6"
+    timeToLiveSeconds="60"
+	overflowToDisk="true"/>
+	
+	<cache name="com.contento3.cms.page.template.model.TemplateDirectory"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="60"
+	overflowToDisk="true"/>
+	
+	<cache name="com.contento3.account.model.Account"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="60"
 	overflowToDisk="true"/>
 
 </ehcache>

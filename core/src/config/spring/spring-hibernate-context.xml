@@ -184,7 +184,15 @@
 		class=" com.contento3.cms.article.dao.impl.ArticleDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
+	
+	<!--  RelatedArticleDao -->
+	<bean id="relatedArticleDao"
+		class=" com.contento3.cms.article.dao.impl.RelatedArticleDaoHibernateImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
 
+
+	<!-- Cache beans -->
 	<bean id="templateCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
 		<property name="cacheManager" ref="cacheManager" />
 		<property name="cacheName" value="com.contento3.cms.page.template.model.Template" />
@@ -200,10 +208,17 @@
 		<property name="cacheName" value="com.contento3.cms.site.structure.model.Site" />
 	</bean>
 	
-	 <!--  RelatedArticleDao -->
-	<bean id="relatedArticleDao"
-		class=" com.contento3.cms.article.dao.impl.RelatedArticleDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+	<bean id="templateDirectoryCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.cms.page.template.model.TemplateDirectory" />
 	</bean>
+	
+	<bean id="accountCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.account.model.Account" />
+	</bean>
+	
+	
+
 	
 </beans>
