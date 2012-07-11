@@ -82,7 +82,22 @@ public class Article implements Serializable  {
 	 */
 	@Column (name = "EXPIRY_DATE")
 	private Date expiryDate;
+	/**
+	 * if article is delete then isVisible is 0
+	 * else it contain 1
+	 */
+	@Column (name = "IS_VISIBLE")
+	private Integer isVisible;
 	
+	
+	public Integer getIsVisible() {
+		return isVisible;
+	}
+
+	public void setIsVisible(Integer isVisible) {
+		this.isVisible = isVisible;
+	}
+
 	/**
 	 * articles which are associated to site
 	 */

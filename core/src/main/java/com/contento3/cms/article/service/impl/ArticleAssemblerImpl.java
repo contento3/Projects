@@ -14,9 +14,11 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 
 	private SiteAssembler siteAssembler;
 	private AccountAssembler accountAssembler;
-	public ArticleAssemblerImpl(final SiteAssembler siteAssembler,final AccountAssembler accountAssembler) {
+	
+	public ArticleAssemblerImpl(final SiteAssembler siteAssembler,final AccountAssembler accountAssembler ) {
 		this.siteAssembler = siteAssembler;
 		this.accountAssembler = accountAssembler;
+		
 	}
 	
 
@@ -32,6 +34,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		domain.setDatePosted(dto.getDatePosted());
 		domain.setLastUpdated(dto.getLastUpdated());
 		domain.setExpiryDate(dto.getExpiryDate());
+		domain.setIsVisible(dto.getIsVisible());
 		domain.setSite(siteAssembler.dtosToDomains(dto.getSite()));
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		return domain;
@@ -49,6 +52,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		dto.setDatePosted(domain.getDatePosted());
 		dto.setLastUpdated(domain.getLastUpdated());
 		dto.setExpiryDate(domain.getExpiryDate());
+		dto.setIsVisible(domain.getIsVisible());
 		dto.setSite(siteAssembler.domainsToDtos(domain.getSite()));
 		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
 		return dto;

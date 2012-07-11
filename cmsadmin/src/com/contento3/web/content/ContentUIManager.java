@@ -1,11 +1,12 @@
 package com.contento3.web.content;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.servlet.http.HttpSession;
-
 import org.springframework.util.CollectionUtils;
+
+import antlr.collections.List;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
@@ -15,11 +16,13 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.Action;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
@@ -46,7 +49,10 @@ public class ContentUIManager implements UIManager{
      * Parent window that contains all the ui components.Used primarily to set notifications.
      */
 	private Window parentWindow;
-	
+	/**
+	 * Article table which shows articles
+	 */
+	private final Table articleTable =  new Table("Articles");
 	/**
 	 * Article service to perform article related tasks.
 	 */
@@ -71,6 +77,9 @@ public class ContentUIManager implements UIManager{
 	 * Represents the navigation items in the Content Manager section.
 	 */
 	private String[] navigationItems = {NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT};
+	
+	final CssLayout verticalLayout = new CssLayout();
+
 
 	/**
 	 * Class contructor
@@ -156,7 +165,7 @@ public class ContentUIManager implements UIManager{
 		//final TabSheet elementTab = new TabSheet();
 		elementTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 
-		final CssLayout verticalLayout = new CssLayout();
+		//final CssLayout verticalLayout = new CssLayout();
 
 		Button button = new Button();
 		verticalLayout.addComponent(button);
@@ -194,14 +203,44 @@ public class ContentUIManager implements UIManager{
 			HttpSession session = ctx.getHttpSession();
 			accountId = (Integer) session.getAttribute("accountId");
 
-			final Table articleTable = new Table("Articles");
 			articleTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 			articleTable.setPageLength(5);
 			articleTable.setImmediate(true);
-
 			renderArticles(articleTable);
 
 			verticalLayout.addComponent(articleTable);
+			Button deleteButton = new Button("Delete");
+			deleteButton.addListener(new ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+				     Collection<Object> toDelete =  new ArrayList<Object>();
+				    
+						
+                       for (Object id : articleTable.getItemIds()) {
+                           // Get the checkbox of this item (row)
+                           CheckBox checkBox = (CheckBox) articleContainer
+                                   .getContainerProperty(id, "Checkbox")
+                                   .getValue();
+
+                           if (checkBox.booleanValue()) {
+                               toDelete.add(id);
+                           }
+                       }
+
+                       // Perform the deletions
+                       for (Object id : toDelete) {
+                    	   articleContainer.removeItem(id);
+                    	   ArticleDto article = (ArticleDto) articleService
+      								.findById(Integer.parseInt(id.toString()));
+      							article.setIsVisible(0);
+      							articleService.update(article);
+                       }
+                   
+				}
+			});
+			verticalLayout.addComponent(deleteButton);
+			
 		}
 		else if (element.equals("Image")){
 			verticalLayout.addComponent(imageMgmtUIMgr.listImage(1));
@@ -214,17 +253,24 @@ public class ContentUIManager implements UIManager{
 	 * @param articleTable
 	 */
 	private void renderArticles(final Table articleTable){
+		
+		articleContainer.addContainerProperty("Checkbox", CheckBox.class, null);
 		articleContainer.addContainerProperty("Article", String.class, null);
 		articleContainer.addContainerProperty("Date Created", String.class, null);
 		articleContainer.addContainerProperty("Date Posted", String.class, null);
 		articleContainer.addContainerProperty("Expiry Date", String.class, null);
 		articleContainer.addContainerProperty("Edit", Button.class, null);
+		articleContainer.addContainerProperty("Delete", Button.class, null);
+
 		Collection<ArticleDto> articleDto = articleService.findByAccountId(accountId);
 		if (!CollectionUtils.isEmpty(articleDto)) {
 
 			for (ArticleDto article : articleDto) {
-				Button edit = new Button();
-				addArticlesToTable(article,edit);
+				if(article.getIsVisible()==1){	//check it was not deleted by user in past
+					Button edit = new Button();
+					Button delete = new Button();
+					addArticlesToTable(article,edit,delete);
+				}
 			}
 
 			articleTable.setContainerDataSource(articleContainer);
@@ -239,11 +285,11 @@ public class ContentUIManager implements UIManager{
 	 * @param article
 	 * @param editLink
 	 */
-	private void addArticlesToTable(final ArticleDto article,final Button editLink ){
+	private void addArticlesToTable(final ArticleDto article,final Button editLink,
+			final Button deleteLink ){
 		final Item item = articleContainer.addItem(article.getArticleId().toString());
-
+		item.getItemProperty("Checkbox").setValue(new CheckBox());
 		item.getItemProperty("Article").setValue(article.getHead());
-		//Date date = new Date();
 		String DATE_FORMAT = "dd/MM/yyyy";
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		item.getItemProperty("Date Created").setValue(sdf.format(article.getDateCreated()));
@@ -254,6 +300,12 @@ public class ContentUIManager implements UIManager{
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("Edit").setValue(editLink);
+		deleteLink.setCaption("Delete");
+		deleteLink.setData(article.getArticleId());
+		deleteLink.addStyleName("delete");
+		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+		item.getItemProperty("Delete").setValue(deleteLink);
+	
 
 		editLink.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -270,7 +322,30 @@ public class ContentUIManager implements UIManager{
 				newArticleLayout.setHeight("100%");
 			}
 		});
+		
+		deleteLink.addListener(new ClickListener() {
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+			
+				Object id = deleteLink.getData();
+				ArticleDto article = (ArticleDto) articleService
+						.findById(Integer.parseInt(id.toString()));
+				article.setIsVisible(0);
+				articleService.update(article);
+				//articleContainer.removeItem(id);
+				articleTable.removeItem(id);
+				//articleContainer.removeAllItems();
+				//articleTable.setContainerDataSource(articleContainer);
+				articleTable.requestRepaint();
+				articleTable.requestRepaintAll();
+				parentWindow.showNotification(article.getHead()+" deleted successfully");
+				
+			}
+		});
+		
+	
+	
 	}//end addArticlesToTable
 
 }

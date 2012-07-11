@@ -4,6 +4,8 @@ package com.contento3.cms.article.dto;
 import java.util.Collection;
 import java.util.Date;
 import com.contento3.account.dto.AccountDto;
+import com.contento3.cms.article.model.RelatedArticle;
+import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.site.structure.dto.SiteDto;
 
 
@@ -31,7 +33,17 @@ public class ArticleDto {
 	
 	private Date expiryDate;
 	
+	private Integer isVisible;
 	
+
+	public Integer getIsVisible() {
+		return isVisible;
+	}
+
+	public void setIsVisible(Integer isVisible) {
+		this.isVisible = isVisible;
+	}
+
 	public Integer getArticleId() {
 		return articleId;
 	}
