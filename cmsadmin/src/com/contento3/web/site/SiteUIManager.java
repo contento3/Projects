@@ -5,11 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
+
 import com.contento3.account.dto.AccountDto;
+import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.category.dto.CategoryDto;
-import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
@@ -29,15 +31,12 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -54,7 +53,6 @@ import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
@@ -82,6 +80,7 @@ public class SiteUIManager implements UIManager {
 	private Window parentWindow;
 	private int selectedPageId;
 	private SiteService siteService;
+	private AccountService accountService;
 	private PageService pageService;
 	private Integer siteid;
 	private  Collection <SiteDomainDto> siteDomainDto;
@@ -92,7 +91,9 @@ public class SiteUIManager implements UIManager {
 		this.parentWindow = parentWindow;
 		this.siteService = (SiteService) contextHelper.getBean("siteService");
 		this.pageService = (PageService) contextHelper.getBean("pageService");
+		this.accountService = (AccountService) contextHelper.getBean("accountService");
 	}
+	
 	@Override
 	public void render() {
 
@@ -165,15 +166,14 @@ public class SiteUIManager implements UIManager {
 						SiteDto siteDto = new SiteDto();
 						siteDto.setSiteName((String) ((TextField) newSiteInputLayout
 								.getComponent(0)).getValue());
-						siteDto.setUrl((String) ((TextField) newSiteInputLayout
-								.getComponent(1)).getValue());
-
-						// TODO this need to be changed to get the accountid
-						// from the session.
-						AccountDto account = new AccountDto();
-						account.setAccountId(1);
-						account.setName("test account");
+						
+						final AccountDto account = accountService.findAccountById((Integer)SessionHelper.loadAttribute(parentWindow,"accountId"));
 						siteDto.setAccountDto(account);
+						final SiteDomainDto siteDomainDto = new SiteDomainDto();
+						siteDomainDto.setDomainName((String) ((TextField) newSiteInputLayout.getComponent(1)).getValue());
+						final List <SiteDomainDto> siteDomains = new ArrayList<SiteDomainDto>();
+						siteDomains.add(siteDomainDto);
+						siteDto.setSiteDomainDto(siteDomains);
 						siteService.create(siteDto);
 					}
 				});

@@ -35,10 +35,13 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		Site site = new Site();
 		site.setSiteId(dto.getSiteId());
 		site.setSiteName(dto.getSiteName());
-		site.setUrl(dto.getUrl());
 		site.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
-		site.setDafaultLayoutId(dto.getDefaultLayoutId());
-		site.setSiteDomain(siteDomainAssembler.dtosToDomains(dto.getSiteDomainDto()));
+		site.setDefaultLayoutId(dto.getDefaultLayoutId());
+		
+		if(null!=dto.getSiteDomainDto()){
+			site.setSiteDomain(siteDomainAssembler.dtosToDomains(dto.getSiteDomainDto()));
+		}
+		
 		site.setLanguage(dto.getLanguage());
 		
 		return site;
@@ -48,10 +51,9 @@ public class SiteAssemblerImpl implements SiteAssembler {
 	public SiteDto domainToDto(Site domain) {
 		SiteDto dto = new SiteDto();
 		dto.setSiteName(domain.getSiteName());
-		dto.setUrl(domain.getUrl());
 		dto.setSiteId(domain.getSiteId());
 		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
-		dto.setDefaultLayoutId(domain.getDafaultLayoutId());
+		dto.setDefaultLayoutId(domain.getDefaultLayoutId());
 		dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
 		dto.setLanguage(domain.getLanguage());
 		

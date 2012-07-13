@@ -3,7 +3,7 @@ package com.contento3.cms.site.structure.service;
 import java.util.Collection;
 
 import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.cms.site.structure.model.Site;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.service.Service;
 
 public interface SiteService extends Service {
@@ -39,7 +39,5 @@ public interface SiteService extends Service {
 	 * Update site data into DB
 	 */
 	void update(SiteDto site);
-
-	
 
 }

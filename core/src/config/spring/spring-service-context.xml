@@ -101,6 +101,7 @@
 		class="com.contento3.cms.site.structure.service.impl.SiteServiceImpl">
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="siteDAO" />
+		<constructor-arg ref="pageLayoutDAO" />
 	</bean>
 
 	<bean id="pageService" class="com.contento3.cms.page.service.impl.PageServiceImpl">
