@@ -21,7 +21,7 @@ public interface GroupService extends Service<GroupDto> {
 	 * @param Group name
 	 * @returns collection of GroupDto Objects.
 	 */
-	Collection <GroupDto> findByGroupName(String groupName);
+	GroupDto findByGroupName(String groupName);
 	
 	/**
 	 * Returns the collection of all the Groups.
@@ -36,6 +36,20 @@ public interface GroupService extends Service<GroupDto> {
      * @return
      */
 	void create(final GroupDto groupDto);
-	
-
+	/**
+	 * return group whose id match
+	 * @param id
+	 * @return
+	 */
+	GroupDto findById(Integer id);
+	/**
+	 * Update group item 
+	 * @param groupDto
+	 */
+	void update(final GroupDto groupDto);
+	/**
+	 * Delete group 
+	 * @param id
+	 */
+	void delete(final GroupDto group);
 }

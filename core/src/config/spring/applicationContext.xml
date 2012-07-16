@@ -15,7 +15,7 @@
     <import resource="spring-hibernate-context.xml"/>
     <import resource="spring-service-context.xml"/>
     <import resource="spring-security-context.xml"/>
-
+	<import resource="spring-security-hibernate.xml"/>
 	<context:annotation-config />
 
 </beans>	

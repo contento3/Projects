@@ -12,13 +12,4 @@ public interface PageLayoutDao extends GenericDao<PageLayout,Integer> {
 	 * @return Collection of PageLayout
 	 */
 	Collection <PageLayout> findPageLayoutByAccount(final Integer accountId);
-
-	/**
-	 * Returns a collection of PageLayout for the given account and layoutType
-	 * @param accountId
-	 * @param pageLayoutTypeId
-	 * @return
-	 */
-	Collection<PageLayout> findPageLayoutByAccountAndLayoutType(
-			Integer accountId, Integer pageLayoutTypeId);
 }

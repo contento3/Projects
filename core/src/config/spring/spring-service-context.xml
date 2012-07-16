@@ -101,7 +101,6 @@
 		class="com.contento3.cms.site.structure.service.impl.SiteServiceImpl">
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="siteDAO" />
-		<constructor-arg ref="pageLayoutDAO" />
 	</bean>
 
 	<bean id="pageService" class="com.contento3.cms.page.service.impl.PageServiceImpl">
@@ -179,6 +178,16 @@
 		class="com.contento3.cms.article.service.impl.RelatedArticleServiceImpl">
 		<constructor-arg ref="relatedArticleAssembler" />
 		<constructor-arg ref="relatedArticleDao" />
+	</bean>
+	
+	<bean id="groupAssembler"
+		class="com.contento3.security.group.service.impl.GroupAssemblerImpl">
+	</bean>
+	
+	<bean id="groupService"
+		class="com.contento3.security.group.service.impl.GroupServiceImpl">
+		<constructor-arg ref="groupAssembler" />
+		<constructor-arg ref="groupDao" />
 	</bean>
 	
 </beans>

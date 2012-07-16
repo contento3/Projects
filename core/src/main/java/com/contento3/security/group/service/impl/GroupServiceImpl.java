@@ -32,8 +32,8 @@ public class GroupServiceImpl implements GroupService {
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<GroupDto> findByGroupName(String groupName){
-		return groupAssembler.domainsToDtos(groupDao.findByGroupName(groupName));
+	public GroupDto findByGroupName(String groupName){
+		return groupAssembler.domainToDto(groupDao.findByGroupName(groupName));
 	}
 	
 	public Collection<GroupDto> type;
@@ -49,6 +49,27 @@ public class GroupServiceImpl implements GroupService {
 	public void create(final GroupDto groupDto) {
 		groupDao.persist(groupAssembler.dtoToDomain(groupDto));
 	}
+
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public GroupDto findById(Integer id) {
+		return groupAssembler.domainToDto(groupDao.findById(id));
+	}
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void update(GroupDto groupDto) {
+		groupDao.update(groupAssembler.dtoToDomain(groupDto));
+		
+	}
+
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void delete(GroupDto group) {
+		groupDao.delete(groupAssembler.dtoToDomain(group));
+		
+	}
+	
+	
 }
 
 

@@ -76,9 +76,7 @@ public class SiteUIManager implements UIManager {
 		this.parentWindow = parentWindow;
 		this.siteService = (SiteService) contextHelper.getBean("siteService");
 		this.pageService = (PageService) contextHelper.getBean("pageService");
-		this.accountService = (AccountService) contextHelper.getBean("accountService");
 	}
-	
 	@Override
 	public void render() {
 

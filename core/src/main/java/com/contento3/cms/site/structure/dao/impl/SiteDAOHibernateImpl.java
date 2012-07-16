@@ -37,9 +37,8 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 	public Site findByDomain(String domain){
 		Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
-								.createCriteria("siteDomain")
 								.add(Restrictions
-								.eq("domainName", domain));
+								.eq("url", domain));
 		List<Site> sites = criteria.list();
 		Site site = null;
 		
