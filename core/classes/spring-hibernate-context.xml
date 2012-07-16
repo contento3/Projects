@@ -47,7 +47,6 @@
 			     <value>com.contento3.cms.page.category.model.Category</value>
 			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
 			     <value>com.contento3.cms.article.model.Article</value>
-			     <value>com.contento3.security.group.model.Group</value>
 			     <value>com.contento3.cms.article.model.RelatedArticle</value>
 			  <!--   <value>com.contento3.site.user.model.User</value> -->
 			    
@@ -191,8 +190,7 @@
 		class=" com.contento3.cms.article.dao.impl.RelatedArticleDaoHibernateImpl">
 		<property name="sessionFactory" ref="mySessionFactory" />
 	</bean>
-
-
+	
 	<!-- Cache beans -->
 	<bean id="templateCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
 		<property name="cacheManager" ref="cacheManager" />
