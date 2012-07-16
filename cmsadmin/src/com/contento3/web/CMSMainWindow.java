@@ -18,6 +18,8 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
@@ -182,9 +184,14 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         root.setStyleName(BaseTheme.TREE_CONNECTORS);
         root.addActionHandler(this);
         Item item0 = hwContainer.addItem("Sites");
+        
+        root.addContainerProperty("icon", Resource.class, null);
+        root.setItemIconPropertyId("icon");
+        root.setItemIcon(item0, new ExternalResource("images/site.png"));
+        
         item0.getItemProperty("name").setValue("Sites");
         item0.getItemProperty("id").setValue(new Integer(-1));
-
+        item0.getItemProperty("icon").setValue(new ExternalResource("images/site.png"));
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
 

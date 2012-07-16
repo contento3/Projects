@@ -3,8 +3,9 @@ package com.contento3.cms.page.layout.dto;
 import java.util.Collection;
 
 import com.contento3.cms.page.section.dto.PageSectionDto;
+import com.contento3.common.dto.Dto;
 
-public class PageLayoutDto {
+public class PageLayoutDto extends Dto {
 	
 	private int id;	
 	private String name;
@@ -12,6 +13,7 @@ public class PageLayoutDto {
 	private Integer accountId;
 	private Collection <PageSectionDto> pageSectionDtos;
 	
+	@Override
 	public int getId() {
 		return id;
 	}
@@ -20,6 +22,7 @@ public class PageLayoutDto {
 		this.id = id;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

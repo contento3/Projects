@@ -1,7 +1,5 @@
 package com.contento3.cms.site.structure.domain.service;
 
-import java.util.Collection;
-
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
 import com.contento3.common.service.Service;
 

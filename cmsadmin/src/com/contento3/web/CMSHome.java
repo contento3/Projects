@@ -28,7 +28,7 @@ public class CMSHome extends Application
 	@Override
 	public void init() {
 
-		setTheme("reindeer");
+		setTheme("contento3");
 		SpringContextHelper helper = new SpringContextHelper(this);
 		Button logoutButton = new Button("Log Out");
 	
