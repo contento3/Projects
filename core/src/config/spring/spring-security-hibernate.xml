@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springmodules.org/schema/ehcache http://www.springmodules.org/schema/cache/springmodules-ehcache.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean id="cmsSecuritySessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="jdbcdataSource" />
+		<property name="annotatedClasses">
+			<list>
+			    <value>com.contento3.security.group.model.Group</value>
+			</list>
+		</property>	
+	
+	</bean>
+
+	<!-- GroupDao -->
+	<bean id="groupDao"
+		class="com.contento3.security.group.dao.impl.GroupDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
+	</bean>
+	
+
+</beans>

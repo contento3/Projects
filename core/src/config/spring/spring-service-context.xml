@@ -180,4 +180,14 @@
 		<constructor-arg ref="relatedArticleDao" />
 	</bean>
 	
+	<bean id="groupAssembler"
+		class="com.contento3.security.group.service.impl.GroupAssemblerImpl">
+	</bean>
+	
+	<bean id="groupService"
+		class="com.contento3.security.group.service.impl.GroupServiceImpl">
+		<constructor-arg ref="groupAssembler" />
+		<constructor-arg ref="groupDao" />
+	</bean>
+	
 </beans>

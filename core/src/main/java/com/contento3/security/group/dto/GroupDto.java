@@ -6,6 +6,16 @@ public class GroupDto {
 	
 	private String name;
 	
+	private String description;
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/**
 	 * Sets the group name
 	 * @param Group name

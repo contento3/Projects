@@ -4,12 +4,13 @@ import java.util.Collection;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.security.group.dao.GroupDao;
 import com.contento3.security.group.model.Group;
 
-public class GroupDaoHibernateImpl extends GenericDaoSpringHibernateTemplate <Group,String>
+public class GroupDaoHibernateImpl extends GenericDaoSpringHibernateTemplate <Group,Integer>
 implements GroupDao {
 	
 	GroupDaoHibernateImpl(){
@@ -18,13 +19,19 @@ implements GroupDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Group> findByGroupName(String groupName)
+	public Group findByGroupName(String groupName)
 	{
 		Criteria criteria = this.getSession()
 		.createCriteria(Group.class)
 		.add(Restrictions
 		.eq("name", groupName));
-		return criteria.list();
+		
+		Group group = null;
+		if (!CollectionUtils.isEmpty(criteria.list())) {
+			group = (Group) criteria.list().get(0);
+		}
+		
+		return group;
 		
 	}
 	

@@ -24,6 +24,10 @@ public class Group {
 	@Column(name="group_name")
 	private String name;
 	
+	@Column(name="description")
+	private String description;
+	
+	
 	/**
 	 * Sets the group name
 	 * @param Group name
@@ -64,4 +68,20 @@ public class Group {
 		return(id);
 	}
 	
+	/**
+	 * Return group description
+	 * @return
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	/**
+	 * sets the groups description
+	 * @param description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 }

@@ -14,12 +14,14 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		Group group = new Group();
 		group.setGroupId(dto.getGroupId());
 		group.setGroupName(dto.getGroupName());
+		group.setDescription(dto.getDescription());
 		return group;
 	}
 
 	public Group dtoToDomain(final GroupDto dto,final Group domain){
 		domain.setGroupId(dto.getGroupId());
 		domain.setGroupName(dto.getGroupName());
+		domain.setDescription(dto.getDescription());
 		return domain;
 	}
 
@@ -27,6 +29,7 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		GroupDto dto = new GroupDto();
 		dto.setGroupId(domain.getGroupId());
 		dto.setGroupName(domain.getGroupName());
+		dto.setDescription(domain.getDescription());
 		return dto;
 	}
 
