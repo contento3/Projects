@@ -35,7 +35,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		Site site = new Site();
 		site.setSiteId(dto.getSiteId());
 		site.setSiteName(dto.getSiteName());
-		site.setUrl(dto.getUrl());
+		//site.setUrl(dto.getUrl());
 		site.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		site.setDafaultLayoutId(dto.getDefaultLayoutId());
 		site.setSiteDomain(siteDomainAssembler.dtosToDomains(dto.getSiteDomainDto()));
@@ -48,7 +48,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 	public SiteDto domainToDto(Site domain) {
 		SiteDto dto = new SiteDto();
 		dto.setSiteName(domain.getSiteName());
-		dto.setUrl(domain.getUrl());
+	//	dto.setUrl(domain.getUrl());
 		dto.setSiteId(domain.getSiteId());
 		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setDefaultLayoutId(domain.getDafaultLayoutId());

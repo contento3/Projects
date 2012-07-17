@@ -147,22 +147,6 @@ public class Site implements Serializable {
 	}
 	
 	/**
-	 * Returns the url
-	 * @return String uri 
-	 */
-	public String getUrl() {
-		return url;
-	}
-	
-	/**
-	 * Sets the url
-	 * @param url 
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
-	
-	/**
 	 * Returns the site name
 	 * @return String 
 	 */

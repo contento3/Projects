@@ -18,11 +18,6 @@ public class SiteDto implements Serializable {
 	private Integer siteId;
 	
 	/**
-	 * Url/domain for this site
-	 */
-	private String url;
-	
-	/**
 	 * name of the site (not the domain) something like Yahoo,Facebook,CricInfo etc
 	 */
 	private String siteName;
@@ -81,12 +76,6 @@ public class SiteDto implements Serializable {
 	}
 	public void setSiteId(final Integer siteId) {
 		this.siteId = siteId;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(final String url) {
-		this.url = url;
 	}
 	public String getSiteName() {
 		return siteName;
