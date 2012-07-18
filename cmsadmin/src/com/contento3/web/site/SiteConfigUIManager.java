@@ -1,6 +1,5 @@
 package com.contento3.web.site;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -8,16 +7,12 @@ import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.account.dto.AccountDto;
-import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.service.PageLayoutService;
-import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
 import com.contento3.cms.site.structure.domain.service.SiteDomainService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.util.CachedTypedProperties;
-import com.contento3.web.common.helper.ComboDataLoader;
-import com.contento3.web.content.ImageMgmtUIManager;
+import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -26,10 +21,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -83,13 +74,63 @@ public class SiteConfigUIManager {
 	 */
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void renderSiteConfig(final Integer siteId,final TabSheet tabSheet, final Integer pageId) {
-		renderSiteDomains(siteId,tabSheet,pageId);
+	public void renderSiteConfig(final Integer siteId,final TabSheet siteTabSheet, final Integer pageId) {
+		renderSiteDomains(siteId,siteTabSheet,pageId);
 		renderLayoutAndLanguage();
 	}// end renderSiteConfig()
 
-	public void renderSiteDomains(final Integer siteId,final TabSheet tabSheet, final Integer pageId){
-//		final SiteDto siteDto = siteService.findSiteById(siteId);
+	private Table buildSiteDomainsTable(final Integer siteId,final SiteDto siteDto){
+		Collection<SiteDomainDto> siteDomains = siteDto.getSiteDomainDto();
+		domainsContainer = new IndexedContainer();
+		domainsContainer.addContainerProperty("Domains", String.class, null);
+		domainsContainer.addContainerProperty("Delete", Button.class, null);
+
+		//Build the site domain table
+		final Table siteDomainTable = new Table();
+		siteDomainTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		siteDomainTable.setContainerDataSource(domainsContainer);
+		
+		//adding rows in Domains Table from DB
+		if (!CollectionUtils.isEmpty(siteDomains)) {
+			for (SiteDomainDto domain : siteDto.getSiteDomainDto()) {
+				Button delete = new Button();
+				addDomainsListTable(domain, siteDomainTable, delete, siteDto);
+			}
+			siteDomainTable.setPageLength(siteDomains.size());
+		}
+		else{
+			siteDomainTable.setPageLength(1);
+		}
+		
+		return siteDomainTable;
+	}
+	
+	
+	public void renderSiteDomains(final Integer siteId,final TabSheet siteTabSheet, final Integer pageId){
+
+		final SiteDto siteDto = siteService.findSiteById(siteId);
+		final Table siteDomainTable = buildSiteDomainsTable(siteId,siteDto);
+
+		//Layout that contains all the elements on the site configuration screen
+		final VerticalLayout siteConfigParentLayout = new VerticalLayout();
+		siteConfigParentLayout.addComponent(siteDomainTable);
+		siteConfigParentLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		
+		final Tab siteConfigTab = siteTabSheet.addTab(siteConfigParentLayout);
+		siteConfigTab.setCaption("Site configuration for :"+siteDto.getSiteName());
+		siteConfigTab.setClosable(true);
+		
+		siteTabSheet.setSelectedTab(siteConfigParentLayout);
+		
+		//Button that adds a new domain
+//		final Button addDomainButton = new Button();
+//		addDomainButton.setCaption("Add Domain");
+//		siteConfigParentLayout.addComponent(addDomainButton);
+//		
+		SiteDomainAddPopup popup =	new SiteDomainAddPopup("Open",parentWindow, contextHelper,siteConfigParentLayout);
+		siteConfigParentLayout.addComponent(popup);
+		
+		//		final SiteDto siteDto = siteService.findSiteById(siteId);
 //		siteDomainDto = siteDto.getSiteDomainDto();
 //		domainsContainer = new IndexedContainer();
 //		VerticalLayout verticalLayout = new VerticalLayout();
@@ -318,7 +359,7 @@ public class SiteConfigUIManager {
 	 * @param siteId 
 	 */
 	private void addDomainsListTable(final SiteDomainDto domain,
-			final Table table,final  Button deleteLink,final Integer siteId) {
+			final Table table,final  Button deleteLink,final SiteDto siteDto) {
 
 		final Item item = domainsContainer.addItem(domain.getDomainId());
 		item.getItemProperty("Domains").setValue(domain.getDomainName());
@@ -331,7 +372,6 @@ public class SiteConfigUIManager {
 
 		deleteLink.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				final SiteDto siteDto = siteService.findSiteById(siteId);
 				siteDomainDto = siteDto.getSiteDomainDto();
 				SiteDomainService siteDomainService = (SiteDomainService) contextHelper.getBean("siteDomainService");
 				Object id = deleteLink.getData();
@@ -346,10 +386,8 @@ public class SiteConfigUIManager {
 						break;
 					}
 				}
-
 			}
 		});
-
 	}
 
 	/**
@@ -363,54 +401,54 @@ public class SiteConfigUIManager {
 	 * @param siteNameTxt
 	 */
 
-	private void saveSiteDto(final SiteDto siteDto,final Collection<SiteDomainDto> siteDomainDto, final Table domainsTable,
-			final PageLayoutService pageLayoutService,
-			final ComboBox pageLayoutCombo, final String siteNameTxt,final Integer siteId) {
-
-		//Integer siteId=this.siteid;
-		final AccountDto accountDto = siteDto.getAccountDto();
-		Iterator<SiteDomainDto> itr= siteDomainDto.iterator();
-		for (Iterator i = domainsTable.getItemIds().iterator(); i.hasNext();) {
-			int iid = (Integer) i.next();
-			Item item = domainsTable.getItem(iid);
-			SiteDomainDto domain = itr.next();
-			domain.setDomainName(item.getItemProperty("Domains").getValue().toString());
-		}
-
-		if (null != pageLayoutCombo.getValue()) {
-			siteDto.setSiteId(siteId);
-			siteDto.setSiteName(siteNameTxt);
-			siteDto.setAccountDto(accountDto);
-			siteDto.setSiteDomainDto(siteDomainDto);
-			siteDto.setDefaultLayoutId(pageLayoutService
-					.findPageLayoutById(
-							Integer.parseInt(pageLayoutCombo.getValue()
-									.toString())).getId());
-			siteService.update(siteDto);
-
-	/*
-	 * delete row which has id=-1 and
-	 *  re insert previously deleted row into Table by getting its new id from DB
-	 */		
-			Object id=-1;
-			Item item = domainsTable.getItem(id);
-			if(item!=null){
-				String domainName = (String) domainsTable.getContainerProperty(id,
-						"Domains").getValue();
-
-				SiteDomainService siteDomainService = (SiteDomainService) contextHelper
-						.getBean("siteDomainService");
-				SiteDomainDto dto = siteDomainService
-						.findSiteDomainByName(domainName);
-
-				if (dto.getDomainName().equals(domainName)) {
-					final Button deleteLink = new Button();
-					addDomainsListTable(dto, domainsTable, deleteLink, siteId);
-					domainsTable.removeItem(id);
-				}
-			}
-
-		}// end if
-
-	}//end saveSiteDto	
+//	private void saveSiteDto(final SiteDto siteDto,final Collection<SiteDomainDto> siteDomainDto, final Table domainsTable,
+//			final PageLayoutService pageLayoutService,
+//			final ComboBox pageLayoutCombo, final String siteNameTxt,final Integer siteId) {
+//
+//		//Integer siteId=this.siteid;
+//		final AccountDto accountDto = siteDto.getAccountDto();
+//		Iterator<SiteDomainDto> itr= siteDomainDto.iterator();
+//		for (Iterator i = domainsTable.getItemIds().iterator(); i.hasNext();) {
+//			int iid = (Integer) i.next();
+//			Item item = domainsTable.getItem(iid);
+//			SiteDomainDto domain = itr.next();
+//			domain.setDomainName(item.getItemProperty("Domains").getValue().toString());
+//		}
+//
+//		if (null != pageLayoutCombo.getValue()) {
+//			siteDto.setSiteId(siteId);
+//			siteDto.setSiteName(siteNameTxt);
+//			siteDto.setAccountDto(accountDto);
+//			siteDto.setSiteDomainDto(siteDomainDto);
+//			siteDto.setDefaultLayoutId(pageLayoutService
+//					.findPageLayoutById(
+//							Integer.parseInt(pageLayoutCombo.getValue()
+//									.toString())).getId());
+//			siteService.update(siteDto);
+//
+//	/*
+//	 * delete row which has id=-1 and
+//	 *  re insert previously deleted row into Table by getting its new id from DB
+//	 */		
+//			Object id=-1;
+//			Item item = domainsTable.getItem(id);
+//			if(item!=null){
+//				String domainName = (String) domainsTable.getContainerProperty(id,
+//						"Domains").getValue();
+//
+//				SiteDomainService siteDomainService = (SiteDomainService) contextHelper
+//						.getBean("siteDomainService");
+//				SiteDomainDto dto = siteDomainService
+//						.findSiteDomainByName(domainName);
+//
+//				if (dto.getDomainName().equals(domainName)) {
+//					final Button deleteLink = new Button();
+//					addDomainsListTable(dto, domainsTable, deleteLink, siteId);
+//					domainsTable.removeItem(id);
+//				}
+//			}
+//
+//		}// end if
+//
+//	}//end saveSiteDto	
 }

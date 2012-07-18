@@ -44,12 +44,6 @@ public class Site implements Serializable {
 	private Integer siteId;
 	
 	/**
-	 * Url/domain for this site
-	 */
-	@Column(name = "url")
-	private String url;
-	
-	/**
 	 * name of the site (not the domain) something like Yahoo,Facebook,CricInfo etc
 	 */
 	@Column(name = "site_name")
@@ -89,7 +83,7 @@ public class Site implements Serializable {
 		return language;
 	}
 
-	public void setLanguage(String language) {
+	public void setLanguage(final String language) {
 		this.language = language;
 	}
 
@@ -97,7 +91,7 @@ public class Site implements Serializable {
 		return siteDomain;
 	}
 
-	public void setSiteDomain(Collection<SiteDomain> siteDomain) {
+	public void setSiteDomain(final Collection<SiteDomain> siteDomain) {
 		this.siteDomain = siteDomain;
 	}
 
@@ -106,12 +100,12 @@ public class Site implements Serializable {
 	 * @return Integer
 	 */
 	
-	public Integer getDafaultLayoutId() {
+	public Integer getDefaultLayoutId() {
 		return defaultLayoutId;
 	}
 
-	public void setDafaultLayoutId(Integer dafaultLayoutId) {
-		this.defaultLayoutId = dafaultLayoutId;
+	public void setDefaultLayoutId(final Integer defaultLayoutId) {
+		this.defaultLayoutId = defaultLayoutId;
 	}
 
 	/**
