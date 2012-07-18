@@ -49,29 +49,11 @@ public class ContentUIManager implements UIManager{
      * Parent window that contains all the ui components.Used primarily to set notifications.
      */
 	private Window parentWindow;
-	/**
-	 * Article table which shows articles
-	 */
-	private final Table articleTable =  new Table("Articles");
-	/**
-	 * Article service to perform article related tasks.
-	 */
-	private ArticleService articleService;
-	
-	/**
-	 * Account id for the account that is currently in use.
-	 */
-	private Integer accountId=null;
-	
-	/**
-	 * Article Container to hold article listing
-	 */
-	private final IndexedContainer articleContainer = new IndexedContainer();
 	
 	/**
 	 * Main tabsheet that hold all the content.
 	 */
-	final TabSheet elementTab = new TabSheet();
+	private TabSheet elementTab = new TabSheet();
 	
 	/**
 	 * Represents the navigation items in the Content Manager section.
@@ -82,14 +64,14 @@ public class ContentUIManager implements UIManager{
 
 
 	/**
-	 * Class contructor
+	 * Class constructor
 	 * @param helper
 	 * @param parentWindow
 	 */
 	public ContentUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
-		this.articleService = (ArticleService) helper.getBean("articleService");
+		
 	}
 
 	@Override
@@ -165,26 +147,21 @@ public class ContentUIManager implements UIManager{
 		//final TabSheet elementTab = new TabSheet();
 		elementTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 
-		//final CssLayout verticalLayout = new CssLayout();
+		
+		if(element.equals("Article")){
+			ArticleMgmtUIManager articleManager = new ArticleMgmtUIManager(helper, parentWindow);
+			elementTab = (TabSheet) articleManager.render(null);
+		}
+		else if(element.equals("Image")){
+		
+			Button button = new Button();
+			verticalLayout.addComponent(button);
+			verticalLayout.setSizeFull();
+			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(helper,parentWindow);
 
-		Button button = new Button();
-		verticalLayout.addComponent(button);
-		verticalLayout.setSizeFull();
-		final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(helper,parentWindow);
-
-		elementTab.addTab(verticalLayout, String.format("%s Management",element));
-		button.addListener(new ClickListener(){
-			public void buttonClick(ClickEvent event){
-				if (element.equals("Article")){
-					ArticleMgmtUIManager artMgmtUIMgr = new ArticleMgmtUIManager(helper,parentWindow);
-					VerticalLayout newArticleLayout = new VerticalLayout();
-					Tab createNew = elementTab.addTab(newArticleLayout, String.format("Create new %s",element));
-					createNew.setClosable(true);
-					elementTab.setSelectedTab(newArticleLayout);
-					newArticleLayout.addComponent(artMgmtUIMgr.renderAddScreen());
-					newArticleLayout.setHeight("100%");
-				}
-				else if (element.equals("Image")){
+			elementTab.addTab(verticalLayout, String.format("%s Management",element));
+			button.addListener(new ClickListener(){
+				public void buttonClick(ClickEvent event){
 					VerticalLayout newArticleLayout = new VerticalLayout();
 					Tab createNew = elementTab.addTab(newArticleLayout, String.format("Create new %s",element));
 					createNew.setClosable(true);
@@ -192,160 +169,14 @@ public class ContentUIManager implements UIManager{
 					newArticleLayout.addComponent(imageMgmtUIMgr.renderAddScreen());
 					newArticleLayout.setHeight("100%");
 				}
-   	        }
-    	});
-
-		button.setCaption(String.format("Add %s",element));
-		if(element.equals("Article")){
-			// Get accountId from the session
-			WebApplicationContext ctx = ((WebApplicationContext) parentWindow
-					.getApplication().getContext());
-			HttpSession session = ctx.getHttpSession();
-			accountId = (Integer) session.getAttribute("accountId");
-
-			articleTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-			articleTable.setPageLength(5);
-			articleTable.setImmediate(true);
-			renderArticles(articleTable);
-
-			verticalLayout.addComponent(articleTable);
-			Button deleteButton = new Button("Delete");
-			deleteButton.addListener(new ClickListener() {
-				
-				@Override
-				public void buttonClick(ClickEvent event) {
-				     Collection<Object> toDelete =  new ArrayList<Object>();
-				    
-						
-                       for (Object id : articleTable.getItemIds()) {
-                           // Get the checkbox of this item (row)
-                           CheckBox checkBox = (CheckBox) articleContainer
-                                   .getContainerProperty(id, "Checkbox")
-                                   .getValue();
-
-                           if (checkBox.booleanValue()) {
-                               toDelete.add(id);
-                           }
-                       }
-
-                       // Perform the deletions
-                       for (Object id : toDelete) {
-                    	   articleContainer.removeItem(id);
-                    	   ArticleDto article = (ArticleDto) articleService
-      								.findById(Integer.parseInt(id.toString()));
-      							article.setIsVisible(0);
-      							articleService.update(article);
-                       }
-                   
-				}
 			});
-			verticalLayout.addComponent(deleteButton);
-			
-		}
-		else if (element.equals("Image")){
+
+			button.setCaption(String.format("Add %s",element));
 			verticalLayout.addComponent(imageMgmtUIMgr.listImage(1));
 		}
 
 		return elementTab;
 	}
-	/**
-	 * display articles 
-	 * @param articleTable
-	 */
-	private void renderArticles(final Table articleTable){
-		
-		articleContainer.addContainerProperty("Checkbox", CheckBox.class, null);
-		articleContainer.addContainerProperty("Article", String.class, null);
-		articleContainer.addContainerProperty("Date Created", String.class, null);
-		articleContainer.addContainerProperty("Date Posted", String.class, null);
-		articleContainer.addContainerProperty("Expiry Date", String.class, null);
-		articleContainer.addContainerProperty("Edit", Button.class, null);
-		articleContainer.addContainerProperty("Delete", Button.class, null);
 
-		Collection<ArticleDto> articleDto = articleService.findByAccountId(accountId);
-		if (!CollectionUtils.isEmpty(articleDto)) {
-
-			for (ArticleDto article : articleDto) {
-				if(article.getIsVisible()==1){	//check it was not deleted by user in past
-					Button edit = new Button();
-					Button delete = new Button();
-					addArticlesToTable(article,edit,delete);
-				}
-			}
-
-			articleTable.setContainerDataSource(articleContainer);
-		} else {
-			final Label label = new Label("No article found for this site");
-		}
-	}//end renderArticles
-	
-	/**
-	 * add articles to articleContainer 
-	 * which will be provided as source to table 
-	 * @param article
-	 * @param editLink
-	 */
-	private void addArticlesToTable(final ArticleDto article,final Button editLink,
-			final Button deleteLink ){
-		final Item item = articleContainer.addItem(article.getArticleId().toString());
-		item.getItemProperty("Checkbox").setValue(new CheckBox());
-		item.getItemProperty("Article").setValue(article.getHead());
-		String DATE_FORMAT = "dd/MM/yyyy";
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		item.getItemProperty("Date Created").setValue(sdf.format(article.getDateCreated()));
-		item.getItemProperty("Date Posted").setValue(sdf.format(article.getDatePosted()));
-		item.getItemProperty("Expiry Date").setValue(sdf.format(article.getExpiryDate()));
-		editLink.setCaption("Edit");
-		editLink.setData(article.getArticleId());
-		editLink.addStyleName("edit");
-		editLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("Edit").setValue(editLink);
-		deleteLink.setCaption("Delete");
-		deleteLink.setData(article.getArticleId());
-		deleteLink.addStyleName("delete");
-		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("Delete").setValue(deleteLink);
-	
-
-		editLink.addListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-				Object id = editLink.getData();
-				
-				ArticleDto article = (ArticleDto) articleService.findById(Integer.parseInt(id.toString()));
-				elementTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-				ArticleMgmtUIManager artMgmtUIMgr = new ArticleMgmtUIManager(helper,parentWindow);
-				VerticalLayout newArticleLayout = new VerticalLayout();
-				Tab createNew = elementTab.addTab(newArticleLayout, "Edit Article");
-				createNew.setClosable(true);
-				elementTab.setSelectedTab(newArticleLayout);
-				newArticleLayout.addComponent(artMgmtUIMgr.renderEditScreen(article));
-				newArticleLayout.setHeight("100%");
-			}
-		});
-		
-		deleteLink.addListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-			
-				Object id = deleteLink.getData();
-				ArticleDto article = (ArticleDto) articleService
-						.findById(Integer.parseInt(id.toString()));
-				article.setIsVisible(0);
-				articleService.update(article);
-				//articleContainer.removeItem(id);
-				articleTable.removeItem(id);
-				//articleContainer.removeAllItems();
-				//articleTable.setContainerDataSource(articleContainer);
-				articleTable.requestRepaint();
-				articleTable.requestRepaintAll();
-				parentWindow.showNotification(article.getHead()+" deleted successfully");
-				
-			}
-		});
-		
-	
-	
-	}//end addArticlesToTable
 
 }
