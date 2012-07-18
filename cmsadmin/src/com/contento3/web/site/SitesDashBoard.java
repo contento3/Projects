@@ -251,13 +251,11 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		articleDto = articleService.findLatestArticleBySiteId(siteId, 5);
 		if(!articleDto.isEmpty()){
 			for(ArticleDto article: articleDto){
-				if(article.getIsVisible()==1){
 					Item item = articleContainer.addItem(article.getArticleId());
 					item.getItemProperty("head").setValue(article.getHead());
 					SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 					item.getItemProperty("date_created").setValue(formatter.format(article.getDateCreated()));
 					item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
-				}
 			}
 		}
 

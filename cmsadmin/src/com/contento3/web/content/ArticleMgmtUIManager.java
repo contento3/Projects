@@ -331,11 +331,9 @@ public class ArticleMgmtUIManager implements UIManager {
 		if (!CollectionUtils.isEmpty(articleDto)) {
 
 			for (ArticleDto article : articleDto) {
-				if(article.getIsVisible()==1){	//check it was not deleted by user in past
 					Button edit = new Button();
 					Button delete = new Button();
 					addArticlesToTable(article,edit,delete);
-				}
 			}
 
 			articleTable.setContainerDataSource(articleContainer);

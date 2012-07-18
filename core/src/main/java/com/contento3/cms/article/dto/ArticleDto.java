@@ -10,29 +10,64 @@ import com.contento3.cms.site.structure.dto.SiteDto;
 
 
 public class ArticleDto {
-
+	/**
+	 * id for article
+	 */
 	private Integer articleId;
 
+	/**
+	 * unique random UUID
+	 */
 	private String uuid;
 	
+	/**
+	 * Head section of article
+	 */
 	private String head;
 	
+	/**
+	 * Teaser section of article
+	 */
 	private String teaser;
 	
+	/**
+	 * Body section of article
+	 */
 	private String body;
 	
+	/**
+	 * Article created date
+	 */
 	private Date dateCreated;
 	
+	/**
+	 * Article posted date
+	 */
 	private Date datePosted;
 	
-	private Collection<SiteDto> site;
-	
-	private AccountDto account;
-	
+	/**
+	 * Article last updated date
+	 */
 	private Date lastUpdated;
 	
+	/**
+	 * Expiry date for article
+	 */
 	private Date expiryDate;
 	
+	/**
+	 * articles which are associated to site
+	 */
+	private Collection<SiteDto> site;
+	
+	/**
+	 * account on which articles are created
+	 */
+	private AccountDto account;
+	
+	/**
+	 * Article visibility
+	 */
 	private Integer isVisible;
 	
 
@@ -40,7 +75,7 @@ public class ArticleDto {
 		return isVisible;
 	}
 
-	public void setIsVisible(Integer isVisible) {
+	public void setIsVisible(final Integer isVisible) {
 		this.isVisible = isVisible;
 	}
 
@@ -48,7 +83,7 @@ public class ArticleDto {
 		return articleId;
 	}
 
-	public void setArticleId(Integer articleId) {
+	public void setArticleId(final Integer articleId) {
 		this.articleId = articleId;
 	}
 
@@ -56,7 +91,7 @@ public class ArticleDto {
 		return uuid;
 	}
 
-	public void setUuid(String uuid) {
+	public void setUuid(final String uuid) {
 		this.uuid = uuid;
 	}
 
@@ -64,7 +99,7 @@ public class ArticleDto {
 		return account;
 	}
 
-	public void setAccount(AccountDto account) {
+	public void setAccount(final AccountDto account) {
 		this.account = account;
 	}
 
@@ -73,7 +108,7 @@ public class ArticleDto {
 		return head;
 	}
 
-	public void setHead(String head) {
+	public void setHead(final String head) {
 		this.head = head;
 	}
 
@@ -81,7 +116,7 @@ public class ArticleDto {
 		return teaser;
 	}
 
-	public void setTeaser(String teaser) {
+	public void setTeaser(final String teaser) {
 		this.teaser = teaser;
 	}
 
@@ -89,7 +124,7 @@ public class ArticleDto {
 		return body;
 	}
 
-	public void setBody(String body) {
+	public void setBody(final String body) {
 		this.body = body;
 	}
 
@@ -105,7 +140,7 @@ public class ArticleDto {
 		return datePosted;
 	}
 
-	public void setDatePosted(Date datePosted) {
+	public void setDatePosted(final Date datePosted) {
 		this.datePosted = datePosted;
 	}
 	
@@ -113,7 +148,7 @@ public class ArticleDto {
 		return site;
 	}
 
-	public void setSite(Collection<SiteDto> site) {
+	public void setSite(final Collection<SiteDto> site) {
 		this.site = site;
 	}
 
@@ -121,7 +156,7 @@ public class ArticleDto {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(Date lastUpdated) {
+	public void setLastUpdated(final Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 
@@ -129,7 +164,7 @@ public class ArticleDto {
 		return expiryDate;
 	}
 
-	public void setExpiryDate(Date expiryDate) {
+	public void setExpiryDate(final Date expiryDate) {
 		this.expiryDate = expiryDate;
 	}
 

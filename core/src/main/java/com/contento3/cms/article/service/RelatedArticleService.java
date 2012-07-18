@@ -14,16 +14,16 @@ public interface RelatedArticleService extends Service<RelatedArticleDto> {
 	 * @param articleId
 	 * @return
 	 */
-	Collection<RelatedArticleDto> findRelatedArticles(Integer articleId);
+	Collection<RelatedArticleDto> findRelatedArticles(final Integer articleId);
 	/**
 	 * delete related article
 	 * @param articleId
 	 */
-	void deleteRelatedArticle(Integer articleId);
+	void deleteRelatedArticle(final Integer articleId);
 	/**
 	 * delete collection of related articles
 	 * @param articleId
 	 * @param relatedArticleIds
 	 */
-	void deleteRelatedArticles(Integer articleId, Collection<Integer> relatedArticleIds);
+	void deleteRelatedArticles(final Integer articleId,final  Collection<Integer> relatedArticleIds);
 }
