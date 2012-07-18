@@ -1,6 +1,5 @@
 package com.contento3.cms.article.dto;
 
-import com.contento3.cms.article.model.Article;
 import com.contento3.cms.article.model.RelatedArticleLinkPK;
 
 public class RelatedArticleDto {
@@ -22,7 +21,7 @@ public class RelatedArticleDto {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 	
@@ -30,7 +29,7 @@ public class RelatedArticleDto {
 		return article;
 	}
 
-	public void setArticle(ArticleDto article) {
+	public void setArticle(final ArticleDto article) {
 		this.article = article;
 	}
 
@@ -38,7 +37,7 @@ public class RelatedArticleDto {
 		return primaryKey;
 	}
 
-	public void setPrimaryKey(RelatedArticleLinkPK primaryKey) {
+	public void setPrimaryKey(final RelatedArticleLinkPK primaryKey) {
 		this.primaryKey = primaryKey;
 	}
 

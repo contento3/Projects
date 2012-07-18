@@ -17,7 +17,6 @@ public class RelatedArticleAssemblerImpl implements RelatedArticleAssembler {
 	}
 	@Override
 	public RelatedArticle dtoToDomain(RelatedArticleDto dto) {
-		// TODO Auto-generated method stub
 		RelatedArticle domain = new RelatedArticle();
 		domain.setArticle(articleAssembler.dtoToDomain(dto.getArticle()));
 		domain.setType(dto.getType());
@@ -27,7 +26,6 @@ public class RelatedArticleAssemblerImpl implements RelatedArticleAssembler {
 
 	@Override
 	public RelatedArticleDto domainToDto(RelatedArticle domain) {
-		// TODO Auto-generated method stub
 		RelatedArticleDto dto = new RelatedArticleDto();
 		dto.setArticle(articleAssembler.domainToDto(domain.getArticle()));
 		dto.setType(domain.getType());
@@ -38,7 +36,6 @@ public class RelatedArticleAssemblerImpl implements RelatedArticleAssembler {
 	@Override
 	public Collection<RelatedArticleDto> domainsToDtos(
 			Collection<RelatedArticle> domains) {
-		// TODO Auto-generated method stub
 		Collection<RelatedArticleDto> dtos = new ArrayList<RelatedArticleDto>();
 		for(RelatedArticle domain : domains){
 			dtos.add(domainToDto(domain));
@@ -50,7 +47,6 @@ public class RelatedArticleAssemblerImpl implements RelatedArticleAssembler {
 	@Override
 	public Collection<RelatedArticle> dtosToDomains(
 			Collection<RelatedArticleDto> dtos) {
-		// TODO Auto-generated method stub
 		Collection<RelatedArticle> domains = new ArrayList<RelatedArticle>();
 		for(RelatedArticleDto dto : dtos){
 			domains.add(dtoToDomain(dto));

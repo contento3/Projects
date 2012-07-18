@@ -83,20 +83,11 @@ public class Article implements Serializable  {
 	@Column (name = "EXPIRY_DATE")
 	private Date expiryDate;
 	/**
-	 * if article is delete then isVisible is 0
-	 * else it contain 1
+	 * Article visibility
 	 */
 	@Column (name = "IS_VISIBLE")
 	private Integer isVisible;
 	
-	
-	public Integer getIsVisible() {
-		return isVisible;
-	}
-
-	public void setIsVisible(Integer isVisible) {
-		this.isVisible = isVisible;
-	}
 
 	/**
 	 * articles which are associated to site
@@ -113,16 +104,26 @@ public class Article implements Serializable  {
 	@ManyToOne //uni directional many-to-one(foreign-key)
 	@JoinColumn(name="ACCOUNT_ID")
 	private Account account;
-	
+	/**
+	 * Related articles which are associate to article
+	 */
 	@OneToMany(cascade=CascadeType.ALL,mappedBy="article")
 	private Collection<RelatedArticle> relatedArticles;
 	
 
+	public Integer getIsVisible() {
+		return isVisible;
+	}
+
+	public void setIsVisible(final Integer isVisible) {
+		this.isVisible = isVisible;
+	}
+	
 	public Collection<RelatedArticle> getRelatedArticles() {
 		return relatedArticles;
 	}
 
-	public void setRelatedArticles(Collection<RelatedArticle> relatedArticles) {
+	public void setRelatedArticles(final Collection<RelatedArticle> relatedArticles) {
 		this.relatedArticles = relatedArticles;
 	}
 
@@ -130,7 +131,7 @@ public class Article implements Serializable  {
 		return account;
 	}
 
-	public void setAccount(Account account) {
+	public void setAccount(final Account account) {
 		this.account = account;
 	}
 
@@ -138,7 +139,7 @@ public class Article implements Serializable  {
 		return site;
 	}
 
-	public void setSite(Collection<Site> site) {
+	public void setSite(final Collection<Site> site) {
 		this.site = site;
 	}
 
@@ -146,7 +147,7 @@ public class Article implements Serializable  {
 		return head;
 	}
 
-	public void setHead(String head) {
+	public void setHead(final String head) {
 		this.head = head;
 	}
 
@@ -154,7 +155,7 @@ public class Article implements Serializable  {
 		return teaser;
 	}
 
-	public void setTeaser(String teaser) {
+	public void setTeaser(final String teaser) {
 		this.teaser = teaser;
 	}
 
@@ -162,7 +163,7 @@ public class Article implements Serializable  {
 		return body;
 	}
 
-	public void setBody(String body) {
+	public void setBody(final String body) {
 		this.body = body;
 	}
 
@@ -170,7 +171,7 @@ public class Article implements Serializable  {
 		return dateCreated;
 	}
 
-	public void setDateCreated(Date dateCreated) {
+	public void setDateCreated(final Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 
@@ -178,14 +179,14 @@ public class Article implements Serializable  {
 		return datePosted;
 	}
 
-	public void setDatePosted(Date datePosted) {
+	public void setDatePosted(final Date datePosted) {
 		this.datePosted = datePosted;
 	}
 	public Integer getArticleId() {
 		return articleId;
 	}
 
-	public void setArticleId(Integer articleId) {
+	public void setArticleId(final Integer articleId) {
 		this.articleId = articleId;
 	}
 
@@ -193,7 +194,7 @@ public class Article implements Serializable  {
 		return uuid;
 	}
 
-	public void setUuid(String uuid) {
+	public void setUuid(final String uuid) {
 		this.uuid = uuid;
 		
 	}
@@ -202,7 +203,7 @@ public class Article implements Serializable  {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(Date lastUpdated) {
+	public void setLastUpdated(final Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 
@@ -210,7 +211,7 @@ public class Article implements Serializable  {
 		return expiryDate;
 	}
 
-	public void setExpiryDate(Date expiryDate) {
+	public void setExpiryDate(final Date expiryDate) {
 		this.expiryDate = expiryDate;
 	}
 }

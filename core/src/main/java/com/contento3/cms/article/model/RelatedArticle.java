@@ -1,7 +1,6 @@
 package com.contento3.cms.article.model;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -12,16 +11,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name="Related_Articles")
 public class RelatedArticle implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * relation ship type
 	 */
 	@Column(name ="TYPE")
 	private String type;
+	
 	/**
 	 * Composite primary key 
 	 */
@@ -35,13 +33,11 @@ public class RelatedArticle implements Serializable {
 	@JoinColumn(name="ARTICLE_ID", insertable=false, updatable=false)
 	private Article article;
 	  
-	  
-	
 	public Article getArticle() {
 		return article;
 	}
 
-	public void setArticle(Article article) {
+	public void setArticle(final Article article) {
 		this.article = article;
 	}
 
@@ -49,7 +45,7 @@ public class RelatedArticle implements Serializable {
 		return primaryKey;
 	}
 
-	public void setPrimaryKey(RelatedArticleLinkPK primaryKey) {
+	public void setPrimaryKey(final RelatedArticleLinkPK primaryKey) {
 		this.primaryKey = primaryKey;
 	}
 
@@ -57,7 +53,7 @@ public class RelatedArticle implements Serializable {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 

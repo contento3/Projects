@@ -27,7 +27,8 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		// TODO Auto-generated method stub
 		Criteria criteria = this.getSession()
 		.createCriteria(Article.class)
-		.add(Restrictions.eq("account.accountId", accountId));
+		.add(Restrictions.eq("account.accountId", accountId))
+		.add(Restrictions.eq("isVisible", 1));
 		return criteria.list();
 	}
 
@@ -37,9 +38,11 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		// TODO Auto-generated method stub
 		Criteria criteria = this.getSession()
 		.createCriteria(Article.class)
+		.add(Restrictions.eq("isVisible", 1))
 		.createCriteria("Count")
 		.add(Restrictions.eq("Count", count))
 		.setFirstResult(0).setMaxResults(count);
+		
 		return criteria.list();
 	}
 	
@@ -49,7 +52,8 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		
 		Criteria criteria = this.getSession()
 				.createCriteria(Article.class)
-				.add(Restrictions.eq("uuid", uuid));
+				.add(Restrictions.eq("uuid", uuid))
+				.add(Restrictions.eq("isVisible", 1));
 		Article article = null;
 		if (!CollectionUtils.isEmpty(criteria.list())) {
 			article = (Article) criteria.list().get(0);
@@ -72,6 +76,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 				.addOrder(Order.desc("dateCreated"))
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 				.setFirstResult(0).setMaxResults(count)
+				.add(Restrictions.eq("isVisible", 1))
 				.createCriteria("site")
 				.add(Restrictions.eq("siteId", siteId));
 				

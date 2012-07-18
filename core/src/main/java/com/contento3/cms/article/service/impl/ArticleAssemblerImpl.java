@@ -11,8 +11,13 @@ import com.contento3.cms.article.service.ArticleAssembler;
 import com.contento3.cms.site.structure.service.SiteAssembler;
 
 public class ArticleAssemblerImpl implements ArticleAssembler {
-
+	/**
+	 * Transform Stie to siteDto and vice versa.
+	 */
 	private SiteAssembler siteAssembler;
+	/**
+	 * Transform Account to AccountDto and vice versa.
+	 */
 	private AccountAssembler accountAssembler;
 	
 	public ArticleAssemblerImpl(final SiteAssembler siteAssembler,final AccountAssembler accountAssembler ) {
