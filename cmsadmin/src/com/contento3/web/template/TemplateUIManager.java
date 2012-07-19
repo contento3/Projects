@@ -7,6 +7,8 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
+import com.contento3.account.dto.AccountDto;
+import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
@@ -71,9 +73,16 @@ public class TemplateUIManager implements UIManager{
 	 * directory from the tree.
 	 */
 	private Integer selectedDirectoryId;
-
+	/**
+	 * Used to hold the account id
+	 */
+	private Integer accountId;
+	
 	TabSheet templateTab;
-
+	/**
+	 * 
+	 */
+	final HierarchicalContainer templateContainer ;
 	/**
 	 * Constructor 
 	 * @param helper
@@ -83,7 +92,12 @@ public class TemplateUIManager implements UIManager{
 		this.helper = helper;
 		this.parentWindow = parentWindow;
 	    this.templateService = (TemplateService)helper.getBean("templateService");
-	    this.templateDirectoryService = (TemplateDirectoryService)helper.getBean("templateDirectoryService"); 
+	    this.templateDirectoryService = (TemplateDirectoryService)helper.getBean("templateDirectoryService");
+	    //Get accountId from the session
+        WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
+        HttpSession session = ctx.getHttpSession();
+        this.accountId = (Integer)session.getAttribute("accountId");
+        this.templateContainer = new HierarchicalContainer();
 	}
 	
 
@@ -158,7 +172,13 @@ public class TemplateUIManager implements UIManager{
 				renderFolderTab(new Integer (root.getValue().toString()));
 				}
 				catch(Exception e){
-					parentWindow.showNotification(String.format("Please select parent folder to add new folder"),Notification.TYPE_WARNING_MESSAGE);
+					
+					if(root.getItemIds().isEmpty()){
+						renderFolderTab(null);
+					}
+					else if(selectedDirectoryId==null){
+						parentWindow.showNotification(String.format("Please select parent folder to add new folder"),Notification.TYPE_WARNING_MESSAGE);
+					}
 				}
 			}
 		});
@@ -174,7 +194,7 @@ public class TemplateUIManager implements UIManager{
 	
 	public Tree populateTemplateList(final Collection<TemplateDirectoryDto> directoryDtos,final TemplateDirectoryService templateDirectoryService){
 
-		final HierarchicalContainer templateContainer = new HierarchicalContainer();
+		
         root = new Tree("",templateContainer);
         root.setImmediate(true);
     	root.setItemCaptionPropertyId("name");
@@ -250,10 +270,7 @@ public class TemplateUIManager implements UIManager{
     	try {
         	StringBuffer urlStr = new StringBuffer("http://localhost:8080/cms/jsp/codemirror");
 
-            //Get accountId from the session
-            WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-            HttpSession session = ctx.getHttpSession();
-            Integer accountId = (Integer)session.getAttribute("accountId");
+           
 
         	if (null != templateId){
         		TemplateDto templateDto = templateService.findTemplateById(templateId);
@@ -273,12 +290,16 @@ public class TemplateUIManager implements UIManager{
         	else {
         		//This is a new template to be created we need to get the directory which was selected.
         		if (null == selectedDirectoryId){
-					parentWindow.showNotification(String.format("Please select template directory to create a new template."),Notification.TYPE_WARNING_MESSAGE);
+        			if(root.getItemIds().isEmpty()){
+        				parentWindow.showNotification(String.format("Please Create template directory to create a new template."),Notification.TYPE_WARNING_MESSAGE);
+        			}else{
+        				parentWindow.showNotification(String.format("Please select template directory to create a new template."),Notification.TYPE_WARNING_MESSAGE);
+        			}
         		}
         		else {
         			TemplateDirectoryDto directoryDto = templateDirectoryService.findById(selectedDirectoryId);
         			  urlStr.append("?accountId=")
-  			  	      .append(session.getAttribute("accountId"))
+  			  	      .append(accountId)
   			  	      .append("&directoryId=")
   			  	      .append(directoryDto.getId())
   			  	      .append("&templateName=")
@@ -307,36 +328,61 @@ public class TemplateUIManager implements UIManager{
 			templateTab.setSelectedTab(createNewTemplate);
 		}
 	}
+	
 
-	private void renderFolderTab(Integer folderId){
+
+	private void renderFolderTab(final Integer folderId){
 		final VerticalLayout createNewFolder = new VerticalLayout();
 
-		if (null != folderId){
-			TemplateDirectoryDto templateDirectory = templateDirectoryService.findById(folderId);	
+		final FormLayout formLayout = new FormLayout();
+		final TextField name = new TextField();
+		name.setCaption("Name");
+		formLayout.addComponent(name);
 		
-			final FormLayout formLayout = new FormLayout();
-			TextField name = new TextField();
-			name.setCaption("Name");
-			formLayout.addComponent(name);
-
+		if (null != folderId){//when no items in tree this will not work
+			TemplateDirectoryDto templateDirectory = templateDirectoryService.findById(folderId);
 			TextField parentPath = new TextField();
 			parentPath.setCaption("Parent");
 			parentPath.setEnabled(false);
 			parentPath.setValue(String.format("/%s",buildPath(folderId,templateDirectory.getDirectoryName())));
 			formLayout.addComponent(parentPath);
 
+		}
+			
 			Button addButton = new Button();
 			addButton.setCaption("Add Folder");
+			addButton.addListener(new ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+					AccountService accountService = (AccountService) helper.getBean("accountService");
+	    			AccountDto account = accountService.findAccountById(accountId);
+	    			
+	    			TemplateDirectoryDto directoryDto = new TemplateDirectoryDto();
+	    			directoryDto.setDirectoryName(name.getValue().toString());
+	    			directoryDto.setGlobal(false);
+	    			directoryDto.setAccount(account);
+	    			templateDirectoryService.create(directoryDto);
+	    			if(folderId == null){ // works when no items in tree
+		    			directoryDto = templateDirectoryService.findByName(directoryDto.getDirectoryName(), false);
+		    			Item item = templateContainer.addItem(directoryDto.getId());
+		            	item.getItemProperty("id").setValue(directoryDto.getId());
+		            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
+		            	templateContainer.setChildrenAllowed(directoryDto.getId(), true);
+	            	}
+	    			parentWindow.showNotification(name.getValue()+" folder added successfully");
+				}
+			});
 			formLayout.addComponent(addButton);
 	   			
 			createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
 			createNewFolder.addComponent(formLayout);
     	
-			Tab tab2= templateTab.addTab(createNewFolder,"Create directory",null);
+			Tab tab2= this.templateTab.addTab(createNewFolder,"Create directory",null);
 			tab2.setClosable(true);
-			templateTab.setSelectedTab(createNewFolder);
-		}
+			this.templateTab.setSelectedTab(createNewFolder);
+		
 	}
 
 	private String buildPath(Integer id,String path){
