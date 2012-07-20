@@ -200,8 +200,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
         layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
 
-        Item userMgmtItem = hwContainer.addItem(NavigationConstant.USER_MGMT);
-        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.USER_MGMT);
+        Item userMgmtItem = hwContainer.addItem(NavigationConstant.USER_MANAGER);
+        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.USER_MANAGER);
 
         Item childItem = null;
 
@@ -238,8 +238,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(Manager.Content,helper,getWindow());
     	    		horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
         		}
-        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MGMT) || 
-        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MGMT)))){
+        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MANAGER) || 
+        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MANAGER)))){
     	    		UIManager userUIMgr = UIManagerCreator.createUIManager(Manager.User,helper,getWindow());
     	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
         		}
