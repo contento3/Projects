@@ -2,6 +2,8 @@ package com.contento3.cms.page.template.dto;
 
 import java.util.Collection;
 
+import com.contento3.account.dto.AccountDto;
+import com.contento3.account.model.Account;
 import com.contento3.cms.page.template.model.TemplateDirectory;
 
 public class TemplateDirectoryDto {
@@ -16,6 +18,17 @@ public class TemplateDirectoryDto {
 
 	private boolean isGlobal;
 	
+	private AccountDto account;
+
+
+	public AccountDto getAccount() {
+		return account;
+	}
+
+	public void setAccount(final AccountDto account) {
+		this.account = account;
+	}
+
 	public Integer getId() {
 		return id;
 	}

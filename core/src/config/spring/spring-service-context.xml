@@ -18,6 +18,7 @@
 
 	<bean id="templateDirectoryAssembler"
 		class="com.contento3.cms.page.template.service.impl.TemplateDirectoryAssemblerImpl">
+		<constructor-arg ref="accountAssembler" />
 	</bean>
 
 	<bean id="templateTypeAssembler"
