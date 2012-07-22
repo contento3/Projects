@@ -50,8 +50,10 @@ public class SiteServiceImpl implements SiteService {
 	
 	@Transactional(readOnly = false)
 	@Override
-	public void update(SiteDto siteDto){
-		siteDao.update(siteAssembler.dtoToDomain(siteDto));
+	public SiteDto update(SiteDto siteDto){
+		Site site = siteAssembler.dtoToDomain(siteDto);
+		siteDao.update(site);
+		return siteAssembler.domainToDto(site);
 	}
 	
 	

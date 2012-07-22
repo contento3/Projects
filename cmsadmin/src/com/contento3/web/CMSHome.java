@@ -2,8 +2,6 @@ package com.contento3.web;
 
 import java.util.Collection;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,10 +9,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.Application;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Link;
 
 public class CMSHome extends Application 
 {

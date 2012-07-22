@@ -10,6 +10,7 @@ import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.UIManager;
+import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
 import com.contento3.web.helper.SpringContextHelper;
@@ -19,6 +20,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
@@ -122,10 +124,17 @@ public class SiteUIManager implements UIManager {
 	 */
 	public Component renderSiteDashboard(final Integer siteId){
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
+		final VerticalLayout veticalLayout = new VerticalLayout();
 		final TabSheet pagesTab = new TabSheet();
-		renderButtons(horizontalLayout,siteId,pagesTab);
+		final Label heading = new Label("Site dashboard");
+		heading.setStyleName("screenHeading");
+		veticalLayout.addComponent(heading);
+		veticalLayout.addComponent(new HorizontalRuler());
+		veticalLayout.setMargin(true);
 		pageUIManager = new PageUIManager(siteService,pageService,contextHelper,parentWindow);
-		return pageUIManager.renderPageListing(siteId,pagesTab,horizontalLayout);
+		Component component = pageUIManager.renderPageListing(siteId,pagesTab,horizontalLayout,veticalLayout);
+		renderButtons(horizontalLayout,siteId,pagesTab);
+		return component;
 	}
 	
 	/**
@@ -137,7 +146,7 @@ public class SiteUIManager implements UIManager {
 	 */
 	public void renderButtons(final HorizontalLayout horizontalLayout,final Integer siteId,final TabSheet pagesTab){
 		// Button that when clicked rendered a new page tab.
-		final Button newPageButton = new Button("Create new page");
+		final Button newPageButton = new Button("Create page");
 		horizontalLayout.addComponent(newPageButton);
 		newPageButton.addListener(new ClickListener() {
 		private static final long serialVersionUID = 1L;
@@ -147,7 +156,7 @@ public class SiteUIManager implements UIManager {
 		});
 
 		// Button for site configuration
-		final String buttonText = "Site Config";
+		final String buttonText = "Site Configuration";
 		final Button siteConfigButton = new Button(buttonText);
 		horizontalLayout.addComponent(siteConfigButton);
 		siteConfigUIManager = new SiteConfigUIManager(siteService,contextHelper,parentWindow);
@@ -158,7 +167,7 @@ public class SiteUIManager implements UIManager {
 			}
 		});
 			
-		final Button addNewCategoryButton = new Button("Add New Category");
+		final Button addNewCategoryButton = new Button("Add Category");
 		horizontalLayout.addComponent(addNewCategoryButton);
 		addNewCategoryButton.addListener(new ClickListener() {
 			@Override

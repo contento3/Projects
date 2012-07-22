@@ -1,3 +1,0 @@
-insert into page_layout_type values (1,'Custom Layout','Custom layout');
-insert into page_layout_type values (2,'Library Layout','Indicates layout that are stored in the cms library.');
-insert into page_layout_type values (3,'Build Layout','Used to build the layout through layout wizard');

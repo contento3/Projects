@@ -24,6 +24,7 @@ import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.common.helper.ComboDataLoader;
+import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
@@ -89,13 +90,21 @@ public class PageUIManager {
 		this.contextHelper = helper;
 	}
 	
-	public TabSheet renderPageListing(final Integer siteId,final TabSheet pagesTab,final HorizontalLayout horizontalLayout) {
-		final Table table = new Table("Site pages");
+	public TabSheet renderPageListing(final Integer siteId,final TabSheet pagesTab,final HorizontalLayout horizontalLayout,final VerticalLayout pageLayout) {
+		pageLayout.addComponent(horizontalLayout);
+
+		final Label subHeadingLbl = new Label("Site pages");
+		subHeadingLbl.setStyleName("screenSubHeading");
+		
+		pageLayout.setSpacing(true);
+		pageLayout.addComponent(subHeadingLbl);
+		pageLayout.addComponent(new HorizontalRuler());
+		
+		final Table table = new Table();
 		table.setImmediate(true);
 
 		// Create a new layout and add as a the 
 		// main component for the new site tab
-		final VerticalLayout pageLayout = new VerticalLayout();
 		horizontalLayout.setSpacing(true);
 
 		pagesTab.addComponent(pageLayout);
@@ -150,7 +159,6 @@ public class PageUIManager {
 //				
 //			}
 //		});
-		pageLayout.addComponent(horizontalLayout);
 		final PageService pageService = (PageService) contextHelper.getBean("pageService");
 		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
 

@@ -1,8 +1,9 @@
 package com.contento3.cms.site.structure.domain.dto;
 
-import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.common.dto.Dto;
 
-public class SiteDomainDto {
+
+public class SiteDomainDto extends Dto {
 	
 	private Integer domainId;
 	

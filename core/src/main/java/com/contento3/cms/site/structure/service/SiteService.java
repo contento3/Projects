@@ -38,6 +38,6 @@ public interface SiteService extends Service {
 	/**
 	 * Update site data into DB
 	 */
-	void update(SiteDto site);
+	SiteDto update(SiteDto site);
 
 }
