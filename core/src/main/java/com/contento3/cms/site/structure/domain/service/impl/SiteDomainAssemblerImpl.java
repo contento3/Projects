@@ -2,7 +2,6 @@ package com.contento3.cms.site.structure.domain.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
 import com.contento3.cms.site.structure.domain.model.SiteDomain;
@@ -12,8 +11,7 @@ public class SiteDomainAssemblerImpl implements SiteDomainAssembler {
 
 	@Override
 	public SiteDomain dtoToDomain(final SiteDomainDto dto) {
-		SiteDomain domain = new SiteDomain();
-		
+		final SiteDomain domain = new SiteDomain();
 		domain.setDomainId(dto.getDomainId());
 		domain.setDomainName(dto.getDomainName());
 		return domain;
