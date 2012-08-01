@@ -1,17 +1,12 @@
 package com.contento3.web.user.security;
 
-import org.aspectj.ajde.ui.swing.GoToLineThread;
-
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class UserUIManager implements UIManager {
@@ -30,10 +25,12 @@ public class UserUIManager implements UIManager {
 	 * Tab sheet to display user management ui
 	 */
 	TabSheet userMgmtTabSheet = null;
-	
+	/**
+	 * Navigation item for user manager
+	 */
 	private String[] navigationItems = {NavigationConstant.USER_GRP_MGMT};
 
-	public UserUIManager(SpringContextHelper helper, Window parentWindow) {
+	public UserUIManager(final SpringContextHelper helper,final Window parentWindow) {
 		this.helper = helper;
 		this.parentWindow = parentWindow;
 	}
@@ -44,13 +41,13 @@ public class UserUIManager implements UIManager {
 	}
 
 	@Override
-	public Component render(String command) {
+	public Component render(final String command) {
 		userMgmtTabSheet = new TabSheet();
 		return userMgmtTabSheet;
 	}
 
 	@Override
-	public Component render(String command, Integer entityFilterId) {
+	public Component render(final String command,final Integer entityFilterId) {
 		userMgmtTabSheet = new TabSheet();
 		return userMgmtTabSheet;
 	}
@@ -60,7 +57,7 @@ public class UserUIManager implements UIManager {
 	 * @param hwContainer
 	 */
 	@Override
-	public Component render(String command,
+	public Component render(final String command,
 			HierarchicalContainer hwContainer) {
 		
 		if (command.equals(NavigationConstant.USER_MANAGER)){
@@ -91,7 +88,7 @@ public class UserUIManager implements UIManager {
 		return renderUserElementUI("Group");
 	}
 	
-	private Component renderUserElementUI(String element){
+	private Component renderUserElementUI(final String element){
 		TabSheet elementTab = null;
 		if(element.equals("Group")){
 			GroupUIManager groupManager = new GroupUIManager(helper, parentWindow);

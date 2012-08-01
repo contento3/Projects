@@ -16,14 +16,22 @@ import javax.persistence.Table;
 @Entity
 @Table(name= "groups")
 public class Group {
-	
+	/**
+	 * Primary key id for group
+	 */
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="id")
 	private Integer id;
 	
+	/**
+	 * Group name
+	 */
 	@Column(name="group_name")
 	private String name;
-	
+
+	/**
+	 * Group description
+	 */
 	@Column(name="description")
 	private String description;
 	

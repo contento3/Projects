@@ -67,7 +67,7 @@ public abstract class AbstractTableBuilder implements TableBuilder<Dto> {
 	 * @param siteDomainTable
 	 * @param domainsContainer
 	 */
-	public abstract void buildHeader(Table siteDomainTable,IndexedContainer container);
+	public abstract void buildHeader(Table table,IndexedContainer container);
 
 	/**
 	 * Used to set a message in a table for empty table

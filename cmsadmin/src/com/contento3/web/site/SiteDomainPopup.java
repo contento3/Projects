@@ -180,8 +180,8 @@ implements Window.CloseListener{
         
         /* Return to initial state. */
         openbutton.setEnabled(true);
-   	}
-}
+    	}
+    }
 
     /** In case the window is closed otherwise. */
     public void windowClose(CloseEvent e) {
