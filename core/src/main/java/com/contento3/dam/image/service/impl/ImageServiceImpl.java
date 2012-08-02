@@ -9,6 +9,7 @@ import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.dto.ImageDto;
+import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.model.Image;
 import com.contento3.dam.image.service.ImageAssembler;
 import com.contento3.dam.image.service.ImageService;
@@ -53,6 +54,12 @@ public class ImageServiceImpl implements ImageService {
 			Integer count) {
 	
 		return imageAssembler.domainsToDtos(imageDao.findLatestImagesBySiteId(siteId, count));
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Collection<ImageDto> findImagesByLibrary(final Integer libraryId) {
+		return imageAssembler.domainsToDtos(imageDao.findImagesByLibrary(libraryId));
 	}
 
 }

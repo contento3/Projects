@@ -7,18 +7,18 @@ import com.contento3.common.dto.Dto;
 
 public class PageLayoutDto extends Dto {
 	
-	private int id;	
+	private Integer id;	
 	private String name;
 	private PageLayoutTypeDto layoutType;
 	private Integer accountId;
 	private Collection <PageSectionDto> pageSectionDtos;
 	
 	@Override
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

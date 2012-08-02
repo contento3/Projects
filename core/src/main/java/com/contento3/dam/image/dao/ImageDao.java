@@ -3,6 +3,7 @@ package com.contento3.dam.image.dao;
 import java.util.Collection;
 
 import com.contento3.common.dao.GenericDao;
+import com.contento3.dam.image.library.model.ImageLibrary;
 import com.contento3.dam.image.model.Image;
 
 public interface ImageDao extends GenericDao<Image,String>{
@@ -31,5 +32,11 @@ public interface ImageDao extends GenericDao<Image,String>{
 	 */
 	
 	Collection<Image> findLatestImagesBySiteId(Integer siteId,Integer count);
-
+	
+	/**
+	 * Return a {@link java.util.Collection} of image by library
+	 * @param imageId
+	 * @return
+	 */
+	Collection<Image> findImagesByLibrary(final Integer libraryId);
 }

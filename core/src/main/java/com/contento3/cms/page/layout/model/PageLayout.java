@@ -24,7 +24,7 @@ public class PageLayout implements Serializable{
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "PAGE_LAYOUT_ID")
-	private int id;	
+	private Integer id;	
 
 	@Column(name = "name")
 	private String name;
@@ -41,11 +41,11 @@ public class PageLayout implements Serializable{
 	private Set<PageSection> pageSections = new HashSet<PageSection>();;
 
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

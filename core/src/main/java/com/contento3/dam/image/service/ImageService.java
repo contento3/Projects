@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.contento3.common.service.Service;
 import com.contento3.dam.image.dto.ImageDto;
+import com.contento3.dam.image.library.dto.ImageLibraryDto;
 
 public interface ImageService extends Service<ImageDto> {
 
@@ -38,4 +39,10 @@ public interface ImageService extends Service<ImageDto> {
 	 */
 	Collection<ImageDto> findLatestImagesBySiteId(Integer imageId,Integer count);
 	
+	/**
+	 * Return a {@link java.util.Collection} of image by library
+	 * @param imageId
+	 * @return
+	 */
+	Collection<ImageDto> findImagesByLibrary(final Integer libraryId);
 }

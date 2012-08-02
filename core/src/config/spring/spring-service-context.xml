@@ -62,6 +62,7 @@
 
 	<bean id="imageAssembler" class="com.contento3.dam.image.service.impl.ImageAssemblerImpl">
 		<constructor-arg ref="siteAssembler" />
+		<constructor-arg ref="imageLibraryAssembler" />
 	</bean>
 	
 	
@@ -190,6 +191,12 @@
 		class="com.contento3.security.group.service.impl.GroupServiceImpl">
 		<constructor-arg ref="groupAssembler" />
 		<constructor-arg ref="groupDao" />
+	</bean>
+	
+	<bean id="imageLibraryAssembler" class="com.contento3.dam.image.library.service.impl.ImageLibraryAssemblerImpl">
+	</bean>
+	
+	<bean id="imageLibraryService" class="com.contento3.dam.image.library.service.impl.ImageLibraryServiceImpl">
 	</bean>
 	
 </beans>

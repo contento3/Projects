@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -18,6 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.contento3.account.model.Account;
 import com.contento3.cms.site.structure.model.Site;
+import com.contento3.dam.image.library.model.ImageLibrary;
 
 @Entity
 @Table(name = "IMAGE")
@@ -57,7 +59,22 @@ public class Image {
 	inverseJoinColumns={@JoinColumn(name="SITE_ID")})
 	private Collection<Site> sites;
 
+	/**
+	 * Library associated with image
+	 */
+	@ManyToOne
+	@JoinColumn(name = "LIBRARY_ID")
+	private ImageLibrary imageLibrary;
 	
+	
+	public final ImageLibrary getImageLibrary() {
+		return imageLibrary;
+	}
+
+	public final void setImageLibrary(final ImageLibrary imageLibrary) {
+		this.imageLibrary = imageLibrary;
+	}
+
 	public Collection<Site> getSites() {
 		return sites;
 	}

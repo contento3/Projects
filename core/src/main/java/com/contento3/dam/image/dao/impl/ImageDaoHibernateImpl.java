@@ -7,8 +7,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
-
-import com.contento3.cms.article.model.Article;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.model.Image;
@@ -61,6 +59,17 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 				.setMaxResults(count)
 				.createCriteria("sites")
 				.add(Restrictions.eq("siteId", siteId));
+		return criteria.list();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Collection<Image> findImagesByLibrary(final Integer libraryId) {
+		
+		Criteria criteria = this.getSession()
+								.createCriteria(Image.class)
+								.createCriteria("imageLibrary")
+								.add(Restrictions.eq("id",libraryId));
 		return criteria.list();
 	}
 	

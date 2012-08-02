@@ -48,6 +48,7 @@
 			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
 			     <value>com.contento3.cms.article.model.Article</value>
 			     <value>com.contento3.cms.article.model.RelatedArticle</value>
+			     <value>com.contento3.dam.image.library.model.ImageLibrary</value>
 			  <!--   <value>com.contento3.site.user.model.User</value> -->
 			    
 			</list>
@@ -188,6 +189,11 @@
 	<!--  RelatedArticleDao -->
 	<bean id="relatedArticleDao"
 		class=" com.contento3.cms.article.dao.impl.RelatedArticleDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
+	<!-- ImageLibrary -->
+	<bean id="imageLibraryDao" class="com.contento3.dam.image.library.dao.impl.ImageLibraryDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	
