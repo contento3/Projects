@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Welcome to contento3 - CMS</title>
 </head>
 <body>
 <div align="center">
@@ -11,7 +11,7 @@
 <table style="height:250px;">
 <tr>
 <td colspan="2">
-<img alt="" src="../images/logo.png">
+
 </td>
 </tr>
 </table>

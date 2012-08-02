@@ -1,12 +1,12 @@
 @import url(../reindeer/styles.css);
 
 .v-tree-node {
-	background: transparent url(images/plus-icon.gif) no-repeat 5px 3px;
+	background: transparent url(images/plus-icon.gif) no-repeat 5px 5px;
 	padding: 1px 0;
 }
 
 .v-tree-node-expanded {
-	background: transparent url(images/minus-icon.gif) no-repeat 5px 3px;
+	background: transparent url(images/minus-icon.gif) no-repeat 5px 5px;
 	padding: 1px 0;
 }
 

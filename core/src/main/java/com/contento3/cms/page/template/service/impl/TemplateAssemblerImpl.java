@@ -33,7 +33,7 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
 		domain.setTemplateName(dto.getTemplateName());
 		domain.setTemplateText(dto.getTemplateText());
 		domain.setTemplateType(templateTypeAssembler.dtoToDomain(dto.getTemplateType()));
-		domain.setDirectory(templateDirectoryAssembler.dtoToDomain(dto.getTemplateDirectoryDto()));
+		//domain.setDirectory(templateDirectoryAssembler.dtoToDomain(dto.getTemplateDirectoryDto()));
 		return domain;
 	}
 
