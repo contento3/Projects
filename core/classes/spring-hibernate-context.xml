@@ -27,7 +27,7 @@
    -->
 	
 	
-	<bean id="mySessionFactory"
+	<bean id="cmsSessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="myDataSource" />
 		<property name="annotatedClasses">
@@ -48,6 +48,7 @@
 			     <value>com.contento3.cms.site.structure.domain.model.SiteDomain</value>
 			     <value>com.contento3.cms.article.model.Article</value>
 			     <value>com.contento3.cms.article.model.RelatedArticle</value>
+			     <value>com.contento3.dam.image.library.model.ImageLibrary</value>
 			  <!--   <value>com.contento3.site.user.model.User</value> -->
 			    
 			</list>
@@ -74,71 +75,71 @@
 
 	<bean id="txManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
 	<tx:annotation-driven transaction-manager="txManager" />
 
 <!-- 
 	<bean id="contentTypeDAO" class="com.contento3.cms.content.dao.impl.ContentTypeDAOHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
   -->
  	<bean id="siteDAO"
 		class="com.contento3.cms.site.structure.dao.impl.SiteDAOHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="pageLayoutTypeDAO"
 		class="com.contento3.cms.page.layout.dao.impl.PageLayoutTypeDAOHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="pageDAO"
 		class="com.contento3.cms.page.dao.impl.PageDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="pageSectionDAO"
 		class="com.contento3.cms.page.section.dao.impl.PageSectionDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="pageLayoutDAO"
 		class="com.contento3.cms.page.layout.dao.impl.PageLayoutDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="accountDAO"
 		class="com.contento3.account.dao.impl.AccountDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="pageSectionTypeDAO"
 		class="com.contento3.cms.page.section.dao.impl.PageSectionTypeHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="templateDAO"
 		class="com.contento3.cms.page.template.dao.impl.TemplateDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="pageTemplateDAO"
 		class="com.contento3.cms.page.template.dao.impl.PageTemplateDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="templateTypeDAO" class="com.contento3.cms.page.template.dao.impl.TemplateTypeDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="templateDirectoryDAO" class="com.contento3.cms.page.template.dao.impl.TemplateDirectoryDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
  	<bean id="imageDao" class="com.contento3.dam.image.dao.impl.ImageDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
  
 	<aop:aspectj-autoproxy>
@@ -155,7 +156,7 @@
 	 -->
 	
 	<bean id="cacheMonitor" class="com.contento3.common.aspect.CacheMonitor">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 
 	<bean id="cacheManager"
@@ -166,29 +167,34 @@
 	<!-- CategoryDao -->
 	<bean id="categoryDao"
 		class="com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	<!--  missing 
 	<bean id="siteUserDao"
 		class="com.contento3.site.user.dao.impl.UserDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	-->
 	<!-- SiteDomainDao -->
 	<bean id="siteDomainDao"
 		class="com.contento3.cms.site.structure.domain.dao.impl.SiteDomainDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	<!-- ArticleDao -->
 	<bean id="articleDao"
 		class=" com.contento3.cms.article.dao.impl.ArticleDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	
 	<!--  RelatedArticleDao -->
 	<bean id="relatedArticleDao"
 		class=" com.contento3.cms.article.dao.impl.RelatedArticleDaoHibernateImpl">
-		<property name="sessionFactory" ref="mySessionFactory" />
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
+	<!-- ImageLibrary -->
+	<bean id="imageLibraryDao" class="com.contento3.dam.image.library.dao.impl.ImageLibraryDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	
 	<!-- Cache beans -->

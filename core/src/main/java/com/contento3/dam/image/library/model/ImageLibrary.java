@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "IMAGE_LIBRAY")
+@Table(name = "IMAGE_LIBRARY")
 public class ImageLibrary {
 	/**
 	 * Primary key

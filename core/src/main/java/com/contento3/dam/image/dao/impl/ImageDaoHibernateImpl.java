@@ -56,6 +56,7 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 		Criteria criteria = this.getSession()
 				.createCriteria(Image.class)
 				.addOrder(Order.desc("imageId"))
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 				.setMaxResults(count)
 				.createCriteria("sites")
 				.add(Restrictions.eq("siteId", siteId));
