@@ -1,9 +1,10 @@
 package com.contento3.dam.image.dto;
 
 import java.util.Collection;
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.dam.image.library.dto.ImageLibraryDto;
+
 
 public class ImageDto {
 
@@ -19,11 +20,23 @@ public class ImageDto {
 	
 	private byte[] image;
 	
-	
 	/**
 	 * sites that contains image
 	 */
 	private Collection<SiteDto> siteDto;
+	
+	/**
+	 * Library associated with image
+	 */
+	private ImageLibraryDto imageLibraryDto;
+	
+	public final ImageLibraryDto getImageLibraryDto() {
+		return imageLibraryDto;
+	}
+
+	public final void setImageLibraryDto(final ImageLibraryDto imageLibraryDto) {
+		this.imageLibraryDto = imageLibraryDto;
+	}
 
 	public Collection<SiteDto> getSiteDto() {
 		return siteDto;

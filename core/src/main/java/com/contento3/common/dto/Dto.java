@@ -2,7 +2,7 @@ package com.contento3.common.dto;
 
 public class Dto {
 
-	public int getId(){
+	public Integer getId(){
 		return -1;
 	}
 	

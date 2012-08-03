@@ -81,6 +81,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	private Collection<ArticleDto> articleDto;
 	private Collection<ImageDto> imageDto;
 	private Label label;
+	private Label label2;
 	
 	/**
 	 * constructor
@@ -146,10 +147,14 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	public void  renderSiteContent(){
 		buildTables();
 		siteDto = (Collection<SiteDto>) siteService.findSitesByAccountId(accountId);
+		//siteDto = new ArrayList<SiteDto>();
 		if(!(siteDto.isEmpty())){
+			
 			renderCombobox();
 			renderArticleTable();
 			renderImageTable();
+			verticalLayout.addComponent(articleTable);
+			verticalLayout.addComponent(imageTable);
 		}
 		else {
 			Button linkButton = new Button("Create new site");
@@ -165,11 +170,12 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 				}
 			});
 			verticalLayout.addComponent(linkButton);
+			
 		}
 
-		verticalLayout.addComponent(articleTable);
-		verticalLayout.addComponent(imageTable);
-		verticalLayout.addComponent(label);
+		verticalLayout.addComponent(label);//article label
+		verticalLayout.addComponent(label2);//image label
+	
 	}
 
 	/**
@@ -226,7 +232,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		articleTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
 		articleTable.setPageLength(5);
 		label = new Label("No article found");
-		
+		label2 = new Label("No image found");
 		imageTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
 		imageTable.setPageLength(5);
 	}
@@ -267,15 +273,14 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 * render image table
 	 */
 	private void renderImageTable(){
-//		imageTable.setContainerDataSource(loadLatestImages());
-//		if(imageDto.isEmpty()){
-//			label.setVisible(true);
-//			label.setCaption("No Image found");
-//			imageTable.setVisible(false);
-//		}else {
-//			label.setVisible(false);
-//			imageTable.setVisible(true);
-//		}
+		imageTable.setContainerDataSource(loadLatestImages());
+		if(imageDto.isEmpty()){
+			label2.setVisible(true);
+			imageTable.setVisible(false);
+		}else {
+			label2.setVisible(false);
+			imageTable.setVisible(true);
+		}
 	}
 
 	/**
@@ -294,15 +299,15 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 			}
 		}
 		
-//		imageDto = imageService.findLatestImagesBySiteId(siteId, 5);
-//		if(!imageDto.isEmpty()){
-//			for(ImageDto image: imageDto){
-//				Item item = imageContainer.addItem(image.getImageId());
-//				item.getItemProperty("name").setValue(image.getName());
-//				item.getItemProperty("alt_text").setValue(image.getAltText());
-//			}
-//		}
-//		imageContainer.sort(new Object[] { "name" }, new boolean[] { true });
+		imageDto = imageService.findLatestImagesBySiteId(siteId, 5);
+		if(!imageDto.isEmpty()){
+			for(ImageDto image: imageDto){
+				Item item = imageContainer.addItem(image.getImageId());
+				item.getItemProperty("name").setValue(image.getName());
+				item.getItemProperty("alt_text").setValue(image.getAltText());
+			}
+		}
+		imageContainer.sort(new Object[] { "name" }, new boolean[] { true });
 		return imageContainer;
 	}
 	

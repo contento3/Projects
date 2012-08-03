@@ -1,7 +1,5 @@
 package com.contento3.security.group.dao;
 
-import java.util.Collection;
-
 import com.contento3.common.dao.GenericDao;
 import com.contento3.security.group.model.Group;
 

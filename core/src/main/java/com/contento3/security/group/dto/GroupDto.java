@@ -1,11 +1,21 @@
 package com.contento3.security.group.dto;
 
-public class GroupDto {
-	
+import com.contento3.common.dto.Dto;
+
+public class GroupDto extends Dto {
+	/**
+	 * Primary key id for group
+	 */
 	private Integer id;
 	
+	/**
+	 * Group name
+	 */
 	private String name;
 	
+	/**
+	 * Group description
+	 */
 	private String description;
 	
 	public String getDescription() {
