@@ -385,7 +385,7 @@ public class PageUIManager {
 		parentWindow.setData(pageTemplateDto);
 
 		// If there are layout with page sections then add it
-		if (null != layoutDto) {
+		if (null != layoutDto && !layoutDto.getLayoutTypeDto().getName().equalsIgnoreCase(PageSectionTypeEnum.CUSTOM.toString())) {
 			final List<PageSectionDto> pageSections = (List<PageSectionDto>) layoutDto
 					.getPageSections();
 
@@ -405,8 +405,7 @@ public class PageUIManager {
 		else {
 			final VerticalLayout pageSectionLayout = new VerticalLayout();
 			pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
-			renderPageTemplateList(pageSectionLayout,
-					PageSectionTypeEnum.CUSTOM);
+			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM);
 			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper));
 		}
 		return pageLayoutsTab;
@@ -414,15 +413,10 @@ public class PageUIManager {
 
 	public void renderPageTemplateList(final VerticalLayout pageSectionLayout,
 			final PageSectionTypeEnum sectionType) {
-		PageTemplateService pageTemplateService = (PageTemplateService) contextHelper
-				.getBean("pageTemplateService");
-		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper
-				.getBean("pageSectionTypeService");
-		PageSectionTypeDto sectionTypeDto = pageSectionTypeService
-				.findByName(sectionType);
-		Collection<PageTemplateDto> newPageTemplates = pageTemplateService
-				.findByPageAndPageSectionType(selectedPageId,
-						sectionTypeDto.getId());
+		PageTemplateService pageTemplateService = (PageTemplateService) contextHelper.getBean("pageTemplateService");
+		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
+		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findByName(sectionType);
+		Collection<PageTemplateDto> newPageTemplates = pageTemplateService.findByPageAndPageSectionType(selectedPageId,sectionTypeDto.getId());
 
 		if (!CollectionUtils.isEmpty(newPageTemplates)){}
 	}
@@ -432,19 +426,13 @@ public class PageUIManager {
 			final VerticalLayout pageSectionLayout,
 			final PageSectionDto pageSectionDto,
 			final PageTemplateDto pageTemplateDto) {
-		pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto
-				.getSectionTypeDto().getName(), null);
-		pageTemplateDto.setSectionTypeId(pageSectionDto.getSectionTypeDto()
-				.getId());
-		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper
-				.getBean("pageSectionTypeService");
-		PageSectionTypeDto sectionTypeDto = pageSectionTypeService
-				.findById(pageSectionDto.getSectionTypeDto().getId());
+		pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), null);
+		pageTemplateDto.setSectionTypeId(pageSectionDto.getSectionTypeDto().getId());
+		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
+		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findById(pageSectionDto.getSectionTypeDto().getId());
 
-		renderPageTemplateList(pageSectionLayout,
-				PageSectionTypeEnum.valueOf(sectionTypeDto.getName()));
-		pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open",
-				parentWindow, contextHelper));
+		renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.valueOf(sectionTypeDto.getName()));
+		pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open",parentWindow, contextHelper));
 	}
 
 	/**

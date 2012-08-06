@@ -39,6 +39,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 public class CMSMainWindow extends Window implements Action.Handler,FragmentChangedListener {
 	public static String brownFox = "Welcome to Olive Admin"; 
@@ -114,8 +115,9 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    final VerticalSplitPanel vert = new VerticalSplitPanel();
 	    vert.setSplitPosition(8, Sizeable.UNITS_PERCENTAGE);
 	    vert.setLocked(true);
-	   
-      
+	    this.setCaption("CONTENTO3 CMS");
+	    vert.setStyleName(Reindeer.SPLITPANEL_SMALL);
+
 	   // vert.addComponent(logoutButton);
 	    HorizontalLayout horizTop = new HorizontalLayout();
 
@@ -123,12 +125,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
 		embedded.setHeight(90, Sizeable.UNITS_PERCENTAGE);
 		horizTop.addComponent(embedded);
+	    horizTop.setComponentAlignment(embedded, Alignment.TOP_LEFT);
 		
 	    horizTop.addComponent(logoutButton);
 	    horizTop.setSizeFull();
 	    horizTop.setComponentAlignment(logoutButton, Alignment.TOP_RIGHT);
-	    horizTop.setSpacing(isEnabled());
-	    horizTop.setMargin(false, true, false, true);
 	    vert.addComponent(horizTop);
        
 	    vLayout.addComponent(vert);
@@ -136,7 +137,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
      
         horiz = new HorizontalSplitPanel();
-
         
         //Add the splitter to split main ui and content ui
         // First add the main ui component
@@ -188,18 +188,24 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         root.addContainerProperty("icon", Resource.class, null);
         root.setItemIconPropertyId("icon");
         root.setItemIcon(item0, new ExternalResource("images/site.png"));
-        
+
         item0.getItemProperty("name").setValue("Sites");
         item0.getItemProperty("id").setValue(new Integer(-1));
         item0.getItemProperty("icon").setValue(new ExternalResource("images/site.png"));
+        
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
+        root.setItemIcon(contentMgmt, new ExternalResource("images/content-mgmt.png"));
+        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content-mgmt.png"));
 
+        
         Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
         globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
 
         Item template = hwContainer.addItem("Template");
         template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
+        root.setItemIcon(template, new ExternalResource("images/template.png"));
+        template.getItemProperty("icon").setValue(new ExternalResource("images/template.png"));
 
         Item modules = hwContainer.addItem("Modules");
         modules.getItemProperty("name").setValue(NavigationConstant.MODULES);

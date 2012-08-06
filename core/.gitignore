@@ -4,5 +4,7 @@
 # Java class files
 *.class
 /classes/**/*
+/classes/*.xml
+/classes/*.properties
 /
 *.classpath

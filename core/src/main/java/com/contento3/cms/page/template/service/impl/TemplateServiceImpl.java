@@ -154,11 +154,11 @@ public class TemplateServiceImpl implements TemplateService {
 		Account account = accountDao.findById(templateDto.getAccountDto().getAccountId());
 		TemplateDirectory templateDirectory = templateDirectoryDao.findById(templateDto.getTemplateDirectoryDto().getId());
 		
+		templateDirectory.setAccount(account);
 		Template template = templateAssembler.dtoToDomain(templateDto);
 		template.setDirectory(templateDirectory);
 		template.setTemplateType(templateType);
 		template.setAccount(account);
-		
 		return template;
 	}
 }

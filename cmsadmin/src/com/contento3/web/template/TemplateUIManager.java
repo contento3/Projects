@@ -14,12 +14,14 @@ import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.web.UIManager;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Accordion;
@@ -93,10 +95,9 @@ public class TemplateUIManager implements UIManager{
 		this.parentWindow = parentWindow;
 	    this.templateService = (TemplateService)helper.getBean("templateService");
 	    this.templateDirectoryService = (TemplateDirectoryService)helper.getBean("templateDirectoryService");
+
 	    //Get accountId from the session
-        WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-        HttpSession session = ctx.getHttpSession();
-        this.accountId = (Integer)session.getAttribute("accountId");
+        this.accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
         this.templateContainer = new HierarchicalContainer();
 	}
 	
@@ -107,7 +108,6 @@ public class TemplateUIManager implements UIManager{
 
 	@Override
 	public Component render(String command) {
-
 		if (null==templateTab){ 
 			templateTab = new TabSheet();
 			templateTab.setHeight("585");
@@ -119,7 +119,7 @@ public class TemplateUIManager implements UIManager{
 	    	Tab tab2 = templateTab.addTab(layout,"Template",null);
 	    	renderTemplateListTab(layout);
 		}
-			return templateTab;
+		return templateTab;
 	}
 
 	@Override
@@ -130,15 +130,15 @@ public class TemplateUIManager implements UIManager{
 	
 	public void renderTemplateListTab(VerticalLayout vLayout){
 		// Create the Accordion.
-		Accordion accordion = new Accordion();
+		final Accordion accordion = new Accordion();
 		
 		// Have it take all space available in the layout.
-		accordion.setSizeFull();
+		accordion.setWidth(90, Sizeable.UNITS_PERCENTAGE);
 
 		// Some components to put in the Accordion.
 		Label l1 = new Label("There are no previously saved actions.");
 		VerticalLayout templateListLayout = new VerticalLayout();
-
+		templateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		// Add the components as tabs in the Accordion.
 		Tab tab2 = accordion.addTab(templateListLayout, "Templates", null);
 		accordion.addTab(l1, "Global Templates", null);
@@ -150,8 +150,8 @@ public class TemplateUIManager implements UIManager{
 
 		// A container for the Accordion.
 		Panel panel = new Panel();
-		panel.setWidth("600px");
-		panel.setHeight("500px");
+		panel.setWidth(30, Sizeable.UNITS_PERCENTAGE);
+		panel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		panel.addComponent(accordion);
 
 		Button newTemplate = new Button();
@@ -189,6 +189,7 @@ public class TemplateUIManager implements UIManager{
 		buttonLayout.setSpacing(true);
 		//Add the accordion
 		vLayout.addComponent(panel);
+		vLayout.setHeight(100,Sizeable.UNITS_PERCENTAGE);
 		panel.addComponent(buttonLayout);
 	}
 	
@@ -198,17 +199,20 @@ public class TemplateUIManager implements UIManager{
         root = new Tree("",templateContainer);
         root.setImmediate(true);
     	root.setItemCaptionPropertyId("name");
-
         templateContainer.addContainerProperty("id", Integer.class, null);
         templateContainer.addContainerProperty("fileid", String.class, null);
         templateContainer.addContainerProperty("name", String.class, null);
         
         Item item;
+        root.addContainerProperty("icon", Resource.class, null);
+        root.setItemIconPropertyId("icon");
+
         for (TemplateDirectoryDto directoryDto : directoryDtos){
         	item = templateContainer.addItem(directoryDto.getId());
         	item.getItemProperty("id").setValue(directoryDto.getId());
         	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
         	templateContainer.setChildrenAllowed(directoryDto.getId(), true);
+	        item.getItemProperty("icon").setValue(new ExternalResource("images/directory.png"));
         }
 
         root.expandItem(new Integer (1));
@@ -246,6 +250,8 @@ public class TemplateUIManager implements UIManager{
 					item.getItemProperty("name").setValue(templateDirectoryDto.getDirectoryName());
 					templateContainer.setParent(templateDirectoryDto.getId(), selectedDirectoryId);
 					templateContainer.setChildrenAllowed(templateDirectoryDto.getId(), true);
+					
+			        item.getItemProperty("icon").setValue(new ExternalResource("images/directory.png"));
 				}
 			}
 		
@@ -258,7 +264,9 @@ public class TemplateUIManager implements UIManager{
 				item.getItemProperty("fileid").setValue(templateItemId);
 				item.getItemProperty("name").setValue(templateDto.getTemplateName());
 				templateContainer.setParent(String.format("file:%d",templateDto.getTemplateId()), selectedDirectoryId);
-				templateContainer.setChildrenAllowed(String.format("file:%d",templateDto.getTemplateId()), true);
+				templateContainer.setChildrenAllowed(String.format("file:%d",templateDto.getTemplateId()), false);
+				
+		        item.getItemProperty("icon").setValue(new ExternalResource("images/template.png"));
 			}
 		}
  	}
