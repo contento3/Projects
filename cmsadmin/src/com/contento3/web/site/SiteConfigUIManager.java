@@ -178,8 +178,10 @@ public class SiteConfigUIManager {
 	 * @param languageCombo
 	 */
 	private void saveSite(final SiteDto siteDto,final ComboBox pageLayoutCombo,final ComboBox languageCombo) {
-		final String lang = languageCombo.getValue().toString();
-		if(!lang.equals("")){
+		
+		
+		if(languageCombo.getValue()!=null){
+			final String lang = languageCombo.getValue().toString();
 			CachedTypedProperties languageProperties;
 			try {
 				languageProperties = CachedTypedProperties.getInstance("languages.properties");
@@ -190,9 +192,9 @@ public class SiteConfigUIManager {
 		}
 		
 		if (null != pageLayoutCombo.getValue()) {
-			siteDto.setDefaultLayoutId(pageLayoutService.findPageLayoutById(Integer.parseInt(pageLayoutCombo.getValue()									.toString())).getId());
-			siteService.update(siteDto);
+			siteDto.setDefaultLayoutId(pageLayoutService.findPageLayoutById(Integer.parseInt(pageLayoutCombo.getValue().toString())).getId());
 		}	
+		siteService.update(siteDto);
 	}//end saveSite	
 
 }
