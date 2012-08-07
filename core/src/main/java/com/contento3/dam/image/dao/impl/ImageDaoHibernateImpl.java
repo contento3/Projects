@@ -11,7 +11,7 @@ import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.model.Image;
 
-public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Image,String> implements ImageDao{
+public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Image,Integer> implements ImageDao{
 
 	public ImageDaoHibernateImpl() {
 		super(Image.class);
@@ -72,6 +72,22 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 								.createCriteria("imageLibrary")
 								.add(Restrictions.eq("id",libraryId));
 		return criteria.list();
+	}
+
+	@Override
+	public Image findByUuid(String uuid) {
+		Criteria criteria = this.getSession()
+		.createCriteria(Image.class)
+		.add(Restrictions
+		.eq("imageUuid", uuid));
+
+		Image image = null; 
+		List <Image> imageList = criteria.list();	
+		if (!CollectionUtils.isEmpty(imageList)){
+			image = imageList.get(0);
+		}
+
+		return image;
 	}
 	
 }

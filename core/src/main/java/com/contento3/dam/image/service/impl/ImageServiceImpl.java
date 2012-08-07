@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
@@ -26,8 +27,8 @@ public class ImageServiceImpl implements ImageService {
 		this.accountDao = accountDao;
 	}
 	
-	public ImageDto findImageById(final String imageId){
-		return imageAssembler.domainToDto(imageDao.findById(imageId));
+	public ImageDto findImageByUuid(final String imageId){
+		return imageAssembler.domainToDto(imageDao.findByUuid(imageId));
 	}
 
 	@Override
@@ -36,16 +37,21 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public ImageDto findImageByNameAndAccountId(final String name,final Integer accountId){
-		return imageAssembler.domainToDto(imageDao.findByNameAndAccountId(name, accountId));
+	public ImageDto findImageByNameAndAccountId(final String name,final Integer accountId) throws EntityNotFoundException{
+		final Image image = imageDao.findByNameAndAccountId(name, accountId);
+		if (null==image){
+			throw new EntityNotFoundException("Image with name ["+name+"]"+"not found");
+		}
+		
+		return imageAssembler.domainToDto(image);
 	}
 
 	@Override
-	public void create(final ImageDto imageDto) {
+	public Integer create(final ImageDto imageDto) {
 		Image image = imageAssembler.dtoToDomain(imageDto);
 		Account account = accountDao.findById(imageDto.getAccountDto().getAccountId());
 		image.setAccount(account);
-		imageDao.persist(image);
+		return imageDao.persist(image);
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)

@@ -52,8 +52,8 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void create(final TemplateDto templateDto) {
-		templateDao.persist(buildTemplateInstance(templateDto));
+	public Integer create(final TemplateDto templateDto) {
+		return templateDao.persist(buildTemplateInstance(templateDto));
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)

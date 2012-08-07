@@ -18,8 +18,8 @@ public class StaticResourceController extends AbstractController {
 	private StaticResourceViewResolver view;
 	
 	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	protected ModelAndView handleRequestInternal(final HttpServletRequest request,
+			final HttpServletResponse response) throws Exception {
 
 		ModelAndView modelAndView = null;
 		

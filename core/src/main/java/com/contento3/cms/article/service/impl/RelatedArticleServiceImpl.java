@@ -26,10 +26,9 @@ public class RelatedArticleServiceImpl implements RelatedArticleService{
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void create(RelatedArticleDto dto)
+	public Integer create(RelatedArticleDto dto)
 			throws EntityAlreadyFoundException {
-		// TODO Auto-generated method stub
-		
+		return null;		
 	}
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override

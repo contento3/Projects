@@ -23,9 +23,9 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	}
 	
 	@Override
-	public void create(TemplateTypeDto type) {
+	public Integer create(TemplateTypeDto type) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	public TemplateTypeDto findById(Integer templateTypeId){

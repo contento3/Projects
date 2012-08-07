@@ -19,8 +19,8 @@ public class TemplateDirectoryServiceImpl
 	}
 	
 	@Override
-	public void create(final TemplateDirectoryDto dto) {
-		directoryDao.persist(assembler.dtoToDomain(dto));
+	public Integer create(final TemplateDirectoryDto dto) {
+		return directoryDao.persist(assembler.dtoToDomain(dto));
 	}
 
 	@Override

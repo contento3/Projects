@@ -3,9 +3,6 @@ package com.contento3.cms.page.category.service;
 import java.util.Collection;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
-import com.contento3.cms.page.category.model.Category;
-import com.contento3.cms.page.dto.PageDto;
-import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.Service;
 
@@ -28,7 +25,7 @@ public interface CategoryService extends Service<CategoryDto>{
 	 * Finds the child categories by their parentId
 	 * @return CategoryDto
 	 */
-	Collection<CategoryDto> findChildCategories(final Integer parentId);
+	Collection<CategoryDto> findChildCategories(Integer parentId);
 	
 	
 	 /**
@@ -36,6 +33,13 @@ public interface CategoryService extends Service<CategoryDto>{
      * @param categoryDto
      * @throws EntityAlreadyFoundException 
      */
-    void update(final CategoryDto categoryDto) ;
+    void update(CategoryDto categoryDto) ;
 	
+    /**
+     * Create new category
+     * @param categoryDto
+     * @return
+     */
+	Integer create(CategoryDto categoryDto) throws EntityAlreadyFoundException;
+
 }//end

@@ -4,6 +4,6 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 
 public interface Service<T> {
 
-	public void create(T dto) throws EntityAlreadyFoundException;
+	public Object create(T dto) throws EntityAlreadyFoundException;
 
 }

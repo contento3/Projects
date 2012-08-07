@@ -40,12 +40,12 @@ public class SiteServiceImpl implements SiteService {
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void create(SiteDto siteDto) {
+	public Integer create(SiteDto siteDto) {
 		Collection <PageLayout> defaultPageLayout = pageLayoutDao.findPageLayoutByAccountAndLayoutType(siteDto.getAccountDto().getAccountId(), 2);
 		PageLayout pageLayout = defaultPageLayout.iterator().next();
 		siteDto.setDefaultLayoutId(pageLayout.getId());
 		Site site = siteAssembler.dtoToDomain(siteDto);
-		siteDao.persist(site);
+		return siteDao.persist(site);
 	}
 	
 	@Transactional(readOnly = false)
@@ -75,12 +75,5 @@ public class SiteServiceImpl implements SiteService {
 	public Collection<SiteDto> findSitesByAccountId(Integer accountId) {
 		return siteAssembler.domainsToDtos(siteDao.findByAccount(accountId));
 	}
-
-	@Override
-	public void create(Object dto) throws EntityAlreadyFoundException {
-		// TODO Auto-generated method stub
-		
-	}
-	
 
 }

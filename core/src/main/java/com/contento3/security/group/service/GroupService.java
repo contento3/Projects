@@ -35,7 +35,7 @@ public interface GroupService extends Service<GroupDto> {
      * @param groupDto
      * @return
      */
-	void create(final GroupDto groupDto);
+	Integer create(final GroupDto groupDto);
 	/**
 	 * return group whose id match
 	 * @param id

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.contento3.cms.page.section.model.PageSectionTypeEnum;
 import com.contento3.cms.page.template.dto.PageTemplateDto;
+import com.contento3.cms.page.template.model.PageTemplatePK;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.Service;
 
@@ -15,6 +16,6 @@ public interface PageTemplateService extends Service<PageTemplateDto> {
 
 	Collection <PageTemplateDto> findByPageId(Integer pageId);
 
-	public void create(PageTemplateDto dto) throws EntityAlreadyFoundException;
+	PageTemplatePK create(PageTemplateDto dto) throws EntityAlreadyFoundException;
 
 }

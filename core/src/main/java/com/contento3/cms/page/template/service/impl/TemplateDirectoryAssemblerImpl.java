@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.model.TemplateDirectory;
@@ -22,7 +21,10 @@ public class TemplateDirectoryAssemblerImpl implements TemplateDirectoryAssemble
 		TemplateDirectory domain = new TemplateDirectory();	
 		domain.setId(dto.getId());
 		domain.setGlobal(dto.isGlobal());
-		domain.setParent(dto.getParent());
+		
+		if (dto.getParent()!=null){
+			domain.setParent(dtoToDomain(dto.getParent()));
+		}
 		domain.setDirectoryName(dto.getDirectoryName());
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		return domain;
@@ -33,7 +35,11 @@ public class TemplateDirectoryAssemblerImpl implements TemplateDirectoryAssemble
 		TemplateDirectoryDto dto = new TemplateDirectoryDto();	
 		dto.setId(domain.getId());
 		dto.setGlobal(domain.isGlobal());
-		dto.setParent(domain.getParent());
+		
+		if (domain.getParent()!=null){
+			dto.setParent(domainToDto(domain.getParent()));
+		}
+		
 		dto.setDirectoryName(domain.getDirectoryName());
 		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
 		return dto;

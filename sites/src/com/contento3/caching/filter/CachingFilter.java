@@ -1,7 +1,5 @@
 package com.contento3.caching.filter;
 
-import java.net.MalformedURLException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +30,7 @@ public class CachingFilter extends SimplePageCachingFilter {
         final ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
 	    final SiteService siteService = (SiteService)context.getBean("siteService");
         
+	    
 	    try {
 	    	site = siteService.findSiteByDomain(DomainUtil.fetchDomain(httpRequest));
 		} catch (Exception e) {

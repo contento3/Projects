@@ -7,7 +7,7 @@ import com.contento3.common.service.Service;
 
 public interface TemplateDirectoryService extends Service <TemplateDirectoryDto>{
 
-	void create(TemplateDirectoryDto type);
+	Integer create(TemplateDirectoryDto type);
 
 	TemplateDirectoryDto findById(Integer id);
 
@@ -15,6 +15,6 @@ public interface TemplateDirectoryService extends Service <TemplateDirectoryDto>
 
 	Collection<TemplateDirectoryDto> findRootDirectories(boolean isGlobal);
 
-	Collection<TemplateDirectoryDto> findChildDirectories(final Integer parentId);
+	Collection<TemplateDirectoryDto> findChildDirectories(Integer parentId);
 
 }

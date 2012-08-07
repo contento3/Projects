@@ -3,18 +3,21 @@ package com.contento3.cms.page.template.dto;
 import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
-import com.contento3.account.model.Account;
-import com.contento3.cms.page.template.model.TemplateDirectory;
 
+/**
+ * DTO for template directory
+ * @author HAMMAD
+ *
+ */
 public class TemplateDirectoryDto {
 
 	private Integer id;
 	
 	private String directoryName;
 	
-	private TemplateDirectory parent;
+	private TemplateDirectoryDto parent;
 	
-	private Collection<TemplateDirectory> childDirectories;
+	private Collection<TemplateDirectoryDto> childDirectories;
 
 	private boolean isGlobal;
 	
@@ -41,23 +44,23 @@ public class TemplateDirectoryDto {
 		return directoryName;
 	}
 
-	public void setDirectoryName(String directoryName) {
+	public void setDirectoryName(final String directoryName) {
 		this.directoryName = directoryName;
 	}
 
-	public TemplateDirectory getParent() {
+	public TemplateDirectoryDto getParent() {
 		return parent;
 	}
 
-	public void setParent(TemplateDirectory parent) {
+	public void setParent(final TemplateDirectoryDto parent) {
 		this.parent = parent;
 	}
 
-	public Collection<TemplateDirectory> getChildDirectories() {
+	public Collection<TemplateDirectoryDto> getChildDirectories() {
 		return childDirectories;
 	}
 
-	public void setChildDirectories(Collection<TemplateDirectory> childDirectories) {
+	public void setChildDirectories(final Collection<TemplateDirectoryDto> childDirectories) {
 		this.childDirectories = childDirectories;
 	}
 
@@ -65,7 +68,7 @@ public class TemplateDirectoryDto {
 		return isGlobal;
 	}
 
-	public void setGlobal(boolean isGlobal) {
+	public void setGlobal(final boolean isGlobal) {
 		this.isGlobal = isGlobal;
 	}
 

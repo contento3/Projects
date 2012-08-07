@@ -2,9 +2,10 @@ package com.contento3.dam.image.service;
 
 import java.util.Collection;
 
+import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.service.Service;
 import com.contento3.dam.image.dto.ImageDto;
-import com.contento3.dam.image.library.dto.ImageLibraryDto;
 
 public interface ImageService extends Service<ImageDto> {
 
@@ -13,7 +14,7 @@ public interface ImageService extends Service<ImageDto> {
 	 * @param imageId
 	 * @return ImageDto
 	 */
-	ImageDto findImageById(String imageId);
+	ImageDto findImageByUuid(String imageId);
 
 	/**
 	 * Returns {@link java.util.Collection}} an image by accountId
@@ -27,9 +28,10 @@ public interface ImageService extends Service<ImageDto> {
 	 * @param name
 	 * @param accountId
 	 * @return ImageDto
+	 * @throws EntityNotFoundException 
 	 */
 	ImageDto findImageByNameAndAccountId(String name,
-			Integer accountId);
+			Integer accountId) throws EntityNotFoundException;
 	
 	/**
 	 * Returns latest images by account id and count is number of rows 
@@ -45,4 +47,13 @@ public interface ImageService extends Service<ImageDto> {
 	 * @return
 	 */
 	Collection<ImageDto> findImagesByLibrary(final Integer libraryId);
+
+	
+    /**
+     * Create new image
+     * @param categoryDto
+     * @return
+     */
+	Integer create(ImageDto imageDto) throws EntityAlreadyFoundException;
+
 }
