@@ -15,8 +15,8 @@ public class ImageLibraryServiceImpl implements ImageLibraryService  {
 	}
 	
 	@Override
-	public void create(final ImageLibraryDto dto) throws EntityAlreadyFoundException {
-		
+	public Integer create(final ImageLibraryDto dto) throws EntityAlreadyFoundException {
+		return null;
 	}
 
 }

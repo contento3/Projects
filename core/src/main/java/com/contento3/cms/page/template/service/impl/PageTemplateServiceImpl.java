@@ -39,7 +39,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 	}
 	
 	@Override
-	public void create(PageTemplateDto dto) throws EntityAlreadyFoundException {
+	public PageTemplatePK create(PageTemplateDto dto) throws EntityAlreadyFoundException {
 		PageTemplate pageTemplate = assembler.dtoToDomain(dto);
 		PageSectionType pageSectionType;
 		
@@ -62,7 +62,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		
 		if (null==pageTemplatePresent) {
 			pageTemplate.setPrimareKey(pk);
-			dao.persist(pageTemplate);
+			return dao.persist(pageTemplate);
 		}
 		else {
 			throw new EntityAlreadyFoundException("Page template already exist.");

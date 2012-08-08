@@ -43,5 +43,7 @@ public class PageSectionTypeServiceImpl implements PageSectionTypeService{
 		return assembler.domainToDto(pageSectionTypeDao.findById(id));
 	}
 
-	public void create(PageSectionTypeDto pageSectionTypeDto){}
+	public Integer create(PageSectionTypeDto pageSectionTypeDto){
+		return null;
+	}
 }

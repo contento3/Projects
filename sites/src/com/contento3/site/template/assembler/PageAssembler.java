@@ -32,26 +32,25 @@ public class PageAssembler implements Assembler {
 	@Override
 	public TemplateContentDto assemble(final Integer siteId,final String path) throws PageNotFoundException {
 		
-		PageDto pageDto = pageService.findByPathForSite(path, siteId);
+		final PageDto pageDto = pageService.findByPathForSite(path, siteId);
+		final PageLayoutDto layoutDto = pageDto.getPageLayoutDto();
+		final TemplateContentDto templateContentDto = new TemplateContentDto();
 		
-		PageLayoutDto layoutDto = pageDto.getPageLayoutDto();
-		TemplateContentDto templateContentDto = new TemplateContentDto();
-		
-		//If the page has a CUSTOM layout or 
-		//in other words there is no layout_id for this page.
-		if (null==layoutDto)
+		//If the page has a CUSTOM layout
+		//or there is no layout_id for this page.
+		if (null==layoutDto || layoutDto.getLayoutTypeDto().getName().equalsIgnoreCase("custom"))
 		{ 
-			Collection<PageTemplateDto> pageTemplateDtos = pageTemplateService.findByPageAndPageSectionType(pageDto.getPageId(), PageSectionTypeEnum.CUSTOM);
+			final Collection<PageTemplateDto> pageTemplateDtos = pageTemplateService.findByPageAndPageSectionType(pageDto.getPageId(), PageSectionTypeEnum.CUSTOM);
 			if (pageTemplateDtos.size()==1){
-				Iterator<PageTemplateDto> iterator = pageTemplateDtos.iterator();
-				PageTemplateDto dto = iterator.next();
-				TemplateDto templateDto = templateService.findTemplateById(dto.getTemplateId());
+				final Iterator<PageTemplateDto> iterator = pageTemplateDtos.iterator();
+				final PageTemplateDto dto = iterator.next();
+				final TemplateDto templateDto = templateService.findTemplateById(dto.getTemplateId());
 				templateContentDto.setContent(templateDto.getTemplateText());
 			}
 		}
 		//else there is a layout attached to this page.
 		else {
-			templateContentDto.setContent(buildPageTemplate((List)layoutDto.getPageSections(),pageDto,layoutDto));
+			templateContentDto.setContent(buildPageTemplate((List<PageSectionDto>)layoutDto.getPageSections(),pageDto,layoutDto));
 		}
 			
 		return templateContentDto;
@@ -59,8 +58,7 @@ public class PageAssembler implements Assembler {
 
 	@Override
 	public TemplateContentDto assembleInclude(final Integer siteId,final String path) throws PageNotFoundException {
-		TemplateContentDto dto = new TemplateContentDto();
-		dto = new TemplateContentDto();
+		final TemplateContentDto dto = new TemplateContentDto();
 		try {
 			dto.setContent(templateService.findTemplateByPathAndSiteId(path,siteId).getTemplateText());
 		} catch (Exception e) {

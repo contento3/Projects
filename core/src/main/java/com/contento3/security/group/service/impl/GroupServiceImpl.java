@@ -46,8 +46,8 @@ public class GroupServiceImpl implements GroupService {
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void create(final GroupDto groupDto) {
-		groupDao.persist(groupAssembler.dtoToDomain(groupDto));
+	public Integer create(final GroupDto groupDto) {
+		return groupDao.persist(groupAssembler.dtoToDomain(groupDto));
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)

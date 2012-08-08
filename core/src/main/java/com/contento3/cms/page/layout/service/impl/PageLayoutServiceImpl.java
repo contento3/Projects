@@ -43,9 +43,9 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-	public void create(PageLayoutDto pageLayoutDto){
+	public Integer create(PageLayoutDto pageLayoutDto){
 		PageLayout pageLayout = assembler.dtoToDomain(pageLayoutDto);
-		pageLayoutDao.persist(pageLayout);
+		Integer newLayoutId = pageLayoutDao.persist(pageLayout);
 		
 		Collection <PageSection> pageSectionList = pageSectionAssembler.dtosToDomains(pageLayoutDto.getPageSections());
 		
@@ -54,5 +54,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 			pageLayout.getPageSections().add(pageSection);
 			pageSectionDao.persist(pageSection);
 		}
+		
+		return newLayoutId;
 	}
 }

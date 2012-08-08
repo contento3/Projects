@@ -34,8 +34,8 @@ public class PageLayoutTypeServiceImpl implements PageLayoutTypeService {
 	}
 	
 	@Override
-	public void create(final PageLayoutTypeDto dto){
-		layoutTypeDAO.persist(assembler.dtoToDomain(dto));
+	public Integer create(final PageLayoutTypeDto dto){
+		return layoutTypeDAO.persist(assembler.dtoToDomain(dto));
 	}
 
 }

@@ -21,18 +21,18 @@ public class SiteDomainServiceImpl implements SiteDomainService {
 	}
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void create(SiteDomainDto dto) {
-		siteDomainDao.persist(siteDomainAssembler.dtoToDomain(dto));
+	public Integer create(final SiteDomainDto dto) {
+		return siteDomainDao.persist(siteDomainAssembler.dtoToDomain(dto));
 	}
 	
 	@Transactional(readOnly = false)
 	@Override
-	public void update(SiteDomainDto dto){
+	public void update(final SiteDomainDto dto){
 		siteDomainDao.update(siteDomainAssembler.dtoToDomain(dto));
 	}
 	@Transactional(readOnly = false)
 	@Override
-	public void delete(SiteDomainDto dto){
+	public void delete(final SiteDomainDto dto){
 		siteDomainDao.delete(siteDomainAssembler.dtoToDomain(dto));
 	}
 

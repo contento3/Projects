@@ -3,10 +3,9 @@ package com.contento3.dam.image.dao;
 import java.util.Collection;
 
 import com.contento3.common.dao.GenericDao;
-import com.contento3.dam.image.library.model.ImageLibrary;
 import com.contento3.dam.image.model.Image;
 
-public interface ImageDao extends GenericDao<Image,String>{
+public interface ImageDao extends GenericDao<Image,Integer>{
 
 	/**
 	 * Returns a {@link java.util.Collection} of image for an account
@@ -38,5 +37,15 @@ public interface ImageDao extends GenericDao<Image,String>{
 	 * @param imageId
 	 * @return
 	 */
-	Collection<Image> findImagesByLibrary(final Integer libraryId);
+	Collection<Image> findImagesByLibrary(Integer libraryId);
+
+	/**
+	 * Returns the {@link com.contento3.dam.image.model.Image} 
+	 * for a particular uuid
+	 * @param uuid
+	 * @return 
+	 */
+	Image findByUuid(String uuid);
+	
+
 }

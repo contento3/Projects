@@ -20,8 +20,8 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void create(ArticleDto articleDto){
-		articleDao.persist(articleAssembler.dtoToDomain(articleDto));
+	public Integer create(ArticleDto articleDto){
+		return articleDao.persist(articleAssembler.dtoToDomain(articleDto));
 	}
 	
 	@Transactional(readOnly = false)

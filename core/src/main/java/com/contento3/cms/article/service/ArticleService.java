@@ -3,7 +3,6 @@ package com.contento3.cms.article.service;
 import java.util.Collection;
 
 import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.model.Article;
 import com.contento3.common.service.Service;
 
 public interface ArticleService extends Service<ArticleDto>{
@@ -26,7 +25,7 @@ public interface ArticleService extends Service<ArticleDto>{
 	 * used to create new article
 	 * @param articleDto
 	 */
-	void create(ArticleDto articleDto);
+	Integer create(ArticleDto articleDto);
 	/**
 	 * used to update article
 	 * @param articleDto

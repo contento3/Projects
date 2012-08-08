@@ -96,7 +96,7 @@ public class Page implements Serializable {
 	 */
 	@ManyToMany
 	@JoinTable(name="PAGE_CATEGORY_ASSOCIATION",
-		joinColumns={@JoinColumn(name="PAGE_ID")},
+		joinColumns={@JoinColumn(name="PAGE_ID",unique=true)},
 		inverseJoinColumns={@JoinColumn(name="CATEGORY_ID")})
 	private Collection<Category> categories;
 

@@ -23,7 +23,6 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -354,7 +353,6 @@ public class TemplateUIManager implements UIManager{
 			parentPath.setEnabled(false);
 			parentPath.setValue(String.format("/%s",buildPath(folderId,templateDirectory.getDirectoryName())));
 			formLayout.addComponent(parentPath);
-
 		}
 			
 			Button addButton = new Button();
@@ -370,7 +368,11 @@ public class TemplateUIManager implements UIManager{
 	    			directoryDto.setDirectoryName(name.getValue().toString());
 	    			directoryDto.setGlobal(false);
 	    			directoryDto.setAccount(account);
-	    			templateDirectoryService.create(directoryDto);
+	    			
+	    			TemplateDirectoryDto parentDirectory = templateDirectoryService.findById(selectedDirectoryId);
+	    			directoryDto.setParent(parentDirectory);
+	    			final Integer newDirectory = templateDirectoryService.create(directoryDto);
+	    			
 	    			if(folderId == null){ // works when no items in tree
 		    			directoryDto = templateDirectoryService.findByName(directoryDto.getDirectoryName(), false);
 		    			Item item = templateContainer.addItem(directoryDto.getId());
@@ -378,7 +380,10 @@ public class TemplateUIManager implements UIManager{
 		            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
 		            	templateContainer.setChildrenAllowed(directoryDto.getId(), true);
 	            	}
-	    			parentWindow.showNotification(name.getValue()+" folder added successfully");
+	    			
+	    			if (newDirectory!=null){
+	    				parentWindow.showNotification(name.getValue()+" folder added successfully");
+	    			}
 				}
 			});
 			formLayout.addComponent(addButton);
