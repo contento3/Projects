@@ -350,7 +350,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     	return null;
     }
 
-    /**
+    /*
      * Used to handle events after the user clicks the 
      * context menu from the left navigation menu.
      */
