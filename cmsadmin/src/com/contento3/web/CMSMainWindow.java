@@ -136,12 +136,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    
 
 	    vert.addComponent(horizTop);   
-           
-		
-		//horizTop1.setComponentAlignment(accountButton,Alignment.TOP_RIGHT);
-	    // horizTop1.addComponent(logoutButton);
-	    //	horizTop1.setComponentAlignment(logoutButton, Alignment.TOP_RIGHT);
-	   
+        // Add Buttons layout for AccountSettings and Logout..   
 		HorizontalLayout buttonsLayout = new HorizontalLayout();
 		horizTop.addComponent(buttonsLayout);
 		horizTop.setComponentAlignment(buttonsLayout, Alignment.TOP_RIGHT);
@@ -255,15 +250,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 	   
       
-	   /*
-	    horizTop.addComponent(logoutButton);
-	    horizTop.setSizeFull();
-	    horizTop.setComponentAlignment(logoutButton, Alignment.TOP_RIGHT);
-	    vert.addComponent(horizTop);
-        
-	    */
-	   
-	   // vert.addComponent(horizTop1);
+	 
 	   
         //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
