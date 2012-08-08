@@ -5,6 +5,7 @@ import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.data.Item;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -149,9 +150,12 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		
 
     	if (event.getButton().getCaption().equals("Edit")){
-	        groupButton.setCaption("Save");
-	        popupWindow.setCaption("Edit group");
-	        final Integer Id = (Integer)event.getButton().getData();
+			groupButton.setCaption("Save");
+			popupWindow.setCaption("Edit group");
+			final Integer Id = (Integer) event.getButton().getData();
+			GroupDto groupDto = groupService.findById(Id);
+			textField.setValue(groupDto.getGroupName());
+			descriptionArea.setValue(groupDto.getDescription());
 	        groupButton.addListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
