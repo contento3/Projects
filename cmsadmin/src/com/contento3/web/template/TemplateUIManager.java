@@ -4,15 +4,13 @@ package com.contento3.web.template;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-
-import javax.servlet.http.HttpSession;
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
@@ -40,9 +38,15 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+import org.apache.log4j.Logger;
 
 public class TemplateUIManager implements UIManager{
 
+	/**
+	 * Logger for Template
+	 */
+	private static final Logger LOGGER = Logger.getLogger(TemplateUIManager.class);
+	
 	/**
 	 * Used to get service beans from spring context.
 	 */
@@ -275,10 +279,11 @@ public class TemplateUIManager implements UIManager{
 		URL url = null;
 
     	try {
-        	StringBuffer urlStr = new StringBuffer("http://localhost:8080/cms/jsp/codemirror");
-
-           
-
+    		//getting codeMirrorUri from templateconfig.properties
+    		final CachedTypedProperties templateConfigProperty = CachedTypedProperties.getInstance("templateconfig.properties");
+        	StringBuffer urlStr = new StringBuffer();
+        	urlStr.append(templateConfigProperty.getProperty("codeMirrorUri"));
+        	System.out.println(urlStr);
         	if (null != templateId){
         		TemplateDto templateDto = templateService.findTemplateById(templateId);
         		urlStr.append("?templateId=")
@@ -293,6 +298,7 @@ public class TemplateUIManager implements UIManager{
 				      .append(accountId);
 
             	url = new URL(urlStr.toString());
+            	
         	}
         	else {
         		//This is a new template to be created we need to get the directory which was selected.
@@ -319,6 +325,9 @@ public class TemplateUIManager implements UIManager{
 		} 
 		catch (MalformedURLException exception) {
 			exception.printStackTrace();
+		}
+    	catch (ClassNotFoundException e) {
+			LOGGER.error("Unable to read templateconfig.properties,Reason:"+e);
 		}
 
 		if (null!=url){
