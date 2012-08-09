@@ -5,6 +5,7 @@ import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
+import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.SiteDomainTableBuilder;
 import com.vaadin.data.Item;
@@ -14,6 +15,7 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -106,6 +108,11 @@ public class GroupUIManager implements UIManager {
 	 * and group table
 	 */
 	private void renderGroupContent() {
+		Label groupHeading = new Label("Group Manager");
+		groupHeading.setStyleName("screenHeading");
+		this.verticalLayout.addComponent(groupHeading);
+		this.verticalLayout.addComponent(new HorizontalRuler());
+		this.verticalLayout.setMargin(true);
 		addGroupButton();
 		renderGroupTable();
 	}
