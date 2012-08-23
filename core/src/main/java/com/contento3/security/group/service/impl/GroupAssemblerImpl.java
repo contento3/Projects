@@ -6,15 +6,27 @@ import java.util.Collection;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.model.Group;
 import com.contento3.security.group.service.GroupAssembler;
+import com.contento3.security.user.service.SaltedHibernateUserAssembler;
 
 
 public class GroupAssemblerImpl implements GroupAssembler {
 
+	/**
+	 * SaltedHibernateUserAssembler
+	 */
+	private SaltedHibernateUserAssembler saltedHibernateUserAssembler ;
+	
+	public GroupAssemblerImpl(final SaltedHibernateUserAssembler saltedHibernateUserAssembler ) {
+		this.saltedHibernateUserAssembler = saltedHibernateUserAssembler;
+	}
+	
 	public Group dtoToDomain(final GroupDto dto){
 		Group group = new Group();
 		group.setGroupId(dto.getGroupId());
 		group.setGroupName(dto.getGroupName());
 		group.setDescription(dto.getDescription());
+		group.setAuthorities(dto.getAuthorities());
+		group.setMembers(saltedHibernateUserAssembler.dtosToDomains(dto.getMembers()));
 		return group;
 	}
 
@@ -22,6 +34,8 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		domain.setGroupId(dto.getGroupId());
 		domain.setGroupName(dto.getGroupName());
 		domain.setDescription(dto.getDescription());
+		domain.setAuthorities(dto.getAuthorities());
+		domain.setMembers(saltedHibernateUserAssembler.dtosToDomains(dto.getMembers()));
 		return domain;
 	}
 
@@ -30,6 +44,8 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		dto.setGroupId(domain.getGroupId());
 		dto.setGroupName(domain.getGroupName());
 		dto.setDescription(domain.getDescription());
+		dto.setAuthorities(domain.getAuthorities());
+		dto.setMembers(saltedHibernateUserAssembler.domainsToDtos(domain.getMembers()));
 		return dto;
 	}
 

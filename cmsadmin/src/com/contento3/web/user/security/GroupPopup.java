@@ -1,11 +1,13 @@
 package com.contento3.web.user.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import com.contento3.security.group.dto.GroupDto;
+import com.contento3.security.group.model.GroupAuthority;
 import com.contento3.security.group.service.GroupService;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.data.Item;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -155,7 +157,13 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 			final Integer Id = (Integer) event.getButton().getData();
 			GroupDto groupDto = groupService.findById(Id);
 			textField.setValue(groupDto.getGroupName());
-			descriptionArea.setValue(groupDto.getDescription());
+			String description = groupDto.getDescription();
+	    	
+			if(description==null){
+	    		descriptionArea.setValue("");
+			}else{
+				descriptionArea.setValue(description);
+			}
 	        groupButton.addListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
@@ -184,8 +192,10 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		GroupDto groupDto = new GroupDto();
 		groupDto.setGroupName(textField.getValue().toString());
 		groupDto.setDescription(descriptionArea.getValue().toString());
+		groupDto.setMembers(new ArrayList<SaltedHibernateUserDto>());
+		groupDto.setAuthorities(new ArrayList<GroupAuthority>());
 		groupService.create(groupDto);
-
+		mainwindow.showNotification(groupDto.getGroupName()+" group created succesfully");
 		resetTable();
     }
 
@@ -199,6 +209,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 			groupDto.setGroupName(textField.getValue().toString());
 			groupDto.setDescription(descriptionArea.getValue().toString());
 			groupService.update(groupDto);
+			mainwindow.showNotification(groupDto.getGroupName()+" group edit succesfully");
 		resetTable();
     }
 	/**

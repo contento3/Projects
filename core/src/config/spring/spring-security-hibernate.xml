@@ -13,6 +13,8 @@
 		<property name="annotatedClasses">
 			<list>
 			    <value>com.contento3.security.group.model.Group</value>
+			    <value>com.contento3.security.group.model.GroupAuthority</value> 
+			    <value>com.contento3.security.user.model.SaltedHibernateUser</value>
 			</list>
 		</property>	
 	
@@ -24,5 +26,10 @@
 		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
 	</bean>
 	
+	<!-- SaltedHibernateUserDao -->
+	<bean id="saltedHibernateUserDao"
+		class="com.contento3.security.user.dao.impl.SaltedHibernateUserDaoImpl">
+		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
+	</bean>
 
 </beans>

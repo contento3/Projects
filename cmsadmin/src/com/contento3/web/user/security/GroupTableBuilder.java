@@ -75,7 +75,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new GroupDeleteClickListener(group, contextHelper, deleteLink, groupTable));
+		deleteLink.addListener(new GroupDeleteClickListener(group, window, contextHelper, deleteLink, groupTable));
 		
 	}
 
