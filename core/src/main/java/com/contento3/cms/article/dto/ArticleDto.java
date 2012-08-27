@@ -7,9 +7,10 @@ import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.article.model.RelatedArticle;
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.common.dto.Dto;
 
 
-public class ArticleDto {
+public class ArticleDto extends Dto {
 	/**
 	 * id for article
 	 */

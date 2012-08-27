@@ -16,7 +16,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * Implementation of TableBuilder for 
- * SiteDomains table
+ * Group table
  * @author HAMMAD
  *
  */
