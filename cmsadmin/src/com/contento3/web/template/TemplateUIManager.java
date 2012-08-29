@@ -130,26 +130,15 @@ public class TemplateUIManager implements UIManager{
 	public void renderTemplateListTab(VerticalLayout vLayout){
 		// Create the Accordion.
 		final Accordion accordion = new Accordion();
-		
+
 		// Have it take all space available in the layout.
 		accordion.setWidth(90, Sizeable.UNITS_PERCENTAGE);
 
-		// Some components to put in the Accordion.
-		Label l1 = new Label("There are no previously saved actions.");
-		VerticalLayout templateListLayout = new VerticalLayout();
-		templateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		// Add the components as tabs in the Accordion.
-		Tab tab2 = accordion.addTab(templateListLayout, "Templates", null);
-		accordion.addTab(l1, "Global Templates", null);
-		TemplateDirectoryService templateDirectoryService = (TemplateDirectoryService)helper.getBean("templateDirectoryService");
-		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false);
 
-		//Add the tree to the vertical layout for template list.
-		templateListLayout.addComponent(populateTemplateList(templateDirectoryList,templateDirectoryService));
-
+		populateAccordion(accordion);
 		// A container for the Accordion.
 		Panel panel = new Panel();
-		panel.setWidth(30, Sizeable.UNITS_PERCENTAGE);
+		panel.setWidth(25, Sizeable.UNITS_PERCENTAGE);
 		panel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		panel.addComponent(accordion);
 
@@ -168,16 +157,16 @@ public class TemplateUIManager implements UIManager{
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				try {
-				renderFolderTab(new Integer (root.getValue().toString()));
+				renderFolderTab(selectedDirectoryId);
 				}
 				catch(Exception e){
 					
 					if(root.getItemIds().isEmpty()){
 						renderFolderTab(null);
 					}
-					else if(selectedDirectoryId==null){
-						parentWindow.showNotification(String.format("Please select parent folder to add new folder"),Notification.TYPE_WARNING_MESSAGE);
-					}
+				//	else if(selectedDirectoryId==null){
+				//		parentWindow.showNotification(String.format("Please select parent folder to add new folder"),Notification.TYPE_WARNING_MESSAGE);
+				//	}
 				}
 			}
 		});
@@ -191,7 +180,26 @@ public class TemplateUIManager implements UIManager{
 		vLayout.setHeight(100,Sizeable.UNITS_PERCENTAGE);
 		panel.addComponent(buttonLayout);
 	}
-	
+
+	public void populateAccordion(final Accordion accordion){
+
+		//Populate the global template list
+		VerticalLayout globalTemplateListLayout = new VerticalLayout();
+		globalTemplateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		Tab globalTemplatesTab = accordion.addTab(globalTemplateListLayout, "Global Templates", null);
+		accordion.addTab(globalTemplateListLayout, "Global Templates", null);
+		Collection <TemplateDirectoryDto> globalTemplateDirectoryList =  templateDirectoryService.findRootDirectories(true);
+		globalTemplateListLayout.addComponent(populateTemplateList(globalTemplateDirectoryList,templateDirectoryService));
+
+		//Populate the template list
+		VerticalLayout templateListLayout = new VerticalLayout();
+		templateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		Tab templatesTab = accordion.addTab(templateListLayout, "Templates", null);
+		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false);
+
+		//Add the tree to the vertical layout for template list.
+		templateListLayout.addComponent(populateTemplateList(templateDirectoryList,templateDirectoryService));
+	}
 	public Tree populateTemplateList(final Collection<TemplateDirectoryDto> directoryDtos,final TemplateDirectoryService templateDirectoryService){
 
 		
@@ -369,12 +377,14 @@ public class TemplateUIManager implements UIManager{
 	    			directoryDto.setGlobal(false);
 	    			directoryDto.setAccount(account);
 	    			
-	    			TemplateDirectoryDto parentDirectory = templateDirectoryService.findById(selectedDirectoryId);
-	    			directoryDto.setParent(parentDirectory);
-	    			final Integer newDirectory = templateDirectoryService.create(directoryDto);
+	    			if (null!=selectedDirectoryId){
+	    				TemplateDirectoryDto parentDirectory = templateDirectoryService.findById(selectedDirectoryId);
+	    				directoryDto.setParent(parentDirectory);
+	    			}
 	    			
+	    			final Integer newDirectory = templateDirectoryService.create(directoryDto);
 	    			if(folderId == null){ // works when no items in tree
-		    			directoryDto = templateDirectoryService.findByName(directoryDto.getDirectoryName(), false);
+		    			directoryDto = templateDirectoryService.findById(newDirectory);
 		    			Item item = templateContainer.addItem(directoryDto.getId());
 		            	item.getItemProperty("id").setValue(directoryDto.getId());
 		            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());

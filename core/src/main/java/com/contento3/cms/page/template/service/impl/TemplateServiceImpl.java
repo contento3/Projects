@@ -110,13 +110,10 @@ public class TemplateServiceImpl implements TemplateService {
 	private String templateNameAppender(final TemplateDirectory templateDirectory,String value){
 		value = String.format("%s/%s", templateDirectory.getDirectoryName(),value);
 		if (null!=templateDirectory.getParent()){
-			templateNameAppender(templateDirectory,value);
-		}
-		else {
-			return value;
+			value = templateNameAppender(templateDirectory.getParent(),value);
 		}
 		
-		return null;
+		return value;
 	}
 	
 	/**

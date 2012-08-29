@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="spring/" kind="src" path="src/main/java"/>
+	<classpathentry kind="src" output="core/classes/config/spring" path="src/config/spring"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry excluding="spring/" kind="src" path="src/config"/>
-	<classpathentry kind="src" path="src/config/spring"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/CMS_LIB"/>
 	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>

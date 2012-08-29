@@ -7,7 +7,7 @@
            http://www.springframework.org/schema/security/spring-security.xsd">
 
 
- 
+<!-- 
 	<beans:bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<beans:property name="driverClassName">
 	    	<beans:value>com.mysql.jdbc.Driver</beans:value>
@@ -22,16 +22,16 @@
 	    	<beans:value>root</beans:value>
 		</beans:property>
 	</beans:bean>
+ -->	
 	
-<!--	 
+	 
 	<beans:bean id="jdbcdataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<beans:property name="url" value="jdbc:mysql://c3prod.ccqbimjzi68o.us-east-1.rds.amazonaws.com:3306/platform_users" />
-		<beans:property name="username" value="" />
-		<beans:property name="password" value="" />
+		<beans:property name="username" value="superuser" />
+		<beans:property name="password" value="superuser" />
 	</beans:bean>
- -->	
 	
 	<http auto-config='true'>
 		<intercept-url  pattern="/home/**" access="ROLE_USER" />
