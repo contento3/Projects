@@ -185,6 +185,7 @@
 	
 	<bean id="groupAssembler"
 		class="com.contento3.security.group.service.impl.GroupAssemblerImpl">
+		<constructor-arg ref="saltedHibernateUserAssembler" />
 	</bean>
 	
 	<bean id="groupService"
@@ -199,4 +200,12 @@
 	<bean id="imageLibraryService" class="com.contento3.dam.image.library.service.impl.ImageLibraryServiceImpl">
 	</bean>
 	
+	
+	<bean id="saltedHibernateUserAssembler"
+		class="com.contento3.security.user.service.impl.SaltedHibernateUserAssemblerImpl">
+	</bean>
+	
+	<bean id="saltedHibernateUserService"
+		class="com.contento3.security.user.service.impl.SaltedHibernateUserServiceImpl">
+	</bean>
 </beans>

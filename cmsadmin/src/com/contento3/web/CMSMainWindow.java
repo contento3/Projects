@@ -53,7 +53,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     private static final Action[] CONTENT_ACTIONS = new Action[] { ACTION_ADD_CONTENT_TYPE,ACTION_ADD_CONTENT };
 
     private Button logoutButton;
-
+    public Button accountButton;
     
 	TextField textField = new TextField();
     Tree root;
@@ -77,6 +77,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		
  		unitUI();
 	}
+	
 	
 	/**
 	 * 
@@ -103,37 +104,51 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             }
         }
  
+	
 	private void unitUI(){
     	uri = new UriFragmentUtility();
         uri.addListener(this);
         uri.setImmediate(true);
 
         VerticalLayout vLayout = new VerticalLayout();
+        
         setContent(vLayout);
         vLayout.setSizeFull();
 
 	    final VerticalSplitPanel vert = new VerticalSplitPanel();
+	    
 	    vert.setSplitPosition(8, Sizeable.UNITS_PERCENTAGE);
 	    vert.setLocked(true);
 	    this.setCaption("CONTENTO3 CMS");
 	    vert.setStyleName(Reindeer.SPLITPANEL_SMALL);
 
-	   // vert.addComponent(logoutButton);
+
 	    HorizontalLayout horizTop = new HorizontalLayout();
 
+	    vLayout.addComponent(vert);
+	       
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
 		embedded.setHeight(90, Sizeable.UNITS_PERCENTAGE);
 		horizTop.addComponent(embedded);
 	    horizTop.setComponentAlignment(embedded, Alignment.TOP_LEFT);
-		
-	    horizTop.addComponent(logoutButton);
 	    horizTop.setSizeFull();
-	    horizTop.setComponentAlignment(logoutButton, Alignment.TOP_RIGHT);
-	    vert.addComponent(horizTop);
-       
-	    vLayout.addComponent(vert);
-       
+	    
+
+	    vert.addComponent(horizTop);   
+        // Add Buttons layout for AccountSettings and Logout..   
+		HorizontalLayout buttonsLayout = new HorizontalLayout();
+		horizTop.addComponent(buttonsLayout);
+		horizTop.setComponentAlignment(buttonsLayout, Alignment.TOP_RIGHT);
+		final Button accountButton = new Button ("Account Settings");
+		buttonsLayout.addComponent(accountButton);
+		accountButton.addStyleName("link");
+
+		
+		buttonsLayout.addComponent(logoutButton);
+		buttonsLayout.setSpacing(true);     
+	 
+		
 
      
         horiz = new HorizontalSplitPanel();
@@ -231,7 +246,12 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
        root.setImmediate(true);
        vert.addComponent(mainAndContentSplitter); 
-    
+        
+
+	   
+      
+	 
+	   
         //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
         root.addListener(new ItemClickListener() {
@@ -317,7 +337,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     	return null;
     }
 
-    /**
+    /*
      * Used to handle events after the user clicks the 
      * context menu from the left navigation menu.
      */

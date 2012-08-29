@@ -1,5 +1,6 @@
 package com.contento3.web.site;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -88,8 +89,21 @@ public class PageUIManager {
 		this.pageService = pageService;
 		this.parentWindow = parentWindow;
 		this.contextHelper = helper;
+		
+		setPageContainerProperty();
+	
 	}
 	
+	/**
+	 * Add properties to index container of pages
+	 */
+	private void setPageContainerProperty() {
+		
+		container.addContainerProperty("Title", String.class, null);
+		container.addContainerProperty("Uri", String.class, null);
+		container.addContainerProperty("Edit", Button.class, null);
+	}
+
 	public TabSheet renderPageListing(final Integer siteId,final TabSheet pagesTab,final HorizontalLayout horizontalLayout,final VerticalLayout pageLayout) {
 		pageLayout.addComponent(horizontalLayout);
 
@@ -163,10 +177,7 @@ public class PageUIManager {
 		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
 
 		if (!CollectionUtils.isEmpty(pageDtos)) {
-			container.addContainerProperty("Title", String.class, null);
-			container.addContainerProperty("Uri", String.class, null);
-			container.addContainerProperty("Edit", Button.class, null);
-
+			
 			table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 			table.setPageLength(5);
 			Button link = null;
@@ -295,6 +306,7 @@ public class PageUIManager {
 				pageDto.setTitle(titleTxt.getValue().toString());
 				pageDto.setUri(uriTxt.getValue().toString());
 				pageDto.setSite(siteDto);
+				pageDto.setCategories(new ArrayList<CategoryDto>());
 ////				if(categories!=null){
 ////					pageDto.setCategories(categories);
 ////				}else{

@@ -1,6 +1,11 @@
 package com.contento3.security.group.dto;
 
+import java.util.Collection;
+
 import com.contento3.common.dto.Dto;
+
+import com.contento3.security.group.model.GroupAuthority;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
 public class GroupDto extends Dto {
 	/**
@@ -18,10 +23,60 @@ public class GroupDto extends Dto {
 	 */
 	private String description;
 	
+	/**
+	 * Authorities associated to group
+	 */
+	private Collection<GroupAuthority> authorities;
+	
+	/**
+	 * Members associated to group
+	 */
+	private Collection<SaltedHibernateUserDto> members;
+	
+	/**
+	 * Return group related authorites
+	 * @return
+	 */
+	public Collection<GroupAuthority> getAuthorities() {
+		return authorities;
+	}
+
+	/**
+	 * Sets group authorities
+	 * @param authorities
+	 */
+	public void setAuthorities(final Collection<GroupAuthority> authorities) {
+		this.authorities = authorities;
+	}
+
+	/**
+	 * Return group related users
+	 * @return
+	 */
+	public Collection<SaltedHibernateUserDto> getMembers() {
+		return members;
+	}
+
+	/**
+	 * Sets group members (users)
+	 * @param authorities
+	 */
+	public void setMembers(final Collection<SaltedHibernateUserDto> members) {
+		this.members = members;
+	}
+
+	/**
+	 * Return group description
+	 * @return
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Set group description
+	 * @param description
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}

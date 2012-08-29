@@ -50,6 +50,7 @@ public interface GroupService extends Service<GroupDto> {
 	/**
 	 * Delete group 
 	 * @param id
+	 * @throws Exception 
 	 */
-	void delete(final GroupDto group);
+	void delete(final GroupDto group) throws Exception;
 }

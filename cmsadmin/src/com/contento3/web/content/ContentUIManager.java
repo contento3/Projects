@@ -1,37 +1,22 @@
 package com.contento3.web.content;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import javax.servlet.http.HttpSession;
-import org.springframework.util.CollectionUtils;
-
-import antlr.collections.List;
-
-import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.web.UIManager;
+import com.contento3.web.content.article.ArticleMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.event.Action;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
+
 
 /**
  * Entry point for all the logic related to CONTENT MANAGER functionality.
