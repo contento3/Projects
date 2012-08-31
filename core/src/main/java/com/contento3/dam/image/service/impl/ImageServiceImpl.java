@@ -1,6 +1,7 @@
 package com.contento3.dam.image.service.impl;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +52,7 @@ public class ImageServiceImpl implements ImageService {
 		Image image = imageAssembler.dtoToDomain(imageDto);
 		Account account = accountDao.findById(imageDto.getAccountDto().getAccountId());
 		image.setAccount(account);
+		image.setImageUuid(UUID.randomUUID().toString());
 		return imageDao.persist(image);
 	}
 	

@@ -1,7 +1,6 @@
 package com.contento3.dam.image.model;
 
 import java.util.Collection;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +28,7 @@ public class Image {
 	@GeneratedValue(generator="system-uuid")
 	@GenericGenerator(name="system-uuid", strategy="com.contento3.hibernate.UUIDGenerator")
 	@Column(name="IMAGE_UUID") 
-	private String imageUuid;
+	private String imageUuid ;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

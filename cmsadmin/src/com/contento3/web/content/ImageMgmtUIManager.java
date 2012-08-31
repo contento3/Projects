@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -24,9 +25,13 @@ import org.imgscalr.Scalr;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
+import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.dam.image.dto.ImageDto;
+import com.contento3.dam.image.library.dto.ImageLibraryDto;
+import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.dam.image.service.ImageService;
+import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.SiteUIManager;
@@ -36,12 +41,14 @@ import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
@@ -110,18 +117,25 @@ public class ImageMgmtUIManager extends CustomComponent
      * FileOutputStream used in image upload.
      */
     FileOutputStream fos ;
+    
+    private ImageLibraryService imageLibraryService;
+    
+    private ComboBox imageLibrayCombo;
 
     public ImageMgmtUIManager(final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
 		this.imageService = (ImageService)helper.getBean("imageService");
+		this.imageLibraryService = (ImageLibraryService) helper.getBean("imageLibraryService");
+		
 	}
     
-    public Component renderAddScreen(){
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public Component renderAddScreen(){
 		root = new Panel("Upload image");
 
 		VerticalLayout imageLayout = new VerticalLayout();
-		
+		imageLayout.setSpacing(true);
 		altTextField = new TextField();
 		altTextField.setCaption("Alt text");
 	
@@ -131,7 +145,19 @@ public class ImageMgmtUIManager extends CustomComponent
 		imageNameField.setCaption("Image name");
 	
 		imageLayout.addComponent(imageNameField);
-
+		
+		//Get accountId from the session
+        final Integer accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
+        Collection<ImageLibraryDto> imageLibraryDto = this.imageLibraryService.findImageLibraryByAccountId(accountId);
+		final ComboDataLoader comboDataLoader = new ComboDataLoader();
+		imageLibrayCombo = new ComboBox("Select library",
+				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
+		
+		imageLayout.addComponent(imageLibrayCombo);
+		
+		imageLibrayCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		imageLibrayCombo.setItemCaptionPropertyId("name");
+		
 		// Create the Upload component.
 		Upload upload = new Upload("Upload Image", this);
 		// Listen for events regarding the success of upload.
@@ -205,6 +231,15 @@ public class ImageMgmtUIManager extends CustomComponent
             accountDto.setAccountId(accountId);
             final ImageService imageService = (ImageService)helper.getBean("imageService");
             imageDto.setAccountDto(accountDto);
+            
+            //set imageLibrary to imageDto
+            if(imageLibrayCombo.getValue()!=null){
+            	imageDto.setImageLibraryDto(imageLibraryService
+            			.findImageLibraryById(Integer
+            					.parseInt(imageLibrayCombo.getValue()
+            							.toString())));
+            }
+            imageDto.setSiteDto(new ArrayList<SiteDto>());
  	        fis.close();
  	        imageService.create(imageDto);
 			} catch (EntityAlreadyFoundException e) {

@@ -5,11 +5,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.contento3.account.model.Account;
 
 @Entity
 @Table(name = "IMAGE_LIBRARY")
 public class ImageLibrary {
+	
 	/**
 	 * Primary key
 	 */
@@ -29,6 +34,13 @@ public class ImageLibrary {
 	@Column(name="DESCRIPTION")
 	private String description;
 	
+	/**
+	 * Account associated to image library
+	 */
+	@ManyToOne
+	@JoinColumn(name="ACCOUNT_ID")
+	private Account account;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -46,6 +58,12 @@ public class ImageLibrary {
 	}
 	public void setDescription(final String description) {
 		this.description = description;
+	}
+	public Account getAccount() {
+		return account;
+	}
+	public void setAccount(final Account account) {
+		this.account = account;
 	}
 
 }

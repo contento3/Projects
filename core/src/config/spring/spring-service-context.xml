@@ -195,9 +195,12 @@
 	</bean>
 	
 	<bean id="imageLibraryAssembler" class="com.contento3.dam.image.library.service.impl.ImageLibraryAssemblerImpl">
+		<constructor-arg ref="accountAssembler" />
 	</bean>
 	
 	<bean id="imageLibraryService" class="com.contento3.dam.image.library.service.impl.ImageLibraryServiceImpl">
+		<constructor-arg ref="imageLibraryDao" />
+		<constructor-arg ref="imageLibraryAssembler" />
 	</bean>
 	
 	
