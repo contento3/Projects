@@ -70,4 +70,13 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainsToDtos(imageDao.findImagesByLibrary(libraryId));
 	}
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void update(final ImageDto imageDto) {
+		Image image = imageAssembler.dtoToDomain(imageDto);
+		Account account = accountDao.findById(imageDto.getAccountDto().getAccountId());
+		image.setAccount(account);
+		imageDao.update(image);
+	}
+
 }
