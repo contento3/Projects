@@ -285,15 +285,14 @@ public class TemplateUIManager implements UIManager{
 	private void renderTemplate(Integer templateId){
 		final VerticalLayout createNewTemplate = new VerticalLayout();
 		URL url = null;
-
+		TemplateDto templateDto=null;
     	try {
     		//getting codeMirrorUri from templateconfig.properties
     		final CachedTypedProperties templateConfigProperty = CachedTypedProperties.getInstance("templateconfig.properties");
         	StringBuffer urlStr = new StringBuffer();
         	urlStr.append(templateConfigProperty.getProperty("codeMirrorUri"));
-        	System.out.println(urlStr);
         	if (null != templateId){
-        		TemplateDto templateDto = templateService.findTemplateById(templateId);
+        		templateDto = templateService.findTemplateById(templateId);
         		urlStr.append("?templateId=")
         			  .append(templateId)
         			  .append("&templateName=")
@@ -303,8 +302,11 @@ public class TemplateUIManager implements UIManager{
         			  .append("&templateTypeId=")
 		              .append(templateDto.getTemplateType().getTemplateTypeId())
 		        	  .append("&accountId=")
-				      .append(accountId);
-
+				      .append(accountId)
+				      .append("")
+        			  .append("&directoryPath=")
+  			          .append(String.format("/%s",buildPath(selectedDirectoryId,templateDto.getTemplateDirectoryDto().getDirectoryName())));
+        		
             	url = new URL(urlStr.toString());
             	
         	}
@@ -346,8 +348,12 @@ public class TemplateUIManager implements UIManager{
 			createNewTemplate.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			createNewTemplate.setHeight(100,Sizeable.UNITS_PERCENTAGE);
 			createNewTemplate.addComponent(browser);
-
-			Tab tab2= templateTab.addTab(createNewTemplate,"Create template",null);
+			Tab tab2;
+			if(templateDto == null){
+				tab2 = templateTab.addTab(createNewTemplate,"Create template",null);
+			}else{
+				tab2 = templateTab.addTab(createNewTemplate,templateDto.getTemplateName(),null);
+			}
 			tab2.setClosable(true);
 			templateTab.setSelectedTab(createNewTemplate);
 		}
