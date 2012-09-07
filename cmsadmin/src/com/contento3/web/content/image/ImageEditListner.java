@@ -1,4 +1,4 @@
-package com.contento3.web.content;
+package com.contento3.web.content.image;
 
 import java.util.Collection;
 
