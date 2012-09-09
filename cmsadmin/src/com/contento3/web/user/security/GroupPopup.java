@@ -80,7 +80,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add Site Domain", this, "openButtonClick");
+        openbutton = new Button("Add Group", this, "openButtonClick");
         layout.addComponent(openbutton);
 
         setCompositionRoot(layout);

@@ -1,4 +1,4 @@
-package com.contento3.web.content;
+package com.contento3.web.content.image;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -215,8 +215,8 @@ public class ImageMgmtUIManager extends CustomComponent
             final AccountService accountService = (AccountService)helper.getBean("accountService");
             final AccountDto accountDto = new AccountDto();
             accountDto.setAccountId(accountId);
-            final ImageService imageService = (ImageService)helper.getBean("imageService");
             imageDto.setAccountDto(accountDto);
+            final ImageService imageService = (ImageService)helper.getBean("imageService");
             
             //set imageLibrary to imageDto
             if(imageLibrayCombo.getValue()!=null){
@@ -288,7 +288,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	    	Button viewImageDetail = new Button("View Image");
 	    	viewImageDetail.setStyleName("link");
 
-	    	Button editImageDetail = new Button("Edit Image");
+	    	Button editImageDetail = new Button("Edit Image",new ImageEditListner(helper,parentWindow,dto),"openButtonClick");
 	    	editImageDetail.setStyleName("link");
 
 	    	imageInfoLayout.setSpacing(true);

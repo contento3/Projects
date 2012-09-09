@@ -55,5 +55,11 @@ public interface ImageService extends Service<ImageDto> {
      * @return
      */
 	Integer create(ImageDto imageDto) throws EntityAlreadyFoundException;
+	
+	/**
+	 * Update image 
+	 * @param imageDto
+	 */
+	void update(final ImageDto imageDto);
 
 }

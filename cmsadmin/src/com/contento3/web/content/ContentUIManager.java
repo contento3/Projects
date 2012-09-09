@@ -2,7 +2,10 @@ package com.contento3.web.content;
 
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.web.UIManager;
+import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
+import com.contento3.web.content.image.ImageLibraryPopup;
+import com.contento3.web.content.image.ImageMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
@@ -12,6 +15,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.VerticalLayout;
@@ -143,8 +148,17 @@ public class ContentUIManager implements UIManager{
 			verticalLayout.addComponent(button);
 			verticalLayout.setSizeFull();
 			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper,parentWindow);
-
 			elementTab.addTab(verticalLayout, String.format("%s Management",element));
+			
+			Label imageHeading = new Label("Image Manager");
+			imageHeading.setStyleName("screenHeading");
+			verticalLayout.addComponent(imageHeading);
+			verticalLayout.addComponent(new HorizontalRuler());
+			verticalLayout.setMargin(true);
+			verticalLayout.setSizeFull();
+			
+			HorizontalLayout horizLayout = new HorizontalLayout();
+			horizLayout.setSpacing(true);
 			button.addListener(new ClickListener(){
 				public void buttonClick(ClickEvent event){
 					VerticalLayout newArticleLayout = new VerticalLayout();
@@ -155,8 +169,13 @@ public class ContentUIManager implements UIManager{
 					newArticleLayout.setHeight("100%");
 				}
 			});
-
 			button.setCaption(String.format("Add %s",element));
+			horizLayout.addComponent(button);
+			
+			Button addLibraryButton = new Button("Add Library",new ImageLibraryPopup(parentWindow, helper),"openButtonClick");
+			horizLayout.addComponent(addLibraryButton);
+			verticalLayout.addComponent(horizLayout);
+			verticalLayout.addComponent(new HorizontalRuler());
 			verticalLayout.addComponent(imageMgmtUIMgr.listImage(1));
 		}
 
