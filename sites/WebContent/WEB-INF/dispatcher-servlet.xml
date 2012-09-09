@@ -60,6 +60,7 @@
 <bean id="staticResourceView" class="com.contento3.site.resolver.StaticResourceViewResolver">
 	<property name="templateService" ref="templateService" />
 	<property name="imageService" ref="imageService" />
+	<property name="siteService" ref="siteService" />
 </bean>
 
 <bean id="fmRenderingEngine" class="com.contento3.site.template.render.engine.impl.FreemarkerRenderingEngine">

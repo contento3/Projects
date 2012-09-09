@@ -84,6 +84,7 @@ public class TemplateUIManager implements UIManager{
 	private Integer accountId;
 	
 	TabSheet templateTab;
+	
 	/**
 	 * 
 	 */
@@ -93,7 +94,7 @@ public class TemplateUIManager implements UIManager{
 	 * @param helper
 	 * @param parentWindow
 	 */
-	public TemplateUIManager(final SpringContextHelper helper,final Window parentWindow){
+	public TemplateUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
 	    this.templateService = (TemplateService)helper.getBean("templateService");
@@ -102,6 +103,7 @@ public class TemplateUIManager implements UIManager{
 	    //Get accountId from the session
         this.accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
         this.templateContainer = new HierarchicalContainer();
+        this.templateTab = uiTabSheet;
 	}
 	
 
@@ -111,17 +113,14 @@ public class TemplateUIManager implements UIManager{
 
 	@Override
 	public Component render(String command) {
-		if (null==templateTab){ 
-			templateTab = new TabSheet();
-			templateTab.setHeight("585");
-			templateTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		templateTab.setHeight("585");
+		templateTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 	    	
-	    	VerticalLayout layout = new VerticalLayout();
-	    	layout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+    	VerticalLayout layout = new VerticalLayout();
+    	layout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 
-	    	Tab tab2 = templateTab.addTab(layout,"Template",null);
-	    	renderTemplateListTab(layout);
-		}
+    	Tab tab2 = templateTab.addTab(layout,"Template",null);
+    	renderTemplateListTab(layout);
 		return templateTab;
 	}
 
@@ -290,7 +289,7 @@ public class TemplateUIManager implements UIManager{
     		//getting codeMirrorUri from templateconfig.properties
     		final CachedTypedProperties templateConfigProperty = CachedTypedProperties.getInstance("templateconfig.properties");
         	StringBuffer urlStr = new StringBuffer();
-        	urlStr.append(templateConfigProperty.getProperty("codeMirrorUri"));
+        	urlStr.append(templateConfigProperty.getProperty("codeMirrorUri")+"/cms/jsp/codemirror");
         	System.out.println(urlStr);
         	if (null != templateId){
         		TemplateDto templateDto = templateService.findTemplateById(templateId);

@@ -59,9 +59,10 @@ public class LayoutUIManager implements UIManager {
 	PageLayoutService pageLayoutService;
 
 
-	public LayoutUIManager(final SpringContextHelper helper,final Window parentWindow){
+	public LayoutUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
+		this.layoutManagerTab = uiTabSheet;
 //		this.layoutService = (SiteService) helper.getBean("layoutService");
 //		this.pageService = (PageService) helper.getBean("pageService");
 	}
@@ -107,8 +108,7 @@ public class LayoutUIManager implements UIManager {
 		final Table table = new Table("Layout");
 		table.setImmediate(true);
 	//	final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(id);
-		if (null==layoutManagerTab){ 
-    	layoutManagerTab = new TabSheet();
+	//	if (null==layoutManagerTab){ 
     	layoutManagerTab.setHeight("675");
     	layoutManagerTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
     	
@@ -132,11 +132,11 @@ public class LayoutUIManager implements UIManager {
 				
         }
 			
-		} else {
-			final Label label = new Label("No layout found for this site.");
-			layoutManagerTab.addComponent(label);
+	//	} else {
+		//	final Label label = new Label("No layout found for this site.");
+	//		layoutManagerTab.addComponent(label);
 			
-		}
+	//	}
 
 		}
 		

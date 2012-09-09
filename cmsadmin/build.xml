@@ -7,12 +7,9 @@
 		</fileset>
 		<fileset dir="../lib">
 			<include name="*.jar"/>
-			<exclude name="**/*servlet-api.jar" />
-			<exclude name="**/*mysql-connector-java-5.1.13-bin.jar" />
 		</fileset>
 		<fileset dir="../build-core">
 			<include name="*.jar"/>
-			<exclude name="servlet-api.jar" />
 		</fileset>
 	</path>
 

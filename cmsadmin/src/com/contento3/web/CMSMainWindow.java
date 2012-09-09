@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.web.common.helper.TabSheetHelper;
 import com.contento3.web.content.ImageLoader;
 import com.contento3.web.content.SearchUI;
 import com.contento3.web.helper.SpringContextHelper;
@@ -30,6 +31,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UriFragmentUtility;
@@ -63,12 +65,13 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	SpringContextHelper helper;
 	UriFragmentUtility uri;
 	UIManager uiMgr;
-	
 	/**
 	 * Horizontal split panel that contains the navigation 
 	 * tree on one end and the main working area on the other hand
 	 */
 	HorizontalSplitPanel horiz;
+	
+	UIManager siteUIMgr;
 	
 	CMSMainWindow(final SpringContextHelper helper,final Button logoutButton){ //change
 	//	super(TM.get("app.title"));
@@ -250,9 +253,9 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 	   
       
-	 
-	   
-        //When the item from the navigation is clicked then the 
+	   final TabSheet uiTabsheet = new TabSheet();
+
+	   //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
         root.addListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
@@ -261,63 +264,69 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         		root.expandItem(event.getItemId());
                 String itemSelected = event.getItem().getItemProperty("name").getValue().toString();
                 Object parentOfSelectedItem = hwContainer.getParent(itemSelected);
-        		
-                if (null!=itemSelected && itemSelected.equals("Layout Manager")){
-    	    		UIManager layoutUIMgr = UIManagerCreator.createUIManager(Manager.Layout,helper,getWindow());
-    	    		horiz.setSecondComponent(layoutUIMgr.render(null));
-        		}
-        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
-        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
-    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(Manager.Content,helper,getWindow());
-    	    		horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
-        		}
-        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MANAGER) || 
-        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MANAGER)))){
-    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(Manager.User,helper,getWindow());
-    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
-        		}
-        		else if (null!=itemSelected && itemSelected.equals("Template")){
-    	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(Manager.Template,helper,getWindow());
-    	    		horiz.setSecondComponent(templateUIMgr.render(null));
-        		}
-        		else if (null!=itemSelected && itemSelected.equals("Sites")) {
-            		hwContainer.setChildrenAllowed("Sites", true);	
-            		
-            		//TODO no need to go to fetch sites if they are not null
-            		// but need to handle the situation where a new site is added 
-            		// so that this new site is added and hence displayed to the tree 
-            		//if (CollectionUtils.isEmpty(sites)){
-            			SiteService siteService = (SiteService) helper.getBean("siteService");
-            			sites = siteService.findSitesByAccountId(1);
-            		//}
-            	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
-            			
-            			UIManager siteUIMgr = UIManagerCreator.createUIManager(Manager.Site,helper,getWindow());
-            			horiz.setSecondComponent(siteUIMgr.render(null));
-            			
-            			
-            		for (SiteDto site: sites){
-            				Item item = hwContainer.addItem(site.getSiteName());
-            				if (null != item){
-            					item.getItemProperty("name").setValue(site.getSiteName());
-            					item.getItemProperty("id").setValue(site.getSiteId());
-            					hwContainer.setParent(site.getSiteName(), "Sites");
-            					hwContainer.setChildrenAllowed(site.getSiteName(), false);
-            				}
-            		}
-            	}
-            	
-            	// get pages for this site.
-            	else if (((null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SITES)) || itemSelected.equals(NavigationConstant.SITES)) && null!=itemSelected) {
-            		Integer selectedSiteId = (Integer)event.getItem().getItemProperty("id").getValue();
-            		for (SiteDto siteDto : sites){
-            			if (selectedSiteId == siteDto.getSiteId()){
-            	    		UIManager siteUIMgr = UIManagerCreator.createUIManager(Manager.Site,helper,getWindow());
-            	    		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.SITEDASHBOARD,selectedSiteId));
-            			}
-            		}
-            	}
-           	}	
+
+            	if (!TabSheetHelper.isTabLocked(uiTabsheet)){
+	
+	                if (null!=itemSelected && itemSelected.equals("Layout Manager")){
+	                		UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper,getWindow());
+	                		horiz.setSecondComponent(layoutUIMgr.render(null));
+	        		}
+	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
+	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
+	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper,getWindow());
+	    	    		horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
+	        		}
+	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MANAGER) || 
+	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MANAGER)))){
+	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper,getWindow());
+	    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
+	        		}
+	        		else if (null!=itemSelected && itemSelected.equals("Template")){
+	    	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Template,helper,getWindow());
+	    	    		horiz.setSecondComponent(templateUIMgr.render(null));
+	        		}
+	        		else if (null!=itemSelected && itemSelected.equals("Sites")) {
+	            		hwContainer.setChildrenAllowed("Sites", true);	
+	            		
+	            		//TODO no need to go to fetch sites if they are not null
+	            		// but need to handle the situation where a new site is added 
+	            		// so that this new site is added and hence displayed to the tree 
+	            		//if (CollectionUtils.isEmpty(sites)){
+	            			SiteService siteService = (SiteService) helper.getBean("siteService");
+	            			sites = siteService.findSitesByAccountId(1);
+	            		//}
+	            	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
+	            			
+	            			UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
+	            			horiz.setSecondComponent(siteUIMgr.render(null));
+	            			
+	            			
+	            		for (SiteDto site: sites){
+	            				Item item = hwContainer.addItem(site.getSiteName());
+	            				if (null != item){
+	            					item.getItemProperty("name").setValue(site.getSiteName());
+	            					item.getItemProperty("id").setValue(site.getSiteId());
+	            					hwContainer.setParent(site.getSiteName(), "Sites");
+	            					hwContainer.setChildrenAllowed(site.getSiteName(), false);
+	            				}
+	            		}
+	            	}
+	            	
+	            	// get pages for this site.
+	            	else if (((null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SITES)) || itemSelected.equals(NavigationConstant.SITES)) && null!=itemSelected) {
+	            		Integer selectedSiteId = (Integer)event.getItem().getItemProperty("id").getValue();
+	            		for (SiteDto siteDto : sites){
+	            			if (selectedSiteId == siteDto.getSiteId()){
+	            	    		siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
+	            	    		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.SITEDASHBOARD,selectedSiteId));
+	            			}
+	            		}
+	            	}
+	           	}	
+        	   	else {
+        	   		getWindow().showNotification("You cannot add more than 10 tab at a time.Please close the currently opened tab first.");
+        	   	}
+        	}
         });
                 
 	}
@@ -345,7 +354,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     	//If the user right clicks the 'Site' and then click 'Create new site'
     	//Then a new site creation screen needs to be rendered
     	if (action.equals(ACTION_ADD_SITE)) {
-    		SiteUIManager siteUIMgr = new SiteUIManager(helper,getWindow());
     		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.NEWSITE));
     		//SiteService siteService = (SiteService) helper.getBean("siteService");
     	}
@@ -354,9 +362,18 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     @Override
     public void attach() {
         super.attach(); // Must call.
-        WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
-        HttpSession session = ctx.getHttpSession();
-        session.setAttribute("accountId", new Integer("1"));
+          WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
+          HttpSession session = ctx.getHttpSession();
+
+          if (!session.isNew()){
+        	  session.setMaxInactiveInterval(50000*60);
+          }
+          else {
+        	  session.setMaxInactiveInterval(0);
+          }
+    	  session.setAttribute("accountId", new Integer("1"));
+
+
     }
 
 }

@@ -1,27 +1,15 @@
 package com.contento3.web.content;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.imgscalr.Scalr;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -34,11 +22,8 @@ import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.SiteUIManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.FileResource;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -49,6 +34,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Select;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
@@ -122,7 +108,7 @@ public class ImageMgmtUIManager extends CustomComponent
     
     private ComboBox imageLibrayCombo;
 
-    public ImageMgmtUIManager(final SpringContextHelper helper,final Window parentWindow){
+    public ImageMgmtUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
 		this.imageService = (ImageService)helper.getBean("imageService");

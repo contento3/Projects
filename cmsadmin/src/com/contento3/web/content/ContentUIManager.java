@@ -38,7 +38,7 @@ public class ContentUIManager implements UIManager{
 	/**
 	 * Main tabsheet that hold all the content.
 	 */
-	private TabSheet elementTab = new TabSheet();
+	private TabSheet elementTab;
 	
 	/**
 	 * Represents the navigation items in the Content Manager section.
@@ -53,10 +53,10 @@ public class ContentUIManager implements UIManager{
 	 * @param helper
 	 * @param parentWindow
 	 */
-	public ContentUIManager(final SpringContextHelper helper,final Window parentWindow){
+	public ContentUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
-		
+		this.elementTab = uiTabSheet;
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class ContentUIManager implements UIManager{
 		Component tabsheet = null;
 		if (command.equals(NavigationConstant.CONTENT_MANAGER)){
 			//Add the content screen tab and also add the child items
-			tabsheet = new TabSheet();
+			//tabsheet = new TabSheet();
 			renderContentNavigationItems(hwContainer);
 		}
 		else if (command.equals(NavigationConstant.CONTENT_ART_MGMT)){
@@ -134,7 +134,7 @@ public class ContentUIManager implements UIManager{
 
 		
 		if(element.equals("Article")){
-			ArticleMgmtUIManager articleManager = new ArticleMgmtUIManager(helper, parentWindow);
+			ArticleMgmtUIManager articleManager = new ArticleMgmtUIManager(elementTab,helper, parentWindow);
 			elementTab = (TabSheet) articleManager.render(null);
 		}
 		else if(element.equals("Image")){
@@ -142,7 +142,7 @@ public class ContentUIManager implements UIManager{
 			Button button = new Button();
 			verticalLayout.addComponent(button);
 			verticalLayout.setSizeFull();
-			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(helper,parentWindow);
+			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper,parentWindow);
 
 			elementTab.addTab(verticalLayout, String.format("%s Management",element));
 			button.addListener(new ClickListener(){

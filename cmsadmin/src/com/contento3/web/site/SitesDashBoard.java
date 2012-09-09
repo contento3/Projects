@@ -89,7 +89,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 * @param parentWindow
 	 */
 	
-	public SitesDashBoard(final SpringContextHelper contextHelper,final Window parentWindow) {
+	public SitesDashBoard(final TabSheet uiTabSheet,final SpringContextHelper contextHelper,final Window parentWindow) {
 		this.helper = contextHelper;
 		this.parentWindow = parentWindow;
 		siteService = (SiteService) contextHelper.getBean("siteService");
@@ -98,7 +98,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		
 		articleTable = new Table("Latest Articles");
 		imageTable = new Table("Latest Images");
-
+		siteDashboardTab = uiTabSheet; 
 		//Get accountId from the session
         accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
         //RelatedArticleService relatedArticleService = (RelatedArticleService) contextHelper.getBean("relatedArticleService");
@@ -114,7 +114,6 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	public Component render(String command) {
 		// TODO Auto-generated method stub
 		if (null==siteDashboardTab){ 
-			siteDashboardTab = new TabSheet();
 			siteDashboardTab.setHeight("585");
 			siteDashboardTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 	    	
@@ -162,7 +161,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 			linkButton.addListener(new ClickListener() {
 				
 				public void buttonClick(ClickEvent event) {
-					final SiteUIManager siteUiManager = new SiteUIManager(helper, parentWindow);
+					final SiteUIManager siteUiManager = new SiteUIManager(siteDashboardTab,helper, parentWindow);
 					VerticalLayout newlayout = siteUiManager.renderNewSite();
 					Tab tab1 = siteDashboardTab.addTab(newlayout, "Create site", null);
 					tab1.setClosable(true);

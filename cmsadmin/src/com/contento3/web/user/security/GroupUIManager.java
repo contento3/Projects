@@ -53,16 +53,19 @@ public class GroupUIManager implements UIManager {
 	 * Table contain group items
 	 */
 	Table groupTable = new Table();
+	
+	private TabSheet uiTabSheet;
+	
 	/**
 	 * Constructor
 	 * @param helper
 	 * @param parentWindow
 	 */
-	public GroupUIManager(final SpringContextHelper helper,final Window parentWindow) {
+	public GroupUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
 		this.parentWindow = parentWindow;
 		this.groupService = (GroupService) this.contextHelper.getBean("groupService");
-		
+		this.uiTabSheet = uiTabSheet;
 	}
 	
 	@Override
@@ -76,16 +79,15 @@ public class GroupUIManager implements UIManager {
 	@Override
 	public Component render(final String command) {
 	
-		this.tabSheet = new TabSheet();
-		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		Tab groupTab = tabSheet.addTab(verticalLayout, "Group Management");
+		this.uiTabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		Tab groupTab = uiTabSheet.addTab(verticalLayout, "Group Management");
 		groupTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 		
 		renderGroupContent();
 		
-		return this.tabSheet;
+		return this.uiTabSheet;
 	}
 
 	

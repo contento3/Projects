@@ -64,11 +64,11 @@ public class ArticleMgmtUIManager implements UIManager {
 	 * @param helper
 	 * @param parentWindow
 	 */
-	public ArticleMgmtUIManager(final SpringContextHelper helper,final Window parentWindow) {
+	public ArticleMgmtUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper= helper;
 		this.parentWindow = parentWindow;
 		this.articleService = (ArticleService) this.contextHelper.getBean("articleService");
-	
+		this.tabSheet = uiTabSheet;
 		//Get accountId from the session
         WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
         HttpSession session = ctx.getHttpSession();
@@ -85,7 +85,6 @@ public class ArticleMgmtUIManager implements UIManager {
 	 */
 	@Override
 	public Component render(String command) {
-		this.tabSheet = new TabSheet();
 		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		final Tab articleTab = tabSheet.addTab(verticalLayout, "Article Management");
 		articleTab.setClosable(true);

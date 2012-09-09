@@ -30,26 +30,29 @@ public class UserUIManager implements UIManager {
 	 */
 	private String[] navigationItems = {NavigationConstant.USER_GRP_MGMT};
 
-	public UserUIManager(final SpringContextHelper helper,final Window parentWindow) {
+	/**
+	 * 
+	 */
+	private TabSheet uiTabSheet;
+	
+	public UserUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
 		this.helper = helper;
 		this.parentWindow = parentWindow;
+		this.uiTabSheet = uiTabSheet;
 	}
 
 	@Override
 	public void render() {
-		userMgmtTabSheet = new TabSheet();
 	}
 
 	@Override
 	public Component render(final String command) {
-		userMgmtTabSheet = new TabSheet();
-		return userMgmtTabSheet;
+		return uiTabSheet;
 	}
 
 	@Override
 	public Component render(final String command,final Integer entityFilterId) {
-		userMgmtTabSheet = new TabSheet();
-		return userMgmtTabSheet;
+		return uiTabSheet;
 	}
 
 	/**
@@ -62,15 +65,14 @@ public class UserUIManager implements UIManager {
 		
 		if (command.equals(NavigationConstant.USER_MANAGER)){
 			//Add the group screen tab and also add the child items
-			userMgmtTabSheet = new TabSheet();
 			renderUserNavigationItem(hwContainer);
 		}
 		else if (command.equals(NavigationConstant.USER_GRP_MGMT)){
 			
-			userMgmtTabSheet = (TabSheet) renderGroupUI();
+			uiTabSheet = (TabSheet) renderGroupUI();
 		}
 		
-		return userMgmtTabSheet;
+		return uiTabSheet;
 	}
 	
 	public void renderUserNavigationItem(final HierarchicalContainer hwContainer){
@@ -91,9 +93,8 @@ public class UserUIManager implements UIManager {
 	private Component renderUserElementUI(final String element){
 		TabSheet elementTab = null;
 		if(element.equals("Group")){
-			GroupUIManager groupManager = new GroupUIManager(helper, parentWindow);
+			GroupUIManager groupManager = new GroupUIManager(uiTabSheet,helper, parentWindow);
 			elementTab = (TabSheet) groupManager.render(null);
-			
 		}
 		
 	

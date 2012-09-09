@@ -34,6 +34,10 @@ public class StaticResourceViewResolver extends AbstractView {
 	 */
 	private ImageService imageService;
 	
+	/**
+	 * Service for site.
+	 */
+	private SiteService siteService;
 	
 	@Override
 	protected void renderMergedOutputModel(final Map arg0, final HttpServletRequest request,
@@ -43,10 +47,6 @@ public class StaticResourceViewResolver extends AbstractView {
 		final String[] pageUri = requestURI.split("/image/");
 		String resourcePath ="";
 		
-        final ServletContext servletContext  = request.getServletContext();
-        final ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-	    final SiteService siteService = (SiteService)context.getBean("siteService");
-	    
 	    final String siteDomain = DomainUtil.fetchDomain(request);
 	    final SiteDto site = siteService.findSiteByDomain(siteDomain);
 	    final AccountDto accountDto;
@@ -92,4 +92,8 @@ public class StaticResourceViewResolver extends AbstractView {
 		this.imageService = imageService;
 	}
 
+	public void setSiteService(final SiteService siteService){
+		this.siteService = siteService;
+	}
+	
 }

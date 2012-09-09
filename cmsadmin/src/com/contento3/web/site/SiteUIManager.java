@@ -73,12 +73,18 @@ public class SiteUIManager implements UIManager {
 	 */
 	private SiteConfigUIManager siteConfigUIManager;
 	
-	public SiteUIManager(final SpringContextHelper helper,final Window parentWindow) {
+	/**
+	 * UI tabsheet
+	 */
+	private TabSheet uiTabSheet;
+	
+	public SiteUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
 		this.parentWindow = parentWindow;
 		this.siteService = (SiteService) contextHelper.getBean("siteService");
 		this.pageService = (PageService) contextHelper.getBean("pageService");
 		this.accountService = (AccountService) contextHelper.getBean("accountService");
+		this.uiTabSheet = uiTabSheet;
 	}
 	
 	@Override
@@ -90,19 +96,17 @@ public class SiteUIManager implements UIManager {
 	public Component render(final String command) {
 		Component componentToReturn = null;
 		if(command == null){
-				SitesDashBoard sitesDashBoard = new SitesDashBoard(contextHelper,parentWindow);
+				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper,parentWindow);
 				componentToReturn = sitesDashBoard.render(null);
 		}
 		else if (command.equals(NEWSITE)) {
-			TabSheet newsiteTab = new TabSheet();
-			newsiteTab = new TabSheet();
-			newsiteTab.setHeight("675");
-			newsiteTab.setWidth("775");
+			uiTabSheet.setHeight("675");
+			uiTabSheet.setWidth("775");
 			VerticalLayout layout = renderNewSite();
-			newsiteTab.addComponent(layout);
-			Tab tab1 = newsiteTab.addTab(layout, "Create site", null);
+			uiTabSheet.addComponent(layout);
+			Tab tab1 = uiTabSheet.addTab(layout, "Create site", null);
 			tab1.setClosable(true);
-			componentToReturn = newsiteTab;
+			componentToReturn = uiTabSheet;
 		}
 		return componentToReturn;
 	}
@@ -127,15 +131,15 @@ public class SiteUIManager implements UIManager {
 	public Component renderSiteDashboard(final Integer siteId){
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
 		final VerticalLayout veticalLayout = new VerticalLayout();
-		final TabSheet pagesTab = new TabSheet();
+		//final TabSheet pagesTab = new TabSheet();
 		final Label heading = new Label("Site dashboard");
 		heading.setStyleName("screenHeading");
 		veticalLayout.addComponent(heading);
 		veticalLayout.addComponent(new HorizontalRuler());
 		veticalLayout.setMargin(true);
 		pageUIManager = new PageUIManager(siteService,pageService,contextHelper,parentWindow);
-		Component component = pageUIManager.renderPageListing(siteId,pagesTab,horizontalLayout,veticalLayout);
-		renderButtons(horizontalLayout,siteId,pagesTab);
+		Component component = pageUIManager.renderPageListing(siteId,uiTabSheet,horizontalLayout,veticalLayout);
+		renderButtons(horizontalLayout,siteId,uiTabSheet);
 		return component;
 	}
 	

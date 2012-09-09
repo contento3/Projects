@@ -8,14 +8,13 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 
-	<bean id="myDataSource"
+ 	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/cms" />
 		<property name="username" value="root" />
 		<property name="password" value="root" />
 	</bean>
-
 
 <!--  
 	<bean id="myDataSource"
@@ -25,7 +24,7 @@
 		<property name="username" value="superuser" />
 		<property name="password" value="superuser" />
 	</bean>
--->
+ -->
 	
 	<bean id="cmsSessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
