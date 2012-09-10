@@ -25,7 +25,7 @@ public class ImageLibraryServiceImpl implements ImageLibraryService  {
 	
 	@Override
 	public Integer create(final ImageLibraryDto dto) throws EntityAlreadyFoundException {
-		return null;
+		return imageLibraryDao.persist(imageLibraryAssembler.dtoToDomain(dto));
 	}
 
 	@Override
