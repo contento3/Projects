@@ -148,7 +148,8 @@ public class ContentUIManager implements UIManager{
 			verticalLayout.addComponent(button);
 			verticalLayout.setSizeFull();
 			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper,parentWindow);
-			elementTab.addTab(verticalLayout, String.format("%s Management",element));
+			Tab tab = elementTab.addTab(verticalLayout, String.format("%s Management",element));
+			tab.setClosable(true);
 			
 			Label imageHeading = new Label("Image Manager");
 			imageHeading.setStyleName("screenHeading");

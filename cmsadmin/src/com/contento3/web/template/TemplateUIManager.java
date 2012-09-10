@@ -120,6 +120,7 @@ public class TemplateUIManager implements UIManager{
     	layout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 
     	Tab tab2 = templateTab.addTab(layout,"Template",null);
+    	tab2.setClosable(true);
     	renderTemplateListTab(layout);
 		return templateTab;
 	}
@@ -191,6 +192,7 @@ public class TemplateUIManager implements UIManager{
 		globalTemplateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		Tab globalTemplatesTab = accordion.addTab(globalTemplateListLayout, "Global Templates", null);
 		accordion.addTab(globalTemplateListLayout, "Global Templates", null);
+		globalTemplatesTab.setClosable(true);
 		Collection <TemplateDirectoryDto> globalTemplateDirectoryList =  templateDirectoryService.findRootDirectories(true);
 		globalTemplateListLayout.addComponent(populateTemplateList(globalTemplateDirectoryList,templateDirectoryService));
 

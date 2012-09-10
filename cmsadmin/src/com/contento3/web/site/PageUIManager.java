@@ -126,7 +126,8 @@ public class PageUIManager {
 		pagesTab.setWidth("775");
 
 		SiteDto siteDto = siteService.findSiteById(siteId);
-		pagesTab.addTab(pageLayout, siteDto.getSiteName(),null);
+		Tab tab = pagesTab.addTab(pageLayout, siteDto.getSiteName(),null);
+		tab.setClosable(true);
 		pagesTab.setImmediate(true);
 		pagesTab.addListener(new SelectedTabChangeListener() {
 			private static final long serialVersionUID = 1L;
@@ -416,7 +417,8 @@ public class PageUIManager {
 		// otherwise add a section to add layout based on a template.
 		else {
 			final VerticalLayout pageSectionLayout = new VerticalLayout();
-			pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
+			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
+			tab.setClosable(true);
 			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM);
 			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper));
 		}
@@ -438,7 +440,9 @@ public class PageUIManager {
 			final VerticalLayout pageSectionLayout,
 			final PageSectionDto pageSectionDto,
 			final PageTemplateDto pageTemplateDto) {
-		pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), null);
+		Tab tab = pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), null);
+		tab.setClosable(true);
+
 		pageTemplateDto.setSectionTypeId(pageSectionDto.getSectionTypeDto().getId());
 		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
 		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findById(pageSectionDto.getSectionTypeDto().getId());
