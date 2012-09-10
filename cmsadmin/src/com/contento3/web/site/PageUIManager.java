@@ -394,7 +394,8 @@ public class PageUIManager {
 		pageLayoutsTab.setWidth("775");
 
 		PageTemplateDto pageTemplateDto = new PageTemplateDto();
-		pageTemplateDto.setPageId(selectedPageId);
+		//pageTemplateDto.setPageId(selectedPageId);
+		pageTemplateDto.setPageId(pageDtoWithLayout.getPageId());
 		parentWindow.setData(pageTemplateDto);
 
 		// If there are layout with page sections then add it
