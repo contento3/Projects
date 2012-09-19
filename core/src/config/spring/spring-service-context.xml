@@ -206,9 +206,12 @@
 	
 	<bean id="saltedHibernateUserAssembler"
 		class="com.contento3.security.user.service.impl.SaltedHibernateUserAssemblerImpl">
+		<constructor-arg ref="accountAssembler" />
 	</bean>
 	
 	<bean id="saltedHibernateUserService"
 		class="com.contento3.security.user.service.impl.SaltedHibernateUserServiceImpl">
+		<constructor-arg ref="saltedHibernateUserDao" />
+		<constructor-arg ref="saltedHibernateUserAssembler" />
 	</bean>
 </beans>

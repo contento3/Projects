@@ -1,5 +1,6 @@
 package com.contento3.security.user.dto;
 
+import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
 
 public class SaltedHibernateUserDto extends Dto {
@@ -9,13 +10,26 @@ public class SaltedHibernateUserDto extends Dto {
 	 */
 	private String userName;
 	
-
-	public String getUserName() {
+	/**
+	 * Account associated to user
+	 */
+	private AccountDto account;
+	
+	@Override
+	public String getName() {
 		return userName;
 	}
-
 
 	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
+
+	public final AccountDto getAccount() {
+		return account;
+	}
+
+	public final void setAccount(final AccountDto account) {
+		this.account = account;
+	}
+	
 }
