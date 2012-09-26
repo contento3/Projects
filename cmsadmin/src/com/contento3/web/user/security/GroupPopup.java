@@ -12,6 +12,7 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
@@ -97,7 +98,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(35,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(41,Sizeable.UNITS_PERCENTAGE);
     	popupWindow.setWidth(20,Sizeable.UNITS_PERCENTAGE);
        
     	/* Add the window inside the main window. */
@@ -109,34 +110,36 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
         final Label label = new Label("Group Name");
+        label.setWidth(100,Sizeable.UNITS_PERCENTAGE);
         final HorizontalLayout inputDataLayout = new HorizontalLayout();
-        final TextField textField = new TextField("");
+        final TextField textField = new TextField("Group Name");
         textField.setInputPrompt("Enter group name");
+        textField.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        textField.setColumns(20);
         
+        inputDataLayout.setSizeFull();
         inputDataLayout.setSpacing(true);
-        inputDataLayout.addComponent(label);
-        inputDataLayout.setComponentAlignment(label, Alignment.BOTTOM_RIGHT);
         inputDataLayout.addComponent(textField);
+        inputDataLayout.setComponentAlignment(textField, Alignment.TOP_LEFT);
         
-        popupMainLayout.addComponent(inputDataLayout);
         popupMainLayout.setSpacing(true);
-        
-        //adding description area
+        popupMainLayout.addComponent(inputDataLayout);
+       
+        /* adding description area */
         final HorizontalLayout addDescriptionLayout = new HorizontalLayout();
-        final Label label2 = new Label("Description");
-        label2.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-        final TextArea descriptionArea = new TextArea();
+       
+        final TextArea descriptionArea = new TextArea("Description");
         descriptionArea.setInputPrompt("Enter group description");
-     	//descriptionArea.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+     	descriptionArea.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+     	descriptionArea.setColumns(20);
+    	descriptionArea.setRows(5);
+     	
+     	addDescriptionLayout.setSizeFull();
      	addDescriptionLayout.setSpacing(true);
-     	addDescriptionLayout.addComponent(label2);
      	addDescriptionLayout.addComponent(descriptionArea);
-    	addDescriptionLayout.setComponentAlignment(label2, Alignment.TOP_RIGHT);
-    	addDescriptionLayout.setComponentAlignment(descriptionArea, Alignment.TOP_CENTER);
+    	addDescriptionLayout.setComponentAlignment(descriptionArea, Alignment.TOP_LEFT);
      	popupMainLayout.addComponent(addDescriptionLayout);
      
-     	
-        
         final HorizontalLayout addButtonLayout = new HorizontalLayout();
         popupMainLayout.addComponent(addButtonLayout);
 

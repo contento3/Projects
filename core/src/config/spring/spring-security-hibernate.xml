@@ -15,11 +15,39 @@
 			    <value>com.contento3.security.group.model.Group</value>
 			    <value>com.contento3.security.group.model.GroupAuthority</value> 
 			    <value>com.contento3.security.user.model.SaltedHibernateUser</value>
+			    <value>com.contento3.account.model.Account</value>
 			</list>
 		</property>	
-	
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
+			</props>
+		</property>
 	</bean>
 
+
+	<bean id="cacheMonitor" class="com.contento3.common.aspect.CacheMonitor">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:/config/spring/ehcache.xml" />
+	</bean>
+	
+	
+	<aop:aspectj-autoproxy>
+	    <aop:include name="cacheMonitor" /> 
+	</aop:aspectj-autoproxy>
+	<bean id="accountCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.account.model.Account" />
+	</bean>
 	<!-- GroupDao -->
 	<bean id="groupDao"
 		class="com.contento3.security.group.dao.impl.GroupDaoHibernateImpl">

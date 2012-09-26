@@ -77,6 +77,14 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("delete").setValue(deleteLink);
 		deleteLink.addListener(new GroupDeleteClickListener(group, window, contextHelper, deleteLink, groupTable));
 		
+		//add view button item into list
+		final Button viewLink = new Button("View users",new AssociatedUserPopup(window, contextHelper, new Table()), "openButtonClick");
+		viewLink.setCaption("View");
+		viewLink.setData(group.getGroupId());
+		viewLink.addStyleName("associated users");
+		viewLink.setStyleName(BaseTheme.BUTTON_LINK);
+		item.getItemProperty("associated users").setValue(viewLink);
+		
 	}
 
 	/**
@@ -89,6 +97,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		groupContainer.addContainerProperty("groups", String.class, null);
 		groupContainer.addContainerProperty("edit", Button.class, null);
 		groupContainer.addContainerProperty("delete", Button.class, null);
+		groupContainer.addContainerProperty("associated users", Button.class, null);
 
 		groupTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 		groupTable.setContainerDataSource(groupContainer);

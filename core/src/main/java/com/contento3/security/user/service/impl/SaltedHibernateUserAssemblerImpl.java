@@ -3,16 +3,25 @@ package com.contento3.security.user.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.contento3.account.service.AccountAssembler;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.model.SaltedHibernateUser;
 import com.contento3.security.user.service.SaltedHibernateUserAssembler;
 
 public class SaltedHibernateUserAssemblerImpl implements SaltedHibernateUserAssembler {
 
+	/**
+	 * Transform Account to AccountDto and vice versa.
+	 */
+	private AccountAssembler accountAssembler;
+	public SaltedHibernateUserAssemblerImpl(final AccountAssembler accountAssembler) {
+		this.accountAssembler = accountAssembler;
+	}
 	@Override
 	public SaltedHibernateUser dtoToDomain(final SaltedHibernateUserDto dto) {
 		SaltedHibernateUser domain = new SaltedHibernateUser();
-		domain.setUserName(dto.getUserName());
+		domain.setUserName(dto.getName());
+		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		return domain;
 	}
 
@@ -20,6 +29,7 @@ public class SaltedHibernateUserAssemblerImpl implements SaltedHibernateUserAsse
 	public SaltedHibernateUserDto domainToDto(final SaltedHibernateUser domain) {
 		SaltedHibernateUserDto dto = new SaltedHibernateUserDto();
 		dto.setUserName(domain.getUserName());
+		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
 		return dto;
 	}
 

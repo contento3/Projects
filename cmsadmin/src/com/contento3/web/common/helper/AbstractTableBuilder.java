@@ -40,6 +40,7 @@ public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
 			table.setPageLength(1);
 			buildEmptyTable(container);
 		}
+		
 		return table;
 	}
 	
