@@ -6,8 +6,8 @@ import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.GroupDeleteClickListener;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
@@ -56,7 +56,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 	 * @param groupContainer
 	 */
 	@Override
-	public void assignDataToTable(final Dto dto,final Table groupTable,final IndexedContainer groupContainer) {
+	public void assignDataToTable(final Dto dto,final Table groupTable,final Container groupContainer) {
 		GroupDto group = (GroupDto) dto;
 		Item item = groupContainer.addItem(group.getGroupId());
 		item.getItemProperty("groups").setValue(group.getGroupName());
@@ -85,7 +85,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 	 * @param groupContainer
 	 */
 	@Override
-	public void buildHeader(final Table groupTable,final IndexedContainer groupContainer) {
+	public void buildHeader(final Table groupTable,final Container groupContainer) {
 		groupContainer.addContainerProperty("groups", String.class, null);
 		groupContainer.addContainerProperty("edit", Button.class, null);
 		groupContainer.addContainerProperty("delete", Button.class, null);
@@ -99,7 +99,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 	 * @param groupContainer
 	 */
 	@Override
-	public void buildEmptyTable(final IndexedContainer groupContainer){
+	public void buildEmptyTable(final Container groupContainer){
 		final Item item = groupContainer.addItem("-1");
 		item.getItemProperty("groups").setValue("No record found.");
 	}

@@ -41,4 +41,10 @@ public class TemplateDirectoryServiceImpl
 	public Collection<TemplateDirectoryDto> findChildDirectories(final Integer parentId){
 		return assembler.domainsToDtos(directoryDao.findChildDirectories(parentId));
 	}
+
+	@Override
+	public void delete(TemplateDirectoryDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
 }

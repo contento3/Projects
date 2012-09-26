@@ -38,4 +38,10 @@ public class PageLayoutTypeServiceImpl implements PageLayoutTypeService {
 		return layoutTypeDAO.persist(assembler.dtoToDomain(dto));
 	}
 
+	@Override
+	public void delete(PageLayoutTypeDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

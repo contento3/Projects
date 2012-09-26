@@ -85,4 +85,10 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionType));
 	}
 
+	@Override
+	public void delete(PageTemplateDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

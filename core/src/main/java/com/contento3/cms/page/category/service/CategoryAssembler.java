@@ -5,8 +5,5 @@ import com.contento3.cms.page.category.model.Category;
 import com.contento3.common.assembler.Assembler;
 
 public interface CategoryAssembler extends Assembler<CategoryDto,Category> {
-	/**
-	 * clear stack in categoryAssmblerImpl class
-	 */
-	public void clearStack();
+
 }

@@ -1,13 +1,15 @@
 package com.contento3.web;
 
 import java.util.Collection;
+
 import javax.servlet.http.HttpSession;
+
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.common.helper.TabSheetHelper;
-import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.content.SearchUI;
+import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.layout.LayoutManagerRenderer;
 import com.contento3.web.site.SiteMainAreaRenderer;
@@ -25,6 +27,7 @@ import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -144,13 +147,9 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		final Button accountButton = new Button ("Account Settings");
 		buttonsLayout.addComponent(accountButton);
 		accountButton.addStyleName("link");
-
 		
 		buttonsLayout.addComponent(logoutButton);
 		buttonsLayout.setSpacing(true);     
-	 
-		
-
      
         horiz = new HorizontalSplitPanel();
         
@@ -235,7 +234,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         Item childItem = null;
 
         hLayout.addComponent(root);
-
         hLayout.addComponent(uri);
         hLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
         horiz.addComponent(hLayout);
@@ -245,13 +243,9 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         horiz.addComponent(l);
     	l.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 
-       root.setImmediate(true);
-       vert.addComponent(mainAndContentSplitter); 
-        
-
-	   
-      
-	   final TabSheet uiTabsheet = new TabSheet();
+    	root.setImmediate(true);
+    	vert.addComponent(mainAndContentSplitter); 
+        final TabSheet uiTabsheet = new TabSheet();
 
 	   //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
@@ -272,7 +266,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
 	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper,getWindow());
-	    	    		horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
+	    	    		
+	    	    		Component tabSheet = contentUIMgr.render(itemSelected,hwContainer);
+	    	    		if (null!=tabSheet){
+	    	    			horiz.setSecondComponent(tabSheet);
+	    	    		}
 	        		}
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MANAGER) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MANAGER)))){
@@ -362,7 +360,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         super.attach(); // Must call.
           WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
           HttpSession session = ctx.getHttpSession();
-
           if (!session.isNew()){
         	  session.setMaxInactiveInterval(50000*60);
           }
@@ -370,8 +367,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         	  session.setMaxInactiveInterval(0);
           }
     	  session.setAttribute("accountId", new Integer("1"));
-
-
     }
 
 }

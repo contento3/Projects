@@ -5,54 +5,55 @@ import java.util.Collection;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.dto.Dto;
-import com.vaadin.data.Container;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Table;
+import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.ui.TreeTable;
 
-public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
-	
+public abstract class AbstractTreeTableBuilder implements TableBuilder<TreeTable,Dto> {
+
 	/**
 	 * Table to be build
 	 */
-	final Table table;
+	final TreeTable treeTable;
 
 	/**
 	 * Container to contain the table data
 	 */
-	Container container = new IndexedContainer();
+	HierarchicalContainer container = new HierarchicalContainer();
 
-	public AbstractTableBuilder (final Table table){
-		this.table = table;
+	public AbstractTreeTableBuilder (final TreeTable treeTable){
+		this.treeTable = treeTable;
 	}
 	
 	/**
 	 * Builds the table using the Collection and then returns the table.
 	 */
-	public Table build(final Collection<Dto> dtos) {
-		buildHeader(table,container);
+	@Override
+	public TreeTable build(final Collection<Dto> dtos) {
+		buildHeader(treeTable,container);
 		if (!CollectionUtils.isEmpty(dtos)) {
 			for (Dto dto : dtos) {
-				assignDataToTable(dto, table,container);
+				assignDataToTable(dto, treeTable,container);
 			}
-			table.setPageLength(dtos.size());
+			//table.setPageLength(dtos.size());
 		}
 		else{
-			table.setPageLength(1);
+			//tree.setPageLength(1);
 			buildEmptyTable(container);
 		}
-		return table;
+		return treeTable;
 	}
-	
+
 	/**
 	 * Rebuilds the tables by first removing the items 
 	 * and then add the data passed and then returns the table
 	 */
-	public Table rebuild(final Collection<Dto> dtos){
-		table.getContainerDataSource().removeAllItems();
-		container = new IndexedContainer();
+	@Override
+	public TreeTable rebuild(final Collection<Dto> dtos){
+		treeTable.getContainerDataSource().removeAllItems();
+		container = new HierarchicalContainer();
 		return build(dtos);
 	}
-	
+
 	/**
 	 * Assign data to table.This is left to be implemented 
 	 * to the actual implementation so that the use can 
@@ -61,19 +62,20 @@ public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
 	 * @param table
 	 * @param container
 	 */
-	public abstract void assignDataToTable(Dto dto,Table table,Container container);
+	public abstract void assignDataToTable(Dto dto,TreeTable treeTable,HierarchicalContainer container);
 
 	/**
 	 * Build the header of the table
 	 * @param siteDomainTable
 	 * @param domainsContainer
 	 */
-	public abstract void buildHeader(Table table,Container container);
+	public abstract void buildHeader(TreeTable treeTable,HierarchicalContainer container);
 
 	/**
 	 * Used to set a message in a table for empty table
 	 * @param container
 	 */
-	public abstract void buildEmptyTable(Container container);
+	public abstract void buildEmptyTable(HierarchicalContainer container);
+
 
 }

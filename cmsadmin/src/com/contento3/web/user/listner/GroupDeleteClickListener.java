@@ -85,7 +85,7 @@ public class GroupDeleteClickListener implements ClickListener {
 	 */
 	private void deleteGroup(final GroupService groupService,Object id){
 		try {
-			groupService.delete(groupDto);
+			groupService.deleteWithException(groupDto);
 			table.removeItem(id);
 			table.setPageLength(table.getPageLength()-1);
 			window.showNotification(groupDto.getGroupName()+" group deleted succesfully");

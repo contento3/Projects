@@ -64,4 +64,10 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count));
 	}
 
+	@Override
+	public void delete(ArticleDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

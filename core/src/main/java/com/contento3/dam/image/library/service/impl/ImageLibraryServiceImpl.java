@@ -41,4 +41,10 @@ public class ImageLibraryServiceImpl implements ImageLibraryService  {
 		return imageLibraryAssembler.domainToDto(imageLibraryDao.findById(imageLibraryId));
 	}
 
+	@Override
+	public void delete(ImageLibraryDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

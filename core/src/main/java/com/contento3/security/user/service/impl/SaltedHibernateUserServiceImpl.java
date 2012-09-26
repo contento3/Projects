@@ -13,4 +13,10 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		return null;
 	}
 
+	@Override
+	public void delete(SaltedHibernateUserDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

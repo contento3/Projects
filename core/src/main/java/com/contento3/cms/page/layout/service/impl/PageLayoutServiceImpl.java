@@ -57,4 +57,10 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 		
 		return newLayoutId;
 	}
+
+	@Override
+	public void delete(PageLayoutDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
 }

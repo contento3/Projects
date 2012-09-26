@@ -79,4 +79,10 @@ public class ImageServiceImpl implements ImageService {
 		imageDao.update(image);
 	}
 
+	@Override
+	public void delete(ImageDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

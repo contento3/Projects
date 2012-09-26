@@ -33,5 +33,11 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		return templateTypeAssembler.domainToDto(templateType);
 	}
 
+	@Override
+	public void delete(TemplateTypeDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

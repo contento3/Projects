@@ -109,10 +109,12 @@ implements Window.CloseListener{
 	        siteDomainButton.setCaption("Save");
 	        popupWindow.setCaption("Edit domain");
 	        domainId = (Integer)event.getButton().getData();
+	        final SiteDomainDto siteDomainDto = siteDomainService.findById(domainId);
+	        textField.setValue(siteDomainDto.getDomainName());
 	        siteDomainButton.addListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
-					handleEditDomain(textField,domainId,updatedSiteDto);
+					handleEditDomain(textField,domainId,siteDomainDto);
 				}	
 			});
     	}
@@ -148,16 +150,10 @@ implements Window.CloseListener{
      * Handles adding new SiteDomain
      * @param textField
      */
-	private void handleEditDomain(final TextField textField,final Integer domainId,final SiteDto updatedSiteDto){
-		Collection <SiteDomainDto> siteDomainDtos = updatedSiteDto.getSiteDomainDto();
+	private void handleEditDomain(final TextField textField,final Integer domainId,final SiteDomainDto siteDomainDto){
 		
-		for(SiteDomainDto dto:siteDomainDtos){
-			if (dto.getDomainId().equals(domainId)){
-				dto.setDomainName(textField.getValue().toString());
-				siteDomainService.update(dto);
-				break;
-			}
-		}
+		siteDomainDto.setDomainName(textField.getValue().toString());
+		siteDomainService.update(siteDomainDto);
 		resetTable();
     }
 

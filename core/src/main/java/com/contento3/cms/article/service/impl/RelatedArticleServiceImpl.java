@@ -51,4 +51,10 @@ public class RelatedArticleServiceImpl implements RelatedArticleService{
 		
 	}
 
+	@Override
+	public void delete(RelatedArticleDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

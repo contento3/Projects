@@ -1,6 +1,7 @@
 package com.contento3.web.content.article;
 
 import java.text.SimpleDateFormat;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.common.dto.Dto;
@@ -8,8 +9,8 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.article.listner.ArticleDeleteClickListner;
 import com.contento3.web.content.article.listner.ArticleFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
@@ -61,8 +62,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 	 * @param articleContainer
 	 */
 	@Override
-	public void assignDataToTable(final Dto dto,final Table articleTable,
-			final IndexedContainer articleContainer) {
+	public void assignDataToTable(final Dto dto,final Table articleTable,final Container articleContainer) {
 		ArticleDto article = (ArticleDto) dto;
 		Item item = articleContainer.addItem(article.getArticleId());
 		item.getItemProperty("articles").setValue(article.getHead());
@@ -86,31 +86,28 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
 		deleteLink.addListener(new ArticleDeleteClickListner(article, window, contextHelper, deleteLink, articleTable));
-
 	}
+
 	/**
 	 * Build header for table
 	 */
 	@Override
-	public void buildHeader(final Table articleTable,final IndexedContainer articleContainer) {
+	public void buildHeader(final Table articleTable,final Container articleContainer) {
 		articleContainer.addContainerProperty("articles", String.class, null);
 		articleContainer.addContainerProperty("date created", String.class, null);
 		articleContainer.addContainerProperty("date posted", String.class, null);
 		articleContainer.addContainerProperty("expiry date", String.class, null);
 		articleContainer.addContainerProperty("edit", Button.class, null);
 		articleContainer.addContainerProperty("delete", Button.class, null);
-		
-
 		articleTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 		articleTable.setContainerDataSource(articleContainer);
-
 	}
 
 	/**
 	 * Create empty table
 	 */
 	@Override
-	public void buildEmptyTable(final IndexedContainer articleContainer) {
+	public void buildEmptyTable(final Container articleContainer) {
 		Item item = articleContainer.addItem("-1");
 		item.getItemProperty("articles").setValue("No record found.");
 	}
