@@ -1,9 +1,7 @@
 package com.contento3.web.common.helper;
 
 import java.util.Collection;
-
 import org.apache.log4j.Logger;
-
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
@@ -21,9 +19,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -33,6 +29,11 @@ import com.vaadin.ui.Window.Notification;
 /** Component contains a button that allows opening a window. */
 public class PageTemplateAssignmentPopup extends CustomComponent
                           implements Window.CloseListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = Logger.getLogger(PageTemplateAssignmentPopup.class);
 
@@ -45,10 +46,11 @@ public class PageTemplateAssignmentPopup extends CustomComponent
     PageTemplateService pageTemplateService;
     boolean isModalWindowClosable = true;
     SpringContextHelper helper;
-    
-    public PageTemplateAssignmentPopup(final String label,final Window main,final SpringContextHelper helper) {
+	final AbstractTableBuilder templateTableBuilder;
+    public PageTemplateAssignmentPopup(final String label,final Window main,final SpringContextHelper helper,final AbstractTableBuilder templateTableBuilder) {
         mainwindow = main;
         this.helper = helper;
+        this.templateTableBuilder = templateTableBuilder;
         // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
         
@@ -120,11 +122,12 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         
         closebutton.addListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			public void buttonClick(ClickEvent event) {
 				PageTemplateDto dto = (PageTemplateDto)mainwindow.getData();
 				Integer templateId = templateListingHelper.getSelectedItemId();
 				
-				//If it is greater than zero then a template is selected 
+				//If it is greater than zero then a template is selected '/
 				//otherwise nothing is selected or directory is selected.
 				if (templateId>0){
 					dto.setTemplateId(templateId);
@@ -138,6 +141,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 					pageTemplateService = (PageTemplateService)helper.getBean("pageTemplateService");
 					try {
 						pageTemplateService.create(dto);
+						templateTableBuilder.rebuild((Collection)pageTemplateService.findByPageId(dto.getPageId()));
 						mainwindow.showNotification("Template associated to page successfully");
 						isModalWindowClosable = true;
 					} catch (EntityAlreadyFoundException e) {

@@ -24,6 +24,7 @@ import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
@@ -84,6 +85,8 @@ public class PageUIManager {
 
 	TabSheet pageLayoutsTab;
 
+
+	
 	public PageUIManager (final SiteService siteService,final PageService pageService,final SpringContextHelper helper,final Window parentWindow){
 		this.siteService = siteService;
 		this.pageService = pageService;
@@ -398,6 +401,11 @@ public class PageUIManager {
 		pageTemplateDto.setPageId(pageDtoWithLayout.getPageId());
 		parentWindow.setData(pageTemplateDto);
 
+		//creating associated template table
+		Table templateTable = new Table();
+		final AbstractTableBuilder templateTableBuilder = new PageTemplateTableBuilder(contextHelper, parentWindow, templateTable);
+		
+		
 		// If there are layout with page sections then add it
 		if (null != layoutDto && !layoutDto.getLayoutTypeDto().getName().equalsIgnoreCase(PageSectionTypeEnum.CUSTOM.toString())) {
 			final List<PageSectionDto> pageSections = (List<PageSectionDto>) layoutDto
@@ -412,35 +420,47 @@ public class PageUIManager {
 				pageLayoutsTab.addComponent(pageSectionLayout);
 				pageLayoutsTab.setSizeFull();
 				renderPageSection(pageLayoutsTab, pageSectionLayout,
-						pageSectionIterator.next(), pageTemplateDto);
+						pageSectionIterator.next(), pageTemplateDto,templateTableBuilder,templateTable);
+				pageSectionLayout.addComponent(templateTable);
 			}
 		}
 		// otherwise add a section to add layout based on a template.
 		else {
 			final VerticalLayout pageSectionLayout = new VerticalLayout();
+			pageSectionLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+			pageSectionLayout.setSpacing(true);
 			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
 			tab.setClosable(true);
-			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM);
-			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper));
+			
+			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
+			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM,templateTableBuilder,templateTable);
+			pageSectionLayout.addComponent(templateTable);
 		}
 		return pageLayoutsTab;
 	}
 
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void renderPageTemplateList(final VerticalLayout pageSectionLayout,
-			final PageSectionTypeEnum sectionType) {
+			final PageSectionTypeEnum sectionType,final AbstractTableBuilder templateTableBuilder,final Table templateTable) {
 		PageTemplateService pageTemplateService = (PageTemplateService) contextHelper.getBean("pageTemplateService");
 		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
 		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findByName(sectionType);
 		Collection<PageTemplateDto> newPageTemplates = pageTemplateService.findByPageAndPageSectionType(selectedPageId,sectionTypeDto.getId());
 
-		if (!CollectionUtils.isEmpty(newPageTemplates)){}
+		//adding associated template item to table
+		if (!CollectionUtils.isEmpty(newPageTemplates)){
+			templateTableBuilder.build((Collection)newPageTemplates);
+		}
 	}
 
 
 	public void renderPageSection(final TabSheet pageLayoutsTab,
 			final VerticalLayout pageSectionLayout,
 			final PageSectionDto pageSectionDto,
-			final PageTemplateDto pageTemplateDto) {
+			final PageTemplateDto pageTemplateDto,
+			final AbstractTableBuilder templateTableBuilder,
+			final Table templateTable) {
 		Tab tab = pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), null);
 		tab.setClosable(true);
 
@@ -448,8 +468,9 @@ public class PageUIManager {
 		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
 		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findById(pageSectionDto.getSectionTypeDto().getId());
 
-		renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.valueOf(sectionTypeDto.getName()));
-		pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open",parentWindow, contextHelper));
+		pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
+		renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.valueOf(sectionTypeDto.getName()),templateTableBuilder,templateTable);
+	
 	}
 
 	/**
