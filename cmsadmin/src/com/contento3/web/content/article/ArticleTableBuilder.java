@@ -85,7 +85,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new ArticleDeleteClickListner(article, window, contextHelper, deleteLink, articleTable));
+		deleteLink.addListener(new ArticleDeleteClickListner(article, window, articleService, deleteLink, articleTable));
 	}
 
 	/**

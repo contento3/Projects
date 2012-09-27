@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.contento3.common.dto.Dto;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -17,7 +18,7 @@ import com.vaadin.ui.Table;
 public abstract class GenricEntityPicker extends AbstractTableBuilder  {
 
 	/**
-	 * used to add or delte item from table
+	 * used to add or delete item from table
 	 */
 	private final Button addDeleteButton;
 	
@@ -43,7 +44,7 @@ public abstract class GenricEntityPicker extends AbstractTableBuilder  {
 	 */
 	public void build() {
 		build(dtos);
-		((Table) container).sort(new Object[] { "name" }, new boolean[] { true });
+		((IndexedContainer) container).sort(new Object[] { "name" }, new boolean[] { true });
 		buttonlistner(table, addDeleteButton);
 	}
 

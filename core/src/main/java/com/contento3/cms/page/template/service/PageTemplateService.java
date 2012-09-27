@@ -17,5 +17,11 @@ public interface PageTemplateService extends Service<PageTemplateDto> {
 	Collection <PageTemplateDto> findByPageId(Integer pageId);
 
 	PageTemplatePK create(PageTemplateDto dto) throws EntityAlreadyFoundException;
+	
+	/**
+	 * delete page template
+	 * @param dto
+	 */
+	public void delete(final PageTemplateDto dto);
 
 }

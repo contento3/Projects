@@ -1,7 +1,9 @@
 package com.contento3.cms.page.template.dto;
 
+import com.contento3.common.dto.Dto;
 
-public class PageTemplateDto implements Comparable<PageTemplateDto> {
+
+public class PageTemplateDto extends Dto implements Comparable<PageTemplateDto> {
 	private Integer pageId;
 	
 	private Integer templateId;

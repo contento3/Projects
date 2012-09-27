@@ -2,6 +2,9 @@ package com.contento3.cms.page.template.service.impl;
 
 import java.util.Collection;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.contento3.cms.page.dao.PageDao;
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.page.section.dao.PageSectionTypeDao;
@@ -85,10 +88,30 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionType));
 	}
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void delete(PageTemplateDto dtoToDelete) {
-		// TODO Auto-generated method stub
+	public void delete(final PageTemplateDto dto) {
+		PageSectionType pageSectionType;
 		
+		if (null==dto.getSectionTypeId()){
+			pageSectionType = sectionTypeDao.findByName("CUSTOM");
+		}
+		else {
+			pageSectionType = sectionTypeDao.findById(dto.getSectionTypeId());
+		}
+		
+		Template template = templateDao.findById(dto.getTemplateId());
+		Page page = pageDao.findById(dto.getPageId());
+		
+		PageTemplatePK pk = new PageTemplatePK();
+		pk.setPage(page);
+		pk.setSectionType(pageSectionType);
+		pk.setTemplate(template);
+
+		PageTemplate pageTemplatePresent = dao.findById(pk);
+		dao.delete(pageTemplatePresent);
 	}
+	
+	
 
 }

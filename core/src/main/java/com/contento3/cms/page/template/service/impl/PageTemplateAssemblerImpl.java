@@ -21,12 +21,14 @@ public class PageTemplateAssemblerImpl implements PageTemplateAssembler  {
 		domain.setTemplateOrder(dto.getOrder());
 		
 		
+		
 		return domain;
 	}
 
 	@Override
 	public PageTemplateDto domainToDto(PageTemplate domain) {
 		PageTemplateDto pageTemplateDto = new PageTemplateDto();
+		pageTemplateDto.setPageId(domain.getPrimaryKey().getPage().getPageId());
 		pageTemplateDto.setOrder(domain.getTemplateOrder());
 		pageTemplateDto.setTemplateName(domain.getPrimaryKey().getTemplate().getTemplateName());
 		pageTemplateDto.setTemplateId(domain.getPrimaryKey().getTemplate().getTemplateId());
