@@ -32,6 +32,10 @@ public class EntityDeleteClickListener<T> implements ClickListener {
 	 */
 	private final Service<T> service;
 
+	public final Service<T> getService() {
+		return service;
+	}
+
 	public EntityDeleteClickListener(final T dtoToDelete,final Service<T> service,final Button deleteLink,final Table table){
 		this.dtoToDelete = dtoToDelete;
 		this.table = table;
