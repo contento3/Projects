@@ -27,6 +27,18 @@ public class EntityDeleteClickListener<T> implements ClickListener {
 	 */
 	private final Table table;
 	
+	public final T getDtoToDelete() {
+		return dtoToDelete;
+	}
+
+	public final Button getDeleteLink() {
+		return deleteLink;
+	}
+
+	public final Table getTable() {
+		return table;
+	}
+
 	/**
 	 * Service used to delete the entity from db.
 	 */
