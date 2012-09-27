@@ -25,13 +25,16 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 	}
 
 	@Override
+	public void delete(final SaltedHibernateUserDto dtoToDelete) {
+		// TODO Auto-generated method stub
+	}
+	
 	public Collection<SaltedHibernateUserDto> findUsersByAccountId(final Integer accountId) {
-		
 		return userAssembler.domainsToDtos(userDao.findUsersByAccountId(accountId));
 	}
+
 	@Override
 	public SaltedHibernateUserDto findUserByName(final String name) {
-		
 		return userAssembler.domainToDto(userDao.findById(name));
 	}
 

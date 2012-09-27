@@ -58,10 +58,22 @@ public class GroupServiceImpl implements GroupService {
 		
 	}
 	
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void delete(GroupDto group) {
+		
+		
+		Collection<SaltedHibernateUserDto> members;
+		members=group.getMembers();
+		
+		if(members.isEmpty())
+			groupDao.delete(groupAssembler.dtoToDomain(group));
+	}
+
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void delete(GroupDto group) throws Exception {
+	public void deleteWithException(GroupDto group) throws Exception {
 		
 		
 		Collection<SaltedHibernateUserDto> members;

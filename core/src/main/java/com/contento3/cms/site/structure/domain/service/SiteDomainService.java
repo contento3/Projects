@@ -13,7 +13,22 @@ public interface SiteDomainService extends Service<SiteDomainDto> {
 	
 	SiteDomainDto findSiteDomainByName(String domainName);
 	
-
+	/**
+	 * Updates SiteDomain
+	 * @param dto
+	 */
 	void update(SiteDomainDto dto);
+
+	/**
+	 * Deletes SiteDomain
+	 * @param dto
+	 */
 	void delete(SiteDomainDto dto);
+	
+	/**
+	 * Finds SiteDomain by id.
+	 * @param siteDomainId
+	 * @return
+	 */
+	SiteDomainDto findById(Integer siteDomainId);
 }

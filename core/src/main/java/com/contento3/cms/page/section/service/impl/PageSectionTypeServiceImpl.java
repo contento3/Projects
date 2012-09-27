@@ -46,4 +46,10 @@ public class PageSectionTypeServiceImpl implements PageSectionTypeService{
 	public Integer create(PageSectionTypeDto pageSectionTypeDto){
 		return null;
 	}
+
+	@Override
+	public void delete(PageSectionTypeDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -1,12 +1,10 @@
 package com.contento3.cms.page.category.dto;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import com.contento3.cms.page.category.model.Category;
+import com.contento3.common.dto.Dto;
 
-public class CategoryDto {
+public class CategoryDto extends Dto{
 	
 	private Integer categoryId;
 

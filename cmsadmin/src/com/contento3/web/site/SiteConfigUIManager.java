@@ -13,6 +13,7 @@ import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
@@ -90,12 +91,7 @@ public class SiteConfigUIManager {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId){
-		
-		final Label screenHeading = new Label("Site Configuration"); 
-		screenHeading.setStyleName("screenHeading");
-		siteConfigParentLayout.addComponent(screenHeading);
-
-        siteConfigParentLayout.addComponent(new HorizontalRuler());
+		final ScreenHeader screenHeader = new ScreenHeader(siteConfigParentLayout,"Site Configuration");
 		final Label siteDomainLbl = new Label("Domains"); 
 		siteDomainLbl.setStyleName("screenSubHeading");
 		siteConfigParentLayout.addComponent(siteDomainLbl);

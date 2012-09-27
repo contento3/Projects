@@ -28,13 +28,6 @@ public interface CategoryService extends Service<CategoryDto>{
 	Collection<CategoryDto> findChildCategories(Integer parentId);
 	
 	
-	 /**
-     * Used to update the category.
-     * @param categoryDto
-     * @throws EntityAlreadyFoundException 
-     */
-    void update(CategoryDto categoryDto) ;
-	
     /**
      * Create new category
      * @param categoryDto
@@ -42,4 +35,26 @@ public interface CategoryService extends Service<CategoryDto>{
      */
 	Integer create(CategoryDto categoryDto) throws EntityAlreadyFoundException;
 
+	/**
+	 * Finds all the category for a given site
+	 * @param siteId
+	 * @return Collection<CategoryDto>
+	 */
+	Collection<CategoryDto> findBySiteId(Integer siteId);
+
+	/**
+	 * Returns a CategoryDto based on id.
+	 * @param id
+	 * @return
+	 */
+	CategoryDto findById(Integer id);
+
+	 /**
+     * Used to update the category.
+     * @param categoryDto
+     * @param parentCategoryId
+     * @throws EntityAlreadyFoundException 
+     */
+	void update(CategoryDto categoryDto, Integer parentCategroyId); 
+	
 }//end

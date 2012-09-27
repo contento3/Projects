@@ -76,4 +76,10 @@ public class SiteServiceImpl implements SiteService {
 		return siteAssembler.domainsToDtos(siteDao.findByAccount(accountId));
 	}
 
+	@Override
+	public void delete(SiteDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

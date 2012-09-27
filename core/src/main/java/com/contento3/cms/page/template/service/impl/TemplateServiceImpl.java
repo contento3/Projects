@@ -158,4 +158,10 @@ public class TemplateServiceImpl implements TemplateService {
 		template.setAccount(account);
 		return template;
 	}
+
+	@Override
+	public void delete(TemplateDto dtoToDelete) {
+		// TODO Auto-generated method stub
+		
+	}
 }

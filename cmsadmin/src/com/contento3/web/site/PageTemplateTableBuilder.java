@@ -8,6 +8,7 @@ import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.PageTemplateDeleteListner;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
@@ -49,7 +50,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	 *Assign associated template to table
 	 */
 	@Override
-	public void assignDataToTable(final Dto dto,final  Table table,final IndexedContainer container) {
+	public void assignDataToTable(final Dto dto,final  Table table,final Container container) {
 		PageTemplateDto templateDto = (PageTemplateDto) dto;
 		Item item = container.addItem(templateDto.getTemplateId());
 		item.getItemProperty("associated templates").setValue(templateDto.getTemplateName());
@@ -67,7 +68,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	 * Create associated template table header
 	 */
 	@Override
-	public void buildHeader(final Table table,final IndexedContainer container) {
+	public void buildHeader(final Table table,final Container container) {
 		container.addContainerProperty("associated templates", String.class, null);
 		container.addContainerProperty("delete", Button.class, null);
 		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
@@ -79,7 +80,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	 * Create empty associated template table 
 	 */
 	@Override
-	public void buildEmptyTable(final IndexedContainer container) {
+	public void buildEmptyTable(final Container container) {
 		final Item item = container.addItem("-1");
 		item.getItemProperty("associated templates").setValue("No template associated.");
 

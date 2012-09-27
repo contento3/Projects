@@ -43,5 +43,11 @@ public class SiteDomainServiceImpl implements SiteDomainService {
 		return siteDomainAssembler.domainToDto(siteDomain);
 	}
 
+	@Override
+	public SiteDomainDto findById(Integer siteDomainId) {
+		SiteDomain siteDomain = siteDomainDao.findById(siteDomainId);
+		return siteDomainAssembler.domainToDto(siteDomain);
+	}
+
 
 }

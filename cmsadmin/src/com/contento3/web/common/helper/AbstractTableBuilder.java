@@ -5,10 +5,11 @@ import java.util.Collection;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.dto.Dto;
+import com.vaadin.data.Container;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
 
-public abstract class AbstractTableBuilder implements TableBuilder<Dto> {
+public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
 	
 	/**
 	 * Table to be build
@@ -18,7 +19,7 @@ public abstract class AbstractTableBuilder implements TableBuilder<Dto> {
 	/**
 	 * Container to contain the table data
 	 */
-	IndexedContainer container = new IndexedContainer();
+	Container container = new IndexedContainer();
 
 	public AbstractTableBuilder (final Table table){
 		this.table = table;
@@ -61,19 +62,19 @@ public abstract class AbstractTableBuilder implements TableBuilder<Dto> {
 	 * @param table
 	 * @param container
 	 */
-	public abstract void assignDataToTable(Dto dto,Table table,IndexedContainer container);
+	public abstract void assignDataToTable(Dto dto,Table table,Container container);
 
 	/**
 	 * Build the header of the table
 	 * @param siteDomainTable
 	 * @param domainsContainer
 	 */
-	public abstract void buildHeader(Table table,IndexedContainer container);
+	public abstract void buildHeader(Table table,Container container);
 
 	/**
 	 * Used to set a message in a table for empty table
 	 * @param container
 	 */
-	public abstract void buildEmptyTable(IndexedContainer container);
+	public abstract void buildEmptyTable(Container container);
 
 }

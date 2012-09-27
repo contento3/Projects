@@ -173,14 +173,14 @@ public class SiteUIManager implements UIManager {
 			}
 		});
 			
-		final Button addNewCategoryButton = new Button("Add Category");
+		final Button addNewCategoryButton = new Button("Categories");
 		horizontalLayout.addComponent(addNewCategoryButton);
 		addNewCategoryButton.addListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				CategoryTreeRender categoryTree = new CategoryTreeRender(contextHelper, parentWindow);
-				categoryTree.renderTreeToAddNewCategory(siteId, pagesTab, null);
-				}
+				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,siteService,pageService,contextHelper,parentWindow);
+				categoryUIManager.renderCategoryList(1);
+			}
 		});
 	}
 	
