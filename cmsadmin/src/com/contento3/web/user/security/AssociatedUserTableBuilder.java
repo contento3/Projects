@@ -6,7 +6,6 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
