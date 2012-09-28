@@ -4,13 +4,13 @@
 package com.contento3.web.site;
 
 import com.contento3.cms.page.template.dto.PageTemplateDto;
+import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.listener.PageTemplateDeleteListner;
+import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
@@ -61,7 +61,8 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new PageTemplateDeleteListner(this.contextHelper, this.mainWindow, table, templateDto));
+		PageTemplateService service = (PageTemplateService) this.contextHelper.getBean("pageTemplateService");
+		deleteLink.addListener(new EntityDeleteClickListener<PageTemplateDto>(templateDto,service,deleteLink,table));
 	}
 
 	/**
