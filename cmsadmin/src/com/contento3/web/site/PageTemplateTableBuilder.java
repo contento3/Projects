@@ -11,6 +11,7 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
@@ -54,6 +55,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		PageTemplateDto templateDto = (PageTemplateDto) dto;
 		Item item = container.addItem(templateDto.getTemplateId());
 		item.getItemProperty("associated templates").setValue(templateDto.getTemplateName());
+		item.getItemProperty("order").setValue(templateDto.getOrder());
 		// adding delete button item into list
 		final Button deleteLink = new Button();
 		deleteLink.setCaption("Delete");
@@ -63,6 +65,8 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("delete").setValue(deleteLink);
 		PageTemplateService service = (PageTemplateService) this.contextHelper.getBean("pageTemplateService");
 		deleteLink.addListener(new EntityDeleteClickListener<PageTemplateDto>(templateDto,service,deleteLink,table));
+		
+		((IndexedContainer) container).sort(new Object[] { "order" }, new boolean[] { true });
 	}
 
 	/**
@@ -71,6 +75,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table table,final Container container) {
 		container.addContainerProperty("associated templates", String.class, null);
+		container.addContainerProperty("order", String.class, null);
 		container.addContainerProperty("delete", Button.class, null);
 		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 		table.setContainerDataSource(container);
