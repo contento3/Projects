@@ -1,18 +1,19 @@
 package com.contento3.web.user.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import com.contento3.common.dto.Dto;
+import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -62,12 +63,17 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	 */
 	final AbstractTableBuilder asscoiatedUserTable;
 	
+	
 	/**
 	 * hold group id
 	 */
 	final Integer groupId;
 	/**
-	 * Constructor
+	 * Vertical layout to add components
+	 */
+	final VerticalLayout popupMainLayout = new VerticalLayout();
+	 
+	/** Constructor
 	 * @param main
 	 * @param helper
 	 * @param table
@@ -101,8 +107,8 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
 
-	    	popupWindow.setHeight(35,Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(30,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setWidth(40,Sizeable.UNITS_PERCENTAGE);
 	       
 	    	/* Add the window inside the main window. */
 	        mainwindow.addWindow(popupWindow);
@@ -111,46 +117,37 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	        popupWindow.addListener(this);
 	        popupWindow.setModal(true);
 	        popupWindow.setCaption("Add user");
-	        final VerticalLayout popupMainLayout = new VerticalLayout();
+	        
+	        
 	        popupMainLayout.setSpacing(true);
-	      
-	        final HorizontalLayout addButtonLayout = new HorizontalLayout();
-	        
-	        final Button addUserButton = new Button();
-	        addUserButton.setCaption("Add user");
+	 
 	        /* Adding user table to pop-up */
-	        popupMainLayout.addComponent(renderUserTable(addUserButton));
-	        popupMainLayout.addComponent(addButtonLayout);
-	        addButtonLayout.addComponent(addUserButton);
-	        addButtonLayout.setComponentAlignment(addUserButton, Alignment.BOTTOM_RIGHT);
-	        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+	        renderUserTable(popupMainLayout);
 	        
-	       
 	        popupWindow.addComponent(popupMainLayout);
 	        popupWindow.setResizable(false);
 	        /* Allow opening only one window at a time. */
 	        openbutton.setEnabled(false);
 	    }
 	
+	 
 	/**
 	 * Render user table
 	 * @param addUserButton
 	 * @return
 	 */
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
-	private Table renderUserTable(final Button addUserButton) {
-		Table userTable = new Table();
-		userTable.setData("add users");
-		userTable.setColumnWidth("select", 40);
-		userTable.setPageLength(5);
-		
+	private void renderUserTable(final VerticalLayout popupMainLayout) {
+
 		final SaltedHibernateUserService userService = (SaltedHibernateUserService) helper.getBean("saltedHibernateUserService");
 		Integer accountId = (Integer) SessionHelper.loadAttribute(mainwindow,"accountId");
-		Dto dto = groupService.findById(groupId);
-		GenricEntityPicker userPicker = new UserPicker(helper,mainwindow,popupWindow, userTable, addUserButton, (Collection) userService.findUsersByAccountId(accountId),dto,asscoiatedUserTable);
-		userPicker.build();
 		
-		return userTable;
+		Collection<Dto> dtos = (Collection) userService.findUsersByAccountId(accountId);
+		Collection<String> listOfColumns = new ArrayList<String>();
+		listOfColumns.add("name");
+		GenricEntityPicker userPicker = new GenricEntityPicker(dtos,listOfColumns,popupMainLayout);
+		userPicker.build();
+
 	}
 
 
@@ -158,7 +155,9 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	 * Handle Close button click and close the window.
 	 */
 	public void closeButtonClick(Button.ClickEvent event) {
+	
 		if (!isModalWindowClosable) {
+			
 			/* Windows are managed by the application object. */
 			mainwindow.removeWindow(popupWindow);
 
@@ -170,8 +169,31 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	/**
 	 * Handle window close event
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void windowClose(CloseEvent e) {
+		
+		/* update group member */
+		Collection<String> selectedItems =(Collection<String>) this.popupMainLayout.getData();
+		SaltedHibernateUserService userService =(SaltedHibernateUserService) this.helper.getBean("saltedHibernateUserService");
+		GroupDto group = groupService.findById(groupId);
+		for(String name : selectedItems ){
+			 SaltedHibernateUserDto user = userService.findUserByName(name);
+	     	// validation
+			 boolean isAddable = true;
+	     	 for(SaltedHibernateUserDto dto : group.getMembers()){
+	     		 if(dto.getName().equals(user.getName()))
+	     			 isAddable = false;
+	     	 }//end inner for
+	     	 
+	     	 if(isAddable){
+	     		 group.getMembers().add(user);
+	     	 }//end i
+		}//end outer for
+	
+		groupService.update(group);	
+		asscoiatedUserTable.rebuild((Collection) group.getMembers());
+		
 		/* Return to initial state. */
 		openbutton.setEnabled(true);
 	}
