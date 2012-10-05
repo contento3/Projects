@@ -22,21 +22,33 @@ import com.vaadin.ui.Button.ClickListener;
 public  class GenricEntityPicker extends AbstractTableBuilder  {
 
 	/**
-	 * used to add or delete item from table
+	 * Used to add or delete item from table
 	 */
 	private final Button addButton;
 	
 	/**
-	 * contain Collection
+	 * Dtos to be listed in table
 	 */
 	private final Collection<Dto> dtos;
 	
-	private static Table table = new Table();
-
-	private Collection<String> listOfColumns;
-	
+	/**
+	 * Vertical layout to add components
+	 */
 	private VerticalLayout vLayout;
 	
+	/**
+	 * Table to add or delete
+	 */
+	private static Table table = new Table();
+	
+	/**
+	 * Contains list of columns to be generated
+	 */
+	private Collection<String> listOfColumns;
+	
+	/**
+	 * Contains list of selected items
+	 */
 	final Collection<String> selectedItems= new ArrayList<String>();
 	
 	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
@@ -65,8 +77,11 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 			vLayout.removeAllComponents();
 		}
 		this.vLayout.addComponent(table);
-		
-		addButton.setCaption("Add");
+		String caption = vLayout.getDescription();
+		if( caption == null){
+			caption="add";
+		}
+		addButton.setCaption(caption);
 		
 		this.vLayout.addComponent(addButtonLayout);
 	    addButtonLayout.addComponent(addButton);
@@ -107,6 +122,7 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
                      }
                      
                 }//end for
+                
                 vLayout.setData(selectedItems);
 			}
 			

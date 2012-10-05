@@ -3,9 +3,7 @@ package com.contento3.web.user.security;
 import java.util.ArrayList;
 import java.util.Collection;
 import com.contento3.common.dto.Dto;
-import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
-import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.GenricEntityPicker;
@@ -19,7 +17,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class AddUserToGroupPopup extends CustomComponent implements Window.CloseListener{
+public abstract class AddDeleteUserToGroupPopup extends CustomComponent implements Window.CloseListener{
 
 	/**
 	 * 
@@ -63,7 +61,6 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	 */
 	final AbstractTableBuilder asscoiatedUserTable;
 	
-	
 	/**
 	 * hold group id
 	 */
@@ -72,7 +69,11 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	 * Vertical layout to add components
 	 */
 	final VerticalLayout popupMainLayout = new VerticalLayout();
-	 
+	/**
+	 * Button caption 
+	 */
+	String caption = null;
+
 	/** Constructor
 	 * @param main
 	 * @param helper
@@ -80,7 +81,7 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	 * @param groupId
 	 * @param tableBuilder
 	 */
-	public AddUserToGroupPopup(final Window main,final SpringContextHelper helper,final Table table,final Integer groupId,final AbstractTableBuilder tableBuilder) {
+	public AddDeleteUserToGroupPopup(final Window main,final SpringContextHelper helper,final Table table,final Integer groupId,final AbstractTableBuilder tableBuilder) {
 		this.mainwindow = main;
 		this.helper = helper;
 		this.groupId = groupId;
@@ -89,7 +90,7 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 		
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add suser", this, "openButtonClick");
+        openbutton = new Button("user", this, "openButtonClick");
         layout.addComponent(openbutton);
 
         setCompositionRoot(layout);
@@ -108,7 +109,7 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	    	popupWindow.setPositionY(100);
 
 	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(40,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setWidth(37,Sizeable.UNITS_PERCENTAGE);
 	       
 	    	/* Add the window inside the main window. */
 	        mainwindow.addWindow(popupWindow);
@@ -116,7 +117,8 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	        /* Listen for close events for the window. */
 	        popupWindow.addListener(this);
 	        popupWindow.setModal(true);
-	        popupWindow.setCaption("Add user");
+	        caption = event.getButton().getCaption();
+	        popupWindow.setCaption(caption+" user");
 	        
 	        
 	        popupMainLayout.setSpacing(true);
@@ -142,12 +144,22 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 		final SaltedHibernateUserService userService = (SaltedHibernateUserService) helper.getBean("saltedHibernateUserService");
 		Integer accountId = (Integer) SessionHelper.loadAttribute(mainwindow,"accountId");
 		
-		Collection<Dto> dtos = (Collection) userService.findUsersByAccountId(accountId);
+		
 		Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("name");
-		GenricEntityPicker userPicker = new GenricEntityPicker(dtos,listOfColumns,popupMainLayout);
-		userPicker.build();
+		popupMainLayout.setDescription(caption);
+		GenricEntityPicker userPicker;
+		Collection<Dto> dtos = null;
+		if(caption == "Add"){
+			dtos = (Collection) userService.findUsersByAccountId(accountId);
+			userPicker = new GenricEntityPicker(dtos,listOfColumns,popupMainLayout);
+		}else{
+			dtos = (Collection) groupService.findById(groupId).getMembers();
+			userPicker = new GenricEntityPicker(dtos,listOfColumns,popupMainLayout);
+		}
 
+		userPicker.build();
+		
 	}
 
 
@@ -169,33 +181,6 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	/**
 	 * Handle window close event
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public void windowClose(CloseEvent e) {
-		
-		/* update group member */
-		Collection<String> selectedItems =(Collection<String>) this.popupMainLayout.getData();
-		SaltedHibernateUserService userService =(SaltedHibernateUserService) this.helper.getBean("saltedHibernateUserService");
-		GroupDto group = groupService.findById(groupId);
-		for(String name : selectedItems ){
-			 SaltedHibernateUserDto user = userService.findUserByName(name);
-	     	// validation
-			 boolean isAddable = true;
-	     	 for(SaltedHibernateUserDto dto : group.getMembers()){
-	     		 if(dto.getName().equals(user.getName()))
-	     			 isAddable = false;
-	     	 }//end inner for
-	     	 
-	     	 if(isAddable){
-	     		 group.getMembers().add(user);
-	     	 }//end i
-		}//end outer for
-	
-		groupService.update(group);	
-		asscoiatedUserTable.rebuild((Collection) group.getMembers());
-		
-		/* Return to initial state. */
-		openbutton.setEnabled(true);
-	}
+	public abstract void windowClose(CloseEvent e);
 
 }

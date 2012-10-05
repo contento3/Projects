@@ -5,7 +5,6 @@ import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -94,14 +93,14 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		  	
 		  	Integer groupId = Integer.parseInt(event.getButton().getData().toString());
 		  	
-	        final Button adduserButton = new Button("Add user",new AddUserToGroupPopup(mainwindow, helper, userTable,groupId,tableBuilder), "openButtonClick");
-		
+	        final Button addUserButton = new Button("Add",new AddAssociatedUsers(mainwindow, helper, userTable,groupId,tableBuilder), "openButtonClick");
+	        final Button deleteUserButton = new Button("Delete",new DeleteAssociatedUsers(mainwindow, helper, userTable,groupId,tableBuilder), "openButtonClick");
 	    	
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
 
-	    	popupWindow.setHeight(35,Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(23,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setWidth(37,Sizeable.UNITS_PERCENTAGE);
 	       
 	    	/* Add the window inside the main window. */
 	        mainwindow.addWindow(popupWindow);
@@ -113,10 +112,11 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	        final VerticalLayout popupMainLayout = new VerticalLayout();
 	        popupMainLayout.setSpacing(true);
 	        final HorizontalLayout addButtonLayout = new HorizontalLayout();
+	        addButtonLayout.setSpacing(true);
 	        popupMainLayout.addComponent(addButtonLayout);
-	        addButtonLayout.addComponent(adduserButton);
-	        addButtonLayout.setComponentAlignment(adduserButton, Alignment.BOTTOM_LEFT);
-	        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+	        addButtonLayout.addComponent(addUserButton);
+	        addButtonLayout.addComponent(deleteUserButton);
+	        
 	        /* Adding user table to pop-up */
 	        popupMainLayout.addComponent(renderAssociatedUserTable(groupId));
 	        popupWindow.addComponent(popupMainLayout);
@@ -132,8 +132,8 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	   */
 	  @SuppressWarnings({ "rawtypes", "unchecked" })
 	  private Table  renderAssociatedUserTable(Integer groupId){
-		
-		tableBuilder.build((Collection)groupService.findById(groupId).getMembers());
+		  userTable.setPageLength(25);
+		  tableBuilder.build((Collection)groupService.findById(groupId).getMembers());
 		return userTable;
 		  
 	  }
