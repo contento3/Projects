@@ -19,8 +19,8 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
+ *Used to create table for pagetemplates
  * @author XINEX
- *
  */
 public class PageTemplateTableBuilder extends AbstractTableBuilder {
 
