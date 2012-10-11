@@ -8,9 +8,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.List;
 import org.apache.log4j.Logger;
-
+import org.vaadin.pagingcomponent.PagingComponent;
+import org.vaadin.pagingcomponent.listener.impl.LazyPagingComponentListener;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -19,6 +20,7 @@ import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.dam.image.service.ImageService;
+import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
@@ -40,7 +42,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
@@ -48,6 +49,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.Window.Notification;
 
 public class ImageMgmtUIManager extends CustomComponent 
 			implements Upload.SucceededListener,
@@ -118,18 +120,25 @@ public class ImageMgmtUIManager extends CustomComponent
     private ComboBox imageLibrayCombo;
     
 	/**
-	 * TabSheet serves as the parent container for the article manager
+	 * TabSheet serves as the parent container for the image manager
 	 */
-
 	private TabSheet tabSheet;
 
 	/**
-	 * main layout for article manager screen
+	 * main layout for image manager screen
 	 */
-	private VerticalLayout verticalLayout = new VerticalLayout();
+	private VerticalLayout mainLayout = new VerticalLayout();
+	/**
+	 * Layout contain images
+	 */
+	private CssLayout imagePanlelayout = new CssLayout();
 
-	private CssLayout layout = new CssLayout();
-
+	/**
+	 * Constructor
+	 * @param uiTabSheet
+	 * @param helper
+	 * @param parentWindow
+	 */
     public ImageMgmtUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow){
 		this.helper = helper;
 		this.parentWindow = parentWindow;
@@ -145,14 +154,17 @@ public class ImageMgmtUIManager extends CustomComponent
 		// TODO Auto-generated method stub
 		
 	}
-
+    
+    /**
+     * Render image manager screen
+     */
 	@Override
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(verticalLayout, "Image Management");
+		final Tab articleTab = tabSheet.addTab(mainLayout, "Image Management");
 		articleTab.setClosable(true);
-		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		this.mainLayout.setSpacing(true);
+		this.mainLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 		renderImageMgmntComponenets();
 		return this.tabSheet;
 	}
@@ -170,44 +182,32 @@ public class ImageMgmtUIManager extends CustomComponent
 		return null;
 	}
     
+	/**
+	 * Render image management related components
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void renderImageMgmntComponenets() {
 		/* heading */
 		Label imageHeading = new Label("Image Manager");
 		imageHeading.setStyleName("screenHeading");
-		verticalLayout.addComponent(imageHeading);
-		verticalLayout.addComponent(new HorizontalRuler());
-		verticalLayout.setMargin(true);
-		//verticalLayout.setSizeFull();
+		mainLayout.addComponent(imageHeading);
+		mainLayout.addComponent(new HorizontalRuler());
+		mainLayout.setMargin(true);
 		
 		/* Button to add new images */
 		Button addImageButton = new Button();
-		verticalLayout.addComponent(addImageButton);
+		mainLayout.addComponent(addImageButton);
 		HorizontalLayout horizLayout = new HorizontalLayout();
 		horizLayout.setSpacing(true);
-		addImageButton.addListener(new ClickListener(){
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public void buttonClick(ClickEvent event){
-				VerticalLayout newArticleLayout = new VerticalLayout();
-				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"));
-				createNew.setClosable(true);
-				tabSheet.setSelectedTab(newArticleLayout);
-				newArticleLayout.addComponent(renderAddScreen());
-				newArticleLayout.setHeight("100%");
-			}
-		});
+	
 		addImageButton.setCaption("Add image");
 		horizLayout.addComponent(addImageButton);
 		
 		/* Button to add library */
 		Button addLibraryButton = new Button("Add Library",new ImageLibraryPopup(parentWindow, helper),"openButtonClick");
 		horizLayout.addComponent(addLibraryButton);
-		verticalLayout.addComponent(horizLayout);
-		verticalLayout.addComponent(new HorizontalRuler());
+		mainLayout.addComponent(horizLayout);
+		mainLayout.addComponent(new HorizontalRuler());
 		
 		/* image library combo*/
 		//Get accountId from the session
@@ -223,9 +223,28 @@ public class ImageMgmtUIManager extends CustomComponent
 		horiz.setSpacing(true);
 		horiz.addComponent(imageLibrayCombo);
 	    
+
+	    
+		/*Add Image button listener*/
+		addImageButton.addListener(new ClickListener(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public void buttonClick(ClickEvent event){
+				VerticalLayout newArticleLayout = new VerticalLayout();
+				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"));
+				createNew.setClosable(true);
+				tabSheet.setSelectedTab(newArticleLayout);
+				newArticleLayout.addComponent(renderAddScreen());
+				newArticleLayout.setHeight("100%");
+			}
+		});
+		
 	    /* search button */
 	    Button searchButton = new Button("Search");
-	    
+		/*Search Image button listener*/
 	    searchButton.addListener(new ClickListener() {
 			
 			/**
@@ -235,20 +254,119 @@ public class ImageMgmtUIManager extends CustomComponent
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				layout.removeAllComponents(); // remove CSSlayout which contains panel of images
-				int libraryId = Integer.parseInt(imageLibrayCombo.getValue().toString());
-				Collection<ImageDto> images = imageService.findImagesByLibrary(libraryId);
-				verticalLayout.addComponent(listImage(images));
+				imagePanlelayout.removeAllComponents(); // remove items from CSSlayout which contains panels of image
+				Object id = imageLibrayCombo.getValue();
+				if(id != null){
+					int libraryId = Integer.parseInt(id.toString());
+					Collection<ImageDto> images = imageService.findImagesByLibrary(libraryId);
+					displayImages(images);
+				}else{
+					parentWindow.showNotification("Search Failed", "Select library first",Notification.TYPE_ERROR_MESSAGE);
+				}
 			}
+
+			
 		});
 	    
 	    horiz.addComponent(searchButton);
 	    horiz.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
-	    verticalLayout.addComponent(horiz);
-
+	    mainLayout.addComponent(horiz);
+	    mainLayout.addComponent(imagePanlelayout);
 	}
-	    
-    
+	
+	/**
+	 * Display images associated to library
+	 * @param images
+	 */
+	@SuppressWarnings({ "deprecation"})
+	private void displayImages(final Collection<ImageDto> images) {
+		
+		
+		final List<ImageDto> list = new ArrayList<ImageDto>();
+		for(ImageDto dto: images){
+			list.add(dto);
+		}
+		
+        // Layout where we will display items (changing when we click next page).
+        final CssLayout itemsArea = new CssLayout();
+        itemsArea.setSizeUndefined();
+        itemsArea.setMargin(true);
+        
+        try {
+
+			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("paging.properties");
+			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
+			
+			 // Visual controls (First, Previous, 1 2 ..., Next, Last)
+	        // We use here a LazyPagingComponentListener to fetch the list of items to display from the DB
+	        final PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage, images, new LazyPagingComponentListener<ImageDto>(itemsArea) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected Collection<ImageDto> getItemsList(int startIndex, int endIndex) {
+					return list.subList(startIndex, endIndex);
+				}
+
+				@Override
+				protected Component displayItem(int index, ImageDto item) {
+					return addImagesToPanel(item);
+				}
+
+	        });
+	        imagePanlelayout.addComponent(itemsArea);
+	        imagePanlelayout.addComponent(pagingComponent);
+		} catch (ClassNotFoundException e) {
+			
+			e.printStackTrace();
+		}
+        
+        
+       
+	}
+	
+	
+	private Component addImagesToPanel(ImageDto dto){
+		Panel imagePanel = new Panel();
+    	imagePanel.addComponent(loadImage(dto));
+    	imagePanel.setScrollable(false);
+    	
+    	VerticalLayout imageLayout = new VerticalLayout();
+    	imageLayout.addComponent(imagePanel);
+    	imagePanel.setHeight("165");
+    	imagePanel.setWidth("160");
+    	
+    	VerticalLayout imageInfoLayout = new VerticalLayout();
+
+    	Button viewImageDetail = new Button("View Image");
+    	viewImageDetail.setStyleName("link");
+
+    	Button editImageDetail = new Button("Edit Image",new ImageEditListner(helper,parentWindow,dto),"openButtonClick");
+    	editImageDetail.setStyleName("link");
+
+    	imageInfoLayout.setSpacing(true);
+    	
+    	imageInfoLayout.addComponent(viewImageDetail);
+    	imageInfoLayout.setComponentAlignment(viewImageDetail, Alignment.MIDDLE_CENTER);
+
+    	imageInfoLayout.addComponent(editImageDetail);
+    	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
+
+    	Panel mainPanel = new Panel();
+    	mainPanel.addComponent(imageLayout);
+    	mainPanel.addComponent(imageInfoLayout);
+
+    	mainPanel.setHeight("245");
+    	mainPanel.setWidth("200");
+    	mainPanel.setScrollable(false);
+    	mainPanel.addStyleName("csslayoutinnercomponent");
+    	return mainPanel;
+	}
+	
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	private Component renderAddScreen(){
 		root = new Panel("Upload image");
@@ -404,8 +522,7 @@ public class ImageMgmtUIManager extends CustomComponent
      * @param accountId
      * @return
      */
-    @SuppressWarnings("rawtypes")
-	private Component listImage(final Collection<ImageDto> imageList){
+    private Component listImage(final Collection<ImageDto> imageList){
  
     	for (ImageDto dto:imageList){
 	    	Panel imagePanel = new Panel();
@@ -441,12 +558,12 @@ public class ImageMgmtUIManager extends CustomComponent
 	    	mainPanel.setWidth("200");
 	    	mainPanel.setScrollable(false);
 	    	mainPanel.addStyleName("csslayoutinnercomponent");
-	    	layout.addComponent(mainPanel);
+	    	imagePanlelayout.addComponent(mainPanel);
 	 	}
     	
-    	layout.setSizeUndefined();
-    	layout.setMargin(true);
-    	return layout;
+    	imagePanlelayout.setSizeUndefined();
+    	imagePanlelayout.setMargin(true);
+    	return imagePanlelayout;
     } 
     
     /**
