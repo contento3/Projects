@@ -92,8 +92,8 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 		popupWindow.setPositionX(200);
 		popupWindow.setPositionY(100);
 		
-		popupWindow.setHeight(25,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(24,Sizeable.UNITS_PERCENTAGE);
+		popupWindow.setHeight(27,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setWidth(26,Sizeable.UNITS_PERCENTAGE);
        
     	/* Add the window inside the main window. */
         mainWindow.addWindow(popupWindow);
