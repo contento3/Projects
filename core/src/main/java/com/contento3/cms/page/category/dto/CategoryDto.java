@@ -14,6 +14,8 @@ public class CategoryDto extends Dto{
 
 	private Collection<CategoryDto> child; 
 
+	private Integer accountId;
+	
 	public Integer getCategoryId() {
 		return categoryId;
 	}
@@ -44,6 +46,14 @@ public class CategoryDto extends Dto{
 
 	public void setChild(final 	Collection<CategoryDto> child) {
 		this.child = child;
+	}
+
+	public void setAccountId(final Integer accountId) {
+		this.accountId = accountId;
+	}
+
+	public Integer getAccountId() {
+		return accountId;
 	}
 	
 

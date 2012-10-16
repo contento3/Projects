@@ -7,6 +7,14 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table;
 
+/**
+ * General listener to delete an entity.
+ * Usually used in the listing table to 
+ * delete entity.
+ * @author HAMMAD
+ *
+ * @param <T>
+ */
 public class EntityDeleteClickListener<T> implements ClickListener {
 
 	private static final long serialVersionUID = 3126526402867446357L;

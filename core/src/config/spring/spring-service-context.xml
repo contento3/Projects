@@ -148,6 +148,7 @@
 		class="com.contento3.cms.page.category.service.impl.CategoryServiceImpl">
 		<constructor-arg ref="categoryAssembler" />
 		<constructor-arg ref="categoryDao" />
+		<constructor-arg ref="accountDAO" />
 	</bean>
 
 	<bean id="siteDomainAssembler"

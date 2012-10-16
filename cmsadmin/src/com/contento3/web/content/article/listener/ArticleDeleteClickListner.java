@@ -1,4 +1,4 @@
-package com.contento3.web.content.article.listner;
+package com.contento3.web.content.article.listener;
 
 import org.vaadin.dialogs.ConfirmDialog;
 import com.contento3.cms.article.dto.ArticleDto;

@@ -90,7 +90,7 @@ public class CategoryTreeRender implements UIManager, Handler{
 			public void buttonClick(ClickEvent event) {
 				
 				
-        		CategoryDto categoryDto = categoryService.findCategoryByName(name);
+        		CategoryDto categoryDto = categoryService.findCategoryByName(name,SessionHelper.);
         		//check if category already assign to the page if it is assigned then no action will take place
         		for( CategoryDto cat : categories){
         			if(cat.getCategoryName().equals(name)){

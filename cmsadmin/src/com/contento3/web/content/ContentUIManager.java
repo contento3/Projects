@@ -7,6 +7,7 @@ import com.contento3.web.content.article.ArticleMgmtUIManager;
 import com.contento3.web.content.image.ImageLibraryPopup;
 import com.contento3.web.content.image.ImageMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.PageCategoryUIManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.Sizeable;
@@ -48,7 +49,7 @@ public class ContentUIManager implements UIManager{
 	/**
 	 * Represents the navigation items in the Content Manager section.
 	 */
-	private String[] navigationItems = {NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT};
+	private String[] navigationItems = {NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT,NavigationConstant.CONTENT_CATEGORY_MGMT};
 	
 	final CssLayout verticalLayout = new CssLayout();
 
@@ -96,6 +97,11 @@ public class ContentUIManager implements UIManager{
 		else if (command.equals(NavigationConstant.CONTENT_VID_MGMT)){
 			tabsheet = renderVideoUI();
 		}
+		else if (command.equals(NavigationConstant.CONTENT_CATEGORY_MGMT)){
+			PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(new TabSheet(),helper,parentWindow);
+			tabsheet = categoryUIManager.renderCategoryList(1);
+		}
+
 		return tabsheet;
 	}
 

@@ -13,19 +13,19 @@ public interface CategoryService extends Service<CategoryDto>{
 	 * @param categoryName
 	 * @return CategoryDto
 	 */
-	CategoryDto findCategoryByName(final String categoryName);
+	CategoryDto findCategoryByName(String categoryName,Integer accountId);
 	
 	/**
 	 * Finds the categories whose parentId are null
 	 * @return CategoryDto
 	 */
-	Collection<CategoryDto> findNullParentIdCategory();
+	Collection<CategoryDto> findNullParentIdCategory(Integer accountId);
 	
 	/**
 	 * Finds the child categories by their parentId
 	 * @return CategoryDto
 	 */
-	Collection<CategoryDto> findChildCategories(Integer parentId);
+	Collection<CategoryDto> findChildCategories(Integer parentId,Integer accountId);
 	
 	
     /**
@@ -36,11 +36,11 @@ public interface CategoryService extends Service<CategoryDto>{
 	Integer create(CategoryDto categoryDto) throws EntityAlreadyFoundException;
 
 	/**
-	 * Finds all the category for a given site
-	 * @param siteId
+	 * Finds all the category for a given account
+	 * @param accountId
 	 * @return Collection<CategoryDto>
 	 */
-	Collection<CategoryDto> findBySiteId(Integer siteId);
+	Collection<CategoryDto> findByAccountId(Integer accountId);
 
 	/**
 	 * Returns a CategoryDto based on id.

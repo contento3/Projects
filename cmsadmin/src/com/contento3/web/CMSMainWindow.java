@@ -128,7 +128,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 
 	    HorizontalLayout horizTop = new HorizontalLayout();
-
+	    horizTop.setStyleName(Reindeer.LAYOUT_BLACK);
 	    vLayout.addComponent(vert);
 	       
 	    ImageLoader imageLoader = new ImageLoader();
