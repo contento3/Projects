@@ -132,6 +132,11 @@ public class ImageMgmtUIManager extends CustomComponent
 	 * Layout contain images
 	 */
 	private CssLayout imagePanlelayout = new CssLayout();
+	
+	private String caption = null;
+	
+	private ImageDto imageDto;
+	
 
 	/**
 	 * Constructor
@@ -201,6 +206,23 @@ public class ImageMgmtUIManager extends CustomComponent
 		horizLayout.setSpacing(true);
 	
 		addImageButton.setCaption("Add image");
+		
+		/*Add Image button listener*/
+		addImageButton.addListener(new ClickListener(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public void buttonClick(ClickEvent event){
+				VerticalLayout newArticleLayout = new VerticalLayout();
+				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"));
+				createNew.setClosable(true);
+				tabSheet.setSelectedTab(newArticleLayout);
+				newArticleLayout.addComponent(renderAddEditScreen("Add",null));
+				//newArticleLayout.setHeight("100%");
+			}
+		});
 		horizLayout.addComponent(addImageButton);
 		
 		/* Button to add library */
@@ -224,24 +246,6 @@ public class ImageMgmtUIManager extends CustomComponent
 		horiz.addComponent(imageLibrayCombo);
 	    
 
-	    
-		/*Add Image button listener*/
-		addImageButton.addListener(new ClickListener(){
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public void buttonClick(ClickEvent event){
-				VerticalLayout newArticleLayout = new VerticalLayout();
-				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"));
-				createNew.setClosable(true);
-				tabSheet.setSelectedTab(newArticleLayout);
-				newArticleLayout.addComponent(renderAddScreen());
-				newArticleLayout.setHeight("100%");
-			}
-		});
-		
 	    /* search button */
 	    Button searchButton = new Button("Search");
 		/*Search Image button listener*/
@@ -328,8 +332,12 @@ public class ImageMgmtUIManager extends CustomComponent
        
 	}
 	
-	
-	private Component addImagesToPanel(ImageDto dto){
+	/**
+	 * Add images to panel
+	 * @param dto
+	 * @return
+	 */
+	private Component addImagesToPanel(final ImageDto dto){
 		Panel imagePanel = new Panel();
     	imagePanel.addComponent(loadImage(dto));
     	imagePanel.setScrollable(false);
@@ -344,9 +352,27 @@ public class ImageMgmtUIManager extends CustomComponent
     	Button viewImageDetail = new Button("View Image");
     	viewImageDetail.setStyleName("link");
 
-    	Button editImageDetail = new Button("Edit Image",new ImageEditListner(helper,parentWindow,dto),"openButtonClick");
+    	//Button editImageDetail = new Button("Edit Image",new ImageEditListner(helper,parentWindow,dto),"openButtonClick");
+    	Button editImageDetail = new Button("Edit Image");
     	editImageDetail.setStyleName("link");
+    	editImageDetail.addListener(new ClickListener() {
+			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+				VerticalLayout newArticleLayout = new VerticalLayout();
+				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Edit "+ dto.getName()));
+				createNew.setClosable(true);
+				tabSheet.setSelectedTab(newArticleLayout);
+				newArticleLayout.addComponent(renderAddEditScreen("Edit",dto));
+				
+			}
+		});
+    	
     	imageInfoLayout.setSpacing(true);
     	
     	imageInfoLayout.addComponent(viewImageDetail);
@@ -366,31 +392,31 @@ public class ImageMgmtUIManager extends CustomComponent
     	return mainPanel;
 	}
 	
-
+	/**
+	 * Render screen for add and edit
+	 * @param command
+	 * @param image
+	 * @return
+	 */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	private Component renderAddScreen(){
+	private Component renderAddEditScreen(final String command,final ImageDto dto){
 		root = new Panel("Upload image");
-
+		this.caption = command;
+		this.imageDto = dto;
 		VerticalLayout imageLayout = new VerticalLayout();
 		imageLayout.setSpacing(true);
 		altTextField = new TextField();
 		altTextField.setCaption("Alt text");
 	
-		imageLayout.addComponent(altTextField);
-		
 		imageNameField = new TextField();
 		imageNameField.setCaption("Image name");
-	
-		imageLayout.addComponent(imageNameField);
-		
+
 		//Get accountId from the session
         final Integer accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
         Collection<ImageLibraryDto> imageLibraryDto = this.imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 		imageLibrayCombo = new ComboBox("Select library",
 				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
-		
-		imageLayout.addComponent(imageLibrayCombo);
 		
 		imageLibrayCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
@@ -400,7 +426,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		// Listen for events regarding the success of upload.
         upload.addListener((Upload.SucceededListener) this);
         upload.addListener((Upload.FailedListener) this);
-        imageLayout.addComponent(upload);
+    	
         
         root.addComponent(upload);
         root.addComponent(new Label("Click 'Browse' to "+
@@ -410,7 +436,52 @@ public class ImageMgmtUIManager extends CustomComponent
         imagePanel = new Panel("Uploaded image");
         imagePanel.addComponent(new Label("No image uploaded yet"));
         root.addComponent(imagePanel);
-        imageLayout.addComponent(root);
+
+        imageLayout.addComponent(altTextField);
+		imageLayout.addComponent(imageNameField);
+		imageLayout.addComponent(imageLibrayCombo);
+		imageLayout.addComponent(upload);
+	    imageLayout.addComponent(root);
+	    
+	     if(this.caption.equals("Edit")){
+	    	 	imagePanel.setHeight("170");
+	    	 	imagePanel.setWidth("160");
+	    	 	imagePanel.removeAllComponents();
+	    	 	imagePanel.addComponent(loadImage(imageDto));
+				altTextField.setValue(this.imageDto.getAltText());
+				imageNameField.setValue(this.imageDto.getName());
+				imageLibrayCombo.setValue(this.imageDto.getImageLibraryDto().getId());
+				/* Save button */
+				Button saveButton = new Button("Save");
+				saveButton.addListener(new ClickListener() {
+				
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void buttonClick(ClickEvent event) {
+						
+						imageDto.setAltText(altTextField.getValue().toString());
+						imageDto.setName(imageNameField.getValue().toString());
+						 //set imageLibrary to imageDto
+			            if(imageLibrayCombo.getValue()!=null){
+			            	imageDto.setImageLibraryDto(imageLibraryService
+			            			.findImageLibraryById(Integer
+			            					.parseInt(imageLibrayCombo.getValue()
+			            							.toString())));
+			            }
+						 //Get accountId from the session
+			            final Integer accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
+			            final AccountDto accountDto = new AccountDto();
+			            accountDto.setAccountId(accountId);
+						imageDto.setAccountDto(accountDto);
+						imageService.update(imageDto);
+						parentWindow.showNotification(imageDto.getName()+" edit successfully");
+						
+					}
+				});
+				imageLayout.addComponent(saveButton);
+			}
+       
         return imageLayout;
 	}
 	   
@@ -457,32 +528,38 @@ public class ImageMgmtUIManager extends CustomComponent
         	
  			fis.read(bFile);
  			
-            ImageDto imageDto = new ImageDto();
-            imageDto.setAltText(altTextField.getValue().toString());
-            imageDto.setImage(bFile);
-            imageDto.setName(imageNameField.getValue().toString());
-            
-            //Get accountId from the session
-            final Integer accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
-            final AccountService accountService = (AccountService)helper.getBean("accountService");
-            final AccountDto accountDto = new AccountDto();
-            accountDto.setAccountId(accountId);
-            imageDto.setAccountDto(accountDto);
-            final ImageService imageService = (ImageService)helper.getBean("imageService");
-            
-            //set imageLibrary to imageDto
-            if(imageLibrayCombo.getValue()!=null){
-            	imageDto.setImageLibraryDto(imageLibraryService
-            			.findImageLibraryById(Integer
-            					.parseInt(imageLibrayCombo.getValue()
-            							.toString())));
-            }
-            imageDto.setSiteDto(new ArrayList<SiteDto>());
- 	        fis.close();
- 	        imageService.create(imageDto);
-			} catch (EntityAlreadyFoundException e) {
-				LOGGER.error("Unable to create the image as it is already created",e);
-			}
+ 			if(caption.equals("Add")){
+ 				
+	            ImageDto imageDto = new ImageDto();
+	            imageDto.setAltText(altTextField.getValue().toString());
+	            imageDto.setImage(bFile);
+	            imageDto.setName(imageNameField.getValue().toString());
+	            //Get accountId from the session
+	            final Integer accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
+	            final AccountService accountService = (AccountService)helper.getBean("accountService");
+	            final AccountDto accountDto = new AccountDto();
+	            accountDto.setAccountId(accountId);
+	            imageDto.setAccountDto(accountDto);
+	            final ImageService imageService = (ImageService)helper.getBean("imageService");
+	            
+	            //set imageLibrary to imageDto
+	            if(imageLibrayCombo.getValue()!=null){
+	            	imageDto.setImageLibraryDto(imageLibraryService
+	            			.findImageLibraryById(Integer
+	            					.parseInt(imageLibrayCombo.getValue()
+	            							.toString())));
+	            }
+	            imageDto.setSiteDto(new ArrayList<SiteDto>());
+	 	        fis.close();
+	 	        imageService.create(imageDto);
+ 			}else{ //else edit
+ 				if(bFile != null)
+ 					this.imageDto.setImage(bFile);
+ 				
+ 			}
+		} catch (EntityAlreadyFoundException e) {
+			LOGGER.error("Unable to create the image as it is already created",e);
+		}
         catch (final java.io.FileNotFoundException e) {
 			LOGGER.error("Unable to create the image.",e);
         }
