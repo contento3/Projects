@@ -1,3 +1,4 @@
+use cms;
 -- TEMPLATE_TYPE
 insert into TEMPLATE_TYPE values (1,'TEXT_HTML','Text html','text/html');
 insert into TEMPLATE_TYPE values (2,'TEXT_XML','Text xml','text/xml');
