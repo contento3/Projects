@@ -1,3 +1,4 @@
+use cms;
 INSERT INTO TEMPLATE VALUES (1,6,0,'a freemarker template','assassdasdasdasda',1,1);
 INSERT INTO TEMPLATE VALUES (2,6,0,'a freemarker template abc','this is a template text',1,1);
 

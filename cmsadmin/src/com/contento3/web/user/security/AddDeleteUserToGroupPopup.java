@@ -1,5 +1,6 @@
 package com.contento3.web.user.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import com.contento3.common.dto.Dto;
 import com.contento3.security.group.service.GroupService;
@@ -9,16 +10,14 @@ import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class AddUserToGroupPopup extends CustomComponent implements Window.CloseListener{
+public abstract class AddDeleteUserToGroupPopup extends CustomComponent implements Window.CloseListener{
 
 	/**
 	 * 
@@ -67,14 +66,22 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	 */
 	final Integer groupId;
 	/**
-	 * Constructor
+	 * Vertical layout to add components
+	 */
+	final VerticalLayout popupMainLayout = new VerticalLayout();
+	/**
+	 * Button caption 
+	 */
+	String caption = null;
+
+	/** Constructor
 	 * @param main
 	 * @param helper
 	 * @param table
 	 * @param groupId
 	 * @param tableBuilder
 	 */
-	public AddUserToGroupPopup(final Window main,final SpringContextHelper helper,final Table table,final Integer groupId,final AbstractTableBuilder tableBuilder) {
+	public AddDeleteUserToGroupPopup(final Window main,final SpringContextHelper helper,final Table table,final Integer groupId,final AbstractTableBuilder tableBuilder) {
 		this.mainwindow = main;
 		this.helper = helper;
 		this.groupId = groupId;
@@ -83,7 +90,7 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 		
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add suser", this, "openButtonClick");
+        openbutton = new Button("user", this, "openButtonClick");
         layout.addComponent(openbutton);
 
         setCompositionRoot(layout);
@@ -101,8 +108,8 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
 
-	    	popupWindow.setHeight(35,Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(30,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setWidth(37,Sizeable.UNITS_PERCENTAGE);
 	       
 	    	/* Add the window inside the main window. */
 	        mainwindow.addWindow(popupWindow);
@@ -110,47 +117,49 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	        /* Listen for close events for the window. */
 	        popupWindow.addListener(this);
 	        popupWindow.setModal(true);
-	        popupWindow.setCaption("Add user");
-	        final VerticalLayout popupMainLayout = new VerticalLayout();
+	        caption = event.getButton().getCaption();
+	        popupWindow.setCaption(caption+" user");
+	        
+	        
 	        popupMainLayout.setSpacing(true);
-	      
-	        final HorizontalLayout addButtonLayout = new HorizontalLayout();
-	        
-	        final Button addUserButton = new Button();
-	        addUserButton.setCaption("Add user");
+	 
 	        /* Adding user table to pop-up */
-	        popupMainLayout.addComponent(renderUserTable(addUserButton));
-	        popupMainLayout.addComponent(addButtonLayout);
-	        addButtonLayout.addComponent(addUserButton);
-	        addButtonLayout.setComponentAlignment(addUserButton, Alignment.BOTTOM_RIGHT);
-	        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+	        renderUserTable(popupMainLayout);
 	        
-	       
 	        popupWindow.addComponent(popupMainLayout);
 	        popupWindow.setResizable(false);
 	        /* Allow opening only one window at a time. */
 	        openbutton.setEnabled(false);
 	    }
 	
+	 
 	/**
 	 * Render user table
 	 * @param addUserButton
 	 * @return
 	 */
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
-	private Table renderUserTable(final Button addUserButton) {
-		Table userTable = new Table();
-		userTable.setData("add users");
-		userTable.setColumnWidth("select", 40);
-		userTable.setPageLength(5);
-		
+	private void renderUserTable(final VerticalLayout popupMainLayout) {
+
 		final SaltedHibernateUserService userService = (SaltedHibernateUserService) helper.getBean("saltedHibernateUserService");
 		Integer accountId = (Integer) SessionHelper.loadAttribute(mainwindow,"accountId");
-		Dto dto = groupService.findById(groupId);
-		GenricEntityPicker userPicker = new UserPicker(helper,mainwindow,popupWindow, userTable, addUserButton, (Collection) userService.findUsersByAccountId(accountId),dto,asscoiatedUserTable);
+		
+		
+		Collection<String> listOfColumns = new ArrayList<String>();
+		listOfColumns.add("name");
+		popupMainLayout.setDescription(caption);
+		GenricEntityPicker userPicker;
+		Collection<Dto> dtos = null;
+		if(caption == "Add"){
+			dtos = (Collection) userService.findUsersByAccountId(accountId);
+			userPicker = new GenricEntityPicker(dtos,listOfColumns,popupMainLayout);
+		}else{
+			dtos = (Collection) groupService.findById(groupId).getMembers();
+			userPicker = new GenricEntityPicker(dtos,listOfColumns,popupMainLayout);
+		}
+
 		userPicker.build();
 		
-		return userTable;
 	}
 
 
@@ -158,7 +167,9 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	 * Handle Close button click and close the window.
 	 */
 	public void closeButtonClick(Button.ClickEvent event) {
+	
 		if (!isModalWindowClosable) {
+			
 			/* Windows are managed by the application object. */
 			mainwindow.removeWindow(popupWindow);
 
@@ -170,10 +181,6 @@ public class AddUserToGroupPopup extends CustomComponent implements Window.Close
 	/**
 	 * Handle window close event
 	 */
-	@Override
-	public void windowClose(CloseEvent e) {
-		/* Return to initial state. */
-		openbutton.setEnabled(true);
-	}
+	public abstract void windowClose(CloseEvent e);
 
 }

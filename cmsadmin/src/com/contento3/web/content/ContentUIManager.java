@@ -1,8 +1,14 @@
 package com.contento3.web.content;
 
+import java.util.Collection;
+
 import com.contento3.cms.constant.NavigationConstant;
+import com.contento3.dam.image.library.dto.ImageLibraryDto;
+import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.web.UIManager;
+import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
 import com.contento3.web.content.image.ImageLibraryPopup;
 import com.contento3.web.content.image.ImageMgmtUIManager;
@@ -14,10 +20,12 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.VerticalLayout;
@@ -150,40 +158,8 @@ public class ContentUIManager implements UIManager{
 		}
 		else if(element.equals("Image")){
 		
-			Button button = new Button();
-			verticalLayout.addComponent(button);
-			verticalLayout.setSizeFull();
 			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper,parentWindow);
-			Tab tab = elementTab.addTab(verticalLayout, String.format("%s Management",element));
-			tab.setClosable(true);
-			
-			Label imageHeading = new Label("Image Manager");
-			imageHeading.setStyleName("screenHeading");
-			verticalLayout.addComponent(imageHeading);
-			verticalLayout.addComponent(new HorizontalRuler());
-			verticalLayout.setMargin(true);
-			verticalLayout.setSizeFull();
-			
-			HorizontalLayout horizLayout = new HorizontalLayout();
-			horizLayout.setSpacing(true);
-			button.addListener(new ClickListener(){
-				public void buttonClick(ClickEvent event){
-					VerticalLayout newArticleLayout = new VerticalLayout();
-					Tab createNew = elementTab.addTab(newArticleLayout, String.format("Create new %s",element));
-					createNew.setClosable(true);
-					elementTab.setSelectedTab(newArticleLayout);
-					newArticleLayout.addComponent(imageMgmtUIMgr.renderAddScreen());
-					newArticleLayout.setHeight("100%");
-				}
-			});
-			button.setCaption(String.format("Add %s",element));
-			horizLayout.addComponent(button);
-			
-			Button addLibraryButton = new Button("Add Library",new ImageLibraryPopup(parentWindow, helper),"openButtonClick");
-			horizLayout.addComponent(addLibraryButton);
-			verticalLayout.addComponent(horizLayout);
-			verticalLayout.addComponent(new HorizontalRuler());
-			verticalLayout.addComponent(imageMgmtUIMgr.listImage(1));
+			elementTab = (TabSheet) imageMgmtUIMgr.render(null);	
 		}
 
 		return elementTab;

@@ -4,10 +4,11 @@
 package com.contento3.web.site;
 
 import com.contento3.cms.page.template.dto.PageTemplateDto;
+import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.listener.PageTemplateDeleteListner;
+import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -18,8 +19,8 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
+ *Used to create table for pagetemplates
  * @author XINEX
- *
  */
 public class PageTemplateTableBuilder extends AbstractTableBuilder {
 
@@ -54,6 +55,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		PageTemplateDto templateDto = (PageTemplateDto) dto;
 		Item item = container.addItem(templateDto.getTemplateId());
 		item.getItemProperty("associated templates").setValue(templateDto.getTemplateName());
+		item.getItemProperty("order").setValue(templateDto.getOrder());
 		// adding delete button item into list
 		final Button deleteLink = new Button();
 		deleteLink.setCaption("Delete");
@@ -61,7 +63,10 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new PageTemplateDeleteListner(this.contextHelper, this.mainWindow, table, templateDto));
+		PageTemplateService service = (PageTemplateService) this.contextHelper.getBean("pageTemplateService");
+		deleteLink.addListener(new EntityDeleteClickListener<PageTemplateDto>(templateDto,service,deleteLink,table));
+		
+		((IndexedContainer) container).sort(new Object[] { "order" }, new boolean[] { true });
 	}
 
 	/**
@@ -70,6 +75,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table table,final Container container) {
 		container.addContainerProperty("associated templates", String.class, null);
+		container.addContainerProperty("order", String.class, null);
 		container.addContainerProperty("delete", Button.class, null);
 		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 		table.setContainerDataSource(container);

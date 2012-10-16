@@ -1,3 +1,4 @@
+use cms;
 INSERT INTO CATEGORY VALUES (1,"Sports",null);
 INSERT INTO CATEGORY VALUES (2,"News",null);
 INSERT INTO CATEGORY VALUES (3,"Education",null);
