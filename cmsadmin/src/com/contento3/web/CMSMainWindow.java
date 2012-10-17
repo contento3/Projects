@@ -228,8 +228,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
         layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
 
-        Item userMgmtItem = hwContainer.addItem(NavigationConstant.USER_MANAGER);
-        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.USER_MANAGER);
+        Item userMgmtItem = hwContainer.addItem(NavigationConstant.SECURITY);
+        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.SECURITY);
 
         Item childItem = null;
 
@@ -272,8 +272,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    	    			horiz.setSecondComponent(tabSheet);
 	    	    		}
 	        		}
-	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MANAGER) || 
-	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MANAGER)))){
+	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.SECURITY) || 
+	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SECURITY)))){
 	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper,getWindow());
 	    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
 	        		}

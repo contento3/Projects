@@ -15,5 +15,8 @@ public class NavigationConstant {
 	public static final String SITES = "Sites";                   
 	public static final String USER_MANAGER = "User Management"; 
 	public static final String USER_GRP_MGMT = "Group Manager";
-	public static final String GLOBAL_CONFIG = "Global Config";              
+	public static final String GLOBAL_CONFIG = "Global Config";
+	
+	//Added in reference to Issue #114 on 17th oct
+	public static final String SECURITY = "Security";
 }
