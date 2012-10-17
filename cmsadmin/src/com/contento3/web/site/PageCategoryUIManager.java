@@ -78,22 +78,6 @@ public class PageCategoryUIManager {
 	}
 	
 	
-	/**
-	 * Used to render a new tab to assign category to page.
-	 * 
-	 * @param siteId
-	 * @param tabSheet
-	 * @param pageId
-	 * @param categoryLabel
-	 */
-	private void renderCategory(final Integer siteId,
-			final TabSheet tabSheet, final Integer pageId,final Label categoryLabel) {
-		
-		CategoryTreeRender tree = new CategoryTreeRender(contextHelper, parentWindow);
-		tree.renderTreeToAssign(siteId, tabSheet, pageId, categoryLabel);
-		
-	}//end renderCategory()
-
 	public Component renderCategoryList(final Integer siteId) {
 		final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Category Management");
 		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.categoryTable);
