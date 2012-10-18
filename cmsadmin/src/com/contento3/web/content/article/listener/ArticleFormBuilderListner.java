@@ -219,6 +219,8 @@ public class ArticleFormBuilderListner implements ClickListener{
 		GridLayout toolbarGridLayout = new GridLayout(1,3);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
+		listeners.add(new ArticleAssignCategoryListener(contextHelper,articleId,accountId));
+
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();
 

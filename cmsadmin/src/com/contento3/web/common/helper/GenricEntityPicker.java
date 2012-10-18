@@ -39,7 +39,7 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 	/**
 	 * Table to add or delete
 	 */
-	private static Table table = new Table();
+	//private static Table table = new Table();
 	
 	/**
 	 * Contains list of columns to be generated
@@ -52,43 +52,39 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 	final Collection<String> selectedItems= new ArrayList<String>();
 	
 	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
-		
-		super(table);
+		super(new Table());
 		this.listOfColumns = listOfColumns;
 		this.addButton = new Button();
 		this.dtos = dtos;
 		this.vLayout = vLayout;
-		
 	}
 
 	/**
 	 * build table and add button click listener
 	 */
 	public void build() {
-		
 		table.setPageLength(25);
 		build(dtos);
 		
 		((IndexedContainer) container).sort(new Object[] { "name" }, new boolean[] { true });
 		
 		final HorizontalLayout addButtonLayout = new HorizontalLayout();
-	
 		if(vLayout.getComponentCount()>0){
 			vLayout.removeAllComponents();
 		}
+
 		this.vLayout.addComponent(table);
 		String caption = vLayout.getDescription();
 		if( caption == null){
 			caption="add";
 		}
-		addButton.setCaption(caption);
 		
+		addButton.setCaption(caption);
 		this.vLayout.addComponent(addButtonLayout);
 	    addButtonLayout.addComponent(addButton);
 	    addButtonLayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
 	    addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 		buttonlistner();
-		
 	}
 	
 
@@ -98,38 +94,22 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 	 * @param button
 	 */
 	public void buttonlistner(){
-		
-		
 		addButton.addListener(new ClickListener() {
-			
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void buttonClick(ClickEvent event) {
-				
-                for (Object id : table.getItemIds()) {
+	            for (Object id : table.getItemIds()) {
                 	
                      // Get the check-box of this item (row)
-                     CheckBox checkBox = (CheckBox) table
-                             .getContainerProperty(id, "select")
-                             .getValue();
-                   
+                     CheckBox checkBox = (CheckBox) table.getContainerProperty(id, "select").getValue();
                      if (checkBox.booleanValue()) {
                     	 selectedItems.add(table.getContainerProperty(id, "name").getValue().toString());
                      }
-                     
                 }//end for
-                
                 vLayout.setData(selectedItems);
 			}
-			
 		});
-		
 	}
-
 
 	/**
 	 * Insert item into table
@@ -141,7 +121,6 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 		for(String column:listOfColumns){
 			item.getItemProperty(column).setValue(dto.getName());
 		}
-
 	}
 
 	/**
@@ -149,7 +128,6 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 	 */
 	@Override
 	public void buildHeader(final Table table, final Container container) {
-
 		container.addContainerProperty("select", CheckBox.class, null);
 		for(String column:listOfColumns){
 			container.addContainerProperty(column, String.class, null);
@@ -157,7 +135,6 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 		table.setColumnWidth("select", 40);
 		table.setContainerDataSource(container);
-
 	}
 	
 	/**
@@ -167,7 +144,6 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 	public void buildEmptyTable(final Container container) {
 		final Item item = container.addItem("-1");
 		item.getItemProperty("name").setValue("No record found.");
-
 	}
 
 }
