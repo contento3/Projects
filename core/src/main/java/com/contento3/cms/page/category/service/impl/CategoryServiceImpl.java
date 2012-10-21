@@ -107,7 +107,7 @@ public class CategoryServiceImpl implements CategoryService {
 			categoryDao.delete(categoryAssembler.dtoToDomain(dtoToDelete));
 		}
 		else {
-			throw new EntityCannotBeDeletedException("Category ["+dtoToDelete.getCategoryName()+ "] have " +categoryChildren.size()+ " child categories.");
+			throw new EntityCannotBeDeletedException("Category ["+dtoToDelete.getName()+ "] have " +categoryChildren.size()+ " child categories.");
 		}
 	}
 	

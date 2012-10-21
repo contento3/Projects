@@ -3,9 +3,9 @@ package com.contento3.cms.article.dto;
 
 import java.util.Collection;
 import java.util.Date;
+
 import com.contento3.account.dto.AccountDto;
-import com.contento3.cms.article.model.RelatedArticle;
-import com.contento3.cms.page.category.model.Category;
+import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.dto.Dto;
 
@@ -66,6 +66,10 @@ public class ArticleDto extends Dto {
 	 */
 	private AccountDto account;
 	
+	/**
+	 * Associated categories for this article.
+	 */
+	private Collection<CategoryDto> categoryDtos;
 	/**
 	 * Article visibility
 	 */
@@ -167,6 +171,14 @@ public class ArticleDto extends Dto {
 
 	public void setExpiryDate(final Date expiryDate) {
 		this.expiryDate = expiryDate;
+	}
+
+	public void setCategoryDtos(final Collection<CategoryDto> categoryDtos) {
+		this.categoryDtos = categoryDtos;
+	}
+
+	public Collection<CategoryDto> getCategoryDtos() {
+		return categoryDtos;
 	}
 
 	

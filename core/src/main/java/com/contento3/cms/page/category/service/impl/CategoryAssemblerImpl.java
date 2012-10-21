@@ -15,7 +15,7 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		if(dto.getCategoryId()!=null)
 			domain.setCategoryId((dto.getCategoryId()));
 		
-		domain.setCategoryName(dto.getCategoryName());
+		domain.setCategoryName(dto.getName());
 		
 		if(dto.getParent()!=null ){
 				domain.setParent(dtoToDomain(dto.getParent()));
@@ -27,7 +27,7 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 	public CategoryDto domainToDto(Category domain) {
 		CategoryDto dto = new CategoryDto();
 		dto.setCategoryId(domain.getCategoryId());
-		dto.setCategoryName(domain.getCategoryName());
+		dto.setName(domain.getCategoryName());
 
 //		if(domain.getParent()!=null){
 //			dto.setParent(domainToDto(domain.getParent()));

@@ -258,7 +258,7 @@ public class PageUIManager {
 			addCateogryButton.setEnabled(true);
 			if(itr.hasNext()){
 				CategoryDto dto = itr.next();
-				categoryLabel.setValue("Category: " + dto.getCategoryName());
+				categoryLabel.setValue("Category: " + dto.getName());
 				addCateogryButton.setCaption("Edit Categories");
 				
 			}

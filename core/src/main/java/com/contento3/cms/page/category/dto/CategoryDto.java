@@ -8,7 +8,7 @@ public class CategoryDto extends Dto{
 	
 	private Integer categoryId;
 
-	private String categoryName;
+	private String name;
 	
 	private CategoryDto parent;
 
@@ -24,12 +24,12 @@ public class CategoryDto extends Dto{
 		this.categoryId = categoryId;
 	}
 
-	public String getCategoryName() {
-		return categoryName;
+	public String getName() {
+		return name;
 	}
 
-	public void setCategoryName(final String categoryName) {
-		this.categoryName = categoryName;
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 	public CategoryDto getParent() {

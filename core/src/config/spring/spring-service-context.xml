@@ -165,6 +165,7 @@
 		class="com.contento3.cms.article.service.impl.ArticleAssemblerImpl">
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="categoryAssembler" />
 	</bean>
 	
 	<bean id="articleService"

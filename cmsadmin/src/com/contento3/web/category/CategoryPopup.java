@@ -127,7 +127,7 @@ implements Window.CloseListener {
 	        popupWindow.setCaption("Edit Category");
 	        categoryId = (Integer)event.getButton().getData();
 	        CategoryDto categoryDto = categoryService.findById(categoryId);
-	        categoryNameTxtField.setValue(categoryDto.getCategoryName());
+	        categoryNameTxtField.setValue(categoryDto.getName());
 	        buildTree(popupMainLayout);
 	        categoryButton.addListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -174,13 +174,13 @@ implements Window.CloseListener {
 			categoryId = dto.getCategoryId();
 			if (null==container.getItem(categoryId)){
 				Item item = container.addItem(categoryId);
-				item.getItemProperty("category").setValue(dto.getCategoryName());
+				item.getItemProperty("category").setValue(dto.getName());
 
 				final Collection <CategoryDto> children = dto.getChild();
 				if (!CollectionUtils.isEmpty(children)){
 					for(CategoryDto categoryChild : children){
 						Item childItem = container.addItem(categoryChild.getCategoryId());
-						childItem.getItemProperty("category").setValue(categoryChild.getCategoryName());
+						childItem.getItemProperty("category").setValue(categoryChild.getName());
 	
 						container.setParent(categoryChild.getCategoryId(), categoryId);
 						container.setChildrenAllowed(categoryChild.getCategoryId(), true);
@@ -208,7 +208,7 @@ implements Window.CloseListener {
      */
 	private void handleNewDomain(final TextField textField){
 		final CategoryDto categoryDto = new CategoryDto();
-		categoryDto.setCategoryName(textField.getValue().toString());
+		categoryDto.setName(textField.getValue().toString());
 		categoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 		try {
 			categoryService.create(categoryDto);
@@ -224,7 +224,7 @@ implements Window.CloseListener {
      */
 	private void handleEditDomain(final TextField categoryNameTxtField,final Integer categoryId){
 		final CategoryDto updatedCategoryDto = categoryService.findById(categoryId);
-		updatedCategoryDto.setCategoryName(categoryNameTxtField.getValue().toString());
+		updatedCategoryDto.setName(categoryNameTxtField.getValue().toString());
 		updatedCategoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 		if (selectedParentCategory>0){
 			categoryService.update(updatedCategoryDto,selectedParentCategory);

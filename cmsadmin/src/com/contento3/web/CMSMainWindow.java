@@ -82,10 +82,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
  		unitUI();
 	}
 	
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public void fragmentChanged(FragmentChangedEvent source) {
@@ -230,6 +226,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
         Item userMgmtItem = hwContainer.addItem(NavigationConstant.SECURITY);
         userMgmtItem.getItemProperty("name").setValue(NavigationConstant.SECURITY);
+        root.setItemIcon(userMgmtItem, new ExternalResource("images/security.png"));
+        userMgmtItem.getItemProperty("icon").setValue(new ExternalResource("images/security.png"));
 
         Item childItem = null;
 

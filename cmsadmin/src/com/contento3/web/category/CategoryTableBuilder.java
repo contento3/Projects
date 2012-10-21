@@ -78,7 +78,7 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 	private void addNewItem(final HierarchicalContainer container,final CategoryDto category,final TreeTable treeTable){
 		final Integer categoryId = category.getCategoryId();
 		Item item = container.addItem(categoryId);
-		item.getItemProperty("category").setValue(category.getCategoryName());
+		item.getItemProperty("category").setValue(category.getName());
 		
 		Button editButton = new Button("Edit", new CategoryPopup(window, contextHelper,(TreeTable)treeTable,tabSheet), "openButtonClick");
 		editButton.setStyleName(BaseTheme.BUTTON_LINK);
