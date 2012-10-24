@@ -19,6 +19,7 @@ public class StorageTypeHibernateImplTestCase extends AbstractTransactionalJUnit
 	@Resource(name="storageDAO")
 	private StorageTypeHibernateImpl storageDao;
 	
+	Integer expectedId;
 	String expectedName = "html";
 	String expectedDesc = "type = text/html";
 	Date expectedStartDate = new Date(System.currentTimeMillis());
@@ -29,16 +30,27 @@ public class StorageTypeHibernateImplTestCase extends AbstractTransactionalJUnit
 		StorageType storage = new StorageType();
 
 		storage.setName(expectedName);
-		storage.setStart_date(expectedStartDate);
-		storage.setEnd_date(expectedEndDate);
+		storage.setStartDate(expectedStartDate);
+		storage.setEndDate(expectedEndDate);
 		storage.setDescription(expectedDesc);
 		
-		storageDao.persist(storage);
+		expectedId = storageDao.persist(storage);
 	}
 	
 	@Test
 	public void testFindStorageTypeByName(){
 		StorageType t = (StorageType) storageDao.findByName(expectedName);
+		assertNotNull(t);
+		assertEquals(expectedId.longValue(), t.getStorageId().longValue());
+		assertEquals("Name check", expectedName, t.getName());
+		assertEquals("Desc check", expectedDesc, t.getDescription());
+		assertEquals("StartDate check", expectedStartDate, t.getStartDate());
+		assertEquals("EndDate check", expectedEndDate, t.getEndDate());
+	}
+	
+	@Test
+	public void testFindById(){
+		StorageType t = storageDao.findById(expectedId);
 		assertNotNull(t);
 	}
 }

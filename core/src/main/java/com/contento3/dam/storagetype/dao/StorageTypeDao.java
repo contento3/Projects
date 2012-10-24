@@ -1,7 +1,5 @@
 package com.contento3.dam.storagetype.dao;
 
-import java.util.Collection;
-
 import com.contento3.common.dao.GenericDao;
 import com.contento3.dam.storagetype.model.StorageType;
 
@@ -11,5 +9,5 @@ import com.contento3.dam.storagetype.model.StorageType;
  *
  */
 public interface StorageTypeDao extends GenericDao<StorageType, Integer>{
-	Object findByName(String name);
+	StorageType findByName(String name);
 }

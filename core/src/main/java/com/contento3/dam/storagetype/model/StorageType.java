@@ -23,49 +23,59 @@ public class StorageType implements Serializable{
 	
 	@Id @GeneratedValue
 	@Column(name = "STORAGE_ID")
-	private long storage_id;
+	private Integer storageId; //holds primary key of storage_type table
 	
 	@Column(name = "NAME")
 	private String name;
 	
 	@Column(name = "DESCRIPTION")
-	private String description;
+	private String description; //holds description attribute of the storage_type table
 	
 	@Column(name = "START_DATE")
-	private Date start_date;
+	private Date startDate; //holds start date attribute of the storage_type table
 	
 	@Column(name = "END_DATE")
-	private Date end_date;
+	private Date endDate; //holds end date attribute of the storage_type table
 	
-	public long getStorage_id() {
-		return storage_id;
+	/* Getter and Setter function below */
+	public Integer getStorageId() {
+		return storageId;
 	}
-	public void setStorage_id(long storage_id) {
-		this.storage_id = storage_id;
+
+	public void setStorageId(Integer storageId) {
+		this.storageId = storageId;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Date getStart_date() {
-		return start_date;
+
+	public Date getStartDate() {
+		return startDate;
 	}
-	public void setStart_date(Date start_date) {
-		this.start_date = start_date;
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
-	public Date getEnd_date() {
-		return end_date;
+
+	public Date getEndDate() {
+		return endDate;
 	}
-	public void setEnd_date(Date end_date) {
-		this.end_date = end_date;
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 }
 
