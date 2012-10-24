@@ -38,6 +38,7 @@
 			     <value>com.contento3.cms.article.model.Article</value>
 			     <value>com.contento3.cms.article.model.RelatedArticle</value>
 			     <value>com.contento3.dam.image.library.model.ImageLibrary</value>
+			     <value>com.contento3.dam.storagetype.model.StorageType</value>
 			  <!--   <value>com.contento3.site.user.model.User</value> -->
 			    
 			</list>
@@ -93,4 +94,8 @@
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	
+	<bean id="storageDAO"
+		class="com.contento3.dam.storagetype.dao.impl.StorageTypeHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
 </beans>
