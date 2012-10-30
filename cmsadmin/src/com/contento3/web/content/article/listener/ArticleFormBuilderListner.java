@@ -35,6 +35,7 @@ import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 public class ArticleFormBuilderListner implements ClickListener{
 	private static final long serialVersionUID = 1L;
@@ -219,8 +220,8 @@ public class ArticleFormBuilderListner implements ClickListener{
 		GridLayout toolbarGridLayout = new GridLayout(1,3);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
-		listeners.add(new ArticleAssignCategoryListener(contextHelper,articleId,accountId));
-
+		listeners.add(new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
+		
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();
 

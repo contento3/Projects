@@ -1,31 +1,26 @@
 package com.contento3.web.common.helper;
 
-import java.util.ArrayList;
+
 import java.util.Collection;
 import com.contento3.common.dto.Dto;
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
+import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
 
 /**
  * Abstract GenricEntityPicker class
  */
-public  class GenricEntityPicker extends AbstractTableBuilder  {
+public  class GenricEntityPicker extends CustomComponent implements Window.CloseListener {
 
 	/**
-	 * Used to add or delete item from table
+	 * 
 	 */
-	private final Button addButton;
-	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Dtos to be listed in table
 	 */
@@ -37,137 +32,118 @@ public  class GenricEntityPicker extends AbstractTableBuilder  {
 	private VerticalLayout vLayout;
 	
 	/**
-	 * Table to add or delete
-	 */
-	private static Table table = new Table();
-	
-	/**
 	 * Contains list of columns to be generated
 	 */
 	private Collection<String> listOfColumns;
 	
 	/**
-	 * Contains list of selected items
+	 * Table builder for genric entity picker
 	 */
-	final Collection<String> selectedItems= new ArrayList<String>();
+	GenricEntityTableBuilder tableBuilder;
 	
-	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
-		
-		super(table);
+	/**
+	 *  Reference to main window
+	 */
+	Window mainwindow; 
+	
+	/**
+	 * The window to be opened
+	 */
+	Window popupWindow; 
+	
+	/**
+	 * Button for opening the window
+	 */
+	Button openbutton; 
+	
+	/**
+	 *  A button in the window
+	 */
+	Button closebutton; 
+	
+	/**
+	 * Used to get service beans from spring context.
+	 */
+	SpringContextHelper helper;
+	
+	boolean isModalWindowClosable = true;
+	
+	/**
+	 * Vertical layout to add components
+	 */
+	VerticalLayout popupMainLayout = new VerticalLayout();
+	
+	/**
+	 * Contain calling object
+	 */
+	EntityListener entityListener;
+	
+	/**
+	 * Constructor
+	 * @param dtos
+	 * @param listOfColumns
+	 * @param vLayout
+	 */
+	
+	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener) {
 		this.listOfColumns = listOfColumns;
-		this.addButton = new Button();
 		this.dtos = dtos;
 		this.vLayout = vLayout;
-		
+		this.mainwindow = mainWindow;
+		this.entityListener = entityListener;
 	}
 
-	/**
-	 * build table and add button click listener
-	 */
-	public void build() {
-		
-		table.setPageLength(25);
-		build(dtos);
-		
-		((IndexedContainer) container).sort(new Object[] { "name" }, new boolean[] { true });
-		
-		final HorizontalLayout addButtonLayout = new HorizontalLayout();
+	public void build() { 
 	
 		if(vLayout.getComponentCount()>0){
-			vLayout.removeAllComponents();
+	        vLayout.removeAllComponents();
 		}
-		this.vLayout.addComponent(table);
-		String caption = vLayout.getDescription();
-		if( caption == null){
-			caption="add";
-		}
-		addButton.setCaption(caption);
-		
-		this.vLayout.addComponent(addButtonLayout);
-	    addButtonLayout.addComponent(addButton);
-	    addButtonLayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
-	    addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-		buttonlistner();
-		
+		tableBuilder = new GenricEntityTableBuilder(dtos, listOfColumns, vLayout);
+		tableBuilder.build();
+        renderPopUp();
 	}
 	
+	public void renderPopUp() {
+	        /* Create a new window. */
+			popupWindow = new Window();
+			popupWindow.setPositionX(200);
+	    	popupWindow.setPositionY(100);
+	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setWidth(37,Sizeable.UNITS_PERCENTAGE);
+	       
+	    	/* Add the window inside the main window. */
+	        mainwindow.addWindow(popupWindow);
+	        
+	        /* Listen for close events for the window. */
+	        popupWindow.addListener(this);
+	        popupWindow.setModal(true);
+	        if(entityListener.getCaption() !=  null)
+	        popupWindow.setCaption(entityListener.getCaption());
+	        popupMainLayout.setSpacing(true);
+	        popupMainLayout.addComponent(vLayout);
+	        popupWindow.addComponent(popupMainLayout);
+	        popupWindow.setResizable(false);
+	        
+	    }
 
 	/**
-	 * Add  button click listener
-	 * @param table
-	 * @param button
+	 * Handle Close button click and close the window.
 	 */
-	public void buttonlistner(){
-		
-		
-		addButton.addListener(new ClickListener() {
-			
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				
-                for (Object id : table.getItemIds()) {
-                	
-                     // Get the check-box of this item (row)
-                     CheckBox checkBox = (CheckBox) table
-                             .getContainerProperty(id, "select")
-                             .getValue();
-                   
-                     if (checkBox.booleanValue()) {
-                    	 selectedItems.add(table.getContainerProperty(id, "name").getValue().toString());
-                     }
-                     
-                }//end for
-                
-                vLayout.setData(selectedItems);
-			}
-			
-		});
-		
-	}
-
-
-	/**
-	 * Insert item into table
-	 */
-	@Override
-	public void assignDataToTable(final Dto dto, final Table table,final Container container) {
-		Item item = container.addItem(dto.getName());
-		item.getItemProperty("select").setValue(new CheckBox());
-		for(String column:listOfColumns){
-			item.getItemProperty(column).setValue(dto.getName());
-		}
-
-	}
-
-	/**
-	 * Build header for table
-	 */
-	@Override
-	public void buildHeader(final Table table, final Container container) {
-
-		container.addContainerProperty("select", CheckBox.class, null);
-		for(String column:listOfColumns){
-			container.addContainerProperty(column, String.class, null);
-		}
-		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-		table.setColumnWidth("select", 40);
-		table.setContainerDataSource(container);
-
-	}
+	public void closeButtonClick(Button.ClickEvent event) {
 	
+		if (!isModalWindowClosable) {
+			/* Windows are managed by the application object. */
+			mainwindow.removeWindow(popupWindow);
+		}
+	}
+
 	/**
-	 * Build empty table
+	 * Window close event
 	 */
 	@Override
-	public void buildEmptyTable(final Container container) {
-		final Item item = container.addItem("-1");
-		item.getItemProperty("name").setValue("No record found.");
-
+	public void windowClose(CloseEvent e) {
+		// TODO Auto-generated method stub
+		entityListener.updateList();
 	}
 
 }
