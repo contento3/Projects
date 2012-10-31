@@ -148,6 +148,7 @@
 		class="com.contento3.cms.page.category.service.impl.CategoryServiceImpl">
 		<constructor-arg ref="categoryAssembler" />
 		<constructor-arg ref="categoryDao" />
+		<constructor-arg ref="accountDAO" />
 	</bean>
 
 	<bean id="siteDomainAssembler"
@@ -164,6 +165,7 @@
 		class="com.contento3.cms.article.service.impl.ArticleAssemblerImpl">
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="categoryAssembler" />
 	</bean>
 	
 	<bean id="articleService"
@@ -213,5 +215,15 @@
 		class="com.contento3.security.user.service.impl.SaltedHibernateUserServiceImpl">
 		<constructor-arg ref="saltedHibernateUserDao" />
 		<constructor-arg ref="saltedHibernateUserAssembler" />
+	</bean>
+
+	<bean id="associatedContentScopeAssembler"
+		class="com.contento3.cms.content.service.impl.AssociatedContentScopeAssemblerImpl">
+	</bean>
+	
+	<bean id="associatedContentScopeService"
+		class="com.contento3.cms.content.service.impl.AssociatedContentScopeServiceImpl">
+		<constructor-arg ref="associatedContentScopeAssembler" />
+		<constructor-arg ref="associatedContentScopeDao" />
 	</bean>
 </beans>

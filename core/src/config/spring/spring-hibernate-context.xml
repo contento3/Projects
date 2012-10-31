@@ -48,6 +48,7 @@
 			     <value>com.contento3.cms.article.model.Article</value>
 			     <value>com.contento3.cms.article.model.RelatedArticle</value>
 			     <value>com.contento3.dam.image.library.model.ImageLibrary</value>
+			     <value>com.contento3.cms.content.model.AssociatedContentScope</value>
 			  <!--   <value>com.contento3.site.user.model.User</value> -->
 			    
 			</list>
@@ -222,7 +223,11 @@
 		<property name="cacheName" value="com.contento3.account.model.Account" />
 	</bean>
 	
-	
+	<!-- AssociatedContentScopeDao -->
+	<bean id="associatedContentScopeDao"
+		class=" com.contento3.cms.content.dao.impl.AssociatedContentScopeDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
 
 	
 </beans>
