@@ -62,7 +62,6 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public void delete(GroupDto group) {
 		
-		
 		Collection<SaltedHibernateUserDto> members;
 		members=group.getMembers();
 		
@@ -74,7 +73,6 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void deleteWithException(GroupDto group) throws Exception {
-		
 		
 		Collection<SaltedHibernateUserDto> members;
 		members=group.getMembers();
