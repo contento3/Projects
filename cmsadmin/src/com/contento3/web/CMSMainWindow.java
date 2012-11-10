@@ -124,7 +124,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 
 	    HorizontalLayout horizTop = new HorizontalLayout();
-	    horizTop.setStyleName(Reindeer.LAYOUT_BLACK);
 	    vLayout.addComponent(vert);
 	       
 	    ImageLoader imageLoader = new ImageLoader();
@@ -208,10 +207,10 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
         root.setItemIcon(contentMgmt, new ExternalResource("images/content-mgmt.png"));
         contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content-mgmt.png"));
-
         
         Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
         globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
+        globalConfig.getItemProperty("icon").setValue(new ExternalResource("images/configuration.png"));
 
         Item template = hwContainer.addItem("Template");
         template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
@@ -221,8 +220,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         Item modules = hwContainer.addItem("Modules");
         modules.getItemProperty("name").setValue(NavigationConstant.MODULES);
 
-        Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
-        layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
+        //TODO DO NOT REMOVE THIS CODE
+        //This needs to be used again when layout management
+        //functionality is added into the application.
+        //Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
+        //layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
 
         Item userMgmtItem = hwContainer.addItem(NavigationConstant.SECURITY);
         userMgmtItem.getItemProperty("name").setValue(NavigationConstant.SECURITY);

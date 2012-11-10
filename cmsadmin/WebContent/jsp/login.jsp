@@ -29,7 +29,7 @@ User
 Password
 </td>
 <td>
-<input type="password" value="guest" name="j_password"/>
+<input type="password" value="" name="j_password"/>
 </td>
 </tr>
 <tr>
