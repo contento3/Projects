@@ -8,6 +8,7 @@ import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
+import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.article.ArticleForm;
 import com.contento3.web.content.article.ArticleTableBuilder;
@@ -85,6 +86,7 @@ public class ArticleSaveListener implements ClickListener{
 
 		if (null==articleId){
 			articleDto.setDateCreated(new Date());
+			articleDto.setCategoryDtos(new ArrayList<CategoryDto>());
 			articleService.create(articleDto);
 		}
 		else {

@@ -14,8 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.contento3.account.model.Account;
-
 
 @Entity
 @Table(name = "CATEGORY")
@@ -49,20 +47,6 @@ public class Category implements Serializable {
 	@OneToMany(mappedBy = "parent")
 	private Collection<Category> child; 
 	
-	@ManyToOne
-	@JoinColumn(name = "ACCOUNT_ID")
-	private Account account;
-	
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(final Account account) {
-		this.account = account;
-	}
-
-
 
 	public Integer getCategoryId() {
 		return categoryId;

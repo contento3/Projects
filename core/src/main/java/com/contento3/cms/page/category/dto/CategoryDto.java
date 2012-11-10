@@ -8,14 +8,12 @@ public class CategoryDto extends Dto{
 	
 	private Integer categoryId;
 
-	private String name;
+	private String categoryName;
 	
 	private CategoryDto parent;
 
 	private Collection<CategoryDto> child; 
 
-	private Integer accountId;
-	
 	public Integer getCategoryId() {
 		return categoryId;
 	}
@@ -24,12 +22,12 @@ public class CategoryDto extends Dto{
 		this.categoryId = categoryId;
 	}
 
-	public String getName() {
-		return name;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
+	public void setCategoryName(final String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 	public CategoryDto getParent() {
@@ -46,14 +44,6 @@ public class CategoryDto extends Dto{
 
 	public void setChild(final 	Collection<CategoryDto> child) {
 		this.child = child;
-	}
-
-	public void setAccountId(final Integer accountId) {
-		this.accountId = accountId;
-	}
-
-	public Integer getAccountId() {
-		return accountId;
 	}
 	
 

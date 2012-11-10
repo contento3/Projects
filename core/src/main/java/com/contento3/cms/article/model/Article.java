@@ -110,15 +110,6 @@ public class Article implements Serializable  {
 	@OneToMany(cascade=CascadeType.ALL,mappedBy="article")
 	private Collection<RelatedArticle> relatedArticles;
 	
-	/**
-	 * Categories for this pages.
-	 */
-	@ManyToMany
-	@JoinTable(name="ARTICLE_CATEGORY_ASSOCIATION",
-		joinColumns={@JoinColumn(name="ARTICLE_ID",unique=true)},
-		inverseJoinColumns={@JoinColumn(name="CATEGORY_ID")})
-	private Collection<Category> categories;
-
 
 	public Integer getIsVisible() {
 		return isVisible;
@@ -222,13 +213,5 @@ public class Article implements Serializable  {
 
 	public void setExpiryDate(final Date expiryDate) {
 		this.expiryDate = expiryDate;
-	}
-
-	public void setCategories(final Collection<Category> categories) {
-		this.categories = categories;
-	}
-
-	public Collection<Category> getCategories() {
-		return categories;
 	}
 }

@@ -7,7 +7,7 @@ import com.contento3.cms.article.service.ArticleService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
-import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
+import com.contento3.web.content.article.listner.ArticleFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.Sizeable;
@@ -22,12 +22,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class ArticleMgmtUIManager implements UIManager {
-	
-	public final static String ARTICLE_HEADING_LBL = "Header";
-	public final static String ARTICLE_TEASER_LBL = "Teaser";
-	public final static String ARTICLE_BODY_LBL = "Body";
-	public final static String ARTICLE_POSTED_DATE = "Article Posted Date";
-	public final static String ARTICLE_EXPIRY_DATE = "Article Expiry Date";
 	
 	/**
 	 * Used to get service beans from spring context.
@@ -83,8 +77,9 @@ public class ArticleMgmtUIManager implements UIManager {
 
 	@Override
 	public void render() {
-	}
 
+		
+	}
 	/**
 	 * Return tab sheet
 	 */
@@ -105,7 +100,6 @@ public class ArticleMgmtUIManager implements UIManager {
 	
 		return null;
 	}
-	
 	@Override
 	public Component render(String command,
 			HierarchicalContainer treeItemContainer) {
@@ -113,20 +107,18 @@ public class ArticleMgmtUIManager implements UIManager {
 		return null;
 	}
 	
-	/**
-	 * Renders article listing
-	 */
 	private void renderArticleComponent() {
 		Label articleHeading = new Label("Article Manager");
 		articleHeading.setStyleName("screenHeading");
 		this.verticalLayout.addComponent(articleHeading);
 		this.verticalLayout.addComponent(new HorizontalRuler());
-		this.verticalLayout.setMargin(true);	
+		this.verticalLayout.setMargin(true);
 		addArticleButton();
 		this.verticalLayout.addComponent(new HorizontalRuler());
 		renderArticleTable();
+		
+		
 	}
-
 	/**
 	 * Render article table
 	 */
@@ -137,6 +129,7 @@ public class ArticleMgmtUIManager implements UIManager {
 		Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
 		tableBuilder.build((Collection)articles);
 		this.verticalLayout.addComponent(this.articleTable);
+		
 	}
 
 	/**

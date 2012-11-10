@@ -1,12 +1,11 @@
 package com.contento3.web.common.helper;
 
-import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 public class ScreenHeader {
 
-	public ScreenHeader(final AbstractOrderedLayout layout,final String heading){
+	public ScreenHeader(final VerticalLayout layout,final String heading){
 		buildHeader(layout,heading);
 	}
 	
@@ -15,7 +14,7 @@ public class ScreenHeader {
 	 * @param layout
 	 * @param heading
 	 */
-	private void buildHeader(final AbstractOrderedLayout layout,final String heading){
+	private void buildHeader(final VerticalLayout layout,final String heading){
 		final Label screenHeading = new Label(heading); 
 		screenHeading.setStyleName("screenHeading");
 		layout.addComponent(screenHeading);

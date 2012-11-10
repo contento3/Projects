@@ -82,6 +82,10 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
  		unitUI();
 	}
 	
+	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	
 	public void fragmentChanged(FragmentChangedEvent source) {
@@ -226,10 +230,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         //Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
         //layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
 
-        Item userMgmtItem = hwContainer.addItem(NavigationConstant.SECURITY);
-        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.SECURITY);
-        root.setItemIcon(userMgmtItem, new ExternalResource("images/security.png"));
-        userMgmtItem.getItemProperty("icon").setValue(new ExternalResource("images/security.png"));
+        Item userMgmtItem = hwContainer.addItem(NavigationConstant.USER_MANAGER);
+        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.USER_MANAGER);
 
         Item childItem = null;
 
@@ -272,8 +274,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    	    			horiz.setSecondComponent(tabSheet);
 	    	    		}
 	        		}
-	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.SECURITY) || 
-	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SECURITY)))){
+	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.USER_MANAGER) || 
+	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.USER_MANAGER)))){
 	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper,getWindow());
 	    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
 	        		}

@@ -178,7 +178,7 @@ public class SiteUIManager implements UIManager {
 		addNewCategoryButton.addListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,contextHelper,parentWindow);
+				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,siteService,pageService,contextHelper,parentWindow);
 				categoryUIManager.renderCategoryList(1);
 			}
 		});

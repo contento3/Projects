@@ -1,14 +1,13 @@
 package com.contento3.web.content.article;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
-import com.contento3.web.content.article.listener.ArticleDeleteClickListner;
-import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
+import com.contento3.web.content.article.listner.ArticleDeleteClickListner;
+import com.contento3.web.content.article.listner.ArticleFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -71,11 +70,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		item.getItemProperty("date created").setValue(sdf.format(article.getDateCreated()));
 		item.getItemProperty("date posted").setValue(sdf.format(article.getDatePosted()));
-		
-		Date expiryDate = article.getExpiryDate();
-		if (null!=expiryDate){
-			item.getItemProperty("expiry date").setValue(sdf.format(expiryDate));
-		}
+		item.getItemProperty("expiry date").setValue(sdf.format(article.getExpiryDate()));
 		
 		Button editLink = new Button();
 		editLink.setCaption("Edit");

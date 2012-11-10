@@ -216,4 +216,14 @@
 		<constructor-arg ref="saltedHibernateUserDao" />
 		<constructor-arg ref="saltedHibernateUserAssembler" />
 	</bean>
+
+	<bean id="associatedContentScopeAssembler"
+		class="com.contento3.cms.content.service.impl.AssociatedContentScopeAssemblerImpl">
+	</bean>
+	
+	<bean id="associatedContentScopeService"
+		class="com.contento3.cms.content.service.impl.AssociatedContentScopeServiceImpl">
+		<constructor-arg ref="associatedContentScopeAssembler" />
+		<constructor-arg ref="associatedContentScopeDao" />
+	</bean>
 </beans>

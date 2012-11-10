@@ -43,13 +43,18 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 	 */
 	final CategoryService categoryService;
 	
+	/**
+	 * Siteid for the category
+	 */
+	final Integer siteId;
 	
-	public CategoryTableBuilder(final Window window,final SpringContextHelper helper,final TabSheet tabSheet,final TreeTable treeTable) {
+	public CategoryTableBuilder(final Window window,final SpringContextHelper helper,final TabSheet tabSheet,final TreeTable treeTable,final Integer siteId) {
 		super(treeTable);
 		this.contextHelper = helper;
 		this.window = window;
 		this.tabSheet = tabSheet;
 		this.categoryService = (CategoryService) contextHelper.getBean("categoryService");
+		this.siteId = siteId;
 	}
 
 	@Override
@@ -63,8 +68,8 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 		addNewItem(container,category,treeTable);
 			
 		if (null!=parentCategory){
-			container.setParent(categoryId,parentCategory.getCategoryId());
-			container.setChildrenAllowed(parentCategory.getCategoryId(), true);
+			container.setParent( categoryId,parentCategory.getCategoryId());
+			container.setChildrenAllowed(category.getCategoryId(), true);
 		}
 			
 		final Collection <CategoryDto> children = category.getChild();
@@ -75,12 +80,12 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 		}
 	}
 		
-	private void addNewItem(final HierarchicalContainer container,final CategoryDto category,final TreeTable treeTable){
+	private void addNewItem(final HierarchicalContainer container,final CategoryDto category,final Table treeTable){
 		final Integer categoryId = category.getCategoryId();
 		Item item = container.addItem(categoryId);
-		item.getItemProperty("category").setValue(category.getName());
+		item.getItemProperty("category").setValue(category.getCategoryName());
 		
-		Button editButton = new Button("Edit", new CategoryPopup(window, contextHelper,(TreeTable)treeTable,tabSheet), "openButtonClick");
+		Button editButton = new Button("Edit", new CategoryPopup(window, contextHelper,siteId,(TreeTable)treeTable,tabSheet), "openButtonClick");
 		editButton.setStyleName(BaseTheme.BUTTON_LINK);
 		editButton.setData(categoryId);
 

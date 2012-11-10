@@ -71,7 +71,8 @@ public class GroupDeleteClickListener extends EntityDeleteClickListener<GroupDto
 	 */
 	private void deleteGroup(Object id){
 		try {
-			((GroupService) getService()).deleteWithException(getDtoToDelete());
+			GroupDto dtoToDelete = ((GroupService) getService()).findById(getDtoToDelete().getGroupId());
+			((GroupService) getService()).deleteWithException(dtoToDelete);
 			getTable().removeItem(id);
 			getTable().setPageLength(getTable().getPageLength()-1);
 			window.showNotification(getDtoToDelete().getGroupName()+" group deleted succesfully");

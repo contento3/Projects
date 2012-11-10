@@ -63,7 +63,7 @@ public class UserUIManager implements UIManager {
 	public Component render(final String command,
 			HierarchicalContainer hwContainer) {
 		
-		if (command.equals(NavigationConstant.SECURITY)){
+		if (command.equals(NavigationConstant.USER_MANAGER)){
 			//Add the group screen tab and also add the child items
 			renderUserNavigationItem(hwContainer);
 		}
@@ -80,7 +80,7 @@ public class UserUIManager implements UIManager {
 			Item item = hwContainer.addItem(navigationItem);
 			if (null != item){
 				item.getItemProperty("name").setValue(navigationItem);
-				hwContainer.setParent(navigationItem, NavigationConstant.SECURITY);
+				hwContainer.setParent(navigationItem, NavigationConstant.USER_MANAGER);
 				hwContainer.setChildrenAllowed(navigationItem, false);
 			}
 		}
