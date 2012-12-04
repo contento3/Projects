@@ -4,6 +4,8 @@ import java.util.Collection;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.user.listner.AddAssociatedUsersListener;
+import com.contento3.web.user.listner.DeleteAssociatedUsersListener;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -74,7 +76,6 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		this.groupService = (GroupService) this.helper.getBean("groupService");
 		this.userTable = new Table();
 		
-		
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
         openbutton = new Button("Associated user", this, "openButtonClick");
@@ -83,9 +84,9 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		
 	}
 	
-		/** 
-		 * Button click listener
-		 */
+	/** 
+	 * Button click listener
+	 */
 	  public void openButtonClick(Button.ClickEvent event) {
 	        /* Create a new window. */
 		  	popupWindow = new Window();
@@ -93,9 +94,10 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		  	
 		  	Integer groupId = Integer.parseInt(event.getButton().getData().toString());
 		  	
-	        final Button addUserButton = new Button("Add",new AddAssociatedUsers(mainwindow, helper, userTable,groupId,tableBuilder), "openButtonClick");
-	        final Button deleteUserButton = new Button("Delete",new DeleteAssociatedUsers(mainwindow, helper, userTable,groupId,tableBuilder), "openButtonClick");
-	    	
+	        final Button addUserButton = new Button("Add");
+	        addUserButton.addListener(new AddAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
+	        final Button deleteUserButton = new Button("Delete");
+	    	deleteUserButton.addListener(new DeleteAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
 
@@ -138,7 +140,7 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		  
 	  }
 	  
-	 /**
+	  /**
 	   *  Handle Close button click and close the window.
 	   */
 	    public void closeButtonClick(Button.ClickEvent event) {

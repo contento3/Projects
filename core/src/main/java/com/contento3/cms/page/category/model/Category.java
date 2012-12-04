@@ -14,11 +14,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.contento3.account.model.Account;
+
 
 @Entity
 @Table(name = "CATEGORY")
 public class Category implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 	/**
 	 * Primary key for category
@@ -40,13 +42,27 @@ public class Category implements Serializable {
 	@ManyToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name = "PARENT_CATEGORY_ID")
 	private Category parent;
-	
+
 	/**
 	 * Child category
 	 */
 	@OneToMany(mappedBy = "parent")
 	private Collection<Category> child; 
-	
+
+	@ManyToOne
+	@JoinColumn(name = "ACCOUNT_ID")
+	private Account account;
+
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(final Account account) {
+		this.account = account;
+	}
+
+
 
 	public Integer getCategoryId() {
 		return categoryId;

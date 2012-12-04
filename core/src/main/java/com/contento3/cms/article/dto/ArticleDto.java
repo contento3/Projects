@@ -3,9 +3,9 @@ package com.contento3.cms.article.dto;
 
 import java.util.Collection;
 import java.util.Date;
+
 import com.contento3.account.dto.AccountDto;
-import com.contento3.cms.article.model.RelatedArticle;
-import com.contento3.cms.page.category.model.Category;
+import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.dto.Dto;
 
@@ -20,57 +20,61 @@ public class ArticleDto extends Dto {
 	 * unique random UUID
 	 */
 	private String uuid;
-	
+
 	/**
 	 * Head section of article
 	 */
 	private String head;
-	
+
 	/**
 	 * Teaser section of article
 	 */
 	private String teaser;
-	
+
 	/**
 	 * Body section of article
 	 */
 	private String body;
-	
+
 	/**
 	 * Article created date
 	 */
 	private Date dateCreated;
-	
+
 	/**
 	 * Article posted date
 	 */
 	private Date datePosted;
-	
+
 	/**
 	 * Article last updated date
 	 */
 	private Date lastUpdated;
-	
+
 	/**
 	 * Expiry date for article
 	 */
 	private Date expiryDate;
-	
+
 	/**
 	 * articles which are associated to site
 	 */
 	private Collection<SiteDto> site;
-	
+
 	/**
 	 * account on which articles are created
 	 */
 	private AccountDto account;
-	
+
+	/**
+	 * Associated categories for this article.
+	 */
+	private Collection<CategoryDto> categoryDtos;
 	/**
 	 * Article visibility
 	 */
 	private Integer isVisible;
-	
+
 
 	public Integer getIsVisible() {
 		return isVisible;
@@ -104,7 +108,7 @@ public class ArticleDto extends Dto {
 		this.account = account;
 	}
 
-	
+
 	public String getHead() {
 		return head;
 	}
@@ -144,7 +148,7 @@ public class ArticleDto extends Dto {
 	public void setDatePosted(final Date datePosted) {
 		this.datePosted = datePosted;
 	}
-	
+
 	public Collection<SiteDto> getSite() {
 		return site;
 	}
@@ -169,5 +173,13 @@ public class ArticleDto extends Dto {
 		this.expiryDate = expiryDate;
 	}
 
-	
+	public void setCategoryDtos(final Collection<CategoryDto> categoryDtos) {
+		this.categoryDtos = categoryDtos;
+	}
+
+	public Collection<CategoryDto> getCategoryDtos() {
+		return categoryDtos;
+	}
+
+
 }

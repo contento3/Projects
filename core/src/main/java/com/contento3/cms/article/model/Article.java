@@ -42,7 +42,7 @@ public class Article implements Serializable  {
 	@Column(columnDefinition="TEXT", length = 100, name = "ARTICLE_UUID",
 			unique=true, nullable=false)
     private String uuid = UUID.randomUUID().toString();
-	
+
 	/**
 	 * Head section of article
 	 */
@@ -53,25 +53,25 @@ public class Article implements Serializable  {
 	 */
 	@Column (name = "TEASER")
 	private String teaser;
-	
+
 	/**
 	 * Body section of article
 	 */
 	@Column (name = "BODY")
 	private String body;
-	
+
 	/**
 	 * Article created date
 	 */
 	@Column (name = "DATE_CREATED")
 	private Date dateCreated;
-	
+
 	/**
 	 * Article posted date
 	 */
 	@Column (name = "DATE_POSTED")
 	private Date datePosted;
-	
+
 	/**
 	 * Article last updated date
 	 */
@@ -87,7 +87,7 @@ public class Article implements Serializable  {
 	 */
 	@Column (name = "IS_VISIBLE")
 	private Integer isVisible;
-	
+
 
 	/**
 	 * articles which are associated to site
@@ -109,7 +109,16 @@ public class Article implements Serializable  {
 	 */
 	@OneToMany(cascade=CascadeType.ALL,mappedBy="article")
 	private Collection<RelatedArticle> relatedArticles;
-	
+
+	/**
+	 * Categories for this pages.
+	 */
+	@ManyToMany
+	@JoinTable(name="ARTICLE_CATEGORY_ASSOCIATION",
+		joinColumns={@JoinColumn(name="ARTICLE_ID",unique=true)},
+		inverseJoinColumns={@JoinColumn(name="CATEGORY_ID")})
+	private Collection<Category> categories;
+
 
 	public Integer getIsVisible() {
 		return isVisible;
@@ -118,7 +127,7 @@ public class Article implements Serializable  {
 	public void setIsVisible(final Integer isVisible) {
 		this.isVisible = isVisible;
 	}
-	
+
 	public Collection<RelatedArticle> getRelatedArticles() {
 		return relatedArticles;
 	}
@@ -196,9 +205,9 @@ public class Article implements Serializable  {
 
 	public void setUuid(final String uuid) {
 		this.uuid = uuid;
-		
+
 	}
-	
+
 	public Date getLastUpdated() {
 		return lastUpdated;
 	}
@@ -213,5 +222,13 @@ public class Article implements Serializable  {
 
 	public void setExpiryDate(final Date expiryDate) {
 		this.expiryDate = expiryDate;
+	}
+
+	public void setCategories(final Collection<Category> categories) {
+		this.categories = categories;
+	}
+
+	public Collection<Category> getCategories() {
+		return categories;
 	}
 }

@@ -5,14 +5,16 @@ import java.util.Collection;
 import com.contento3.common.dto.Dto;
 
 public class CategoryDto extends Dto{
-	
+
 	private Integer categoryId;
 
-	private String categoryName;
-	
+	private String name;
+
 	private CategoryDto parent;
 
 	private Collection<CategoryDto> child; 
+
+	private Integer accountId;
 
 	public Integer getCategoryId() {
 		return categoryId;
@@ -22,12 +24,12 @@ public class CategoryDto extends Dto{
 		this.categoryId = categoryId;
 	}
 
-	public String getCategoryName() {
-		return categoryName;
+	public String getName() {
+		return name;
 	}
 
-	public void setCategoryName(final String categoryName) {
-		this.categoryName = categoryName;
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 	public CategoryDto getParent() {
@@ -45,6 +47,15 @@ public class CategoryDto extends Dto{
 	public void setChild(final 	Collection<CategoryDto> child) {
 		this.child = child;
 	}
-	
+
+	public void setAccountId(final Integer accountId) {
+		this.accountId = accountId;
+	}
+
+	public Integer getAccountId() {
+		return accountId;
+	}
+
 
 }
+

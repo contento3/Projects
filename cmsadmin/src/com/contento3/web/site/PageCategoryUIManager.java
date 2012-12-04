@@ -11,8 +11,10 @@ import com.contento3.web.category.CategoryTableBuilder;
 import com.contento3.web.common.helper.AbstractTreeTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
@@ -42,7 +44,7 @@ public class PageCategoryUIManager {
 	 * Helper use to load spring beans
 	 */
 	private final SpringContextHelper contextHelper;
-	
+
 	/**
 	 * Parent window that contains this ui
 	 */
@@ -52,51 +54,34 @@ public class PageCategoryUIManager {
 	 * 
 	 */
 	private final CategoryService categoryService;
-	
+
 	/**
 	 * Article table which shows articles
 	 */
 	private final TreeTable categoryTable =  new TreeTable("Cateogory");
 
 	private final TabSheet tabSheet;
-	
+
 
 	/**
 	 * main layout for article manager screen
 	 */
 	private VerticalLayout verticalLayout = new VerticalLayout();
 
-	public PageCategoryUIManager(final TabSheet uiTabSheet,final SiteService siteService,final PageService pageService,
-			final SpringContextHelper contextHelper,final Window parentWindow){
-		this.siteService = siteService;
-		this.pageService = pageService;
+	public PageCategoryUIManager(final TabSheet uiTabSheet,final SpringContextHelper contextHelper,final Window parentWindow){
+		this.siteService = (SiteService) contextHelper.getBean("siteService");
+		this.pageService = (PageService) contextHelper.getBean("pageService");
 		this.contextHelper = contextHelper;
 		this.parentWindow = parentWindow;
 		this.categoryService = (CategoryService) contextHelper.getBean("categoryService");
 		this.tabSheet = uiTabSheet;
 	}
-	
-	
-	/**
-	 * Used to render a new tab to assign category to page.
-	 * 
-	 * @param siteId
-	 * @param tabSheet
-	 * @param pageId
-	 * @param categoryLabel
-	 */
-	private void renderCategory(final Integer siteId,
-			final TabSheet tabSheet, final Integer pageId,final Label categoryLabel) {
-		
-		CategoryTreeRender tree = new CategoryTreeRender(contextHelper, parentWindow);
-		tree.renderTreeToAssign(siteId, tabSheet, pageId, categoryLabel);
-		
-	}//end renderCategory()
 
-	public void renderCategoryList(final Integer siteId) {
-		final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Site Configuration");
-		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.categoryTable,siteId);
-		Collection<CategoryDto> categories=this.categoryService.findNullParentIdCategory();
+
+	public Component renderCategoryList(final Integer siteId) {
+		final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Category Management");
+		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.categoryTable);
+		Collection<CategoryDto> categories=this.categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(parentWindow, "accountId"));
 		tableBuilder.build((Collection)categories);
 		verticalLayout.addComponent(categoryTable);
 		verticalLayout.setSpacing(true);
@@ -106,12 +91,12 @@ public class PageCategoryUIManager {
 		tab.setCaption("Categories");
 		tab.setClosable(true);
 		tabSheet.setSelectedTab(verticalLayout);
-		
+
 		//Pop-up that adds a new domain
-		final Button button = new Button("Add Category", new CategoryPopup(parentWindow, contextHelper,siteId,categoryTable,tabSheet), "openButtonClick");
+		final Button button = new Button("Add Category", new CategoryPopup(parentWindow, contextHelper,categoryTable,tabSheet), "openButtonClick");
 		verticalLayout.addComponent(button);
 		verticalLayout.addComponent(new HorizontalRuler());
-	
+		return tabSheet;
 	}//end renderCategory()
-	
+
 }

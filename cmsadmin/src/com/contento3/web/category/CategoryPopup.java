@@ -9,6 +9,7 @@ import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.common.helper.AbstractTreeTableBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
@@ -49,9 +50,7 @@ implements Window.CloseListener {
     SpringContextHelper helper;
     
     private Integer categoryId;
-    
-    private Integer siteId;
-    
+
     final TreeTable categoryTable;
     
     final TabSheet tabSheet;
@@ -63,7 +62,7 @@ implements Window.CloseListener {
     
     Integer selectedParentCategory = -1;
     
-    public CategoryPopup(final Window main,final SpringContextHelper helper,final Integer siteId,final TreeTable table,final TabSheet tabSheet) {
+    public CategoryPopup(final Window main,final SpringContextHelper helper,final TreeTable table,final TabSheet tabSheet) {
         mainwindow = main;
         this.helper = helper;
         this.categoryService = (CategoryService)helper.getBean("categoryService");
@@ -72,7 +71,6 @@ implements Window.CloseListener {
         tree = new Tree();
         // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        this.siteId = siteId;
         openbutton = new Button("Add Category", this, "openButtonClick");
         layout.addComponent(openbutton);
 
@@ -129,7 +127,7 @@ implements Window.CloseListener {
 	        popupWindow.setCaption("Edit Category");
 	        categoryId = (Integer)event.getButton().getData();
 	        CategoryDto categoryDto = categoryService.findById(categoryId);
-	        categoryNameTxtField.setValue(categoryDto.getCategoryName());
+	        categoryNameTxtField.setValue(categoryDto.getName());
 	        buildTree(popupMainLayout);
 	        categoryButton.addListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -163,11 +161,11 @@ implements Window.CloseListener {
     }
 
     private void buildTree(final VerticalLayout parentLayout){
-		final Collection<CategoryDto> categoryDtos = categoryService.findNullParentIdCategory();
+		final Collection<CategoryDto> categoryDtos = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 		HierarchicalContainer container = new HierarchicalContainer();
 		container.addContainerProperty("category", String.class, null);
 
-		
+
 		tree.setContainerDataSource(categoryTable.getContainerDataSource());
 		tree.setItemCaptionPropertyId("category");
 
@@ -176,14 +174,14 @@ implements Window.CloseListener {
 			categoryId = dto.getCategoryId();
 			if (null==container.getItem(categoryId)){
 				Item item = container.addItem(categoryId);
-				item.getItemProperty("category").setValue(dto.getCategoryName());
+				item.getItemProperty("category").setValue(dto.getName());
 
 				final Collection <CategoryDto> children = dto.getChild();
 				if (!CollectionUtils.isEmpty(children)){
 					for(CategoryDto categoryChild : children){
 						Item childItem = container.addItem(categoryChild.getCategoryId());
-						childItem.getItemProperty("category").setValue(categoryChild.getCategoryName());
-	
+						childItem.getItemProperty("category").setValue(categoryChild.getName());
+
 						container.setParent(categoryChild.getCategoryId(), categoryId);
 						container.setChildrenAllowed(categoryChild.getCategoryId(), true);
 					}
@@ -191,7 +189,7 @@ implements Window.CloseListener {
 			}
 		}
 		parentLayout.addComponent(tree);
-		
+
 		tree.setImmediate(true);		
         tree.addListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
@@ -210,7 +208,8 @@ implements Window.CloseListener {
      */
 	private void handleNewDomain(final TextField textField){
 		final CategoryDto categoryDto = new CategoryDto();
-		categoryDto.setCategoryName(textField.getValue().toString());
+		categoryDto.setName(textField.getValue().toString());
+		categoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 		try {
 			categoryService.create(categoryDto);
 			resetTable();
@@ -224,9 +223,9 @@ implements Window.CloseListener {
      * @param textField
      */
 	private void handleEditDomain(final TextField categoryNameTxtField,final Integer categoryId){
-		CategoryDto updatedCategoryDto = categoryService.findById(categoryId);
-		updatedCategoryDto.setCategoryName(categoryNameTxtField.getValue().toString());
-		
+		final CategoryDto updatedCategoryDto = categoryService.findById(categoryId);
+		updatedCategoryDto.setName(categoryNameTxtField.getValue().toString());
+		updatedCategoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 		if (selectedParentCategory>0){
 			categoryService.update(updatedCategoryDto,selectedParentCategory);
 		}
@@ -238,8 +237,8 @@ implements Window.CloseListener {
 
     @SuppressWarnings("rawtypes")
 	private void resetTable(){
-		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(mainwindow,helper,tabSheet,categoryTable,siteId);
-		final Collection<CategoryDto> updatedCategoryDto = categoryService.findNullParentIdCategory();
+		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(mainwindow,helper,tabSheet,categoryTable);
+		final Collection<CategoryDto> updatedCategoryDto = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 		tableBuilder.rebuild((Collection)updatedCategoryDto);
 		mainwindow.removeWindow(popupWindow);
         openbutton.setEnabled(true);

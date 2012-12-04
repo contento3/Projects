@@ -8,7 +8,6 @@ import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.article.ArticleForm;
 import com.contento3.web.content.article.ArticleTableBuilder;
@@ -28,28 +27,28 @@ public class ArticleSaveListener implements ClickListener{
 	 * Article service for article related operations
 	 */
 	private ArticleService articleService;
-	
+
 	/**
 	 * Account service for account related activities
 	 */
 	private AccountService accountService;
-	
+
 	private Integer articleId;
-	
+
 	private Integer accountId;
-	
+
 	private ArticleForm articleForm;
-	
+
 	final SpringContextHelper helper;
-	
+
 	final Window parentWindow;
-	
+
 	final TabSheet tabSheet;
-	
+
 	final Table table;
-	
+
 	final Tab articleTab;
-	
+
 	public ArticleSaveListener(final Tab articleTab, final ArticleForm articleForm,final Table articleTable, 
 			final Integer articleId,final Integer accountId){
 		this.accountId = accountId;
@@ -63,11 +62,11 @@ public class ArticleSaveListener implements ClickListener{
 		this.accountService = (AccountService)helper.getBean("accountService");
 		this.articleService = (ArticleService)helper.getBean("articleService");
 	}
-	
+
 	@Override
 	public void click(ClickEvent event) {
 		ArticleDto articleDto = new ArticleDto();
-		
+
 		if (null!= articleId){
 			articleDto = articleService.findById(articleId);
 		}
@@ -86,13 +85,12 @@ public class ArticleSaveListener implements ClickListener{
 
 		if (null==articleId){
 			articleDto.setDateCreated(new Date());
-			articleDto.setCategoryDtos(new ArrayList<CategoryDto>());
 			articleService.create(articleDto);
 		}
 		else {
 			articleService.update(articleDto);
 		}
-		
+
 		String notification =articleDto.getHead()+" updated successfully"; 
 		parentWindow.showNotification(notification);
 		tabSheet.removeTab(articleTab);

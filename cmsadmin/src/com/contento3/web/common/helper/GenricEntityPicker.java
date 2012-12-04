@@ -25,66 +25,66 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * Dtos to be listed in table
 	 */
 	private final Collection<Dto> dtos;
-	
+
 	/**
 	 * Vertical layout to add components
 	 */
 	private VerticalLayout vLayout;
-	
+
 	/**
 	 * Contains list of columns to be generated
 	 */
 	private Collection<String> listOfColumns;
-	
+
 	/**
 	 * Table builder for genric entity picker
 	 */
 	GenricEntityTableBuilder tableBuilder;
-	
+
 	/**
 	 *  Reference to main window
 	 */
 	Window mainwindow; 
-	
+
 	/**
 	 * The window to be opened
 	 */
 	Window popupWindow; 
-	
+
 	/**
 	 * Button for opening the window
 	 */
 	Button openbutton; 
-	
+
 	/**
 	 *  A button in the window
 	 */
 	Button closebutton; 
-	
+
 	/**
 	 * Used to get service beans from spring context.
 	 */
 	SpringContextHelper helper;
-	
+
 	boolean isModalWindowClosable = true;
-	
+
 	/**
 	 * Vertical layout to add components
 	 */
 	VerticalLayout popupMainLayout = new VerticalLayout();
-	
+
 	/**
 	 * Contain calling object
 	 */
 	EntityListener entityListener;
-	
+
 	/**
 	 * Constructor
 	 * @param dtos
 	 * @param listOfColumns
 	 * @param vLayout
 	 */
-	
+
 	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener) {
 		this.listOfColumns = listOfColumns;
 		this.dtos = dtos;
@@ -94,7 +94,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	}
 
 	public void build() { 
-	
+
 		if(vLayout.getComponentCount()>0){
 	        vLayout.removeAllComponents();
 		}
@@ -102,7 +102,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 		tableBuilder.build();
         renderPopUp();
 	}
-	
+
 	public void renderPopUp() {
 	        /* Create a new window. */
 			popupWindow = new Window();
@@ -110,10 +110,10 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	    	popupWindow.setPositionY(100);
 	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
 	    	popupWindow.setWidth(37,Sizeable.UNITS_PERCENTAGE);
-	       
+
 	    	/* Add the window inside the main window. */
 	        mainwindow.addWindow(popupWindow);
-	        
+
 	        /* Listen for close events for the window. */
 	        popupWindow.addListener(this);
 	        popupWindow.setModal(true);
@@ -123,14 +123,14 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	        popupMainLayout.addComponent(vLayout);
 	        popupWindow.addComponent(popupMainLayout);
 	        popupWindow.setResizable(false);
-	        
+
 	    }
 
 	/**
 	 * Handle Close button click and close the window.
 	 */
 	public void closeButtonClick(Button.ClickEvent event) {
-	
+
 		if (!isModalWindowClosable) {
 			/* Windows are managed by the application object. */
 			mainwindow.removeWindow(popupWindow);
@@ -147,4 +147,3 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	}
 
 }
-	

@@ -1,13 +1,14 @@
 package com.contento3.web.content.article;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
-import com.contento3.web.content.article.listner.ArticleDeleteClickListner;
-import com.contento3.web.content.article.listner.ArticleFormBuilderListner;
+import com.contento3.web.content.article.listener.ArticleDeleteClickListner;
+import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -20,27 +21,27 @@ import com.vaadin.ui.themes.BaseTheme;
 
 public class ArticleTableBuilder extends AbstractTableBuilder {
 
-	
+
 	/**
 	 * Helper to get the spring bean
 	 */
 	final SpringContextHelper contextHelper;
-	
+
 	 /**
      * Represents the parent window of the ui
      */
 	final Window window;
-	
+
 	/**
 	 * TabSheet serves as the parent container for the article manager
 	 */
 	private TabSheet tabSheet;
-			
+
 	/**
 	 * Article service used for article related operations
 	 */
 	final ArticleService articleService;
-	
+
 	/**
 	 * Constructor
 	 * @param window
@@ -70,8 +71,12 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		item.getItemProperty("date created").setValue(sdf.format(article.getDateCreated()));
 		item.getItemProperty("date posted").setValue(sdf.format(article.getDatePosted()));
-		item.getItemProperty("expiry date").setValue(sdf.format(article.getExpiryDate()));
-		
+
+		Date expiryDate = article.getExpiryDate();
+		if (null!=expiryDate){
+			item.getItemProperty("expiry date").setValue(sdf.format(expiryDate));
+		}
+
 		Button editLink = new Button();
 		editLink.setCaption("Edit");
 		editLink.setData(article.getArticleId());

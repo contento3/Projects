@@ -23,6 +23,12 @@ import com.vaadin.ui.Window;
 
 public class ArticleMgmtUIManager implements UIManager {
 	
+	public final static String ARTICLE_HEADING_LBL = "Header";
+	public final static String ARTICLE_TEASER_LBL = "Teaser";
+	public final static String ARTICLE_BODY_LBL = "Body";
+	public final static String ARTICLE_POSTED_DATE = "Article Posted Date";
+	public final static String ARTICLE_EXPIRY_DATE = "Article Expiry Date";
+
 	/**
 	 * Used to get service beans from spring context.
 	 */

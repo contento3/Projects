@@ -42,12 +42,12 @@ public class SiteUIManager implements UIManager {
 	 * Used to get spring beans.  
 	 */
 	private SpringContextHelper contextHelper;
-	
+
 	/**
 	 * Application parent window that holds all the screens
 	 */
 	private Window parentWindow;
-	
+
 	/**
 	 * Service layer that use to provide functionality related to site.
 	 */
@@ -57,27 +57,27 @@ public class SiteUIManager implements UIManager {
 	 * Service layer that use to provide functionality related to Account.
 	 */
 	private AccountService accountService;
-	
+
 	/**
 	 * Service layer that use to provide functionality related to Page.
 	 */
 	private PageService pageService;
-	
+
 	/**
 	 * UI Manager that renders page related screens
 	 */
 	private PageUIManager pageUIManager;
-	
+
 	/**
 	 * UI Manager that renders site configuration related screens
 	 */
 	private SiteConfigUIManager siteConfigUIManager;
-	
+
 	/**
 	 * UI tabsheet
 	 */
 	private TabSheet uiTabSheet;
-	
+
 	public SiteUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
 		this.contextHelper = helper;
 		this.parentWindow = parentWindow;
@@ -86,7 +86,7 @@ public class SiteUIManager implements UIManager {
 		this.accountService = (AccountService) contextHelper.getBean("accountService");
 		this.uiTabSheet = uiTabSheet;
 	}
-	
+
 	@Override
 	public void render() {
 
@@ -142,7 +142,7 @@ public class SiteUIManager implements UIManager {
 		renderButtons(horizontalLayout,siteId,uiTabSheet);
 		return component;
 	}
-	
+
 	/**
 	 * Renders the buttons that are 
 	 * displayed on the screen.
@@ -172,18 +172,18 @@ public class SiteUIManager implements UIManager {
 				siteConfigUIManager.renderSiteConfig(siteId, pagesTab, null);
 			}
 		});
-			
+
 		final Button addNewCategoryButton = new Button("Categories");
 		horizontalLayout.addComponent(addNewCategoryButton);
 		addNewCategoryButton.addListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,siteService,pageService,contextHelper,parentWindow);
+				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,contextHelper,parentWindow);
 				categoryUIManager.renderCategoryList(1);
 			}
 		});
 	}
-	
+
 	/**
 	 * Used to render a screen (tab) for creating a new site
 	 */

@@ -46,7 +46,6 @@ public class AssociatedUserTableBuilder  extends AbstractTableBuilder {
 		SaltedHibernateUserDto user= (SaltedHibernateUserDto) dto;
 		Item item = container.addItem(user.getName());
 		item.getItemProperty("users").setValue(user.getName());
-
 	}
 
 	/**
@@ -54,7 +53,6 @@ public class AssociatedUserTableBuilder  extends AbstractTableBuilder {
 	 */
 	@Override
 	public void buildHeader(final Table table,final Container container) {
-
 		container.addContainerProperty("users", String.class, null);
 		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 		table.setContainerDataSource(container);
