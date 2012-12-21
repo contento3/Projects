@@ -2,7 +2,11 @@ package com.contento3.web.common.helper;
 
 
 import java.util.Collection;
+
+import org.apache.log4j.Logger;
+
 import com.contento3.common.dto.Dto;
+import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
@@ -21,6 +25,8 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private static final Logger LOGGER = Logger.getLogger(GenricEntityPicker.class);
+	
 	/**
 	 * Dtos to be listed in table
 	 */
@@ -40,6 +46,11 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * Table builder for genric entity picker
 	 */
 	GenricEntityTableBuilder tableBuilder;
+	
+	/**
+	 * Tree Table builder for genric entity picker
+	 */
+	GenericTreeTableBuilder treeTableBuilder;
 
 	/**
 	 *  Reference to main window
@@ -77,6 +88,21 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * Contain calling object
 	 */
 	EntityListener entityListener;
+	
+	/**
+	 * Generate Tree table 
+	 */
+	boolean isHierarchicalTable;
+	
+	/**
+	 * Width of popup
+	 */
+	String width = "37"; //default width
+	
+	/**
+	 * Height of popup
+	 */
+	String height = "40";//default height
 
 	/**
 	 * Constructor
@@ -85,31 +111,58 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * @param vLayout
 	 */
 
-	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener) {
+	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener,final boolean isHierarchicalTable) {
 		this.listOfColumns = listOfColumns;
 		this.dtos = dtos;
 		this.vLayout = vLayout;
 		this.mainwindow = mainWindow;
 		this.entityListener = entityListener;
+		this.isHierarchicalTable = isHierarchicalTable;
 	}
 
+	/**
+	 * Build Table
+	 */
 	public void build() { 
-
+		String pageLength = "5"; //default
+		try {
+			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("entityPickerConfigure.properties");
+			width = languageProperties.getProperty("width");
+			height = languageProperties.getProperty("height");
+			pageLength = languageProperties.getProperty("tablePageLength");
+		} catch (ClassNotFoundException e) {
+			LOGGER.error("Unable to read languages.properties,Reason:"+e);
+		}
+		
 		if(vLayout.getComponentCount()>0){
 	        vLayout.removeAllComponents();
 		}
-		tableBuilder = new GenricEntityTableBuilder(dtos, listOfColumns, vLayout);
-		tableBuilder.build();
+		
+		if(!isHierarchicalTable){
+			tableBuilder = new GenricEntityTableBuilder(dtos, listOfColumns, vLayout);
+			tableBuilder.build();
+			tableBuilder.table.setPageLength(Integer.parseInt(pageLength));
+		}else{
+			treeTableBuilder = new GenericTreeTableBuilder(dtos, listOfColumns, vLayout);
+			treeTableBuilder.build();
+			treeTableBuilder.treeTable.setPageLength(Integer.parseInt(pageLength));
+		}
+
+		
         renderPopUp();
 	}
 
+	/**
+	 * Render pop-up screen
+	 */
 	public void renderPopUp() {
+			
 	        /* Create a new window. */
 			popupWindow = new Window();
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
-	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(37,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setHeight(Integer.parseInt(height),Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setWidth(Integer.parseInt(width),Sizeable.UNITS_PERCENTAGE);
 
 	    	/* Add the window inside the main window. */
 	        mainwindow.addWindow(popupWindow);

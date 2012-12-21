@@ -69,10 +69,10 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		table.setPageLength(25);
 		build(dtos);
 		
-		((IndexedContainer) container).sort(new Object[] { "name" }, new boolean[] { true });
-		
+		Object[] obj = new Object[1];
+		obj[0] = listOfColumns.iterator().next().toString();
+		((IndexedContainer) container).sort(obj, new boolean[] { true });
 		final HorizontalLayout addButtonLayout = new HorizontalLayout();
-
 		this.vLayout.addComponent(table);
 		this.vLayout.setSpacing(true);
 		addButton.setCaption("Save");
@@ -99,7 +99,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
                      // Get the check-box of this item (row)
                      CheckBox checkBox = (CheckBox) table.getContainerProperty(id, "select").getValue();
                      if (checkBox.booleanValue()) {
-                    	 selectedItems.add(table.getContainerProperty(id, "name").getValue().toString());
+                    	 selectedItems.add(table.getContainerProperty(id, listOfColumns.iterator().next()).getValue().toString());
                      }
                 }//end for
                 vLayout.setData(selectedItems);//adding selected item into vLayout
@@ -139,7 +139,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	@Override
 	public void buildEmptyTable(final Container container) {
 		final Item item = container.addItem("-1");
-		item.getItemProperty("name").setValue("No record found.");
+		item.getItemProperty(listOfColumns.iterator().next()).setValue("No record found.");
 	}
 
 }
