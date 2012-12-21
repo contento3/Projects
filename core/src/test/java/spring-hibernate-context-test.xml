@@ -102,12 +102,22 @@
 	</bean>
 	
 	<bean id="documentDAO"
-		class="com.contento3.dam.document.dao.impl.DocumentHibernateImpl">
+		class="com.contento3.dam.document.dao.impl.DocumentDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	
 	<bean id="documentTypeDAO"
 		class="com.contento3.dam.document.dao.impl.DocumentTypeHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
+	<bean id="documentAssembler"
+		class="com.contento3.dam.document.service.impl.DocumentAssemblerImpl">
+	</bean>
+	
+	<bean id="documentServiceImpl"
+		class="com.contento3.dam.document.service.impl.DocumentServiceImpl">
+		<constructor-arg ref="documentAssembler" />
+		<constructor-arg ref="documentDAO" />
 	</bean>
 </beans>

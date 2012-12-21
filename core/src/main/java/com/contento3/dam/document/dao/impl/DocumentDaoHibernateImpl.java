@@ -9,11 +9,11 @@ import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.dam.document.dao.DocumentDao;
 import com.contento3.dam.document.model.Document;
 
-public class DocumentHibernateImpl
+public class DocumentDaoHibernateImpl
 	extends GenericDaoSpringHibernateTemplate<Document, Integer>
 	implements DocumentDao {
 
-	public DocumentHibernateImpl() {
+	public DocumentDaoHibernateImpl() {
 		super(Document.class);
 	}
 
@@ -45,5 +45,4 @@ public class DocumentHibernateImpl
 		
 		return criteria.list();
 	}
-
 }
