@@ -58,12 +58,12 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 		//validation article exist
 		if(articleId != null){
 			Collection<String> listOfColumns = new ArrayList<String>();
-			listOfColumns.add("name");
+			listOfColumns.add("Categories");
 			GenricEntityPicker categoryPicker;
 			Collection<Dto> dtos = null;
 			dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
 			setCaption("Add Category");
-			categoryPicker = new GenricEntityPicker(dtos,listOfColumns,mainLayout,mainWindow,this);
+			categoryPicker = new GenricEntityPicker(dtos,listOfColumns,mainLayout,mainWindow,this,true);
 			categoryPicker.build();
 		}else{
 			//warning message
