@@ -131,7 +131,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 			height = languageProperties.getProperty("height");
 			pageLength = languageProperties.getProperty("tablePageLength");
 		} catch (ClassNotFoundException e) {
-			LOGGER.error("Unable to read languages.properties,Reason:"+e);
+			LOGGER.error("Unable to read entityPickerConfigure.properties,Reason:"+e);
 		}
 		
 		if(vLayout.getComponentCount()>0){

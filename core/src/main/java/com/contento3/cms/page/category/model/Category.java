@@ -1,6 +1,7 @@
 package com.contento3.cms.page.category.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -15,11 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.contento3.account.model.Account;
+import com.contento3.common.dto.Dto;
 
 
 @Entity
 @Table(name = "CATEGORY")
-public class Category implements Serializable {
+public class Category  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -63,7 +65,6 @@ public class Category implements Serializable {
 	}
 
 
-
 	public Integer getCategoryId() {
 		return categoryId;
 	}
@@ -87,9 +88,11 @@ public class Category implements Serializable {
 		this.parent = parent;
 	}
 
+	
 	public 	Collection<Category> getChild() {
-		return child;
+		return this.child;
 	}
+	
 
 	public void setChild(final 	Collection<Category> child) {
 		this.child = child;

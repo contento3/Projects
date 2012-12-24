@@ -1,5 +1,6 @@
 package com.contento3.common.dto;
 
+
 public class Dto {
 
 	public Integer getId(){
@@ -9,4 +10,7 @@ public class Dto {
 	public String getName(){
 		return null;
 	}
+	
+	
+	
 }

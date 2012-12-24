@@ -9,6 +9,7 @@ import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.article.listener.ArticleDeleteClickListner;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
+import com.contento3.web.content.article.listener.AssociatedCategoryClickListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -76,7 +77,15 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		if (null!=expiryDate){
 			item.getItemProperty("expiry date").setValue(sdf.format(expiryDate));
 		}
-
+		/* Associated category button*/
+		Button categoryLink = new Button();
+		categoryLink.setCaption("View");
+		categoryLink.setData(article.getArticleId());
+		categoryLink.addStyleName("view");
+		categoryLink.setStyleName(BaseTheme.BUTTON_LINK);
+		categoryLink.addListener(new AssociatedCategoryClickListener(this.window,article));
+		item.getItemProperty("Associated Category").setValue(categoryLink);
+		
 		Button editLink = new Button();
 		editLink.setCaption("Edit");
 		editLink.setData(article.getArticleId());
@@ -84,6 +93,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
 		editLink.addListener(new ArticleFormBuilderListner(this.contextHelper, this.window,this.tabSheet,articleTable));
 		item.getItemProperty("edit").setValue(editLink);
+		
 		Button deleteLink = new Button();
 		deleteLink.setCaption("Delete");
 		deleteLink.setData(article.getArticleId());
@@ -102,6 +112,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		articleContainer.addContainerProperty("date created", String.class, null);
 		articleContainer.addContainerProperty("date posted", String.class, null);
 		articleContainer.addContainerProperty("expiry date", String.class, null);
+		articleContainer.addContainerProperty("Associated Category", Button.class, null);
 		articleContainer.addContainerProperty("edit", Button.class, null);
 		articleContainer.addContainerProperty("delete", Button.class, null);
 		articleTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);

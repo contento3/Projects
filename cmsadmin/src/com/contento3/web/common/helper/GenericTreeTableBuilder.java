@@ -93,7 +93,6 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	 */
 	@Override
 	public void assignDataToTable(final Dto dto,final TreeTable treeTable,final HierarchicalContainer container) {
-		treeTable.setPageLength(10);
 		final TreeDto treeDto = (TreeDto) dto;
 		addItem(container,treeDto,null,treeTable);
 	}
@@ -174,7 +173,6 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 			container.addContainerProperty(column, String.class, null);
 		}
 		treeTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-		treeTable.setColumnWidth("select", 40);
 		treeTable.setContainerDataSource(container);
 		treeTable.setSelectable(true);
 		treeTable.setMultiSelect(false);
