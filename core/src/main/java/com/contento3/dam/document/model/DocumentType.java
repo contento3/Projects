@@ -11,11 +11,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "DOCUMENT_TYPE", schema = "CMS")
 public class DocumentType  implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id @GeneratedValue
 	@Column(name = "DOCUMENT_TYPE_ID")
-	private long document_type_id;
+	private long documentTypeId;
 	
 	@Column(name = "NAME")
 	private String name;
@@ -23,12 +24,12 @@ public class DocumentType  implements Serializable{
 	@Column(name = "DESCRIPTION")
 	private String description;
 	
-	public long getDocument_type_id() {
-		return document_type_id;
+	public long getDocumentTypeId() {
+		return documentTypeId;
 	}
 
-	public void setDocument_type_id(long document_type_id) {
-		this.document_type_id = document_type_id;
+	public void setDocumentTypeId(long documentTypeId) {
+		this.documentTypeId = documentTypeId;
 	}
 
 	public String getName() {
@@ -46,4 +47,5 @@ public class DocumentType  implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 }

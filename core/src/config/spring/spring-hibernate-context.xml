@@ -152,7 +152,7 @@
 	</bean>
 	
 	<bean id="documentTypeDAO"
-		class="com.contento3.dam.document.dao.impl.DocumentTypeHibernateImpl">
+		class="com.contento3.dam.document.dao.impl.DocumentTypeDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
  

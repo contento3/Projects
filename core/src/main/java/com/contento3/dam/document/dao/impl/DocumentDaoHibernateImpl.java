@@ -19,27 +19,27 @@ public class DocumentDaoHibernateImpl
 
 
 	@Override
-	public Document findByUuid(Integer accountId, String uuid) {
+	public Document findByUuid(final Integer accountId, final String uuid) {
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		
-		criteria.add(Restrictions.eq("document_uuid", uuid))
+		criteria.add(Restrictions.eq("documentUuid", uuid))
 				.add(Restrictions.eq("account.accountId", accountId));
 		
 		return (Document) criteria.uniqueResult();
 	}
 
 	@Override
-	public Collection<Document> findByType(Integer accountId, String type) {
+	public Collection<Document> findByType(final Integer accountId, final String type) {
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		criteria.add(Restrictions.eq("account.accountId", accountId))
-				.createCriteria("document_type")
+				.createCriteria("documentType")
 				.add(Restrictions.eq("name", type));
 		
 		return criteria.list();
 	}
 
 	@Override
-	public Collection<Document> findByAccountId(Integer accountId) {
+	public Collection<Document> findByAccountId(final Integer accountId) {
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		criteria.add(Restrictions.eq("account.accountId", accountId));
 		

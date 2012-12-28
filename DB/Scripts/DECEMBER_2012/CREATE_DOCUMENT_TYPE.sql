@@ -1,5 +1,8 @@
 use CMS;
 
+-- DOCUMENT_TYPE TABLE
+-- Holds the type information of Document entity.
+
 DROP TABLE IF EXISTS DOCUMENT_TYPE;
 
 CREATE TABLE DOCUMENT_TYPE (
