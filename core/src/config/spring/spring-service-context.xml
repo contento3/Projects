@@ -226,4 +226,19 @@
 		<constructor-arg ref="associatedContentScopeAssembler" />
 		<constructor-arg ref="associatedContentScopeDao" />
 	</bean>
+	
+	<!-- ArticleImageAssembler -->
+	<bean id="articleImageAssembler"
+		class="com.contento3.cms.article.service.impl.ArticleImageAssemblerImpl">
+		<constructor-arg ref="articleDao" />
+		<constructor-arg ref="imageDao" />
+		<constructor-arg ref="associatedContentScopeDao" />
+		<constructor-arg ref="accountAssembler" />		
+	</bean>
+	
+	<!-- ArticleImageService -->
+	<bean id="articleImageService"
+		class="com.contento3.cms.article.service.impl.ArticleImageServiceImpl">
+			</bean>
+	
 </beans>
