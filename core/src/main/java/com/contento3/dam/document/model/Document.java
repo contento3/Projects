@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import com.contento3.account.model.Account;
 import com.contento3.dam.storagetype.model.StorageType;
 
@@ -23,28 +21,29 @@ import com.contento3.dam.storagetype.model.StorageType;
 @Entity
 @Table(name = "DOCUMENT", schema = "CMS")
 public class Document implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id @GeneratedValue
 	@Column(name = "DOCUMENT_ID")
-	private Integer document_id;
+	private Integer documentId;
 	
 	@Column(columnDefinition="TEXT", length = 75, name = "DOCUMENT_UUID",
 			unique=true, nullable=false)
-	private String document_uuid = UUID.randomUUID().toString();
+	private String documentUuid = UUID.randomUUID().toString();
 	
 	@Column(name = "DOCUMENT_TITLE")
-	private String document_title;
+	private String documentTitle;
 	
 	@Column(name = "URL")
 	private String url;
 	
 	@OneToOne
 	@JoinColumn(name = "STORAGE_TYPE_ID")
-	private StorageType storage_type;
+	private StorageType storageType;
 	
 	@Column(name = "DOCUMENT_CONTENT")
-	private byte[] document_content;
+	private byte[] documentContent;
 
 	@OneToOne
 	@JoinColumn(name = "ACCOUNT_ID")
@@ -52,30 +51,30 @@ public class Document implements Serializable{
 	
 	@OneToOne
 	@JoinColumn(name = "DOCUMENT_TYPE_ID")
-	private DocumentType document_type;
+	private DocumentType documentType;
 	
-	public Integer getDocument_id() {
-		return document_id;
+	public Integer getDocumentId() {
+		return documentId;
 	}
 
-	public void setDocument_id(Integer document_id) {
-		this.document_id = document_id;
+	public void setDocumentId(Integer documentId) {
+		this.documentId = documentId;
 	}
 
-	public String getDocument_uuid() {
-		return document_uuid;
+	public String getDocumentUuid() {
+		return documentUuid;
 	}
 
-	public void setDocument_uuid(String document_uuid) {
-		this.document_uuid = document_uuid;
+	public void setDocumentUuid(String documentUuid) {
+		this.documentUuid = documentUuid;
 	}
 
-	public String getDocument_title() {
-		return document_title;
+	public String getDocumentTitle() {
+		return documentTitle;
 	}
 
-	public void setDocument_title(String document_title) {
-		this.document_title = document_title;
+	public void setDocumentTitle(String documentTitle) {
+		this.documentTitle = documentTitle;
 	}
 
 	public String getUrl() {
@@ -86,20 +85,20 @@ public class Document implements Serializable{
 		this.url = url;
 	}
 
-	public StorageType getStorage_type() {
-		return storage_type;
+	public StorageType getStorageType() {
+		return storageType;
 	}
 
-	public void setStorage_type(StorageType storage_type) {
-		this.storage_type = storage_type;
+	public void setStorageType(StorageType storageType) {
+		this.storageType = storageType;
 	}
 
-	public byte[] getDocument_content() {
-		return document_content;
+	public byte[] getDocumentContent() {
+		return documentContent;
 	}
 
-	public void setDocument_content(byte[] document_content) {
-		this.document_content = document_content;
+	public void setDocumentContent(byte[] documentContent) {
+		this.documentContent = documentContent;
 	}
 
 	public Account getAccount() {
@@ -110,11 +109,12 @@ public class Document implements Serializable{
 		this.account = account;
 	}
 
-	public DocumentType getDocument_type() {
-		return document_type;
+	public DocumentType getDocumentType() {
+		return documentType;
 	}
 
-	public void setDocument_type(DocumentType document_type) {
-		this.document_type = document_type;
+	public void setDocumentType(DocumentType documentType) {
+		this.documentType = documentType;
 	}
+
 }

@@ -12,8 +12,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 
 import com.contento3.account.dao.impl.AccountDaoHibernateImpl;
 import com.contento3.account.model.Account;
-import com.contento3.dam.document.dao.impl.DocumentHibernateImpl;
-import com.contento3.dam.document.dao.impl.DocumentTypeHibernateImpl;
+import com.contento3.dam.document.dao.impl.DocumentTypeDaoHibernateImpl;
 import com.contento3.dam.document.model.Document;
 import com.contento3.dam.document.model.DocumentType;
 import com.contento3.dam.storagetype.dao.impl.StorageTypeHibernateImpl;
@@ -23,10 +22,10 @@ import com.contento3.dam.storagetype.model.StorageType;
 public class DocumentHibernateImplTestCase extends AbstractTransactionalJUnit4SpringContextTests{
 	
 	@Resource(name="documentDAO")
-	private DocumentHibernateImpl documentDao;
+	private DocumentDaoHibernateImpl documentDao;
 	
 	@Resource(name="documentTypeDAO")
-	private DocumentTypeHibernateImpl documentTypeDao;
+	private DocumentTypeDaoHibernateImpl documentTypeDao;
 	
 	@Resource(name="accountDAO")
 	private AccountDaoHibernateImpl accountDao;
@@ -56,13 +55,13 @@ public class DocumentHibernateImplTestCase extends AbstractTransactionalJUnit4Sp
 		expectedAccountId = accountDao.persist(account);
 		
 		Document document = new Document();
-		document.setDocument_title("Test Document Title");
-		document.setDocument_type(documentType);
-		document.setStorage_type(storage);
+		document.setDocumentTitle("Test Document Title");
+		document.setDocumentType(documentType);
+		document.setStorageType(storage);
 		document.setAccount(account);
 		expectedDocumentId = documentDao.persist(document);
 		
-		expectedUuid = document.getDocument_uuid();
+		expectedUuid = document.getDocumentUuid();
 	}
 	
 	@Test
@@ -70,20 +69,19 @@ public class DocumentHibernateImplTestCase extends AbstractTransactionalJUnit4Sp
 		Collection<Document> docList = documentDao.findByAccountId(expectedAccountId);
 		assertTrue(!docList.isEmpty());
 	}
-
+	
 	@Test
 	public void testFindByType(){
 		Collection<Document> docList = documentDao.findByType(expectedAccountId, DocTypeName);
 		assertTrue(!docList.isEmpty());
 	}
-
+	
 	@Test
 	public void testFindByUuid(){
 		Document doc = documentDao.findByUuid(expectedAccountId, expectedUuid);
 		assertNotNull(doc);
 	}
 	
-
 	@Test
 	public void documentTypeTestFindByName(){
 		DocumentType docType = documentTypeDao.findByName(DocTypeName);

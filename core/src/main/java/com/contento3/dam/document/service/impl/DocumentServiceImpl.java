@@ -2,7 +2,6 @@ package com.contento3.dam.document.service.impl;
 
 import java.util.Collection;
 
-import org.hamcrest.core.IsNull;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +9,6 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.dam.document.dao.DocumentDao;
 import com.contento3.dam.document.dto.DocumentDto;
-import com.contento3.dam.document.model.Document;
 import com.contento3.dam.document.service.DocumentAssembler;
 import com.contento3.dam.document.service.DocumentService;
 
@@ -27,14 +25,20 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Object create(DocumentDto documentDto) throws EntityAlreadyFoundException {
+	public Integer create(DocumentDto documentDto) throws EntityAlreadyFoundException {
 		return documentDao.persist(documentAssembler.dtoToDomain(documentDto));
 	}
-
+	
+	@Transactional(readOnly = false)
+	@Override
+	public void update(DocumentDto documentDto){
+		documentDao.update(documentAssembler.dtoToDomain(documentDto));
+	}
+	
 	@Override
 	public void delete(DocumentDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
-		// TODO Auto-generated method stub
+		documentDao.delete(documentAssembler.dtoToDomain(dtoToDelete));
 	}
 	
 	//removed , propagation = Propagation.REQUIRES_NEW from annotations for JUnit

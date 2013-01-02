@@ -6,23 +6,50 @@ import com.contento3.dam.document.model.DocumentType;
 import com.contento3.dam.storagetype.model.StorageType;
 
 public class DocumentDto extends Dto {
+	
+	/**
+	 * Id for the document
+	 */
 	private Integer documentId;
 
+	/**
+	 * Unique random uuid
+	 */
 	private String documentUuid;
 
+	/**
+	 * Title of the document
+	 */
 	private String documentTitle;
 
+	/**
+	 * Url of the document
+	 */
 	private String url;
 
+	/**
+	 * The storage type of the document
+	 */
 	private StorageType storageType;
 
+	/**
+	 * The contents of the document
+	 */
 	private byte[] documentContent;
 
+	/**
+	 * The account associated with the document entitiy.
+	 */
 	private Account account;
 
+	/**
+	 * The type of the document.
+	 */
 	private DocumentType documentType;
-	
 
+	/**
+	 * Getters/Setters for the DocumentDto
+	 */
 	public Integer getDocumentId() {
 		return documentId;
 	}
