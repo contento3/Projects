@@ -172,6 +172,7 @@
 		class="com.contento3.cms.article.service.impl.ArticleServiceImpl">
 		<constructor-arg ref="articleAssembler" />
 		<constructor-arg ref="articleDao" />
+		<constructor-arg ref="articleImageAssembler" />
 	</bean>
 	  
 	<bean id="relatedArticleAssembler"

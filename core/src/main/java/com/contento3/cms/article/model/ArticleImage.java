@@ -23,9 +23,8 @@ public class ArticleImage implements Serializable {
 	 * Account for ArticleImage association
 	 */
 	@ManyToOne
-	@JoinColumn(name = "ACCOUNT")
+	@JoinColumn(name = "ACCOUNT_ID")
 	private Account account;
-	
 		
 	/**
 	 * Primary key for ArticleImage
@@ -48,7 +47,5 @@ public class ArticleImage implements Serializable {
 	public void setPrimaryKey(final ArticleImageLinkPK primaryKey) {
 		this.primaryKey = primaryKey;
 	}
-
-	
 
 }

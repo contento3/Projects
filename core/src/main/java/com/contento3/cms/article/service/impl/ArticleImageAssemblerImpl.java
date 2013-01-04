@@ -2,10 +2,12 @@ package com.contento3.cms.article.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.article.dao.ArticleDao;
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.model.ArticleImage;
+import com.contento3.cms.article.model.ArticleImageLinkPK;
 import com.contento3.cms.article.service.ArticleImageAssembler;
 import com.contento3.cms.content.dao.AssociatedContentScopeDao;
 import com.contento3.dam.image.dao.ImageDao;
@@ -37,9 +39,11 @@ public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 	@Override
 	public ArticleImage dtoToDomain(final ArticleImageDto dto) {
 		ArticleImage domain = new ArticleImage();
-		domain.getPrimaryKey().setArticle(this.articleDao.findById(dto.getArticleId()));
-		domain.getPrimaryKey().setImage(this.imageDao.findById(dto.getImageId()));
-		domain.getPrimaryKey().setContentScope(this.contentScopedao.findById(dto.getContentScope()));
+		ArticleImageLinkPK pk = new ArticleImageLinkPK();
+		pk.setArticle(this.articleDao.findById(dto.getArticleId()));
+		pk.setImage(this.imageDao.findById(dto.getImageId()));
+		pk.setContentScope(this.contentScopedao.findById(dto.getContentScope()));
+		domain.setPrimaryKey(pk);
 		domain.setAccount(this.accountAssembler.dtoToDomain(dto.getAccount()));
 		return domain;
 	}

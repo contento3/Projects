@@ -4,13 +4,24 @@ import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
 
 public class ArticleImageDto extends Dto {
-	
+	/**
+	 * Id for article
+	 */
 	private Integer articleId;
 
+	/**
+	 * Id for images 
+	 */
 	private Integer imageId;
 	
+	/**
+	 * Id for content scope
+	 */
 	private Integer contentScope;
 	
+	/**
+	 * account on which articles and images are associated
+	 */
 	private AccountDto account;
 
 	public final Integer getArticleId() {

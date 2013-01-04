@@ -126,10 +126,10 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	public void build() { 
 		String pageLength = "5"; //default
 		try {
-			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("entityPickerConfigure.properties");
-			width = languageProperties.getProperty("width");
-			height = languageProperties.getProperty("height");
-			pageLength = languageProperties.getProperty("tablePageLength");
+			final CachedTypedProperties entityPickerPoperties = CachedTypedProperties.getInstance("entityPickerConfigure.properties");
+			width = entityPickerPoperties.getProperty("width");
+			height = entityPickerPoperties.getProperty("height");
+			pageLength = entityPickerPoperties.getProperty("tablePageLength");
 		} catch (ClassNotFoundException e) {
 			LOGGER.error("Unable to read entityPickerConfigure.properties,Reason:"+e);
 		}
@@ -199,4 +199,12 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 		entityListener.updateList();
 	}
 
+	public void setTableCaption(String caption){
+		if(this.tableBuilder != null){
+			this.tableBuilder.table.setCaption(caption);
+		}
+		else if(this.treeTableBuilder != null){
+			this.treeTableBuilder.treeTable.setCaption(caption);
+		}
+	}
 }

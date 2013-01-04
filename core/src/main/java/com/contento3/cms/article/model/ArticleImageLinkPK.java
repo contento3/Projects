@@ -23,14 +23,14 @@ public class ArticleImageLinkPK implements Serializable {
 	 * Article_Id is used for composite key generation
 	 */
 	@ManyToOne
-	@JoinColumn(name ="ARTICLE")
+	@JoinColumn(name ="ARTICLE_ID")
 	private Article article;
 
 	/**
 	 * Image_Id is used for composite key generation
 	 */
 	@ManyToOne
-	@JoinColumn(name ="IMAGE")
+	@JoinColumn(name ="IMAGE_ID")
 	private Image image;
 	
 	/**
@@ -62,7 +62,5 @@ public class ArticleImageLinkPK implements Serializable {
 
 	public final void setContentScope(final AssociatedContentScope contentScope) {
 		this.contentScope = contentScope;
-	}
-
-	
+	}	
 }
