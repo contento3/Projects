@@ -33,7 +33,7 @@ public class DocumentHibernateImplTestCase extends AbstractTransactionalJUnit4Sp
 	@Resource(name="storageDAO")
 	private StorageTypeHibernateImpl storageDao;
 	
-	String  expectedUuid, 
+	String  expectedUuid, expectedTitle = "Test Document Title", 
 			DocTypeName = "TestDocumentType";
 	Integer expectedDocumentId, expectedAccountId;
 	
@@ -55,7 +55,7 @@ public class DocumentHibernateImplTestCase extends AbstractTransactionalJUnit4Sp
 		expectedAccountId = accountDao.persist(account);
 		
 		Document document = new Document();
-		document.setDocumentTitle("Test Document Title");
+		document.setDocumentTitle(expectedTitle);
 		document.setDocumentType(documentType);
 		document.setStorageType(storage);
 		document.setAccount(account);
@@ -86,5 +86,11 @@ public class DocumentHibernateImplTestCase extends AbstractTransactionalJUnit4Sp
 	public void documentTypeTestFindByName(){
 		DocumentType docType = documentTypeDao.findByName(DocTypeName);
 		assertNotNull(docType);
+	}
+	
+	@Test
+	public void testFindByTitle(){
+		Document doc = documentDao.findByTitle(expectedTitle);
+		assertNotNull(doc);
 	}
 }
