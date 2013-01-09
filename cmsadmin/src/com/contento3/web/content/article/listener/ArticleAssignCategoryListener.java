@@ -77,7 +77,7 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 	@SuppressWarnings("unchecked")
 	@Override
 	public void updateList() {
-		/* update group member */
+		/* update article */
 		Collection<String> selectedItems =(Collection<String>) this.mainLayout.getData();
 		if(selectedItems != null){
 			ArticleService articleService = (ArticleService) helper.getBean("articleService");

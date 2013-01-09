@@ -216,11 +216,13 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article");
 		articleTab.setClosable(true);
 
-		GridLayout toolbarGridLayout = new GridLayout(1,3);
+		GridLayout toolbarGridLayout = new GridLayout(1,4);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
 		listeners.add(new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
 		listeners.add(new ArticleAttachContentListener());
+		listeners.add(new ArticleAssignImageListener(parentWindow, contextHelper, articleId, accountId));
+		
 		
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();

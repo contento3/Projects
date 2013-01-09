@@ -18,7 +18,7 @@ public class DocumentServiceImpl implements DocumentService {
 	private DocumentAssembler documentAssembler;
 	private DocumentDao documentDao;
 	
-	public DocumentServiceImpl(final DocumentAssembler documentAssembler, final DocumentDao documentDao) {
+	public DocumentServiceImpl(final DocumentAssembler documentAssembler, final DocumentDao documentDao){
 		this.documentAssembler = documentAssembler;
 		this.documentDao = documentDao;
 	}
@@ -26,12 +26,22 @@ public class DocumentServiceImpl implements DocumentService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(DocumentDto documentDto) throws EntityAlreadyFoundException {
-		return documentDao.persist(documentAssembler.dtoToDomain(documentDto));
+		Integer documentPk;
+		
+		if(documentDao.findByTitle(documentDto.getDocumentTitle()) == null)	
+			throw new EntityAlreadyFoundException();
+			
+		documentPk = documentDao.persist(documentAssembler.dtoToDomain(documentDto));
+		
+		return documentPk;
 	}
 	
 	@Transactional(readOnly = false)
 	@Override
-	public void update(DocumentDto documentDto){
+	public void update(DocumentDto documentDto) throws EntityAlreadyFoundException {
+		if(documentDao.findByTitle(documentDto.getDocumentTitle()) == null)	
+			throw new EntityAlreadyFoundException();
+		
 		documentDao.update(documentAssembler.dtoToDomain(documentDto));
 	}
 	

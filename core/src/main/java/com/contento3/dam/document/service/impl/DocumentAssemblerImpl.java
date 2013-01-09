@@ -9,9 +9,6 @@ import com.contento3.dam.document.service.DocumentAssembler;
 
 public class DocumentAssemblerImpl implements DocumentAssembler {
 	
-	public DocumentAssemblerImpl(){
-	}
-	
 	@Override
 	public Document dtoToDomain(final DocumentDto documentDto) {
 		Document document = new Document();

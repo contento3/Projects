@@ -43,7 +43,9 @@ public class AssociatedContentScopeDto extends Dto{
 		this.type = type;
 	}
 
-
+	public String getName() {
+		return this.scope;
+	}
 
 
 }

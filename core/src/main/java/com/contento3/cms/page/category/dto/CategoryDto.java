@@ -1,10 +1,11 @@
 package com.contento3.cms.page.category.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-import com.contento3.common.dto.Dto;
+import com.contento3.common.dto.TreeDto;
 
-public class CategoryDto extends Dto{
+public class CategoryDto extends TreeDto{
 
 	private Integer categoryId;
 
@@ -55,6 +56,20 @@ public class CategoryDto extends Dto{
 	public Integer getAccountId() {
 		return accountId;
 	}
+	
+	public Integer getId(){
+		return this.categoryId;
+	}
+	
+	
+	public Collection<TreeDto> getChildDto(){
+		Collection<TreeDto> collection = new ArrayList<TreeDto>();
+		for(CategoryDto cat: this.child){
+			collection.add(cat);
+		}
+		return collection;
+	}
+
 
 
 }

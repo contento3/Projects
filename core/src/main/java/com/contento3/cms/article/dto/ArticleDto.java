@@ -74,6 +74,11 @@ public class ArticleDto extends Dto {
 	 * Article visibility
 	 */
 	private Integer isVisible;
+	
+	/**
+	 * Associated images to article
+	 */
+	private Collection<ArticleImageDto> associateImagesDtos;
 
 
 	public Integer getIsVisible() {
@@ -179,6 +184,14 @@ public class ArticleDto extends Dto {
 
 	public Collection<CategoryDto> getCategoryDtos() {
 		return categoryDtos;
+	}
+
+	public final Collection<ArticleImageDto> getAssociateImagesDtos() {
+		return associateImagesDtos;
+	}
+
+	public final void setAssociateImagesDtos(final Collection<ArticleImageDto> associateImagesDtos) {
+		this.associateImagesDtos = associateImagesDtos;
 	}
 
 

@@ -1,5 +1,7 @@
 package com.contento3.cms.content.service.impl;
 
+import java.util.Collection;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,11 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 			throws EntityCannotBeDeletedException {
 		associatedContentScopeDao.delete(associatedContentScopeAssembler.dtoToDomain(dtoToDelete));
 
+	}
+
+	@Override
+	public Collection<AssociatedContentScopeDto> allContentScope() {
+		return this.associatedContentScopeAssembler.domainsToDtos(this.associatedContentScopeDao.findAll());
 	}
 
 }

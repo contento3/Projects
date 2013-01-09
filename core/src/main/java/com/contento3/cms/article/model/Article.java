@@ -104,6 +104,7 @@ public class Article implements Serializable  {
 	@ManyToOne //uni directional many-to-one(foreign-key)
 	@JoinColumn(name="ACCOUNT_ID")
 	private Account account;
+	
 	/**
 	 * Related articles which are associate to article
 	 */
@@ -118,6 +119,9 @@ public class Article implements Serializable  {
 		joinColumns={@JoinColumn(name="ARTICLE_ID",unique=true)},
 		inverseJoinColumns={@JoinColumn(name="CATEGORY_ID")})
 	private Collection<Category> categories;
+	
+	@OneToMany(cascade=CascadeType.ALL , mappedBy="primaryKey.article")
+	private Collection<ArticleImage> associateImages;
 
 
 	public Integer getIsVisible() {
@@ -230,5 +234,13 @@ public class Article implements Serializable  {
 
 	public Collection<Category> getCategories() {
 		return categories;
+	}
+
+	public final Collection<ArticleImage> getAssociateImages() {
+		return associateImages;
+	}
+
+	public final void setAssociateImages(Collection<ArticleImage> associateImages) {
+		this.associateImages = associateImages;
 	}
 }
