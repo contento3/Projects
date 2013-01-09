@@ -4,6 +4,13 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.CredentialsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
@@ -25,6 +32,7 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -32,10 +40,12 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 import com.vaadin.ui.VerticalLayout;
@@ -46,6 +56,8 @@ import com.vaadin.ui.themes.Reindeer;
 
 public class CMSMainWindow extends Window implements Action.Handler,FragmentChangedListener {
 	public static String brownFox = "Welcome to Olive Admin"; 
+
+	private static final Logger LOGGER = Logger.getLogger(CMSMainWindow.class);
 
     // Actions for the context menu
     private static final Action ACTION_ADD_SITE = new Action("Add new site");
@@ -66,6 +78,9 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	SpringContextHelper helper;
 	UriFragmentUtility uri;
 	UIManager uiMgr;
+	
+	Subject subject;
+	
 	/**
 	 * Horizontal split panel that contains the navigation 
 	 * tree on one end and the main working area on the other hand
@@ -74,14 +89,67 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	
 	UIManager siteUIMgr;
 	
-	CMSMainWindow(final SpringContextHelper helper,final Button logoutButton){ //change
+	CMSMainWindow(final SpringContextHelper helper){ //change
 	//	super(TM.get("app.title"));
 		this.helper = helper;
-		this.logoutButton = logoutButton;
-		
- 		unitUI();
+		this.logoutButton = new Button("Log Out");
+		logoutButton.addStyleName("link");
+	
+		buildLogin();
 	}
 	
+	public void buildLogin(){
+		final VerticalLayout vLayout = new VerticalLayout();
+		LoginForm login = new LoginForm();
+		vLayout.setStyleName("loginform");
+		
+		vLayout.addComponent(login);
+		vLayout.setComponentAlignment(login, Alignment.BOTTOM_CENTER);
+		
+		this.addComponent(vLayout);
+		
+		this.setScrollable(false);
+		
+		login.addListener(new LoginForm.LoginListener() {
+            public void onLogin(LoginEvent event) {
+            	final String username = event.getLoginParameter("username");
+            	final String password = event.getLoginParameter("password");
+            	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+
+        		subject = SecurityUtils.getSubject();
+
+				try{
+					subject.login(token);
+					LOGGER.info("User with username ["+username+"] logged in successfully");
+					unitUI();
+				}
+				catch(IncorrectCredentialsException ice){
+					LOGGER.error("Username or password for username ["+username+"] is not valid");
+				}
+				catch(CredentialsException ice){
+					LOGGER.error("Error occured while authentication user with username: "+username);
+				}
+				catch(Exception ice){
+					LOGGER.error("Error occured while authentication user with username: "+username);
+				}
+            }
+        });
+		
+		logoutButton.addListener(new Button.ClickListener()
+		{
+            	private static final long serialVersionUID = 1L;
+				@Override
+				public void buttonClick(ClickEvent event)
+				{
+					subject = SecurityUtils.getSubject();
+
+					subject.logout();
+					getApplication().close();
+				}
+			});
+
+	}
+
 	private static final long serialVersionUID = 1L;
 	
 	public void fragmentChanged(FragmentChangedEvent source) {
@@ -358,13 +426,13 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         super.attach(); // Must call.
           WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
           HttpSession session = ctx.getHttpSession();
-          if (!session.isNew()){
-        	  session.setMaxInactiveInterval(50000*60);
-          }
-          else {
-        	  session.setMaxInactiveInterval(0);
-          }
-    	  session.setAttribute("accountId", new Integer("1"));
+          //if (!session.isNew()){
+        //	  session.setMaxInactiveInterval(50000*60);
+         // }
+         // else {
+        //	  session.setMaxInactiveInterval(0);
+        //  }
+    	  //session.setAttribute("accountId", new Integer("1"));
     }
 
 }

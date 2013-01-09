@@ -14,4 +14,14 @@ public interface SaltedHibernateUserDao extends GenericDao<SaltedHibernateUser, 
 	 */
 	Collection<SaltedHibernateUser> findUsersByAccountId(final Integer accountId);
 
+	/**
+	 * Finds a user by username in an account
+	 * @param accountId
+	 * @param username
+	 * @return
+	 */
+	SaltedHibernateUser findUserByAccountId(Integer accountId, String username);
+
+	SaltedHibernateUser findByUsername(String username);
+
 }

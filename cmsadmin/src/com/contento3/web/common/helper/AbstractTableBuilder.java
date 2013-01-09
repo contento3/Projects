@@ -6,6 +6,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.dto.Dto;
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
 
@@ -72,9 +73,12 @@ public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
 	public abstract void buildHeader(Table table,Container container);
 
 	/**
-	 * Used to set a message in a table for empty table
-	 * @param container
+	 * Create empty table
+	 * @param userContainer
 	 */
-	public abstract void buildEmptyTable(Container container);
+	public void buildEmptyTable(final Container container){
+		final Item item = container.addItem("-1");
+		item.getItemProperty("groups").setValue("No record found.");
+	}
 
 }

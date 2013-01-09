@@ -63,3 +63,9 @@
 	padding-bottom:10px;
 	border-bottom-style: solid;
 }
+
+.loginform {
+	margin-top : 20%;
+	margin-left : 45%;
+	height: 150px;
+}

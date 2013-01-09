@@ -2,6 +2,7 @@ package com.contento3.web.user.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.model.GroupAuthority;
 import com.contento3.security.group.service.GroupService;
@@ -11,8 +12,9 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
@@ -20,15 +22,10 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.CloseEvent;
 
 public class GroupPopup extends CustomComponent implements Window.CloseListener {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

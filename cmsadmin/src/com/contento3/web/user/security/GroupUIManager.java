@@ -1,30 +1,22 @@
 package com.contento3.web.user.security;
 
 import java.util.Collection;
-import com.contento3.security.group.dto.GroupDto;
+
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.SiteDomainTableBuilder;
-import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
 
 public class GroupUIManager implements UIManager {
 
@@ -37,18 +29,22 @@ public class GroupUIManager implements UIManager {
      * Represents the parent window of the template ui
      */
 	private Window parentWindow;
+	
 	/**
 	 * layout for group manager screen
 	 */
 	private VerticalLayout verticalLayout = new VerticalLayout();
+	
 	/**
 	 * TabSheet serves as the parent container for the group manager
 	 */
 	private TabSheet tabSheet;
+	
 	/**
 	 * Group service used for group related operations
 	 */
 	private GroupService groupService;
+	
 	/**
 	 * Table contain group items
 	 */
@@ -70,9 +66,8 @@ public class GroupUIManager implements UIManager {
 	
 	@Override
 	public void render() {
+		}
 	
-
-	}
 	/**
 	 * Return tab sheet  
 	 */
@@ -104,6 +99,7 @@ public class GroupUIManager implements UIManager {
 		
 		return null;
 	}
+	
 	/**
 	 * Render group content U.I 
 	 * this includes add group button
@@ -118,6 +114,7 @@ public class GroupUIManager implements UIManager {
 		addGroupButton();
 		renderGroupTable();
 	}
+	
 	/**
 	 * display "Add Group" button on the top of tab sheet
 	 */
@@ -125,7 +122,8 @@ public class GroupUIManager implements UIManager {
 		Button addButton = new Button("Add Group", new GroupPopup(parentWindow, contextHelper,groupTable), "openButtonClick");
 		this.verticalLayout.addComponent(addButton);
 	}
-		/**
+
+	/**
 	 * Render group table to screen
 	 */
 	private void renderGroupTable() {

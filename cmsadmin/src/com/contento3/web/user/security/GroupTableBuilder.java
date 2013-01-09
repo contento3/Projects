@@ -1,12 +1,10 @@
 package com.contento3.web.user.security;
 
 import com.contento3.common.dto.Dto;
-import com.contento3.common.service.Service;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.contento3.web.user.listner.GroupDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;

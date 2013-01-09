@@ -17,10 +17,12 @@ public class SaltedHibernateUserAssemblerImpl implements SaltedHibernateUserAsse
 	public SaltedHibernateUserAssemblerImpl(final AccountAssembler accountAssembler) {
 		this.accountAssembler = accountAssembler;
 	}
+	
 	@Override
 	public SaltedHibernateUser dtoToDomain(final SaltedHibernateUserDto dto) {
 		SaltedHibernateUser domain = new SaltedHibernateUser();
 		domain.setUserName(dto.getName());
+		domain.setEnabled(dto.isEnabled());
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		return domain;
 	}

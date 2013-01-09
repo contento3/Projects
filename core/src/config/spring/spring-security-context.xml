@@ -6,7 +6,70 @@
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security.xsd">
 
+
+	<beans:bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    	<beans:property name="securityManager" ref="securityManager"/>
+	    <!-- override these for application-specific URLs if you like:
+	    <beans:property name="loginUrl" value="/login.jsp"/>
+	    <beans:property name="successUrl" value="/home.jsp"/>
+	    <beans:property name="unauthorizedUrl" value="/unauthorized.jsp"/> -->
+	    <!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
+	    <!-- defined will be automatically acquired and available via its beanName in chain        -->
+	    <!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
+	    <!-- <property name="filters">
+	        <util:map>
+	            <entry key="anAlias" value-ref="someFilter"/>
+	        </util:map>
+	    </beans:property> 
+	    <beans:property name="filterChainDefinitions">
+        <value>
+            # some example chain definitions:
+            /admin/** = authc, roles[admin]
+            /docs/** = authc, perms[document:read]
+            /** = authc
+            # more URL-to-FilterChain definitions here
+        </value>
+    	</beans:property>-->
+	</beans:bean>
+
+	<!-- Define any javax.servlet.Filter beans you want anywhere in this application context.   -->
+	<!-- They will automatically be acquired by the 'shiroFilter' bean above and made available -->
+	<!-- to the 'filterChainDefinitions' property.  Or you can manually/explicitly add them     -->
+	<!-- to the shiroFilter's 'filters' Map if desired. See its JavaDoc for more details.       -->
+	<!--  <beans:bean id="someFilter" class="..."/>
+	<beans:bean id="anotherFilter" class="..."></beans:bean>-->
+
+	<beans:bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <!-- Single realm app.  If you have multiple realms, use the 'realms' property instead. -->
+    <beans:property name="realm" ref="authenticationAuthorizationRealm"/>
+    <!-- By default the servlet container sessions will be used.  Uncomment this line
+         to use shiro's native sessions (see the JavaDoc for more): -->
+    <!-- <beans:property name="sessionMode" value="native"/>-->
+	</beans:bean>
+	
+	<beans:bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+	<!-- Define the Shiro Realm implementation you want to use to connect to your back-end -->
+	<!-- security datasource: -->
+	<beans:bean id="authenticationAuthorizationRealm" class="com.contento3.security.DefaultAuthenticationAuthorizationRealm">
+		<beans:property name="saltedHibernateUserDao" ref="saltedHibernateUserDao" />	
+		<beans:property name="credentialsMatcher" ref="hashMatcher" />	
+	</beans:bean>
  
+    <beans:bean id="hashMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+    		<beans:property name="hashAlgorithmName" value="Sha-256" />	
+    		<beans:property name="hashIterations" value="1" />
+    		<beans:property name="hashSalted" value="true" />
+	</beans:bean> 
+    
+    <beans:bean id="passwordService" class="org.apache.shiro.authc.credential.DefaultPasswordService">
+	</beans:bean> 
+    
+    <beans:bean id="passwordMatcher" class="org.apache.shiro.authc.credential.PasswordMatcher">
+    		<beans:property name="passwordService" ref="passwordService" />	
+	</beans:bean> 
+    
+    
 	<beans:bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<beans:property name="driverClassName">
 	    	<beans:value>com.mysql.jdbc.Driver</beans:value>

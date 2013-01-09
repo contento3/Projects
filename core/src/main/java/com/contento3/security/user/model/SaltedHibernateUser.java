@@ -20,6 +20,35 @@ public class SaltedHibernateUser {
 	@Column(name="USERNAME")
 	private String userName;
 	
+	@Column(name="PASSWORD")
+	private String password;
+	
+	@Column(name="SALT")
+	private String salt;
+	
+	@Column(name="ENABLED")
+	private boolean enabled;
+	
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(final String password) {
+		this.password = password;
+	}
+
+
+	public String getSalt() {
+		return salt;
+	}
+
+
+	public void setSalt(final String salt) {
+		this.salt = salt;
+	}
+
+
 	@ManyToOne
 	@JoinColumn(name = "ACCOUNT_ID")
 	private Account account;
@@ -42,6 +71,16 @@ public class SaltedHibernateUser {
 
 	public void setUserName(final String userName) {
 		this.userName = userName;
+	}
+
+
+	public void setEnabled(final boolean enabled) {
+		this.enabled = enabled;
+	}
+
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 

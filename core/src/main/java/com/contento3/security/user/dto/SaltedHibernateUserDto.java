@@ -11,6 +11,11 @@ public class SaltedHibernateUserDto extends Dto {
 	private String userName;
 	
 	/**
+	 * User enabled or not
+	 */
+	private boolean enabled;
+	
+	/**
 	 * Account associated to user
 	 */
 	private AccountDto account;
@@ -30,6 +35,14 @@ public class SaltedHibernateUserDto extends Dto {
 
 	public final void setAccount(final AccountDto account) {
 		this.account = account;
+	}
+
+	public void setEnabled(final boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 }

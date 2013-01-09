@@ -10,7 +10,6 @@ import com.contento3.dam.image.library.dao.ImageLibraryDao;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryAssembler;
 import com.contento3.dam.image.library.service.ImageLibraryService;
-import com.contento3.dam.image.service.ImageAssembler;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class ImageLibraryServiceImpl implements ImageLibraryService  {
