@@ -61,5 +61,12 @@ public interface ImageService extends Service<ImageDto> {
 	 * @param imageDto
 	 */
 	void update(final ImageDto imageDto);
+	
+	/**
+	 * Return image by id
+	 * @param imageId
+	 * @return
+	 */
+	public ImageDto findById(Integer imageId);
 
 }

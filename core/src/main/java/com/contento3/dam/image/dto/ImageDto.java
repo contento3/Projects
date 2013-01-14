@@ -31,6 +31,26 @@ public class ImageDto extends Dto{
 	 */
 	private ImageLibraryDto imageLibraryDto;
 	
+	
+	@Override
+	public boolean equals(Object v) {
+		boolean retVal = false;
+
+		if (v instanceof ImageDto) {
+			ImageDto ptr = (ImageDto) v;
+			retVal = ptr.imageId.longValue() == this.imageId;
+		}
+
+		return retVal;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 17 * hash + (this.imageId != null ? this.imageId.hashCode() : 0);
+		return hash;
+	}
+
 	public final ImageLibraryDto getImageLibraryDto() {
 		return imageLibraryDto;
 	}
@@ -46,8 +66,6 @@ public class ImageDto extends Dto{
 	public void setSiteDto(Collection<SiteDto> siteDto) {
 		this.siteDto = siteDto;
 	}
-
-
 
 	public String getName() {
 		return name;

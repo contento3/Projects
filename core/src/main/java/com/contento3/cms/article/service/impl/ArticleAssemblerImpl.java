@@ -21,8 +21,8 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 	private AccountAssembler accountAssembler;
 
 	private CategoryAssembler categoryAssembler;
-
-	public ArticleAssemblerImpl(final SiteAssembler siteAssembler,final AccountAssembler accountAssembler,final CategoryAssembler categoryAssembler) {
+	
+	public ArticleAssemblerImpl(final SiteAssembler siteAssembler,final AccountAssembler accountAssembler,final CategoryAssembler categoryAssembler){
 		this.siteAssembler = siteAssembler;
 		this.accountAssembler = accountAssembler;
 		this.categoryAssembler = categoryAssembler;

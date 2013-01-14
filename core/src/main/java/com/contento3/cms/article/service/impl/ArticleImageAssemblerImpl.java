@@ -4,32 +4,32 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.account.service.AccountAssembler;
-import com.contento3.cms.article.dao.ArticleDao;
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.model.ArticleImage;
 import com.contento3.cms.article.model.ArticleImageLinkPK;
+import com.contento3.cms.article.service.ArticleAssembler;
 import com.contento3.cms.article.service.ArticleImageAssembler;
-import com.contento3.cms.content.dao.AssociatedContentScopeDao;
-import com.contento3.dam.image.dao.ImageDao;
+import com.contento3.cms.content.service.AssociatedContentScopeAssembler;
+import com.contento3.dam.image.service.ImageAssembler;
 
 public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 
-	private ArticleDao articleDao;
-	private ImageDao imageDao;
+	private ArticleAssembler articleAssembler;
+	private ImageAssembler imageAssembler;
 	private AccountAssembler accountAssembler;
-	private AssociatedContentScopeDao contentScopedao;
+	private AssociatedContentScopeAssembler contentScopeAssembler;
 
 	/**
 	 * Constructor
-	 * @param articleDao
-	 * @param imageDao
-	 * @param contentScopeDao
+	 * @param articleAssembler
+	 * @param imageAssembler
+	 * @param contentScopeAssembler
 	 * @param accountAssembler
 	 */
-	public ArticleImageAssemblerImpl(final ArticleDao articleDao,final ImageDao imageDao,final AssociatedContentScopeDao contentScopeDao,final AccountAssembler accountAssembler) {
-		this.articleDao = articleDao;
-		this.imageDao = imageDao;
-		this.contentScopedao = contentScopeDao;
+	public ArticleImageAssemblerImpl(final ArticleAssembler articleAssembler,final ImageAssembler imageAssembler,final AssociatedContentScopeAssembler contentScopeAssembler,final AccountAssembler accountAssembler) {
+		this.articleAssembler = articleAssembler;
+		this.imageAssembler = imageAssembler;
+		this.contentScopeAssembler= contentScopeAssembler;
 		this.accountAssembler = accountAssembler;
 	}
 	
@@ -40,9 +40,9 @@ public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 	public ArticleImage dtoToDomain(final ArticleImageDto dto) {
 		ArticleImage domain = new ArticleImage();
 		ArticleImageLinkPK pk = new ArticleImageLinkPK();
-		pk.setArticle(this.articleDao.findById(dto.getArticleId()));
-		pk.setImage(this.imageDao.findById(dto.getImageId()));
-		pk.setContentScope(this.contentScopedao.findById(dto.getContentScope()));
+		pk.setArticle(this.articleAssembler.dtoToDomain(dto.getArticle()));
+		pk.setImage(this.imageAssembler.dtoToDomain(dto.getImage()));
+		pk.setContentScope(this.contentScopeAssembler.dtoToDomain(dto.getContentScope()));
 		domain.setPrimaryKey(pk);
 		domain.setAccount(this.accountAssembler.dtoToDomain(dto.getAccount()));
 		return domain;
@@ -54,9 +54,9 @@ public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 	@Override
 	public ArticleImageDto domainToDto(final ArticleImage domain) {
 		ArticleImageDto dto = new ArticleImageDto();
-		dto.setArticleId(domain.getPrimaryKey().getArticle().getArticleId());
-		dto.setImageId(domain.getPrimaryKey().getImage().getImageId());
-		dto.setContentScope(domain.getPrimaryKey().getContentScope().getId());
+		dto.setArticle(this.articleAssembler.domainToDto(domain.getPrimaryKey().getArticle()));
+		dto.setImage(this.imageAssembler.domainToDto(domain.getPrimaryKey().getImage()));
+		dto.setContentScope(this.contentScopeAssembler.domainToDto(domain.getPrimaryKey().getContentScope()));
 		dto.setAccount(this.accountAssembler.domainToDto(domain.getAccount()));
 		return dto;
 	}
