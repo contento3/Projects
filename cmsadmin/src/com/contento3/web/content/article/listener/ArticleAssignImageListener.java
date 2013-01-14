@@ -8,6 +8,7 @@ import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.service.ArticleService;
+import com.contento3.cms.content.dto.AssociatedContentScopeDto;
 import com.contento3.cms.content.service.AssociatedContentScopeService;
 import com.contento3.common.dto.Dto;
 import com.contento3.common.exception.EntityNotFoundException;
@@ -87,7 +88,7 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 	public ArticleAssignImageListener(final Window mainWindow,final SpringContextHelper helper,final Integer articleId,final Integer accountId) {
 		this.articleId = articleId;
 		this.helper = helper;
-		mainLayout = new VerticalLayout();
+		this.mainLayout = new VerticalLayout();
 		this.mainWindow = mainWindow;
 		this.imageService = (ImageService) this.helper.getBean("imageService");
 		this.accountId = accountId;
@@ -102,13 +103,12 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 	public void click(ClickEvent event) {
 		//validation article exist
 		if(articleId != null){
-			this.article = articleService.findById(articleId);
 			AssociatedContentScopeService contentScopeService = (AssociatedContentScopeService) this.helper.getBean("associatedContentScopeService");
 			final ComboDataLoader comboDataLoader = new ComboDataLoader();
 			contentScopeCombo = new ComboBox("Select Content Scope",comboDataLoader.loadDataInContainer((Collection)contentScopeService.allContentScope()));
 			contentScopeCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 			contentScopeCombo.setItemCaptionPropertyId("name");
-			
+			contentScopeCombo.setValue(1); //default value
 			Collection<String> listOfColumns = new ArrayList<String>();
 			listOfColumns.add("Images");
 			setCaption("Add images");
@@ -130,49 +130,29 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 	@Override
 	public void updateList() {
 		Collection<String> selectedItems =(Collection<String>) this.mainLayout.getData();
-		
 		if(selectedItems != null){
-			
+			article = articleService.findById(articleId);
 			AccountService accountService = (AccountService) this.helper.getBean("accountService");
 			AccountDto account = accountService.findAccountById(accountId);
-			Collection<ArticleImageDto> associateImages = null;
-			if(this.article.getAssociateImagesDtos()==null){
-				associateImages = new ArrayList<ArticleImageDto>();
-			}
+			AssociatedContentScopeService scopeService = (AssociatedContentScopeService) this.helper.getBean("associatedContentScopeService");
+			Integer scope = Integer.parseInt(this.contentScopeCombo.getValue().toString());
+			AssociatedContentScopeDto contentscope = scopeService.findById(scope);
 			try {
-				 
 				for(String name : selectedItems ){
-					boolean isAddable = true;
-						ImageDto image = imageService.findImageByNameAndAccountId(name, accountId);
-						ArticleImageDto dto = new ArticleImageDto();
-						dto.setArticleId(articleId);
-						dto.setImageId(image.getImageId());
-						dto.setContentScope(Integer.parseInt(this.contentScopeCombo.getValue().toString()));
-						dto.setAccount(account);
-						
-						if(article.getAssociateImagesDtos() != null){
-							for(ArticleImageDto articleImage : article.getAssociateImagesDtos()){	
-							if(articleImage.getImageId() ==  image.getImageId())
-				     			 isAddable = false;
-							}//end inner for
-							if(isAddable){
-								article.getAssociateImagesDtos().add(dto);
-							}//end if
-						}
-						else{
-							associateImages.add(dto);
-						}//else
-				
-				}//end for
-
+					final ImageDto image = imageService.findImageByNameAndAccountId(name, accountId);
+					final ArticleImageDto dto = new ArticleImageDto();
+					dto.setArticle(article);
+					dto.setImage(image);
+					dto.setContentScope(contentscope);
+					dto.setAccount(account);
+					if (!article.getAssociateImagesDtos().contains(dto))
+						article.getAssociateImagesDtos().add(dto);
+				}//end outer for	
 			} catch (EntityNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			articleService.associateImages(articleId,associateImages);
-			
+			articleService.updateAssociateImages(article);
 		}//end if
-	}
-	
-
+	}//end updateList()
 }

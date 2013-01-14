@@ -1,5 +1,6 @@
 package com.contento3.cms.article.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -9,7 +10,6 @@ import com.contento3.cms.article.dao.ArticleDao;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.model.Article;
-import com.contento3.cms.article.model.ArticleImage;
 import com.contento3.cms.article.service.ArticleAssembler;
 import com.contento3.cms.article.service.ArticleImageAssembler;
 import com.contento3.cms.article.service.ArticleService;
@@ -21,7 +21,7 @@ public class ArticleServiceImpl implements ArticleService {
 	private ArticleDao articleDao;
 	private ArticleImageAssembler articleImageAssembler;
 	
-	public ArticleServiceImpl(final ArticleAssembler articleAssembler,final ArticleDao articleDao, final ArticleImageAssembler articleImageAssembler) {
+	public ArticleServiceImpl(final ArticleAssembler articleAssembler,final ArticleDao articleDao,final ArticleImageAssembler articleImageAssembler) {
 		this.articleAssembler = articleAssembler;
 		this.articleDao = articleDao;
 		this.articleImageAssembler = articleImageAssembler;
@@ -30,12 +30,17 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(ArticleDto articleDto){
-		return articleDao.persist(articleAssembler.dtoToDomain(articleDto));
+		if(articleDto.getAssociateImagesDtos() == null)
+			articleDto.setAssociateImagesDtos(new ArrayList<ArticleImageDto>());
+		Article article = articleAssembler.dtoToDomain(articleDto);
+		article.setAssociateImages(this.articleImageAssembler.dtosToDomains(articleDto.getAssociateImagesDtos()));
+		return articleDao.persist(article);
 	}
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false,propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(ArticleDto articleDto){
+	
 		articleDao.update(articleAssembler.dtoToDomain(articleDto));
 	}
 	
@@ -45,7 +50,6 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findByAccountId(accountId));
 	}
 
-	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticle(int count) {
@@ -63,8 +67,10 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ArticleDto findById(Integer id) {
-		
-		return articleAssembler.domainToDto(articleDao.findById(id));
+		Article article = articleDao.findById(id);
+		ArticleDto articleDto = articleAssembler.domainToDto(article);
+		articleDto.setAssociateImagesDtos(this.articleImageAssembler.domainsToDtos(article.getAssociateImages()));
+		return articleDto;
 	}
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -79,13 +85,12 @@ public class ArticleServiceImpl implements ArticleService {
 		
 	}
 	
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void associateImages(final Integer articleId,final Collection<ArticleImageDto> dto){
-	
-		Collection<ArticleImage> associatedImages = this.articleImageAssembler.dtosToDomains(dto);
-		Article article = this.articleDao.findById(articleId);
-		article.setAssociateImages(associatedImages);
-		articleDao.update(article);
+	public void updateAssociateImages(final ArticleDto articleDto){
+		Article article = articleAssembler.dtoToDomain(articleDto);
+		article.setAssociateImages(this.articleImageAssembler.dtosToDomains(articleDto.getAssociateImagesDtos()));
+		this.articleDao.update(article);
 	}
 
 }

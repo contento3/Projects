@@ -11,7 +11,6 @@ import com.contento3.account.model.Account;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.dto.ImageDto;
-import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.model.Image;
 import com.contento3.dam.image.service.ImageAssembler;
 import com.contento3.dam.image.service.ImageService;
@@ -83,6 +82,12 @@ public class ImageServiceImpl implements ImageService {
 	public void delete(ImageDto dtoToDelete) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public ImageDto findById(Integer imageId){
+		return this.imageAssembler.domainToDto(imageDao.findById(imageId));
 	}
 
 }

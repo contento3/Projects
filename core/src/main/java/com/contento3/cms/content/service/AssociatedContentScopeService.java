@@ -8,4 +8,11 @@ import com.contento3.common.service.Service;
 public interface AssociatedContentScopeService extends Service<AssociatedContentScopeDto> {
 
 	public Collection<AssociatedContentScopeDto> allContentScope();
+	
+	/**
+	 * Find content scope by id
+	 * @param contentScopeId
+	 * @return
+	 */
+	public AssociatedContentScopeDto findById(final Integer contentScopeId);
 }

@@ -3,7 +3,6 @@ package com.contento3.cms.article.service;
 import java.util.Collection;
 
 import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.common.service.Service;
 
 public interface ArticleService extends Service<ArticleDto>{
@@ -56,8 +55,7 @@ public interface ArticleService extends Service<ArticleDto>{
 	
 	/**
 	 * Add associated images to article
-	 * @param articleId
-	 * @param dto
+	 * @param article
 	 */
-	void associateImages(final Integer articleId,final Collection<ArticleImageDto> dto);
+	void updateAssociateImages(final ArticleDto article);
 }

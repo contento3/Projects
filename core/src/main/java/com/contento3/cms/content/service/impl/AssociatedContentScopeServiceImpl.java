@@ -49,4 +49,11 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 		return this.associatedContentScopeAssembler.domainsToDtos(this.associatedContentScopeDao.findAll());
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+	@Override
+	public AssociatedContentScopeDto findById(Integer contentScopeId) {
+		
+		return this.associatedContentScopeAssembler.domainToDto(this.associatedContentScopeDao.findById(contentScopeId));
+	}
+
 }

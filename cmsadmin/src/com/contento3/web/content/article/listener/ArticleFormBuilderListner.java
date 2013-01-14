@@ -20,6 +20,7 @@ import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.content.article.ArticleForm;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
 import com.contento3.web.content.article.ArticleTableBuilder;
+import com.contento3.web.content.article.AssociatedImagesUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
@@ -216,13 +217,13 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article");
 		articleTab.setClosable(true);
 
-		GridLayout toolbarGridLayout = new GridLayout(1,4);
+		GridLayout toolbarGridLayout = new GridLayout(1,5);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
 		listeners.add(new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
 		listeners.add(new ArticleAttachContentListener());
 		listeners.add(new ArticleAssignImageListener(parentWindow, contextHelper, articleId, accountId));
-		
+		listeners.add(new AssociatedImagesUIManager(parentWindow, contextHelper, articleId));
 		
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();
@@ -299,7 +300,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 	/**
 	 * Reset table
 	 */
-	 @SuppressWarnings("rawtypes")
+	 @SuppressWarnings({ "rawtypes", "unchecked" })
 	 private void resetTable(){
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
 		final Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);

@@ -1,43 +1,77 @@
 package com.contento3.cms.article.dto;
 
 import com.contento3.account.dto.AccountDto;
+import com.contento3.cms.content.dto.AssociatedContentScopeDto;
 import com.contento3.common.dto.Dto;
+import com.contento3.dam.image.dto.ImageDto;
 
 public class ArticleImageDto extends Dto {
 	/**
 	 * Id for article
 	 */
-	private Integer articleId;
+	private ArticleDto article;
 
 	/**
 	 * Id for images 
 	 */
-	private Integer imageId;
+	private ImageDto image;
 	
 	/**
 	 * Id for content scope
 	 */
-	private Integer contentScope;
+	private AssociatedContentScopeDto contentScope;
 	
 	/**
 	 * account on which articles and images are associated
 	 */
 	private AccountDto account;
+	
+	@Override
+	public boolean equals(Object v) {
+		boolean retVal = false;
 
-	public final Integer getArticleId() {
-		return articleId;
+		if (v instanceof ArticleImageDto) {
+			ArticleImageDto ptr = (ArticleImageDto) v;
+			retVal = (ptr.article.getArticleId() == this.article.getArticleId()
+					&& ptr.image.getImageId() == this.image.getImageId() && ptr.contentScope
+					.getId() == this.contentScope.getId());
+		}
+
+		return retVal;
 	}
 
-	public final void setArticleId(final Integer articleId) {
-		this.articleId = articleId;
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 17
+				* hash
+				+ (this.image.getId() != null ? this.image.getId().hashCode()
+						: 0);
+		return hash;
+	}
+	
+	public final ArticleDto getArticle() {
+		return article;
 	}
 
-	public final Integer getImageId() {
-		return imageId;
+	public final void setArticle(final ArticleDto article) {
+		this.article = article;
 	}
 
-	public final void setImageId(final Integer imageId) {
-		this.imageId = imageId;
+	public final ImageDto getImage() {
+		return image;
+	}
+
+	public final void setImage(final ImageDto image) {
+		this.image = image;
+	}
+
+	public final AssociatedContentScopeDto getContentScope() {
+		return contentScope;
+	}
+
+	public final void setContentScope(final AssociatedContentScopeDto contentScope) {
+		this.contentScope = contentScope;
 	}
 
 	public final AccountDto getAccount() {
@@ -47,14 +81,5 @@ public class ArticleImageDto extends Dto {
 	public final void setAccount(final AccountDto account) {
 		this.account = account;
 	}
-
-	public final Integer getContentScope() {
-		return contentScope;
-	}
-
-	public final void setContentScope(final Integer contentScope) {
-		this.contentScope = contentScope;
-	}
-
-	
+		
 }
