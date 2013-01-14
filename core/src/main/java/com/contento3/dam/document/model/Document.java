@@ -57,7 +57,7 @@ public class Document implements Serializable{
 		return documentId;
 	}
 
-	public void setDocumentId(Integer documentId) {
+	public void setDocumentId(final Integer documentId) {
 		this.documentId = documentId;
 	}
 
@@ -65,7 +65,7 @@ public class Document implements Serializable{
 		return documentUuid;
 	}
 
-	public void setDocumentUuid(String documentUuid) {
+	public void setDocumentUuid(final String documentUuid) {
 		this.documentUuid = documentUuid;
 	}
 
@@ -73,7 +73,7 @@ public class Document implements Serializable{
 		return documentTitle;
 	}
 
-	public void setDocumentTitle(String documentTitle) {
+	public void setDocumentTitle(final String documentTitle) {
 		this.documentTitle = documentTitle;
 	}
 
@@ -81,7 +81,7 @@ public class Document implements Serializable{
 		return url;
 	}
 
-	public void setUrl(String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 
@@ -89,7 +89,7 @@ public class Document implements Serializable{
 		return storageType;
 	}
 
-	public void setStorageType(StorageType storageType) {
+	public void setStorageType(final StorageType storageType) {
 		this.storageType = storageType;
 	}
 
@@ -97,7 +97,7 @@ public class Document implements Serializable{
 		return documentContent;
 	}
 
-	public void setDocumentContent(byte[] documentContent) {
+	public void setDocumentContent(final byte[] documentContent) {
 		this.documentContent = documentContent;
 	}
 
@@ -105,7 +105,7 @@ public class Document implements Serializable{
 		return account;
 	}
 
-	public void setAccount(Account account) {
+	public void setAccount(final Account account) {
 		this.account = account;
 	}
 
@@ -113,7 +113,7 @@ public class Document implements Serializable{
 		return documentType;
 	}
 
-	public void setDocumentType(DocumentType documentType) {
+	public void setDocumentType(final DocumentType documentType) {
 		this.documentType = documentType;
 	}
 

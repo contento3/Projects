@@ -2,6 +2,7 @@ package com.contento3.dam.document.service;
 
 import java.util.Collection;
 
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.Service;
 import com.contento3.dam.document.dto.DocumentDto;
 
@@ -13,16 +14,16 @@ import com.contento3.dam.document.dto.DocumentDto;
 public interface DocumentService extends Service<DocumentDto>{
 
 	/**
-	 * Returns the DocumentDto that is associated with the account and has
-	 * the required unique identifier
+	 * Returns the DocumentDto that has the given unique uid, and belongs
+	 * to the account with the given accountId
 	 * @param accountId and uuid
 	 * @return DocumentDto
 	 */
 	DocumentDto findByUuid(Integer accountId, String uuid);
 
 	/**
-	 * Returns the collection of DocumentDtos that are associated with
-	 * the given accountId and are of the required document type.
+	 * Returns a collection of DocumentDtos that belongs to the account with
+	 * the given accountId, and who's type matches the given type.
 	 * @param accountId and type of Document
 	 * @return Collection of DocumentDto
 	 */
@@ -40,6 +41,7 @@ public interface DocumentService extends Service<DocumentDto>{
 	 * Returns nothing.
 	 * @param documentDto that is to be updated.
 	 * @return void
+	 * @throws EntityAlreadyFoundException 
 	 */
-	void update(DocumentDto documentDto);
+	void update(DocumentDto documentDto) throws EntityAlreadyFoundException;
 }

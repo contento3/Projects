@@ -38,9 +38,12 @@
 			     <value>com.contento3.cms.article.model.Article</value>
 			     <value>com.contento3.cms.article.model.RelatedArticle</value>
 			     <value>com.contento3.dam.image.library.model.ImageLibrary</value>
+			     <value>com.contento3.cms.content.model.AssociatedContentScope</value>
 			     <value>com.contento3.dam.storagetype.model.StorageType</value>
 			     <value>com.contento3.dam.document.model.Document</value>
 			     <value>com.contento3.dam.document.model.DocumentType</value>
+			     <value>com.contento3.dam.storagetype.model.StorageType</value>
+			     <value>com.contento3.cms.article.model.ArticleImage</value>
 			  <!--   <value>com.contento3.site.user.model.User</value> -->
 			    
 			</list>
@@ -119,5 +122,17 @@
 		class="com.contento3.dam.document.service.impl.DocumentServiceImpl">
 		<constructor-arg ref="documentAssembler" />
 		<constructor-arg ref="documentDAO" />
+	</bean>
+	
+	<!-- AssociatedContentScopeDao -->
+	<bean id="associatedContentScopeDao"
+		class=" com.contento3.cms.content.dao.impl.AssociatedContentScopeDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+	<!-- ArticleImageDao -->
+	<bean id="articleImageDao"
+		class=" com.contento3.cms.article.dao.impl.ArticleImageDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 </beans>
