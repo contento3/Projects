@@ -14,6 +14,7 @@ import org.apache.shiro.subject.Subject;
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.web.account.AccountSettingsUIManager;
 import com.contento3.web.common.helper.TabSheetHelper;
 import com.contento3.web.content.SearchUI;
 import com.contento3.web.content.image.ImageLoader;
@@ -32,20 +33,20 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.LoginForm;
+import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 import com.vaadin.ui.VerticalLayout;
@@ -103,8 +104,16 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		LoginForm login = new LoginForm();
 		vLayout.setStyleName("loginform");
 		
-		vLayout.addComponent(login);
-		vLayout.setComponentAlignment(login, Alignment.BOTTOM_CENTER);
+	    ImageLoader imageLoader = new ImageLoader();
+	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
+	    embedded.setHeight(55,Sizeable.UNITS_PERCENTAGE);
+	    embedded.setWidth(30,Sizeable.UNITS_PERCENTAGE);
+	    vLayout.addComponent(embedded);
+	    
+	    vLayout.setSpacing(true);
+	    
+	    vLayout.addComponent(login);
+		vLayout.setComponentAlignment(login, Alignment.MIDDLE_CENTER);
 		
 		this.addComponent(vLayout);
 		
@@ -130,7 +139,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 					LOGGER.error("Error occured while authentication user with username: "+username);
 				}
 				catch(Exception ice){
-					LOGGER.error("Error occured while authentication user with username: "+username);
+					LOGGER.error("Error occured while authenticating user"+ice);
 				}
             }
         });
@@ -209,6 +218,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		horizTop.addComponent(buttonsLayout);
 		horizTop.setComponentAlignment(buttonsLayout, Alignment.TOP_RIGHT);
 		final Button accountButton = new Button ("Account Settings");
+		accountButton.addListener(new AccountSettingsUIManager(this,helper));
+		
 		buttonsLayout.addComponent(accountButton);
 		accountButton.addStyleName("link");
 		
@@ -280,7 +291,9 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         
         Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
         globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
-
+        root.setItemIcon(globalConfig, new ExternalResource("images/configuration.png"));
+        globalConfig.getItemProperty("icon").setValue(new ExternalResource("images/configuration.png"));
+        
         Item template = hwContainer.addItem("Template");
         template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
         root.setItemIcon(template, new ExternalResource("images/template.png"));
@@ -288,9 +301,12 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
         Item modules = hwContainer.addItem("Modules");
         modules.getItemProperty("name").setValue(NavigationConstant.MODULES);
+        root.setItemIcon(modules, new ExternalResource("images/module-icon.png"));
+        modules.getItemProperty("icon").setValue(new ExternalResource("images/module-icon.png"));
 
-        Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
-        layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
+        // DO NOT REMOVE THIS -- The functionality regarding layout management will be developed soon        
+        // Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
+        // layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
 
         Item userMgmtItem = hwContainer.addItem(NavigationConstant.SECURITY);
         userMgmtItem.getItemProperty("name").setValue(NavigationConstant.SECURITY);
@@ -432,7 +448,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
          // else {
         //	  session.setMaxInactiveInterval(0);
         //  }
-    	  //session.setAttribute("accountId", new Integer("1"));
+    	  session.setAttribute("accountId", new Integer("1"));
     }
 
 }
