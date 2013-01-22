@@ -3,6 +3,7 @@ package com.contento3.web.content.image;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.web.common.helper.SessionHelper;
@@ -10,6 +11,7 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,7 +19,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.Notification;
 
@@ -156,10 +157,11 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 							imageLibraryService.create(library);
 							mainWindow.showNotification(library.getName() +" added succesfully");
 						} catch (EntityAlreadyFoundException e) {
-							
 							e.printStackTrace();
 						}
-
+						catch (EntityNotCreatedException e) {
+							e.printStackTrace();
+						}
 			    		mainWindow.removeWindow(popupWindow);
 				        openbutton.setEnabled(true);
 		            }else{

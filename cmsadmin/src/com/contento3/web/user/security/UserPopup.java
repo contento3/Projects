@@ -5,6 +5,7 @@ import java.util.Collection;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -23,6 +24,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.Notification;
 
 public class UserPopup extends CustomComponent implements Window.CloseListener{
 	private static final long serialVersionUID = 1L;
@@ -101,8 +103,8 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(41,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(20,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(61,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setWidth(23,Sizeable.UNITS_PERCENTAGE);
        
     	/* Add the window inside the main window. */
         mainwindow.addWindow(popupWindow);
@@ -118,7 +120,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
         final TextField userNameTxtFld = new TextField("User Name");
         userNameTxtFld.setInputPrompt("Enter user name");
         userNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-        userNameTxtFld.setColumns(20);
+        userNameTxtFld.setColumns(15);
         
         inputDataLayout.setSizeFull();
         inputDataLayout.setSpacing(true);
@@ -134,7 +136,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
         final TextField emailTxtFld = new TextField("Email");
         emailTxtFld.setInputPrompt("Enter user email");
         emailTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-        emailTxtFld.setColumns(20);
+        emailTxtFld.setColumns(15);
      	
         emailLayout.setSizeFull();
         emailLayout.setSpacing(true);
@@ -148,7 +150,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
         final TextField fNameTxtFld = new TextField("First Name");
         fNameTxtFld.setInputPrompt("Enter first name");
         fNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-        fNameTxtFld.setColumns(20);
+        fNameTxtFld.setColumns(15);
      	
         firstNameLayout.setSizeFull();
         firstNameLayout.setSpacing(true);
@@ -156,20 +158,50 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
         firstNameLayout.setComponentAlignment(fNameTxtFld, Alignment.TOP_LEFT);
      	popupMainLayout.addComponent(firstNameLayout);
 
-     	/* adding first name text field */
+     	
+     	/* adding last name text field */
         final HorizontalLayout lastNameLayout = new HorizontalLayout();
        
         final TextField lNameTxtFld = new TextField("Last Name");
-        fNameTxtFld.setInputPrompt("Enter last name");
-        fNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-        fNameTxtFld.setColumns(20);
+        lNameTxtFld.setInputPrompt("Enter last name");
+        lNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        lNameTxtFld.setColumns(15);
      	
-        firstNameLayout.setSizeFull();
-        firstNameLayout.setSpacing(true);
-        firstNameLayout.addComponent(lNameTxtFld);
-        firstNameLayout.setComponentAlignment(lNameTxtFld, Alignment.TOP_LEFT);
+        lastNameLayout.setSizeFull();
+        lastNameLayout.setSpacing(true);
+        lastNameLayout.addComponent(lNameTxtFld);
+        lastNameLayout.setComponentAlignment(lNameTxtFld, Alignment.TOP_LEFT);
      	popupMainLayout.addComponent(lastNameLayout);
 
+
+     	/* adding last name text field */
+        final HorizontalLayout pwdLayout = new HorizontalLayout();
+       
+        final TextField pwdTxtFld = new TextField("Password");
+        pwdTxtFld.setInputPrompt("Enter password");
+        pwdTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        pwdTxtFld.setColumns(15);
+     	
+        pwdLayout.setSizeFull();
+        pwdLayout.setSpacing(true);
+        pwdLayout.addComponent(pwdTxtFld);
+        pwdLayout.setComponentAlignment(pwdTxtFld, Alignment.TOP_LEFT);
+     	popupMainLayout.addComponent(pwdLayout);
+
+     	/* adding last name text field */
+        final HorizontalLayout confirmPwdLayout = new HorizontalLayout();
+       
+        final TextField confirmPwdTxtFld = new TextField("Confirm Password");
+        confirmPwdTxtFld.setInputPrompt("Confirm Password");
+        confirmPwdTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        confirmPwdTxtFld.setColumns(20);
+     	
+        confirmPwdLayout.setSizeFull();
+        confirmPwdLayout.setSpacing(true);
+        confirmPwdLayout.addComponent(confirmPwdTxtFld);
+        confirmPwdLayout.setComponentAlignment(confirmPwdTxtFld, Alignment.TOP_LEFT);
+     	popupMainLayout.addComponent(confirmPwdLayout);
+     	
         final HorizontalLayout addButtonLayout = new HorizontalLayout();
         popupMainLayout.addComponent(addButtonLayout);
 
@@ -183,74 +215,73 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
         openbutton.setEnabled(false);
 
 		
-
-    	if (event.getButton().getCaption().equals("Edit")){
-			userButton.setCaption("Save");
-			popupWindow.setCaption("Edit user");
-			final String username = (String) event.getButton().getData();
-			SaltedHibernateUserDto userDto = userService.findUserByName(username);
-			userNameTxtFld.setValue(userDto.getName());
-			//String description = userDto.getDescription();
-	    	
-//			if(description==null){
-//	    		descriptionArea.setValue("");
-//			}else{
-//				descriptionArea.setValue(description);
-//			}
-	        userButton.addListener(new ClickListener() {
-				private static final long serialVersionUID = 1L;
-				public void buttonClick(ClickEvent event) {
-					handleEditUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,username);
-				}	
-			});
-    	}
-    	else
-    	{
-	        userButton.setCaption("Add");
-	        popupWindow.setCaption("Add new user");
-	        userButton.addListener(new ClickListener() {
-				private static final long serialVersionUID = 1L;
-				public void buttonClick(ClickEvent event) {
-					handleNewUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld);
-				}	
-			});
-    	}
+		if (pwdTxtFld.getValue().equals(confirmPwdTxtFld.getValue())){
+			if (event.getButton().getCaption().equals("Edit")){
+				userButton.setCaption("Save");
+				popupWindow.setCaption("Edit user");
+				final String username = (String) event.getButton().getData();
+				SaltedHibernateUserDto userDto = userService.findUserByName(username);
+				userNameTxtFld.setValue(userDto.getName());
+		        userButton.addListener(new ClickListener() {
+					private static final long serialVersionUID = 1L;
+					public void buttonClick(ClickEvent event) {
+						handleEditUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,username,pwdTxtFld);
+					}	
+				});
+	    	}
+	    	else
+	    	{
+		        userButton.setCaption("Add");
+		        popupWindow.setCaption("Add new user");
+		        userButton.addListener(new ClickListener() {
+					private static final long serialVersionUID = 1L;
+					public void buttonClick(ClickEvent event) {
+							handleNewUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,pwdTxtFld);
+						}
+		        });
+	    	}
+		}
+		else {
+			popupWindow.showNotification("Password and confirm password field does not match", Notification.TYPE_WARNING_MESSAGE);
+		}
     }
 
     /**
      * Handles adding new SiteDomain
      * @param textField
      */
-	private void handleNewUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName){
+	private void handleNewUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final TextField pwdTxtFld){
 		SaltedHibernateUserDto userDto = new SaltedHibernateUserDto();
 		try {
 			userDto.setUserName(username.getValue().toString());
 			userDto.setEnabled(true);
-			
+			userDto.setPassword(pwdTxtFld.getValue().toString());
 			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 			userDto.setAccount(accountDto);
-			
 			userService.create(userDto);
 		} catch (EntityAlreadyFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mainwindow.showNotification("User already exists", Notification.TYPE_ERROR_MESSAGE);
+		}
+		catch (EntityNotCreatedException e) {
+			mainwindow.showNotification("User not created", Notification.TYPE_ERROR_MESSAGE);
 		}
 		mainwindow.showNotification(userDto.getName()+" user created succesfully");
 		resetTable();
     }
-
     
     /**
      * Handles editing users
      * @param textField
      */
-	private void handleEditUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final String editId){
+	private void handleEditUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final String editId,final TextField password){
 		final SaltedHibernateUserDto userDto = userService.findUserByName(editId);
 		userDto.setUserName(username.getValue().toString());
+		userDto.setPassword(password.getValue().toString());
 		//userService.update(userDto);
 		mainwindow.showNotification(userDto.getName()+" user edit succesfully");
 		resetTable();
     }
+	
 	/**
 	 * Reset table
 	 */

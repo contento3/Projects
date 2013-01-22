@@ -153,6 +153,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 					subject = SecurityUtils.getSubject();
 
 					subject.logout();
+					
 					getApplication().close();
 				}
 			});

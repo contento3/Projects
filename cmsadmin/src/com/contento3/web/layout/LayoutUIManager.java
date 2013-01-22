@@ -19,6 +19,7 @@ import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
@@ -397,7 +398,9 @@ public class LayoutUIManager implements UIManager {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+				catch (EntityNotCreatedException e) {
+					e.printStackTrace();
+				}
    	        }
     	});
     	
