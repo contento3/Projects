@@ -64,8 +64,8 @@
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="imageLibraryAssembler" />
 	</bean>
-	
-	
+
+
 
 	<bean id="templateService"
 		class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">
@@ -160,58 +160,58 @@
 		<constructor-arg ref="siteDomainAssembler" />
 		<constructor-arg ref="siteDomainDao" />
 	</bean>
-	
+
 	<bean id="articleAssembler"
 		class="com.contento3.cms.article.service.impl.ArticleAssemblerImpl">
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="accountAssembler" />
 		<constructor-arg ref="categoryAssembler" />
 	</bean>
-	
+
 	<bean id="articleService"
 		class="com.contento3.cms.article.service.impl.ArticleServiceImpl">
 		<constructor-arg ref="articleAssembler" />
 		<constructor-arg ref="articleDao" />
 		<constructor-arg ref="articleImageAssembler" />
 	</bean>
-	  
+
 	<bean id="relatedArticleAssembler"
 		class="com.contento3.cms.article.service.impl.RelatedArticleAssemblerImpl">
 			<constructor-arg ref="articleAssembler" />
 	</bean>
-	
+
 	<bean id="relatedArticleService"
 		class="com.contento3.cms.article.service.impl.RelatedArticleServiceImpl">
 		<constructor-arg ref="relatedArticleAssembler" />
 		<constructor-arg ref="relatedArticleDao" />
 	</bean>
-	
+
 	<bean id="groupAssembler"
 		class="com.contento3.security.group.service.impl.GroupAssemblerImpl">
 		<constructor-arg ref="saltedHibernateUserAssembler" />
 	</bean>
-	
+
 	<bean id="groupService"
 		class="com.contento3.security.group.service.impl.GroupServiceImpl">
 		<constructor-arg ref="groupAssembler" />
 		<constructor-arg ref="groupDao" />
 	</bean>
-	
+
 	<bean id="imageLibraryAssembler" class="com.contento3.dam.image.library.service.impl.ImageLibraryAssemblerImpl">
 		<constructor-arg ref="accountAssembler" />
 	</bean>
-	
+
 	<bean id="imageLibraryService" class="com.contento3.dam.image.library.service.impl.ImageLibraryServiceImpl">
 		<constructor-arg ref="imageLibraryDao" />
 		<constructor-arg ref="imageLibraryAssembler" />
 	</bean>
-	
-	
+
+
 	<bean id="saltedHibernateUserAssembler"
 		class="com.contento3.security.user.service.impl.SaltedHibernateUserAssemblerImpl">
 		<constructor-arg ref="accountAssembler" />
 	</bean>
-	
+
 	<bean id="saltedHibernateUserService"
 		class="com.contento3.security.user.service.impl.SaltedHibernateUserServiceImpl">
 		<constructor-arg ref="saltedHibernateUserDao" />
@@ -221,13 +221,13 @@
 	<bean id="associatedContentScopeAssembler"
 		class="com.contento3.cms.content.service.impl.AssociatedContentScopeAssemblerImpl">
 	</bean>
-	
+
 	<bean id="associatedContentScopeService"
 		class="com.contento3.cms.content.service.impl.AssociatedContentScopeServiceImpl">
 		<constructor-arg ref="associatedContentScopeAssembler" />
 		<constructor-arg ref="associatedContentScopeDao" />
 	</bean>
-	
+
 	<!-- ArticleImageAssembler -->
 	<bean id="articleImageAssembler"
 		class="com.contento3.cms.article.service.impl.ArticleImageAssemblerImpl">
@@ -236,12 +236,33 @@
 		<constructor-arg ref="associatedContentScopeAssembler" />
 		<constructor-arg ref="accountAssembler" />		
 	</bean>
-	
+
 	<!-- ArticleImageService -->
 	<bean id="articleImageService"
 		class="com.contento3.cms.article.service.impl.ArticleImageServiceImpl">
 		<constructor-arg ref="articleImageAssembler" />
 		<constructor-arg ref="articleImageDao" />
 	</bean>
+
+	<!-- DocumentService -->
+	<bean id="documentAssembler"
+		class="com.contento3.dam.document.service.impl.DocumentAssemblerImpl">
+	</bean>
 	
+	<bean id="documentService"
+		class="com.contento3.dam.document.service.impl.DocumentServiceImpl">
+		<constructor-arg ref="documentAssembler" />
+		<constructor-arg ref="documentDAO" />
+	</bean>
+	
+	<!-- DocumentTypeService -->
+	<bean id="documentTypeAssembler"
+		class="com.contento3.dam.document.service.impl.DocumentTypeAssemblerImpl">
+	</bean>
+	
+	<bean id="documentTypeService"
+		class="com.contento3.dam.document.service.impl.DocumentTypeServiceImpl">
+		<constructor-arg ref="documentTypeAssembler" />
+		<constructor-arg ref="documentTypeDAO" />
+	</bean>
 </beans>

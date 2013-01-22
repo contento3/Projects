@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
+import com.contento3.cms.page.dao.impl.PageDaoHibernateImpl;
 import com.contento3.cms.page.layout.dao.PageLayoutDao;
 import com.contento3.cms.page.layout.dao.PageLayoutTypeDAO;
 import com.contento3.cms.page.layout.model.PageLayout;

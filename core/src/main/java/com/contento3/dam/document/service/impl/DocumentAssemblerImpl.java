@@ -3,17 +3,22 @@ package com.contento3.dam.document.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.annotation.Resource;
+
+import com.contento3.account.service.AccountAssembler;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.model.Document;
 import com.contento3.dam.document.service.DocumentAssembler;
 
 public class DocumentAssemblerImpl implements DocumentAssembler {
+	@Resource(name="accountAssembler")
+	AccountAssembler accountAssembler;
 	
 	@Override
 	public Document dtoToDomain(final DocumentDto documentDto) {
 		Document document = new Document();
 		
-		document.setAccount(documentDto.getAccount());
+		document.setAccount( accountAssembler.dtoToDomain(documentDto.getAccount()) );
 		document.setDocumentContent(documentDto.getDocumentContent());
 		document.setDocumentId(documentDto.getDocumentId());
 		document.setDocumentTitle(documentDto.getDocumentTitle());
@@ -29,7 +34,7 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 	public DocumentDto domainToDto(final Document domain) {
 		DocumentDto documentDto = new DocumentDto();
 		
-		documentDto.setAccount(domain.getAccount());
+		documentDto.setAccount( accountAssembler.domainToDto(domain.getAccount()) );
 		documentDto.setDocumentContent(domain.getDocumentContent());
 		documentDto.setDocumentId(domain.getDocumentId());
 		documentDto.setDocumentTitle(domain.getDocumentTitle());

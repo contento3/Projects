@@ -10,7 +10,6 @@ import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.model.SaltedHibernateUser;
 import com.contento3.security.user.service.SaltedHibernateUserAssembler;
 import com.contento3.security.user.service.SaltedHibernateUserService;
-import com.contento3.util.AlphaNumericStringGenerator;
 
 public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserService{
 
@@ -32,12 +31,15 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 	@Override
 	public SaltedHibernateUser create(final SaltedHibernateUserDto dto)
 			throws EntityAlreadyFoundException {
+		/***
 		final Md5PasswordEncoder encoder = new Md5PasswordEncoder();
 		final SaltedHibernateUser user = userAssembler.dtoToDomain(dto);
 	    user.setSalt(AlphaNumericStringGenerator.generateString(9));
 		user.setPassword(encoder.encodePassword(AlphaNumericStringGenerator.generateString(7), user.getSalt()));
 	    userDao.persist(user);
 		return user;
+		****/
+		return null;
 	}
 
 	@Override

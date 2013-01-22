@@ -20,7 +20,6 @@ import org.apache.shiro.util.SimpleByteSource;
 
 import com.contento3.security.user.dao.SaltedHibernateUserDao;
 import com.contento3.security.user.model.SaltedHibernateUser;
-import com.contento3.site.user.model.User;
 
 public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 
@@ -55,7 +54,7 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 		}
 		
 		LOGGER.info("Found user with username [{}]"+ upToken.getUsername());
-		return new SimpleAuthenticationInfo(user, user.getPassword().toCharArray(), SimpleByteSource.Util.bytes(user.getSalt()),getName());
+		return new SimpleAuthenticationInfo(user, user.getPassword().toCharArray(), SimpleByteSource.Util.bytes(user.getSalt()), getName());
 	}
 
 
@@ -68,7 +67,7 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 	protected AuthorizationInfo doGetAuthorizationInfo(final PrincipalCollection principals) {
 		Set<String>	roles = new HashSet<String>();
 		Set<Permission>	permissions		= new HashSet<Permission>();
-		Collection<User> principalsList	= principals.byType(User.class);
+		Collection<SaltedHibernateUser> principalsList	= principals.byType(SaltedHibernateUser.class);
 			
 //		try {
 //		
