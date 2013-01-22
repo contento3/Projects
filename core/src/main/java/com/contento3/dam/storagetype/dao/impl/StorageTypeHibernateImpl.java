@@ -1,7 +1,5 @@
 package com.contento3.dam.storagetype.dao.impl;
 
-import java.util.Collection;
-
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 

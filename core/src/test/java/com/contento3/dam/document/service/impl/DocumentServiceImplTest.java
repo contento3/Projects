@@ -12,8 +12,8 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 
 import com.contento3.account.dao.impl.AccountDaoHibernateImpl;
 import com.contento3.account.model.Account;
+import com.contento3.dam.document.dao.DocumentTypeDao;
 import com.contento3.dam.document.dao.impl.DocumentDaoHibernateImpl;
-import com.contento3.dam.document.dao.impl.DocumentTypeDaoHibernateImpl;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.model.Document;
 import com.contento3.dam.document.model.DocumentType;
@@ -23,15 +23,14 @@ import com.contento3.dam.storagetype.model.StorageType;
 
 @ContextConfiguration(locations={"/spring-hibernate-context-test.xml"})
 public class DocumentServiceImplTest extends AbstractTransactionalJUnit4SpringContextTests{
-	
-	@Resource(name="documentServiceImpl")
+	@Resource(name="documentService")
 	DocumentService documentService;
 
 	@Resource(name="documentDAO")
 	private DocumentDaoHibernateImpl documentDao;
 	
 	@Resource(name="documentTypeDAO")
-	private DocumentTypeDaoHibernateImpl documentTypeDao;
+	private DocumentTypeDao documentTypeDao;
 	
 	@Resource(name="accountDAO")
 	private AccountDaoHibernateImpl accountDao;
@@ -68,6 +67,13 @@ public class DocumentServiceImplTest extends AbstractTransactionalJUnit4SpringCo
 		expectedDocumentId = documentDao.persist(document);
 		
 		expectedUuid = document.getDocumentUuid();
+	}
+
+	@Test
+	public void testFindById(){
+		DocumentDto documentDto = documentService.findById(expectedDocumentId);
+		
+		assertNotNull(documentDto);
 	}
 	
 	@Test

@@ -19,6 +19,14 @@ public interface DocumentService extends Service<DocumentDto>{
 	 * @param accountId and uuid
 	 * @return DocumentDto
 	 */
+	DocumentDto findById(Integer documentId);
+	
+	/**
+	 * Returns the DocumentDto that has the given unique uid, and belongs
+	 * to the account with the given accountId
+	 * @param accountId and uuid
+	 * @return DocumentDto
+	 */
 	DocumentDto findByUuid(Integer accountId, String uuid);
 
 	/**

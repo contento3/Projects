@@ -114,16 +114,6 @@
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 	
-	<bean id="documentAssembler"
-		class="com.contento3.dam.document.service.impl.DocumentAssemblerImpl">
-	</bean>
-	
-	<bean id="documentServiceImpl"
-		class="com.contento3.dam.document.service.impl.DocumentServiceImpl">
-		<constructor-arg ref="documentAssembler" />
-		<constructor-arg ref="documentDAO" />
-	</bean>
-	
 	<!-- AssociatedContentScopeDao -->
 	<bean id="associatedContentScopeDao"
 		class=" com.contento3.cms.content.dao.impl.AssociatedContentScopeDaoHibernateImpl">
@@ -134,5 +124,31 @@
 	<bean id="articleImageDao"
 		class=" com.contento3.cms.article.dao.impl.ArticleImageDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
+	<!-- Account Assembler -->
+	<bean id="accountAssembler" class="com.contento3.account.service.impl.AccountAssemblerImpl">
+	</bean>
+	
+	<!-- DocumentService -->
+	<bean id="documentAssembler"
+		class="com.contento3.dam.document.service.impl.DocumentAssemblerImpl">
+	</bean>
+	
+	<bean id="documentService"
+		class="com.contento3.dam.document.service.impl.DocumentServiceImpl">
+		<constructor-arg ref="documentAssembler" />
+		<constructor-arg ref="documentDAO" />
+	</bean>
+	
+	<!-- DocumentTypeService -->
+	<bean id="documentTypeAssembler"
+		class="com.contento3.dam.document.service.impl.DocumentTypeAssemblerImpl">
+	</bean>
+	
+	<bean id="documentTypeService"
+		class="com.contento3.dam.document.service.impl.DocumentTypeServiceImpl">
+		<constructor-arg ref="documentTypeAssembler" />
+		<constructor-arg ref="documentTypeDAO" />
 	</bean>
 </beans>

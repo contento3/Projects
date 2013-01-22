@@ -48,15 +48,10 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		final ByteSource originalPassword = ByteSource.Util.bytes(dto.getPassword());
 		
 		final Hash hash = new Sha256Hash(originalPassword, salt, 1);
-		
-		String finalHash = null;
-		String finalSalt = null;
-	
-		finalHash = hash.toString();
-		finalSalt = salt.toString();
+		final String finalHash = hash.toString();
 			
 		user.setPassword(finalHash);
-		user.setSalt(finalSalt);
+		user.setSalt(salt);
 		String username = userDao.persist(user);
 		
 		if (null==username){

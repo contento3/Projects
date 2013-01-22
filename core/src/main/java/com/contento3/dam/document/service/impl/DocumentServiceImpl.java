@@ -70,4 +70,9 @@ public class DocumentServiceImpl implements DocumentService {
 		return documentAssembler.domainsToDtos(documentDao.findByAccountId(accountId));
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public DocumentDto findById(Integer documentId) {
+		return documentAssembler.domainToDto(documentDao.findById(documentId));
+	}
 }

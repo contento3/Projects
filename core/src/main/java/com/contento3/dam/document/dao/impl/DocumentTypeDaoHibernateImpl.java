@@ -1,5 +1,7 @@
 package com.contento3.dam.document.dao.impl;
 
+import java.util.Collection;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -27,6 +29,13 @@ public class DocumentTypeDaoHibernateImpl
 		criteria.add(Restrictions.eq("name", typeName));
 		
 		return (DocumentType) criteria.uniqueResult();
+	}
+
+	@Override
+	public Collection<DocumentType> findAllTypes() {
+		Criteria criteria = this.getSession().createCriteria(DocumentType.class);
+		
+		return (Collection<DocumentType>) criteria.list();
 	}
 	
 

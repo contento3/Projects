@@ -10,6 +10,7 @@ import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
+import com.contento3.web.content.document.DocumentMgmtUIManager;
 import com.contento3.web.content.image.ImageLibraryPopup;
 import com.contento3.web.content.image.ImageMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
@@ -56,7 +57,7 @@ public class ContentUIManager implements UIManager{
 	/**
 	 * Represents the navigation items in the Content Manager section.
 	 */
-	private String[] navigationItems = {NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT};
+	private String[] navigationItems = {NavigationConstant.DOCUMENT_MGMT, NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT};
 	
 	final CssLayout verticalLayout = new CssLayout();
 
@@ -104,6 +105,9 @@ public class ContentUIManager implements UIManager{
 		else if (command.equals(NavigationConstant.CONTENT_VID_MGMT)){
 			tabsheet = renderVideoUI();
 		}
+		else if (command.equals(NavigationConstant.DOCUMENT_MGMT)){
+			tabsheet = renderDocumentUI();
+		}
 		return tabsheet;
 	}
 
@@ -136,6 +140,11 @@ public class ContentUIManager implements UIManager{
 		return renderContentElementUI("Image");
 	}
 
+	private Component renderDocumentUI() {
+		TabSheet documentTab = new TabSheet();
+		return renderContentElementUI("Document");
+	}
+
 	/**
 	 * Calls the appropiate sub ui manager based on the argument.
 	 * @param element Tells what sub ui manager is require to be returned.
@@ -151,9 +160,14 @@ public class ContentUIManager implements UIManager{
 			elementTab = (TabSheet) articleManager.render(null);
 		}
 		else if(element.equals("Image")){
-		
+			
 			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper,parentWindow);
 			elementTab = (TabSheet) imageMgmtUIMgr.render(null);	
+		}
+		else if(element.equals("Document")){
+			
+			final DocumentMgmtUIManager documentMgmtUIMgr = new DocumentMgmtUIManager(elementTab,helper,parentWindow);
+			elementTab = (TabSheet) documentMgmtUIMgr.render(null);	
 		}
 
 		return elementTab;

@@ -5,8 +5,7 @@ public class NavigationConstant {
 	public static final String CONTENT_MANAGER = "Content Manager"; 
 	public static final String CONTENT_ART_MGMT = "Article Manager"; 
 	public static final String CONTENT_IMG_MGMT = "Image Manager"; 
-	public static final String CONTENT_VID_MGMT = "Video Manager"; 
-	
+	public static final String CONTENT_VID_MGMT = "Video Manager";
 	
 	public static final String TEMPLATE = "Template";          
 	public static final String MODULES = "Modules";          
@@ -17,5 +16,6 @@ public class NavigationConstant {
 	public static final String GLOBAL_CONFIG = "Global Config";
 	
 	public static final String SECURITY = "Security";
-
+	
+	public static final String DOCUMENT_MGMT = "Document Manager";
 }

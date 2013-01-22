@@ -1,5 +1,6 @@
 package com.contento3.dam.document.dto;
 
+import com.contento3.account.dto.AccountDto;
 import com.contento3.account.model.Account;
 import com.contento3.common.dto.Dto;
 import com.contento3.dam.document.model.DocumentType;
@@ -40,7 +41,7 @@ public class DocumentDto extends Dto {
 	/**
 	 * The account associated with the document entitiy.
 	 */
-	private Account account;
+	private AccountDto account;
 
 	/**
 	 * The type of the document.
@@ -110,12 +111,12 @@ public class DocumentDto extends Dto {
 	}
 	
 	/* Returns the Account associated with a Document object */
-	public Account getAccount() {
+	public AccountDto getAccount() {
 		return account;
 	}
-	
+
 	/* Sets the Account associated with a Document object */
-	public void setAccount(final Account account) {
+	public void setAccount(AccountDto account) {
 		this.account = account;
 	}
 	

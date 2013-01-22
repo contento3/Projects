@@ -72,6 +72,7 @@ public class ArticleServiceImpl implements ArticleService {
 		articleDto.setAssociateImagesDtos(this.articleImageAssembler.domainsToDtos(article.getAssociateImages()));
 		return articleDto;
 	}
+	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId,Integer count) {
