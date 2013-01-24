@@ -1,34 +1,17 @@
 package com.contento3.web.content;
 
-import java.util.Collection;
-
 import com.contento3.cms.constant.NavigationConstant;
-import com.contento3.dam.image.library.dto.ImageLibraryDto;
-import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.web.UIManager;
-import com.contento3.web.common.helper.ComboDataLoader;
-import com.contento3.web.common.helper.HorizontalRuler;
-import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
 import com.contento3.web.content.document.DocumentMgmtUIManager;
-import com.contento3.web.content.image.ImageLibraryPopup;
 import com.contento3.web.content.image.ImageMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 

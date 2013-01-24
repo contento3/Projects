@@ -16,6 +16,7 @@ import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -173,7 +174,7 @@ public class DocumentFormBuilderListner implements ClickListener {
 		parentLayout.setSizeFull();
 		parentLayout.addComponent(formLayout);
 		
-		documentTab = this.tabSheet.addTab(parentLayout,command+" Documents");
+		documentTab = this.tabSheet.addTab(parentLayout,command+" Document");
 		documentTab.setClosable(true);
 
 		GridLayout toolbarGridLayout = new GridLayout(1,2);
@@ -189,19 +190,21 @@ public class DocumentFormBuilderListner implements ClickListener {
 		parentLayout.setExpandRatio(formLayout, 10);
 		parentLayout.setComponentAlignment(toolbarGridLayout, Alignment.TOP_RIGHT);
 		tabSheet.setSelectedTab(parentLayout);
-
-		formLayout.setHeight("100%");
-		formLayout.setWidth("100%");
 		
-		documentForm.getDocumentTitle().setCaption("Documents");
-		//documentForm.getDocumentTitle().setColumns(65);
+		//formLayout.setHeight("100%");
+		//formLayout.setWidth("100%");
+		
+		documentForm.getDocumentTitle().setCaption("Document Name");
+		documentForm.getDocumentTitle().setColumns(20);
 		documentForm.getUploadDocument().setCaption("Upload Document");
 		documentForm.getSelectDocumentType().setCaption("Document Type");
 		
-        //formLayout.setSpacing(true);
-        formLayout.setMargin(true);
         formLayout.addComponent(documentForm.getDocumentTitle());
+        formLayout.addComponent(documentForm.getSelectDocumentType());
         formLayout.addComponent(documentForm.getUploadDocument());
-	    formLayout.addComponent(documentForm.getSelectDocumentType());
+	    
+	    formLayout.setMargin(true);
+	    //formLayout.setWidth(Sizeable.SIZE_UNDEFINED, 0); // Default
+	    //formLayout.setHeight(, Sizeable.UNITS_CM);// Default
 	}
 }
