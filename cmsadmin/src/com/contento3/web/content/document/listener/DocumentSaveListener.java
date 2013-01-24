@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -13,8 +14,8 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
 public class DocumentSaveListener implements ClickListener {
@@ -68,6 +69,9 @@ public class DocumentSaveListener implements ClickListener {
 				documentService.update(documentDto);
 			}
 		} catch (EntityAlreadyFoundException e) {
+			e.printStackTrace();
+		}
+		catch (EntityNotCreatedException e) {
 			e.printStackTrace();
 		}
 		

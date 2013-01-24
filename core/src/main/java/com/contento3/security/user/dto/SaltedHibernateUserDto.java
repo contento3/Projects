@@ -15,6 +15,8 @@ public class SaltedHibernateUserDto extends Dto {
 	 */
 	private boolean enabled;
 	
+	private String password;
+
 	/**
 	 * Account associated to user
 	 */
@@ -44,5 +46,17 @@ public class SaltedHibernateUserDto extends Dto {
 	public boolean isEnabled() {
 		return enabled;
 	}
-	
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(final String password) {
+		this.password = password;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
 }

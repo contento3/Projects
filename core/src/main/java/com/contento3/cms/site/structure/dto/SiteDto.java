@@ -5,8 +5,6 @@ import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
-import com.contento3.cms.site.structure.domain.model.SiteDomain;
-import com.contento3.dam.image.dto.ImageDto;
 
 public class SiteDto implements Serializable {
 
