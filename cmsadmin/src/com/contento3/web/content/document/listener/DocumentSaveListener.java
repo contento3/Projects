@@ -60,7 +60,8 @@ public class DocumentSaveListener implements ClickListener {
 		documentDto.setDocumentTitle( documentForm.getDocumentTitle().getValue().toString() );
 		documentDto.setAccount( accountService.findAccountById(accountId) );
 		documentDto.setDocumentContent( documentForm.getUploadedDocument() );
-		//documentDto.setDocumentType( documentForm.get )
+		//documentDto.setDocumentTypeDto( documentForm.getSelectDocumentType())
+		//documentDto.setStorageTypeDto(null);
 		
 		try{
 			if(documentId == null){

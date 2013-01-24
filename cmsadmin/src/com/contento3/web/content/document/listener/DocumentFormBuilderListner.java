@@ -153,7 +153,7 @@ public class DocumentFormBuilderListner implements ClickListener {
 		//Redundant code below - no longer used
 		final DocumentDto document = this.documentService.findById(documentId);
 		documentForm.getDocumentTitle().setValue(document.getDocumentTitle());
-		documentForm.getSelectDocumentType().setValue(document.getDocumentType().getName());
+		//documentForm.getSelectDocumentType().setValue(document.getDocumentTypeDto().getDocumentTypeId());
 		
 		final Button editButton = new Button("Edit");
 		

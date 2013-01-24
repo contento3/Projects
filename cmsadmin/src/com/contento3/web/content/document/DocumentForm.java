@@ -35,6 +35,7 @@ public class DocumentForm extends UIContext {
 	public DocumentForm(FileUploadListener fileUploadListener){
 		documentUploadListener = fileUploadListener;
 		
+		uploadDocument.setReceiver((Upload.Receiver) documentUploadListener);
 		uploadDocument.addListener((Upload.SucceededListener) documentUploadListener);
 		uploadDocument.addListener((Upload.FailedListener) documentUploadListener);
 	}

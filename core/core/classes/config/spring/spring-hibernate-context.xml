@@ -48,12 +48,6 @@
 			     <value>com.contento3.cms.article.model.Article</value>
 			     <value>com.contento3.cms.article.model.RelatedArticle</value>
 			     <value>com.contento3.dam.image.library.model.ImageLibrary</value>
-			     <value>com.contento3.cms.content.model.AssociatedContentScope</value>
-			     <value>com.contento3.dam.storagetype.model.StorageType</value>
-			     <value>com.contento3.dam.document.model.Document</value>
-			     <value>com.contento3.dam.document.model.DocumentType</value>
-			     <value>com.contento3.dam.storagetype.model.StorageType</value>
-			     <value>com.contento3.cms.article.model.ArticleImage</value>
 			  <!--   <value>com.contento3.site.user.model.User</value> -->
 			    
 			</list>
@@ -146,16 +140,6 @@
  	<bean id="imageDao" class="com.contento3.dam.image.dao.impl.ImageDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
-	
-	<bean id="documentDAO"
-		class="com.contento3.dam.document.dao.impl.DocumentDaoHibernateImpl">
-		<property name="sessionFactory" ref="cmsSessionFactory" />
-	</bean>
-	
-	<bean id="documentTypeDAO"
-		class="com.contento3.dam.document.dao.impl.DocumentTypeDaoHibernateImpl">
-		<property name="sessionFactory" ref="cmsSessionFactory" />
-	</bean>
  
 	<aop:aspectj-autoproxy>
 	<!-- 	<aop:include name="applicationLogger" /> -->
@@ -238,21 +222,14 @@
 		<property name="cacheName" value="com.contento3.account.model.Account" />
 	</bean>
 	
-	<!-- AssociatedContentScopeDao -->
-	<bean id="associatedContentScopeDao"
-		class=" com.contento3.cms.content.dao.impl.AssociatedContentScopeDaoHibernateImpl">
-		<property name="sessionFactory" ref="cmsSessionFactory" />
-	</bean>
-
-	<!-- ArticleImageDao -->
-	<bean id="articleImageDao"
-		class=" com.contento3.cms.article.dao.impl.ArticleImageDaoHibernateImpl">
-		<property name="sessionFactory" ref="cmsSessionFactory" />
+	<bean id="imageCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.dam.image.model.Image" />
 	</bean>
 	
-	<!-- StorageTypeDao -->
-	<bean id="storageTypeDao"
-		class="com.contento3.dam.storagetype.dao.impl.StorageTypeHibernateImpl">
-		<property name="sessionFactory" ref="cmsSessionFactory" />
+	<bean id="articleCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="com.contento3.cms.article.model.Article" />
 	</bean>
+	
 </beans>

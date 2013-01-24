@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+ 	<class name="com.contento3.cms.content.model.ContentType" table="CONTENT_TYPE">
+	<cache usage="read-only"/>
+ 	 	<id column="CONTENT_TYPE_ID" name="id" type="java.lang.Integer">
+			<generator class="increment"/>
+ 	 	</id>
+	<property column="CONTENT_TYPE_NAME" name="name" type="java.lang.String"/>
+<!-- 	<property column="IS_COMPOSED" name="composed" type="java.lang.Boolean"/> -->
+</class>
+</hibernate-mapping>

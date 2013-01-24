@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springmodules.org/schema/ehcache http://www.springmodules.org/schema/cache/springmodules-ehcache.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd" >
+
+
+    <!-- Example bean -->
+
+<bean id="layout" factory-method="createUIManager" class="com.olive.web.UIManagerCreator">
+	<constructor-arg type="com.olive.web.Manager" value="Layout" />
+</bean> 
+
+<bean id="content" factory-method="createUIManager" class="com.olive.web.UIManagerCreator">
+	<constructor-arg type="com.olive.web.Manager" value="Content" />
+</bean> 
+
+<bean id="template" factory-method="createUIManager" class="com.olive.web.UIManagerCreator">
+	<constructor-arg type="com.olive.web.Manager" value="Template" />
+</bean> 
+
+<bean id="user" factory-method="createUIManager" class="com.olive.web.UIManagerCreator">
+	<constructor-arg type="com.olive.web.Manager" value="User" />
+</bean> 
+
+<!-- 	<bean id="siteMgr"  class="com.olive.web.site.SiteUIManager"/>
+	<bean id="layoutMgr"  class="com.olive.web.layout.LayoutUIManager"/>
+	<bean id="moduleMgr"  class="com.olive.web.module.ModuleUIManager"/> -->
+	
+	
+</beans>
