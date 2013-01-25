@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import com.contento3.dam.document.dto.DocumentTypeDto;
 import com.contento3.web.common.UIContext;
 import com.contento3.web.content.document.listener.FileUploadListener;
+import com.sun.tools.internal.xjc.api.Property;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Window;
 
-public class DocumentForm extends UIContext {
+public class DocumentForm extends UIContext implements ValueChangeListener {
 	
 	/**
 	 * Textfield for document heading
@@ -28,6 +32,8 @@ public class DocumentForm extends UIContext {
 	private Select selectDocumentType = new Select();
 	
 	private FileUploadListener documentUploadListener;
+
+	private String selectedDocumentType;
 	
 	/**
 	 * Constructor
@@ -38,6 +44,8 @@ public class DocumentForm extends UIContext {
 		uploadDocument.setReceiver((Upload.Receiver) documentUploadListener);
 		uploadDocument.addListener((Upload.SucceededListener) documentUploadListener);
 		uploadDocument.addListener((Upload.FailedListener) documentUploadListener);
+		
+		selectDocumentType.addListener(this);
 	}
 	
 	/**
@@ -97,11 +105,21 @@ public class DocumentForm extends UIContext {
 	public byte[] getUploadedDocument(){
 		return documentUploadListener.getUploadedFile();
 	}
-
+	
+	public String getSelectedDocumentType(){
+		return selectedDocumentType;
+	}
+	
 	public void fillDocumentTypeList(ArrayList<DocumentTypeDto> documentTypeList) {
-		for(DocumentTypeDto documentTypeDto : documentTypeList){
+		for(DocumentTypeDto documentTypeDto : documentTypeList)
 			selectDocumentType.addItem(documentTypeDto.getName());
-			selectDocumentType.addItem("foo test");
-		}
+	}
+	
+	/* This method is responsible for listening to the changes made
+	 * by the user in the document type Select list.
+	 * */
+	@Override
+	public void valueChange(ValueChangeEvent event) {
+		this.selectedDocumentType = ""+event.getProperty();
 	}
 }

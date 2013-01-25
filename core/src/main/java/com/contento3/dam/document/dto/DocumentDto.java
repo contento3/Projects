@@ -3,7 +3,7 @@ package com.contento3.dam.document.dto;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
 import com.contento3.dam.storagetype.dto.StorageTypeDto;
-import com.contento3.dam.storagetype.model.StorageType;
+import com.contento3.dam.document.dto.DocumentTypeDto;
 
 public class DocumentDto extends Dto {
 	/**
@@ -94,7 +94,7 @@ public class DocumentDto extends Dto {
 	}
 	
 	/* Sets the StorageType of a Document object */
-	public void setStorageTypeDto(StorageTypeDto storageTypeDto) {
+	public void setStorageTypeDto(final StorageTypeDto storageTypeDto) {
 		this.storageTypeDto = storageTypeDto;
 	}
 	
@@ -114,7 +114,7 @@ public class DocumentDto extends Dto {
 	}
 
 	/* Sets the Account associated with a Document object */
-	public void setAccount(AccountDto account) {
+	public void setAccount(final AccountDto account) {
 		this.account = account;
 	}
 	
@@ -124,7 +124,7 @@ public class DocumentDto extends Dto {
 	}
 	
 	/* Sets the DocumentType of a Document object */
-	public void setDocumentTypeDto(DocumentTypeDto documentTypeDto) {
+	public void setDocumentTypeDto(final DocumentTypeDto documentTypeDto) {
 		this.documentTypeDto = documentTypeDto;
 	}
 

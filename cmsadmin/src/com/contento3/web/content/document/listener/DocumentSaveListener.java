@@ -7,6 +7,9 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
+import com.contento3.dam.document.service.DocumentTypeService;
+import com.contento3.dam.storagetype.dto.StorageTypeDto;
+import com.contento3.dam.storagetype.service.StorageTypeService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.content.document.DocumentTableBuilder;
@@ -23,6 +26,8 @@ public class DocumentSaveListener implements ClickListener {
 	
 	private DocumentService documentService;
 	private AccountService accountService;
+	private DocumentTypeService documentTypeService;
+	private StorageTypeService storageTypeService;
 	private SpringContextHelper contextHelper;
 	private Window parentWindow;
 	
@@ -46,11 +51,14 @@ public class DocumentSaveListener implements ClickListener {
 		this.contextHelper = documentForm.getContextHelper();
 		this.documentService = (DocumentService) contextHelper.getBean("documentService");
 		this.accountService = (AccountService) contextHelper.getBean("accountService");
+		this.documentTypeService = (DocumentTypeService) contextHelper.getBean("documentTypeService");
+		this.storageTypeService = (StorageTypeService) contextHelper.getBean("storageTypeService");
 	}
 	
 	@Override
 	public void click(ClickEvent event) {
 		DocumentDto documentDto;
+		StorageTypeDto storageTypeDto = (StorageTypeDto) storageTypeService.findByName("DATABASE");
 		
 		if(documentId == null)
 			documentDto = new DocumentDto();
@@ -58,10 +66,11 @@ public class DocumentSaveListener implements ClickListener {
 			documentDto = this.documentService.findById(documentId);
 		
 		documentDto.setDocumentTitle( documentForm.getDocumentTitle().getValue().toString() );
+		documentDto.setDocumentTypeDto( documentTypeService.findByName(documentForm.getSelectedDocumentType()) );
 		documentDto.setAccount( accountService.findAccountById(accountId) );
 		documentDto.setDocumentContent( documentForm.getUploadedDocument() );
-		//documentDto.setDocumentTypeDto( documentForm.getSelectDocumentType())
-		//documentDto.setStorageTypeDto(null);
+		documentDto.setStorageTypeDto(storageTypeDto);
+		documentDto.setDocumentUuid( "test" );
 		
 		try{
 			if(documentId == null){
@@ -71,8 +80,7 @@ public class DocumentSaveListener implements ClickListener {
 			}
 		} catch (EntityAlreadyFoundException e) {
 			e.printStackTrace();
-		}
-		catch (EntityNotCreatedException e) {
+		} catch (EntityNotCreatedException e) {
 			e.printStackTrace();
 		}
 		
