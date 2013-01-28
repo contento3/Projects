@@ -1,6 +1,7 @@
 package com.contento3.web.content.document.listener;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -70,7 +71,7 @@ public class DocumentSaveListener implements ClickListener {
 		documentDto.setAccount( accountService.findAccountById(accountId) );
 		documentDto.setDocumentContent( documentForm.getUploadedDocument() );
 		documentDto.setStorageTypeDto(storageTypeDto);
-		documentDto.setDocumentUuid( "test" );
+		documentDto.setDocumentUuid( UUID.randomUUID().toString() );
 		
 		try{
 			if(documentId == null){

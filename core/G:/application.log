@@ -228,3 +228,169 @@
 2013-01-25 00:56:11,588 INFO Thread-0 org.springframework.beans.factory.support.DefaultListableBeanFactory - Destroying singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@b3600d: defining beans [myDataSource,cmsSessionFactory,transactionManager,org.springframework.aop.config.internalAutoProxyCreator,org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0,org.springframework.transaction.interceptor.TransactionInterceptor#0,org.springframework.transaction.config.internalTransactionAdvisor,pageDAO,accountDAO,siteDAO,pageLayoutDAO,pageLayoutTypeDAO,storageDAO,documentDAO,documentTypeDAO,associatedContentScopeDao,articleImageDao,accountAssembler,documentAssembler,documentService,documentTypeAssembler,documentTypeService,storageTypeAssembler,storageTypeService,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.internalPersistenceAnnotationProcessor]; root of factory hierarchy
 2013-01-25 00:56:11,595 INFO Thread-0 org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean - Closing Hibernate SessionFactory
 2013-01-25 00:56:11,595 INFO Thread-0 org.hibernate.impl.SessionFactoryImpl - closing
+2013-01-25 23:18:00,993 INFO main org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [spring-hibernate-context-test.xml]
+2013-01-25 23:18:01,584 INFO main org.springframework.context.support.GenericApplicationContext - Refreshing org.springframework.context.support.GenericApplicationContext@a2bf0f: startup date [Fri Jan 25 23:18:01 PKT 2013]; root of context hierarchy
+2013-01-25 23:18:01,872 INFO main org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1bddfd9: defining beans [myDataSource,cmsSessionFactory,transactionManager,org.springframework.aop.config.internalAutoProxyCreator,org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0,org.springframework.transaction.interceptor.TransactionInterceptor#0,org.springframework.transaction.config.internalTransactionAdvisor,pageDAO,accountDAO,siteDAO,pageLayoutDAO,pageLayoutTypeDAO,storageDAO,documentDAO,documentTypeDAO,associatedContentScopeDao,articleImageDao,accountAssembler,documentAssembler,documentService,documentTypeAssembler,documentTypeService,storageTypeAssembler,storageTypeService,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.internalPersistenceAnnotationProcessor]; root of factory hierarchy
+2013-01-25 23:18:01,955 INFO main org.springframework.jdbc.datasource.DriverManagerDataSource - Loaded JDBC driver: com.mysql.jdbc.Driver
+2013-01-25 23:18:02,570 INFO main org.hibernate.annotations.common.Version - Hibernate Commons Annotations 3.2.0.Final
+2013-01-25 23:18:02,599 INFO main org.hibernate.cfg.Environment - Hibernate 3.6.0.Final
+2013-01-25 23:18:02,602 INFO main org.hibernate.cfg.Environment - hibernate.properties not found
+2013-01-25 23:18:02,606 INFO main org.hibernate.cfg.Environment - Bytecode provider name : javassist
+2013-01-25 23:18:02,612 INFO main org.hibernate.cfg.Environment - using JDK 1.4 java.sql.Timestamp handling
+2013-01-25 23:18:02,821 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.layout.model.PageLayout
+2013-01-25 23:18:02,891 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.layout.model.PageLayout on table PAGE_LAYOUT
+2013-01-25 23:18:03,001 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.layout.model.PageLayoutType
+2013-01-25 23:18:03,002 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.layout.model.PageLayoutType on table PAGE_LAYOUT_TYPE
+2013-01-25 23:18:03,004 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.section.model.PageSection
+2013-01-25 23:18:03,004 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.section.model.PageSection on table PAGE_SECTION
+2013-01-25 23:18:03,010 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.section.model.PageSectionType
+2013-01-25 23:18:03,011 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.section.model.PageSectionType on table PAGE_SECTION_TYPE
+2013-01-25 23:18:03,012 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.template.model.Template
+2013-01-25 23:18:03,013 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.template.model.Template on table TEMPLATE
+2013-01-25 23:18:03,017 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.model.Page
+2013-01-25 23:18:03,017 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.model.Page on table PAGE
+2013-01-25 23:18:03,034 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.site.structure.model.Site
+2013-01-25 23:18:03,035 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.site.structure.model.Site on table SITE
+2013-01-25 23:18:03,039 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.account.model.Account
+2013-01-25 23:18:03,039 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.account.model.Account on table ACCOUNT
+2013-01-25 23:18:03,041 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.template.model.TemplateType
+2013-01-25 23:18:03,041 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.template.model.TemplateType on table TEMPLATE_TYPE
+2013-01-25 23:18:03,044 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.template.model.TemplateDirectory
+2013-01-25 23:18:03,044 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.template.model.TemplateDirectory on table TEMPLATE_DIRECTORY
+2013-01-25 23:18:03,050 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.dam.image.model.Image
+2013-01-25 23:18:03,051 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.dam.image.model.Image on table IMAGE
+2013-01-25 23:18:03,063 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.template.model.PageTemplate
+2013-01-25 23:18:03,064 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.template.model.PageTemplate on table PAGE_TEMPLATE_ASSOCIATION
+2013-01-25 23:18:03,071 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.page.category.model.Category
+2013-01-25 23:18:03,072 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.page.category.model.Category on table CATEGORY
+2013-01-25 23:18:03,076 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.site.structure.domain.model.SiteDomain
+2013-01-25 23:18:03,076 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.site.structure.domain.model.SiteDomain on table SITE_DOMAIN
+2013-01-25 23:18:03,078 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.article.model.Article
+2013-01-25 23:18:03,079 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.article.model.Article on table ARTICLE
+2013-01-25 23:18:03,094 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.article.model.RelatedArticle
+2013-01-25 23:18:03,094 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.article.model.RelatedArticle on table Related_Articles
+2013-01-25 23:18:03,100 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.dam.image.library.model.ImageLibrary
+2013-01-25 23:18:03,100 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.dam.image.library.model.ImageLibrary on table IMAGE_LIBRARY
+2013-01-25 23:18:03,104 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.content.model.AssociatedContentScope
+2013-01-25 23:18:03,104 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.content.model.AssociatedContentScope on table ASSOCIATED_CONTENT_SCOPE
+2013-01-25 23:18:03,117 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.dam.storagetype.model.StorageType
+2013-01-25 23:18:03,118 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.dam.storagetype.model.StorageType on table STORAGE_TYPE
+2013-01-25 23:18:03,121 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.dam.document.model.Document
+2013-01-25 23:18:03,121 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.dam.document.model.Document on table DOCUMENT
+2013-01-25 23:18:03,125 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.dam.document.model.DocumentType
+2013-01-25 23:18:03,126 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.dam.document.model.DocumentType on table DOCUMENT_TYPE
+2013-01-25 23:18:03,127 INFO main org.hibernate.cfg.AnnotationBinder - Binding entity from annotated class: com.contento3.cms.article.model.ArticleImage
+2013-01-25 23:18:03,128 INFO main org.hibernate.cfg.annotations.EntityBinder - Bind entity com.contento3.cms.article.model.ArticleImage on table ARTICLE_IMAGE_ASSOCIATION
+2013-01-25 23:18:03,182 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: com.contento3.cms.site.structure.model.Site.siteDomain -> SITE_DOMAIN
+2013-01-25 23:18:03,185 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: com.contento3.cms.page.layout.model.PageLayout.pageSections -> PAGE_SECTION
+2013-01-25 23:18:03,188 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: com.contento3.cms.page.model.Page.childPages -> TEMPLATE_DIRECTORY
+2013-01-25 23:18:03,189 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: com.contento3.cms.page.template.model.TemplateDirectory.childDirectories -> TEMPLATE_DIRECTORY
+2013-01-25 23:18:03,189 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: com.contento3.cms.page.category.model.Category.child -> CATEGORY
+2013-01-25 23:18:03,190 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: com.contento3.cms.article.model.Article.associateImages -> ARTICLE_IMAGE_ASSOCIATION
+2013-01-25 23:18:03,190 INFO main org.hibernate.cfg.annotations.CollectionBinder - Mapping collection: com.contento3.cms.article.model.Article.relatedArticles -> Related_Articles
+2013-01-25 23:18:03,205 INFO main org.hibernate.cfg.Configuration - Hibernate Validator not found: ignoring
+2013-01-25 23:18:03,212 INFO main org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean - Building new Hibernate SessionFactory
+2013-01-25 23:18:03,233 INFO main org.hibernate.cfg.search.HibernateSearchEventListenerRegister - Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
+2013-01-25 23:18:03,313 WARN main org.hibernate.mapping.RootClass - composite-id class does not override equals(): com.contento3.cms.article.model.ArticleImageLinkPK
+2013-01-25 23:18:03,313 WARN main org.hibernate.mapping.RootClass - composite-id class does not override hashCode(): com.contento3.cms.article.model.ArticleImageLinkPK
+2013-01-25 23:18:03,314 WARN main org.hibernate.mapping.RootClass - composite-id class does not override equals(): com.contento3.cms.page.template.model.PageTemplatePK
+2013-01-25 23:18:03,315 WARN main org.hibernate.mapping.RootClass - composite-id class does not override hashCode(): com.contento3.cms.page.template.model.PageTemplatePK
+2013-01-25 23:18:03,316 WARN main org.hibernate.mapping.RootClass - composite-id class does not override equals(): com.contento3.cms.article.model.RelatedArticleLinkPK
+2013-01-25 23:18:03,316 WARN main org.hibernate.mapping.RootClass - composite-id class does not override hashCode(): com.contento3.cms.article.model.RelatedArticleLinkPK
+2013-01-25 23:18:03,320 INFO main org.hibernate.connection.ConnectionProviderFactory - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+2013-01-25 23:18:03,848 INFO main org.hibernate.cfg.SettingsFactory - Database ->
+       name : MySQL
+    version : 5.5.29-0ubuntu0.12.04.1
+      major : 5
+      minor : 5
+2013-01-25 23:18:03,848 INFO main org.hibernate.cfg.SettingsFactory - Driver ->
+       name : MySQL-AB JDBC Driver
+    version : mysql-connector-java-5.1.13 ( Revision: ${bzr.revision-id} )
+      major : 5
+      minor : 1
+2013-01-25 23:18:03,895 INFO main org.hibernate.dialect.Dialect - Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2013-01-25 23:18:03,906 INFO main org.hibernate.engine.jdbc.JdbcSupportLoader - Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2013-01-25 23:18:03,908 INFO main org.hibernate.transaction.TransactionFactoryFactory - Transaction strategy: org.hibernate.transaction.JDBCTransactionFactory
+2013-01-25 23:18:03,910 INFO main org.hibernate.transaction.TransactionManagerLookupFactory - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+2013-01-25 23:18:03,910 INFO main org.hibernate.cfg.SettingsFactory - Automatic flush during beforeCompletion(): disabled
+2013-01-25 23:18:03,910 INFO main org.hibernate.cfg.SettingsFactory - Automatic session close at end of transaction: disabled
+2013-01-25 23:18:03,910 INFO main org.hibernate.cfg.SettingsFactory - JDBC batch size: 15
+2013-01-25 23:18:03,910 INFO main org.hibernate.cfg.SettingsFactory - JDBC batch updates for versioned data: disabled
+2013-01-25 23:18:03,911 INFO main org.hibernate.cfg.SettingsFactory - Scrollable result sets: enabled
+2013-01-25 23:18:03,911 INFO main org.hibernate.cfg.SettingsFactory - JDBC3 getGeneratedKeys(): enabled
+2013-01-25 23:18:03,911 INFO main org.hibernate.cfg.SettingsFactory - Connection release mode: auto
+2013-01-25 23:18:03,912 INFO main org.hibernate.cfg.SettingsFactory - Maximum outer join fetch depth: 2
+2013-01-25 23:18:03,912 INFO main org.hibernate.cfg.SettingsFactory - Default batch fetch size: 1
+2013-01-25 23:18:03,912 INFO main org.hibernate.cfg.SettingsFactory - Generate SQL with comments: disabled
+2013-01-25 23:18:03,912 INFO main org.hibernate.cfg.SettingsFactory - Order SQL updates by primary key: disabled
+2013-01-25 23:18:03,912 INFO main org.hibernate.cfg.SettingsFactory - Order SQL inserts for batching: disabled
+2013-01-25 23:18:03,912 INFO main org.hibernate.cfg.SettingsFactory - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+2013-01-25 23:18:03,920 INFO main org.hibernate.hql.ast.ASTQueryTranslatorFactory - Using ASTQueryTranslatorFactory
+2013-01-25 23:18:03,920 INFO main org.hibernate.cfg.SettingsFactory - Query language substitutions: {}
+2013-01-25 23:18:03,920 INFO main org.hibernate.cfg.SettingsFactory - JPA-QL strict compliance: disabled
+2013-01-25 23:18:03,920 INFO main org.hibernate.cfg.SettingsFactory - Second-level cache: enabled
+2013-01-25 23:18:03,920 INFO main org.hibernate.cfg.SettingsFactory - Query cache: enabled
+2013-01-25 23:18:03,921 INFO main org.hibernate.cfg.SettingsFactory - Cache region factory : org.hibernate.cache.impl.bridge.RegionFactoryCacheProviderBridge
+2013-01-25 23:18:03,929 INFO main org.hibernate.cache.impl.bridge.RegionFactoryCacheProviderBridge - Cache provider: org.hibernate.cache.EhCacheProvider
+2013-01-25 23:18:03,961 INFO main org.hibernate.cfg.SettingsFactory - Optimize cache for minimal puts: disabled
+2013-01-25 23:18:03,962 INFO main org.hibernate.cfg.SettingsFactory - Structured second-level cache entries: enabled
+2013-01-25 23:18:03,962 INFO main org.hibernate.cfg.SettingsFactory - Query cache factory: org.hibernate.cache.StandardQueryCacheFactory
+2013-01-25 23:18:03,967 INFO main org.hibernate.cfg.SettingsFactory - Statistics: enabled
+2013-01-25 23:18:03,967 INFO main org.hibernate.cfg.SettingsFactory - Deleted entity synthetic identifier rollback: disabled
+2013-01-25 23:18:03,968 INFO main org.hibernate.cfg.SettingsFactory - Default entity-mode: pojo
+2013-01-25 23:18:03,968 INFO main org.hibernate.cfg.SettingsFactory - Named query checking : enabled
+2013-01-25 23:18:03,968 INFO main org.hibernate.cfg.SettingsFactory - Check Nullability in Core (should be disabled when Bean Validation is on): enabled
+2013-01-25 23:18:03,989 INFO main org.hibernate.impl.SessionFactoryImpl - building session factory
+2013-01-25 23:18:04,113 WARN main net.sf.ehcache.Cache - Cache: SimplePageCachingFilter has a maxElementsInMemory of 0. It is strongly recommended to have a maximumSize of at least 1. Performance is halved by not using a MemoryStore.
+2013-01-25 23:18:04,183 WARN main org.hibernate.cache.EhCacheProvider - Could not find configuration [com.contento3.dam.storagetype.model.StorageType]; using defaults.
+2013-01-25 23:18:04,611 INFO main org.hibernate.impl.SessionFactoryObjectFactory - Not binding factory to JNDI, no JNDI name configured
+2013-01-25 23:18:04,612 INFO main org.hibernate.cache.UpdateTimestampsCache - starting update timestamps cache at region: org.hibernate.cache.UpdateTimestampsCache
+2013-01-25 23:18:04,613 WARN main org.hibernate.cache.EhCacheProvider - Could not find configuration [org.hibernate.cache.UpdateTimestampsCache]; using defaults.
+2013-01-25 23:18:04,615 INFO main org.hibernate.cache.StandardQueryCache - starting query cache at region: org.hibernate.cache.StandardQueryCache
+2013-01-25 23:18:04,615 WARN main org.hibernate.cache.EhCacheProvider - Could not find configuration [org.hibernate.cache.StandardQueryCache]; using defaults.
+2013-01-25 23:18:04,754 INFO main org.springframework.orm.hibernate3.HibernateTransactionManager - Using DataSource [org.springframework.jdbc.datasource.DriverManagerDataSource@b102f3] of Hibernate SessionFactory for HibernateTransactionManager
+2013-01-25 23:18:05,346 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (1): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:05,629 INFO main org.hibernate.stat.Statistics - HQL: null, time: 7ms, rows: 4
+2013-01-25 23:18:06,057 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@47df10 testClass = DocumentTypeServiceImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.service.impl.DocumentTypeServiceImplTest@859cd0, testMethod = testFindAllTypes@DocumentTypeServiceImplTest, testException = [null]]]
+2013-01-25 23:18:06,074 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (2): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:06,121 INFO main org.hibernate.stat.Statistics - HQL: null, time: 1ms, rows: 1
+2013-01-25 23:18:06,279 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@47df10 testClass = DocumentTypeServiceImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.service.impl.DocumentTypeServiceImplTest@dcf0c3, testMethod = testFindByName@DocumentTypeServiceImplTest, testException = [null]]]
+2013-01-25 23:18:06,306 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (1): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:06,426 INFO main org.hibernate.stat.Statistics - HQL: null, time: 1ms, rows: 1
+2013-01-25 23:18:06,462 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@1e9b7b2 testClass = StorageTypeHibernateImplTestCase, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.storagetype.dao.impl.StorageTypeHibernateImplTestCase@11b0c33, testMethod = testFindStorageTypeByName@StorageTypeHibernateImplTestCase, testException = [null]]]
+2013-01-25 23:18:06,483 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (1): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:06,663 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@143eee2 testClass = PageDaoHibernateImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest@f8728c, testMethod = testFindPageBySiteIdInteger@PageDaoHibernateImplTest, testException = [null]]]
+2013-01-25 23:18:06,689 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (1): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:06,734 INFO main org.hibernate.stat.Statistics - HQL: null, time: 33ms, rows: 1
+2013-01-25 23:18:14,629 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@9534f testClass = DocumentServiceImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.service.impl.DocumentServiceImplTest@3ca727, testMethod = testFindByType@DocumentServiceImplTest, testException = [null]]]
+2013-01-25 23:18:14,649 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (2): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:14,680 INFO main org.hibernate.stat.Statistics - HQL: null, time: 4ms, rows: 1
+2013-01-25 23:18:14,713 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@9534f testClass = DocumentServiceImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.service.impl.DocumentServiceImplTest@113d1f1, testMethod = testFindByUuid@DocumentServiceImplTest, testException = [null]]]
+2013-01-25 23:18:14,725 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (3): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:14,754 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@9534f testClass = DocumentServiceImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.service.impl.DocumentServiceImplTest@18f1c0, testMethod = testCreateDocumentDto@DocumentServiceImplTest, testException = [null]]]
+2013-01-25 23:18:14,765 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (4): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:14,774 INFO main org.hibernate.stat.Statistics - HQL: null, time: 2ms, rows: 1
+2013-01-25 23:18:14,796 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@9534f testClass = DocumentServiceImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.service.impl.DocumentServiceImplTest@6474e3, testMethod = testFindByAccountId@DocumentServiceImplTest, testException = [null]]]
+2013-01-25 23:18:14,811 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (5): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:14,871 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@9534f testClass = DocumentServiceImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.service.impl.DocumentServiceImplTest@17bf8a5, testMethod = testFindById@DocumentServiceImplTest, testException = [null]]]
+2013-01-25 23:18:14,897 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (1): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:14,903 INFO main org.hibernate.stat.Statistics - HQL: null, time: 1ms, rows: 1
+2013-01-25 23:18:14,931 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@da5a9b testClass = DocumentHibernateImplTestCase, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.dao.impl.DocumentHibernateImplTestCase@1728d1e, testMethod = documentTypeTestFindByName@DocumentHibernateImplTestCase, testException = [null]]]
+2013-01-25 23:18:14,949 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (2): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:14,965 INFO main org.hibernate.stat.Statistics - HQL: null, time: 2ms, rows: 1
+2013-01-25 23:18:14,996 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@da5a9b testClass = DocumentHibernateImplTestCase, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.dao.impl.DocumentHibernateImplTestCase@ce53fc, testMethod = testFindByType@DocumentHibernateImplTestCase, testException = [null]]]
+2013-01-25 23:18:15,006 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (3): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:15,013 INFO main org.hibernate.stat.Statistics - HQL: null, time: 1ms, rows: 1
+2013-01-25 23:18:15,038 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@da5a9b testClass = DocumentHibernateImplTestCase, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.dao.impl.DocumentHibernateImplTestCase@6e1a48, testMethod = testFindByUuid@DocumentHibernateImplTestCase, testException = [null]]]
+2013-01-25 23:18:15,056 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (4): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:15,072 INFO main org.hibernate.stat.Statistics - HQL: null, time: 2ms, rows: 1
+2013-01-25 23:18:15,105 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@da5a9b testClass = DocumentHibernateImplTestCase, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.dao.impl.DocumentHibernateImplTestCase@14b37e5, testMethod = testFindByAccountId@DocumentHibernateImplTestCase, testException = [null]]]
+2013-01-25 23:18:15,119 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (5): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:15,129 INFO main org.hibernate.stat.Statistics - HQL: null, time: 3ms, rows: 1
+2013-01-25 23:18:15,172 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@da5a9b testClass = DocumentHibernateImplTestCase, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.dam.document.dao.impl.DocumentHibernateImplTestCase@27d8b4, testMethod = testFindByTitle@DocumentHibernateImplTestCase, testException = [null]]]
+2013-01-25 23:18:15,202 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Began transaction (1): transaction manager [org.springframework.orm.hibernate3.HibernateTransactionManager@1dff693]; rollback [true]
+2013-01-25 23:18:15,204 INFO main org.springframework.test.context.transaction.TransactionalTestExecutionListener - Rolled back transaction after test execution for test context [[TestContext@1056def testClass = ArticleDaoHibernateImplTest, locations = array<String>['classpath:/spring-hibernate-context-test.xml'], testInstance = com.contento3.cms.article.impl.ArticleDaoHibernateImplTest@17479ec, testMethod = t1@ArticleDaoHibernateImplTest, testException = [null]]]
+2013-01-25 23:18:15,208 INFO Thread-0 org.springframework.context.support.GenericApplicationContext - Closing org.springframework.context.support.GenericApplicationContext@a2bf0f: startup date [Fri Jan 25 23:18:01 PKT 2013]; root of context hierarchy
+2013-01-25 23:18:15,210 INFO Thread-0 org.springframework.beans.factory.support.DefaultListableBeanFactory - Destroying singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1bddfd9: defining beans [myDataSource,cmsSessionFactory,transactionManager,org.springframework.aop.config.internalAutoProxyCreator,org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0,org.springframework.transaction.interceptor.TransactionInterceptor#0,org.springframework.transaction.config.internalTransactionAdvisor,pageDAO,accountDAO,siteDAO,pageLayoutDAO,pageLayoutTypeDAO,storageDAO,documentDAO,documentTypeDAO,associatedContentScopeDao,articleImageDao,accountAssembler,documentAssembler,documentService,documentTypeAssembler,documentTypeService,storageTypeAssembler,storageTypeService,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.internalPersistenceAnnotationProcessor]; root of factory hierarchy
+2013-01-25 23:18:15,242 INFO Thread-0 org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean - Closing Hibernate SessionFactory
+2013-01-25 23:18:15,242 INFO Thread-0 org.hibernate.impl.SessionFactoryImpl - closing
