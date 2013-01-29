@@ -67,7 +67,7 @@ public class FileUploadListener
         } catch(Exception e){
         	LOGGER.error("Unable to upload the file", e);
         } 
-        
+        System.err.println(MIMEType);
         return fos; // Return the output stream to write to
     }
     
@@ -106,5 +106,9 @@ public class FileUploadListener
     
     public byte[] getUploadedFile(){
     	return bFile;
+    }
+    
+    public void setUploadedFile(byte[] uploadedFile){
+    	bFile = uploadedFile;
     }
 }

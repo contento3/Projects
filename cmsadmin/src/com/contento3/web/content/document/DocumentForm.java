@@ -106,6 +106,10 @@ public class DocumentForm extends UIContext implements ValueChangeListener {
 		return documentUploadListener.getUploadedFile();
 	}
 	
+	public void setUploadedDocument(byte[] uploadedFile){
+		documentUploadListener.setUploadedFile(uploadedFile);
+	}
+	
 	public String getSelectedDocumentType(){
 		return selectedDocumentType;
 	}

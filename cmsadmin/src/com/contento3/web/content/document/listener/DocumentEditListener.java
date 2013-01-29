@@ -58,6 +58,11 @@ public class DocumentEditListener implements ClickListener {
 	
 	@Override
 	public void click(ClickEvent event) {
+		if(documentForm.getUploadedDocument() == null){
+			parentWindow.showNotification("You must upload a document to Save.");
+			return;
+		}
+		
 		DocumentDto documentDto;
 		StorageTypeDto storageTypeDto = (StorageTypeDto) storageTypeService.findByName("DATABASE");
 		

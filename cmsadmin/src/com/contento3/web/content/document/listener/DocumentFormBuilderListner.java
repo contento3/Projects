@@ -6,17 +6,14 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import com.contento3.account.service.AccountService;
-import com.contento3.dam.document.dao.DocumentTypeDao;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.dto.DocumentTypeDto;
-import com.contento3.dam.document.model.DocumentType;
 import com.contento3.dam.document.service.DocumentService;
 import com.contento3.dam.document.service.DocumentTypeService;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -150,10 +147,12 @@ public class DocumentFormBuilderListner implements ClickListener {
 	private void renderEditDocumentScreen(int documentId) {
 		buildDocumentUI("Edit", documentId);
 		
-		//Redundant code below - no longer used
 		final DocumentDto document = this.documentService.findById(documentId);
 		documentForm.getDocumentTitle().setValue(document.getDocumentTitle());
+		documentForm.getSelectDocumentType().setValue(document.getDocumentTypeDto().getName());
+		documentForm.setUploadedDocument(document.getDocumentContent());
 		
+		//Redundant code below - no longer used
 		final Button editButton = new Button("Edit");
 		
 		editButton.addListener( new ClickListener() {
@@ -190,9 +189,6 @@ public class DocumentFormBuilderListner implements ClickListener {
 		parentLayout.setComponentAlignment(toolbarGridLayout, Alignment.TOP_RIGHT);
 		tabSheet.setSelectedTab(parentLayout);
 		
-		//formLayout.setHeight("100%");
-		//formLayout.setWidth("100%");
-		
 		documentForm.getDocumentTitle().setCaption("Document Name");
 		documentForm.getDocumentTitle().setColumns(20);
 		documentForm.getUploadDocument().setCaption("Upload Document");
@@ -203,7 +199,5 @@ public class DocumentFormBuilderListner implements ClickListener {
         formLayout.addComponent(documentForm.getUploadDocument());
 	    
 	    formLayout.setMargin(true);
-	    //formLayout.setWidth(Sizeable.SIZE_UNDEFINED, 0); // Default
-	    //formLayout.setHeight(, Sizeable.UNITS_CM);// Default
 	}
 }
