@@ -20,4 +20,11 @@ public interface SaltedHibernateUserService extends Service<SaltedHibernateUserD
 	 * @return
 	 */
 	SaltedHibernateUserDto findUserByName(final String name);
+
+	/**
+	 * Updates the SalterHibernateUserDto
+	 * @param SalterHibernateUserDto
+	 * @return void
+	 */
+	public void update(SaltedHibernateUserDto dtoToUpdate);
 }

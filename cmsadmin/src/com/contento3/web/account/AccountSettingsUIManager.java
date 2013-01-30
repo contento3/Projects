@@ -1,7 +1,15 @@
 package com.contento3.web.account;
 
+import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.CredentialsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+
 import com.contento3.account.service.AccountService;
 import com.contento3.security.user.service.SaltedHibernateUserService;
+import com.contento3.web.CMSMainWindow;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
@@ -17,6 +25,8 @@ implements Window.CloseListener,Button.ClickListener {
 
 	private static final long serialVersionUID = 1L;
 	
+	private static final Logger LOGGER = Logger.getLogger(AccountSettingsUIManager.class);
+	
     Window mainwindow;  // Reference to main window
     Window popupWindow;    // The window to be opened
     Button openbutton;  // Button for opening the window
@@ -27,9 +37,11 @@ implements Window.CloseListener,Button.ClickListener {
 
     private final SaltedHibernateUserService userService;
     
+    private final AccountForm accountForm;
+    
     boolean isModalWindowClosable = true;
     
-    SpringContextHelper helper;
+    SpringContextHelper contextHelper;
     
     private Integer categoryId;
 
@@ -40,18 +52,27 @@ implements Window.CloseListener,Button.ClickListener {
     
     Integer selectedParentCategory = -1;
     
-    public AccountSettingsUIManager(final Window main,final SpringContextHelper helper) {
+    public AccountSettingsUIManager(final Window main,final SpringContextHelper contextHelper) {
         mainwindow = main;
-        this.helper = helper;
-        this.accountService = (AccountService)helper.getBean("accountService");
-        this.userService = (SaltedHibernateUserService)helper.getBean("saltedHibernateUserService");
+        this.contextHelper = contextHelper;
+        this.accountService = (AccountService)contextHelper.getBean("accountService");
+        this.userService = (SaltedHibernateUserService)contextHelper.getBean("saltedHibernateUserService");
 
         tree = new Tree();
         // The component contains a button that opens the window./////
         final VerticalLayout layout = new VerticalLayout();
         openbutton = new Button("Add Category", this, "openButtonClick");
         layout.addComponent(openbutton);
-
+        
+        accountForm = new AccountForm();
+    	accountForm.getFirstName().setCaption("First Name");
+    	accountForm.getLastName().setCaption("Last Name");
+    	accountForm.getEmail().setCaption("Email");
+    	accountForm.getNewPassword().setCaption("New Password");
+    	accountForm.getConfirmNewPassword().setCaption("Confirm Password");
+    	accountForm.getSubmitButton().addListener(new AccountSettingsUpdateListener(main, userService, accountService, accountForm, contextHelper));
+    	//accountForm.getSubmitButton().addListener(this);
+    	
         setCompositionRoot(layout);
     }
 
@@ -59,14 +80,25 @@ implements Window.CloseListener,Button.ClickListener {
     public void openButtonClick(Button.ClickEvent event) {
         /* Create a new window. */
         final Button categoryButton = new Button();
-		popupWindow = new Window();
+		popupWindow = new Window("Account Settings");
     	
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
     	popupWindow.setHeight(56,Sizeable.UNITS_PERCENTAGE);
     	popupWindow.setWidth(30,Sizeable.UNITS_PERCENTAGE);
-       
+        
+    	VerticalLayout formLayout = new VerticalLayout();
+    	formLayout.addComponent(accountForm.getFirstName());
+    	formLayout.addComponent(accountForm.getLastName());
+    	formLayout.addComponent(accountForm.getEmail());
+    	formLayout.addComponent(accountForm.getNewPassword());
+    	formLayout.addComponent(accountForm.getConfirmNewPassword());
+    	formLayout.addComponent(accountForm.getSubmitButton());
+    	
+    	formLayout.setMargin(true);
+    	popupWindow.setContent(formLayout);
+    	
     	/* Add the window inside the main window. */
         mainwindow.addWindow(popupWindow);
         
@@ -94,8 +126,7 @@ implements Window.CloseListener,Button.ClickListener {
 
 	@Override
 	public void buttonClick(ClickEvent event) {
-		// TODO Auto-generated method stub
-		
+		openButtonClick(event);
 	}
 }
 
