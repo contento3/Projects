@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 
+import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.site.template.model.TemplateModelContext;
 import com.contento3.site.template.model.TemplateModelMapImpl;
@@ -67,34 +68,29 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 	}
 
 	@Override
-	public void process(TemplateModelMapImpl fmModel,SiteDto siteDto,String pagePath, Writer writer) {
+	public void process(TemplateModelMapImpl fmModel,String requestPagePath,SiteDto site, Writer writer) {
 		try {
 			
 			configuration.setLocalizedLookup(false);
 			configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
 			configuration.setSharedVariable("html_escape", new HtmlEscape());
-			pagePath = String.format("%s:%d",pagePath,siteDto.getSiteId());
+			requestPagePath = String.format("%s:%d",requestPagePath,site.getSiteId());
+			
 			// our loader is already cached and also do a validation
 			// cfg.setCacheStorage(new DisableCache());
 
-//			ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "");
-//			TemplateLoader[] loaders = new TemplateLoader[] { customTemplateLoader, ctl };
-//			MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
-//			
-			
 			modelContext.getModels().add(fmModel);
-			//configuration.setTemplateLoader(mtl);
 			configuration.setClassForTemplateLoading(getClass(), "/");
 			Template  tpl = configuration.getTemplate("org/springframework/web/servlet/view/freemarker/spring.ftl");
-//			
-//
-//			tpl.process(modelContext, writer);
+
 			configuration.setTemplateLoader(customTemplateLoader);
-			Template tpl1 = configuration.getTemplate(pagePath);
+			Template tpl1 = configuration.getTemplate(requestPagePath);
+
 			Environment env = tpl1.createProcessingEnvironment(modelContext,writer);
 			env.importLib(tpl,"spring");
+			env.setGlobalVariable("page", fmModel.get("page"));
+			env.setGlobalVariable("site", fmModel.get("site"));
 			env.process();
-			//tpl1.process(modelContext, writer);
 			
 //			 tpl = configuration.getTemplate("org/springframework/web/servlet/view/freemarker/spring.ftl");
 //			tpl.process(modelContext, writer);

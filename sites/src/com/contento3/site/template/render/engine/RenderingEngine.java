@@ -7,6 +7,6 @@ import com.contento3.site.template.model.TemplateModelMapImpl;
 
 public interface RenderingEngine {
 
-	public void process (TemplateModelMapImpl map,SiteDto siteDto,String pagePath,Writer writer);
+	public void process (TemplateModelMapImpl map,String requestedPagePath,SiteDto site, Writer writer);
 	
 }

@@ -1,7 +1,6 @@
 package com.contento3.site.resolver;
 
 import java.io.PrintWriter;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,10 +9,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.support.RequestContext;
-import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
+import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.site.template.model.TemplateModelMapImpl;
@@ -36,6 +36,8 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 
 	private SiteService siteService;
 
+	private PageService pageService;
+	
 	private TaglibFactory taglibFactory;
 
 	private ServletContextHashModel servletContextHashModel;
@@ -48,7 +50,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 	protected void renderMergedTemplateModel(Map<String,Object> model,HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String requestURI = request.getRequestURI();
-		String[] pageUri = requestURI.split("/page/");
+		String[] pageUri = requestURI.split("/page");
 		String pagePath = "";
 
 		if (requestURI.contains("page/")) {
@@ -61,13 +63,14 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 		SiteDto siteDto = siteService.findSiteByDomain(DomainUtil.fetchDomain(request));
 		PrintWriter writer = response.getWriter();
 
+		model.clear();
 		try {		
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Rendering FreeMarker template [" + getUrl() + "] in FreeMarkerView '" + getBeanName() + "'");
 			}
 
-			freemarkerRenderingEngine.process(buildModelMap(model,request,response),siteDto, pagePath, writer);
+			freemarkerRenderingEngine.process(buildModelMap(model,request,response,siteDto,pagePath),pagePath,siteDto, writer);
 		} catch (Exception e) {
 			LOGGER.error(String
 					.format("Something went wrong while accessing the page [%s:] [%s] ",
@@ -87,7 +90,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 	 * @return
 	 * @throws Exception
 	 */
-	private TemplateModelMapImpl buildModelMap(final Map<String,Object> model,HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private TemplateModelMapImpl buildModelMap(final Map<String,Object> model,final HttpServletRequest request, final HttpServletResponse response, final SiteDto siteDto,final String pagePath) throws Exception {
 		// Read the data file and process the template using FreeMarker
 			model.put(AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, new RequestContext(
                     request,
@@ -122,7 +125,11 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 		    model.put( FreemarkerServlet.KEY_REQUEST, new HttpRequestHashModel(request, response, getObjectWrapper() ) );
 		    model.put( FreemarkerServlet.KEY_REQUEST_PARAMETERS,new HttpRequestParametersHashModel( request ) );
 		    model.put( FreemarkerServlet.KEY_INCLUDE, new IncludePage( request,response ) );
-				
+
+			final PageDto page = pageService.findByPathForSite(pagePath, siteDto.getSiteId());
+		    model.put( "page", page );
+		    model.put( "site", siteDto );
+		    
 		    TemplateModelMapImpl modelMap = new TemplateModelMapImpl();
 		    modelMap.setMap(model);
 		    return modelMap;
@@ -160,6 +167,10 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 
 	public void setSiteService(final SiteService siteService) {
 		this.siteService = siteService;
+	}
+
+	public void setPageService(final PageService pageService) {
+		this.pageService = pageService;
 	}
 
 }

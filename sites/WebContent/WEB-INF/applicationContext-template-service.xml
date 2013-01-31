@@ -11,8 +11,17 @@
 	http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<bean id="articleTemplateAssembler"
+		class="com.contento3.template.article.service.impl.ArticleTemplateAssembler">
+	</bean>
 
-    <import resource="classpath:/config/spring/applicationContext.xml"/>
-	<import resource="applicationContext-template-service.xml"/>
+	<bean id="articleTemplateService"
+		class="com.contento3.template.article.service.impl.ArticleTemplateServiceImpl">
+		<constructor-arg ref="articleTemplateAssembler" />
+		<constructor-arg ref="articleService" />
+	</bean>
+	
+	
+
 
 </beans>	

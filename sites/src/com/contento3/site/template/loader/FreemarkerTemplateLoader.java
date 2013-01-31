@@ -51,6 +51,7 @@ public class FreemarkerTemplateLoader implements TemplateLoader {
 		//format: "pageuri:siteid_locale", e.g. /mypage:1_en
 		//1. pageuri
 		//2. siteid
+
 		if (pathSplitter.length==2){
 			siteId = Integer.parseInt(pathSplitter[1].split("_")[0]);
 			try {

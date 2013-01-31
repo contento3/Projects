@@ -94,4 +94,11 @@ public class ArticleServiceImpl implements ArticleService {
 		this.articleDao.update(article);
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Collection<ArticleDto> findLatestArticleByCategory(
+		final Integer categoryId, final Integer numberOfArticles, final Integer siteId) {
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryId, numberOfArticles, siteId));
+	}
+
 }

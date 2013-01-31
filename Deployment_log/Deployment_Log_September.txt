@@ -1,0 +1,6 @@
+1st September
+==================================================================
+branch:develop c4882e3
+database: September 2012,ALTER_TABLE_IMAGE.
+project:cmsadmin
+Notes:The deployment was required to add the library selection when adding an image.

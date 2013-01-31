@@ -1,0 +1,11 @@
+28th October,2012
+==================================================================
+branch:develop 573e1aadb2980841726355c89eae4a30346852b1
+database: october 2012,5_ALTER_TABLE_STORAGE_TYPE.
+project deployed:cmsadmin
+Notes:
+1.There has been lot of improvements in the ui.
+2.Improved ui for image mgmt.
+3.Imroved ui for article mgmt
+4.Category mgmt
+5.Bug fixes.

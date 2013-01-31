@@ -10,7 +10,6 @@ import org.springframework.util.CollectionUtils;
 import com.contento3.cms.article.dao.ArticleDao;
 import com.contento3.cms.article.model.Article;
 import com.contento3.cms.page.category.model.Category;
-import com.contento3.cms.page.template.model.Template;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
 public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<Article, Integer> implements ArticleDao{
@@ -24,7 +23,6 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	
 	@Override
 	public Collection<Article> findByAccountId(Integer accountId) {
-		// TODO Auto-generated method stub
 		Criteria criteria = this.getSession()
 		.createCriteria(Article.class)
 		.add(Restrictions.eq("account.accountId", accountId))
@@ -35,7 +33,6 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 
 	@Override
 	public Collection<Article> findLatestArticle(int count) {
-		// TODO Auto-generated method stub
 		Criteria criteria = this.getSession()
 		.createCriteria(Article.class)
 		.add(Restrictions.eq("isVisible", 1))
@@ -80,6 +77,24 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 				.createCriteria("site")
 				.add(Restrictions.eq("siteId", siteId));
 				
+		return criteria.list();
+	}
+
+
+	@Override
+	public Collection<Article> findLatestArticleByCategory(Integer categoryId,
+			Integer numberOfArticles, Integer siteId) {
+		Criteria criteria = this.getSession()
+		.createCriteria(Article.class)
+		.addOrder(Order.desc("dateCreated"))
+		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+		.setFirstResult(0).setMaxResults(numberOfArticles)
+		.add(Restrictions.eq("isVisible", 1))
+		.createAlias("categories", "category")
+		.add(Restrictions.eq("category.categoryId", categoryId))
+		.createAlias("site", "s")
+		.add(Restrictions.eq("s.siteId", siteId));
+		
 		return criteria.list();
 	}
 

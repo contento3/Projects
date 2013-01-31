@@ -154,7 +154,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 					subject.logout();
 					
-					getApplication().close();
+					//getApplication().setLogoutURL("http://localhost:8080/cms/home/");
 				}
 			});
 

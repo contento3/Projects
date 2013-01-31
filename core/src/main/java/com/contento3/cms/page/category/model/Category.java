@@ -1,7 +1,6 @@
 package com.contento3.cms.page.category.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -16,7 +15,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.contento3.account.model.Account;
-import com.contento3.common.dto.Dto;
 
 
 @Entity

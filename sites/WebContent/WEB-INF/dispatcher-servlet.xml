@@ -53,6 +53,7 @@
 <bean id="fmView" class="com.contento3.site.resolver.ExtendedFreemarkerView">
 	<property name="freemarkerRenderingEngine" ref="fmRenderingEngine" />
 	<property name="siteService" ref="siteService" />
+	<property name="pageService" ref="pageService" />
 	<property name="url" value="" />
 </bean>
 
@@ -122,6 +123,7 @@
   <property name="map">
       <map>
         <entry key="templateService" value-ref="templateService"/>
+        <entry key="articleTemplateService" value-ref="articleTemplateService"/>
       </map>
   </property>
 </bean>
