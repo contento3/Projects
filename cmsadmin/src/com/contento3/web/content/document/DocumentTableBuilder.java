@@ -4,6 +4,8 @@ import com.contento3.common.dto.Dto;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
+import com.contento3.web.content.document.listener.DocumentDeleteListener;
+import com.contento3.web.content.document.listener.DocumentFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -12,6 +14,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 
 public class DocumentTableBuilder extends AbstractTableBuilder {
 
@@ -62,7 +65,23 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 		DocumentDto documentDto = (DocumentDto) dto;
 		Item item = documentContainer.addItem(documentDto.getDocumentId());
 		item.getItemProperty("documents").setValue(documentDto.getDocumentTitle());
-		//implementation pending
+		
+
+		Button editLink = new Button();
+		editLink.setCaption("Edit");
+		editLink.setData(documentDto.getDocumentId());
+		editLink.addStyleName("edit");
+		editLink.setStyleName(BaseTheme.BUTTON_LINK);
+		editLink.addListener(new DocumentFormBuilderListner(this.contextHelper, this.window,this.tabSheet,documentTable));
+		item.getItemProperty("edit").setValue(editLink);
+		
+		Button deleteLink = new Button();
+		deleteLink.setCaption("Delete");
+		deleteLink.setData(documentDto.getDocumentId());
+		deleteLink.addStyleName("delete");
+		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+		item.getItemProperty("delete").setValue(deleteLink);
+		deleteLink.addListener(new DocumentDeleteListener(documentDto, window, documentService, deleteLink, documentTable));
 	}
 
 	/**

@@ -52,4 +52,10 @@
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 		<nature>com.vaadin.integration.eclipse.widgetsetNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>CORE</name>
+			<value>file:/home/nuketro0p3r/Documents/Eclipse%20Workspace/contento3/core</value>
+		</variable>
+	</variableList>
 </projectDescription>
