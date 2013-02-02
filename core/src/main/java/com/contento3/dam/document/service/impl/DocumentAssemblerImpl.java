@@ -9,10 +9,18 @@ import com.contento3.account.service.AccountAssembler;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.model.Document;
 import com.contento3.dam.document.service.DocumentAssembler;
+import com.contento3.dam.document.service.DocumentTypeAssembler;
+import com.contento3.dam.storagetype.service.StorageTypeAssembler;
 
 public class DocumentAssemblerImpl implements DocumentAssembler {
 	@Resource(name="accountAssembler")
 	AccountAssembler accountAssembler;
+	
+	@Resource(name="documentTypeAssembler")
+	DocumentTypeAssembler documentTypeAssembler;
+	
+	@Resource(name="storageTypeAssembler")
+	StorageTypeAssembler storageTypeAssembler;
 	
 	@Override
 	public Document dtoToDomain(final DocumentDto documentDto) {
@@ -22,9 +30,9 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		document.setDocumentContent(documentDto.getDocumentContent());
 		document.setDocumentId(documentDto.getDocumentId());
 		document.setDocumentTitle(documentDto.getDocumentTitle());
-		document.setDocumentType(documentDto.getDocumentType());
+		document.setDocumentType( documentTypeAssembler.dtoToDomain( documentDto.getDocumentTypeDto() ) );
 		document.setDocumentUuid(documentDto.getDocumentUuid());
-		document.setStorageType(documentDto.getStorageType());
+		document.setStorageType( storageTypeAssembler.dtoToDomain( documentDto.getStorageTypeDto()) );
 		document.setUrl(documentDto.getUrl());
 		
 		return document;
@@ -38,9 +46,9 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		documentDto.setDocumentContent(domain.getDocumentContent());
 		documentDto.setDocumentId(domain.getDocumentId());
 		documentDto.setDocumentTitle(domain.getDocumentTitle());
-		documentDto.setDocumentType(domain.getDocumentType());
+		documentDto.setDocumentTypeDto( documentTypeAssembler.domainToDto(domain.getDocumentType()) );
 		documentDto.setDocumentUuid(domain.getDocumentUuid());
-		documentDto.setStorageType(domain.getStorageType());
+		documentDto.setStorageTypeDto( storageTypeAssembler.domainToDto(domain.getStorageType()) );
 		documentDto.setUrl(domain.getUrl());
 		
 		return documentDto;

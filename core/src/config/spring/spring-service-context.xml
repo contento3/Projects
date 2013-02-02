@@ -265,4 +265,15 @@
 		<constructor-arg ref="documentTypeAssembler" />
 		<constructor-arg ref="documentTypeDAO" />
 	</bean>
+	
+	<!-- StorageTypeService -->
+	<bean id="storageTypeAssembler"
+		class="com.contento3.dam.storagetype.service.impl.StorageTypeAssemblerImpl">
+	</bean>
+	
+	<bean id="storageTypeService"
+		class="com.contento3.dam.storagetype.service.impl.StorageTypeServiceImpl">
+		<constructor-arg ref="storageTypeAssembler" />
+		<constructor-arg ref="storageTypeDao" />
+	</bean>
 </beans>

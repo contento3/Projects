@@ -1,13 +1,11 @@
 package com.contento3.dam.document.dto;
 
 import com.contento3.account.dto.AccountDto;
-import com.contento3.account.model.Account;
 import com.contento3.common.dto.Dto;
-import com.contento3.dam.document.model.DocumentType;
-import com.contento3.dam.storagetype.model.StorageType;
+import com.contento3.dam.storagetype.dto.StorageTypeDto;
+import com.contento3.dam.document.dto.DocumentTypeDto;
 
 public class DocumentDto extends Dto {
-	
 	/**
 	 * Id for the document
 	 */
@@ -31,7 +29,7 @@ public class DocumentDto extends Dto {
 	/**
 	 * The storage type of the document
 	 */
-	private StorageType storageType;
+	private StorageTypeDto storageTypeDto;
 
 	/**
 	 * The contents of the document
@@ -46,7 +44,7 @@ public class DocumentDto extends Dto {
 	/**
 	 * The type of the document.
 	 */
-	private DocumentType documentType;
+	private DocumentTypeDto documentTypeDto;
 	
 	/* Getter and Setter function definitions */
 	
@@ -91,13 +89,13 @@ public class DocumentDto extends Dto {
 	}
 	
 	/* Returns the StorageType of a Document object */
-	public StorageType getStorageType() {
-		return storageType;
+	public StorageTypeDto getStorageTypeDto() {
+		return storageTypeDto;
 	}
 	
 	/* Sets the StorageType of a Document object */
-	public void setStorageType(final StorageType storageType) {
-		this.storageType = storageType;
+	public void setStorageTypeDto(final StorageTypeDto storageTypeDto) {
+		this.storageTypeDto = storageTypeDto;
 	}
 	
 	/* Returns the Document */
@@ -116,17 +114,18 @@ public class DocumentDto extends Dto {
 	}
 
 	/* Sets the Account associated with a Document object */
-	public void setAccount(AccountDto account) {
+	public void setAccount(final AccountDto account) {
 		this.account = account;
 	}
 	
 	/* Returns the DocumentType of a Document object */
-	public DocumentType getDocumentType() {
-		return documentType;
+	public DocumentTypeDto getDocumentTypeDto() {
+		return documentTypeDto;
 	}
 	
 	/* Sets the DocumentType of a Document object */
-	public void setDocumentType(final DocumentType documentType) {
-		this.documentType = documentType;
+	public void setDocumentTypeDto(final DocumentTypeDto documentTypeDto) {
+		this.documentTypeDto = documentTypeDto;
 	}
+
 }

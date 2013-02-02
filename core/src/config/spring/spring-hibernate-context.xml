@@ -249,4 +249,10 @@
 		class=" com.contento3.cms.article.dao.impl.ArticleImageDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
+	
+	<!-- StorageTypeDao -->
+	<bean id="storageTypeDao"
+		class="com.contento3.dam.storagetype.dao.impl.StorageTypeHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
 </beans>

@@ -129,6 +129,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 				try{
 					subject.login(token);
+					subject.getSession().setAttribute("userName", username);
 					LOGGER.info("User with username ["+username+"] logged in successfully");
 					unitUI();
 				}

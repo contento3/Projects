@@ -72,5 +72,11 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 	@Override
 	public SaltedHibernateUserDto findUserByName(final String name) {
 		return userAssembler.domainToDto(userDao.findById(name));
-	}	
+	}
+
+	@Override
+	public void update(SaltedHibernateUserDto dtoToUpdate) {
+		userDao.update( userAssembler.dtoToDomain(dtoToUpdate) );
+	}
+	
 }
