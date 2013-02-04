@@ -50,13 +50,15 @@ public class SiteAssemblerImpl implements SiteAssembler {
 	@Override
 	public SiteDto domainToDto(Site domain) {
 		SiteDto dto = new SiteDto();
-		dto.setSiteName(domain.getSiteName());
-		dto.setSiteId(domain.getSiteId());
-		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
-		dto.setDefaultLayoutId(domain.getDefaultLayoutId());
-		dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
-		dto.setLanguage(domain.getLanguage());
 		
+		if (null!=domain){
+			dto.setSiteName(domain.getSiteName());
+			dto.setSiteId(domain.getSiteId());
+			dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
+			dto.setDefaultLayoutId(domain.getDefaultLayoutId());
+			dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
+			dto.setLanguage(domain.getLanguage());
+		}
 		return dto;
 	}
 

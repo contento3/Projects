@@ -152,10 +152,10 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 				public void buttonClick(ClickEvent event)
 				{
 					subject = SecurityUtils.getSubject();
-
 					subject.logout();
-					
-					//getApplication().setLogoutURL("http://localhost:8080/cms/home/");
+
+					getApplication().setLogoutURL(getApplication().getURL().toExternalForm()
+							.substring(0,getApplication().getURL().toExternalForm().length()-1));
 				}
 			});
 
