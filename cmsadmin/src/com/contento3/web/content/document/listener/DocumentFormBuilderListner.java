@@ -101,10 +101,20 @@ public class DocumentFormBuilderListner implements ClickListener {
         final HttpSession session = webAppContext.getHttpSession();
         this.accountId =(Integer)session.getAttribute("accountId");
         
-        documentForm = new DocumentForm(new FileUploadListener(parentWindow));
+        /**
+         * The fileUploadListener must know the Upload that it's listening to.
+         * Otherwise, it would not be able to check the restriction on max file
+         * size. If the user uploads a file size greater than the max size, it'll
+         * throw an exception.
+         * - Ali.
+         */
+        final FileUploadListener fileUploadListener = new FileUploadListener(parentWindow);
+        documentForm = new DocumentForm(fileUploadListener);
         documentForm.setContextHelper(helper);
         documentForm.setParentWindow(parentWindow);
         documentForm.setTabSheet(tabSheet);
+        
+        fileUploadListener.setUpload(documentForm.getUploadDocument());
         
         documentForm.fillDocumentTypeList(this.getDocumentTypeList());
 	}
@@ -175,10 +185,10 @@ public class DocumentFormBuilderListner implements ClickListener {
 		documentTab = this.tabSheet.addTab(parentLayout,command+" Document");
 		documentTab.setClosable(true);
 
-		GridLayout toolbarGridLayout = new GridLayout(1,2);
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new DocumentSaveListener(documentTab, documentForm, documentTable, documentId, accountId));
-		listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId, accountId));
+		listeners.add(new DocumentSaveListener(documentTab, documentForm, documentTable, documentId));
+		//listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId));
 		
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();

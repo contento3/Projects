@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.dam.document.dao.DocumentDao;
@@ -30,7 +31,12 @@ public class DocumentDaoHibernateImpl
 		criteria.add(Restrictions.eq("documentUuid", uuid))
 				.add(Restrictions.eq("account.accountId", accountId));
 		
-		return (Document) criteria.uniqueResult();
+		Document document = null;
+		
+		if(!CollectionUtils.isEmpty(criteria.list()))
+			document = (Document) criteria.list().get(0); 
+		
+		return document;
 	}
 	
 	/* Finds document based on their types */
@@ -58,6 +64,11 @@ public class DocumentDaoHibernateImpl
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		criteria.add(Restrictions.eq("documentTitle", title));
 		
-		return (Document) criteria.uniqueResult();
+		Document document = null;
+		
+		if(!CollectionUtils.isEmpty(criteria.list()))
+			document = (Document) criteria.list().get(0); 
+		
+		return document;
 	}
 }

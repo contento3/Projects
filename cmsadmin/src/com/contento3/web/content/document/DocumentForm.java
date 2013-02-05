@@ -5,17 +5,16 @@ import java.util.ArrayList;
 import com.contento3.dam.document.dto.DocumentTypeDto;
 import com.contento3.web.common.UIContext;
 import com.contento3.web.content.document.listener.FileUploadListener;
-import com.sun.tools.internal.xjc.api.Property;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
-import com.vaadin.ui.Window;
 
 public class DocumentForm extends UIContext implements ValueChangeListener {
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Textfield for document heading
 	 */
@@ -30,9 +29,15 @@ public class DocumentForm extends UIContext implements ValueChangeListener {
 	 * Select for DocumentType
 	 */
 	private Select selectDocumentType = new Select();
-	
+
+	/**
+	 * Listener for the Upload Field
+	 */
 	private FileUploadListener documentUploadListener;
 
+	/**
+	 * String to hold the document type selected by the user from dropdown
+	 */
 	private String selectedDocumentType;
 	
 	/**
@@ -124,6 +129,6 @@ public class DocumentForm extends UIContext implements ValueChangeListener {
 	 * */
 	@Override
 	public void valueChange(ValueChangeEvent event) {
-		this.selectedDocumentType = ""+event.getProperty();
+		this.selectedDocumentType = event.getProperty().toString();
 	}
 }

@@ -31,7 +31,6 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		document.setDocumentId(documentDto.getDocumentId());
 		document.setDocumentTitle(documentDto.getDocumentTitle());
 		document.setDocumentType( documentTypeAssembler.dtoToDomain( documentDto.getDocumentTypeDto() ) );
-		document.setDocumentUuid(documentDto.getDocumentUuid());
 		document.setStorageType( storageTypeAssembler.dtoToDomain( documentDto.getStorageTypeDto()) );
 		document.setUrl(documentDto.getUrl());
 		
@@ -47,7 +46,6 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		documentDto.setDocumentId(domain.getDocumentId());
 		documentDto.setDocumentTitle(domain.getDocumentTitle());
 		documentDto.setDocumentTypeDto( documentTypeAssembler.domainToDto(domain.getDocumentType()) );
-		documentDto.setDocumentUuid(domain.getDocumentUuid());
 		documentDto.setStorageTypeDto( storageTypeAssembler.domainToDto(domain.getStorageType()) );
 		documentDto.setUrl(domain.getUrl());
 		

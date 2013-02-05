@@ -1,44 +1,24 @@
 package com.contento3.web.content.document;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import com.contento3.account.dto.AccountDto;
-import com.contento3.account.service.AccountService;
-import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
-import com.contento3.dam.image.dto.ImageDto;
-import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
-import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.document.listener.DocumentFormBuilderListner;
-import com.contento3.web.content.image.ImageMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Upload.FailedEvent;
-import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.TabSheet.Tab;
@@ -50,23 +30,23 @@ public class DocumentMgmtUIManager implements UIManager {
 	/**
 	 * Used to get service beans from spring context.
 	 */
-	private SpringContextHelper contextHelper;
+	private final SpringContextHelper contextHelper;
 	
 	/**
      * Represents the parent window of the ui
      */
-	private Window parentWindow;
+	private final Window parentWindow;
 	
 	/**
 	 * TabSheet serves as the parent container for the document manager
 	 */
 
-	private TabSheet tabSheet;
+	private final TabSheet tabSheet;
 
 	/**
 	 * main layout for document manager screen
 	 */
-	private VerticalLayout verticalLayout = new VerticalLayout();
+	private final VerticalLayout verticalLayout = new VerticalLayout();
 	
 	/**
 	 * Article table which shows documents
@@ -76,12 +56,12 @@ public class DocumentMgmtUIManager implements UIManager {
 	/**
 	 * Document service for document related operations
 	 */
-	private DocumentService documentService;
+	private final DocumentService documentService;
 	
 	/**
 	 * Account id
 	 */
-	private Integer accountId;
+	private final Integer accountId;
 	
 	/**
 	 * Constructor
@@ -131,7 +111,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	}
 	
 	private void renderDocumentComponent(){
-		Label documentHeading = new Label("Document Manager");
+		final Label documentHeading = new Label("Document Manager");
 		documentHeading.setStyleName("screenHeading");
 		this.verticalLayout.addComponent(documentHeading);
 		this.verticalLayout.addComponent(new HorizontalRuler());
@@ -157,7 +137,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	 * Display "Add Document" button on the top of tab 
 	 */
 	private void addDocumentButton(){
-		Button addButton = new Button("Add Document");
+		final Button addButton = new Button("Add Document");
 		addButton.addListener(new DocumentFormBuilderListner(this.contextHelper, this.parentWindow,this.tabSheet,this.documentTable));
 		this.verticalLayout.addComponent(addButton);
 	}
