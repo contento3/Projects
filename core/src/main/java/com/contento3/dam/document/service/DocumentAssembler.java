@@ -11,5 +11,5 @@ import com.contento3.dam.document.model.Document;
  */
 
 public interface DocumentAssembler extends Assembler<DocumentDto, Document>{
-	
+	Document dtoToDomain(DocumentDto dto, Document domain);
 }

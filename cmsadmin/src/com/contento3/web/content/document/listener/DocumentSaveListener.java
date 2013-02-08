@@ -2,8 +2,6 @@ package com.contento3.web.content.document.listener;
 
 import java.util.Collection;
 
-import org.vaadin.dialogs.ConfirmDialog;
-
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;

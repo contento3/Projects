@@ -12,6 +12,7 @@ import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Upload;
+import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Window;
 
 /**
@@ -76,15 +77,17 @@ public class FileUploadListener
     		 * 
     		 * - Syed Muhammad Ali
     		 */
-    		
+    		final long fileSize = upload.getUploadSize();
+			
     		ConfirmDialog.show(parentWindow, "Please Confirm", "This is overwrite the previously uploaded file. Are you sure you want to proceed?", "Yes", "No", new ConfirmDialog.Listener() {
 				
 				@Override
 				public void onClose(ConfirmDialog dialog) {
 					if(dialog.isConfirmed()){
 						//Refire the event
-						bFile = null;
-						receiveUpload(filename, MIMEType);
+						bFile = null; //discard current uploaded content
+						upload.submitUpload(); //reupload the file
+						uploadSucceeded(new SucceededEvent(upload, MIMEType, MIMEType, fileSize)); //re-trigger success
 					} else {
 						//ignore
 					}
@@ -92,14 +95,13 @@ public class FileUploadListener
 			});
     		
     		upload.interruptUpload();
+    		upload.setData("Upload interrupted due to possible overwrite.");
     	}
     	
     	if(upload != null && upload.getUploadSize() > 10000000){
     		parentWindow.showNotification("The file size must be small than 10MB");
     		upload.interruptUpload();
     	}
-    	
-    	System.err.println("Passing through.");
     	
         fos = null; // Output stream to write to
         file = new File(filename);
@@ -140,7 +142,10 @@ public class FileUploadListener
      * This is called if the upload fails.
      */
     public void uploadFailed(Upload.FailedEvent event) {
-        parentWindow.showNotification( String.format("Uploading of %s of type %s failed.",event.getFilename(),event.getMIMEType()) );
+    	if(!upload.getData().equals("Upload interrupted due to possible overwrite."))
+    		parentWindow.showNotification( String.format("Uploading of %s of type %s failed.",event.getFilename(),event.getMIMEType()) );
+    	
+    	upload.setData(null);
     }
     
     /**

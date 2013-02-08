@@ -9,6 +9,7 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.dam.document.dao.DocumentDao;
 import com.contento3.dam.document.dto.DocumentDto;
+import com.contento3.dam.document.model.Document;
 import com.contento3.dam.document.service.DocumentAssembler;
 import com.contento3.dam.document.service.DocumentService;
 
@@ -36,13 +37,19 @@ public class DocumentServiceImpl implements DocumentService {
 		return documentPk;
 	}
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(DocumentDto documentDto) throws EntityAlreadyFoundException {
-		if(documentDao.findByTitle(documentDto.getDocumentTitle()) != null)	
+		Document document = documentDao.findByTitle(documentDto.getDocumentTitle());
+		
+		/**
+		 * If a document with the same title exist, and it does not have the same
+		 * docId as the documentDto then it must be a duplication.
+		 */
+		if( (document != null) && (document.getDocumentId() != documentDto.getDocumentId()) )	
 			throw new EntityAlreadyFoundException();
 		
-		documentDao.update(documentAssembler.dtoToDomain(documentDto));
+		documentDao.update(documentAssembler.dtoToDomain(documentDto, document));
 	}
 	
 	@Override

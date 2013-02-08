@@ -74,4 +74,17 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		return documents;
 	}
 
+	@Override
+	public Document dtoToDomain(final DocumentDto dto, final Document domain) {
+		domain.setAccount( accountAssembler.dtoToDomain(dto.getAccount()) );
+		domain.setDocumentContent(dto.getDocumentContent());
+		domain.setDocumentId(dto.getDocumentId());
+		domain.setDocumentTitle(dto.getDocumentTitle());
+		domain.setDocumentType( documentTypeAssembler.dtoToDomain( dto.getDocumentTypeDto() ) );
+		domain.setStorageType( storageTypeAssembler.dtoToDomain( dto.getStorageTypeDto()) );
+		domain.setUrl(dto.getUrl());
+		
+		return domain;
+	}
+
 }
