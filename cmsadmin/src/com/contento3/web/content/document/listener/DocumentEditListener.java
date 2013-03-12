@@ -1,11 +1,9 @@
 package com.contento3.web.content.document.listener;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
-import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
 import com.contento3.dam.document.service.DocumentTypeService;
@@ -17,6 +15,7 @@ import com.contento3.web.content.document.DocumentTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -39,13 +38,12 @@ public class DocumentEditListener implements ClickListener {
 	private Integer documentId;
 	private Integer accountId;
 	
-	public DocumentEditListener(final Tab documentTab, final DocumentForm documentForm,final Table documentTable, 
-			final Integer documentId,final Integer accountId){
+	public DocumentEditListener(final Tab documentTab, final DocumentForm documentForm,
+								final Table documentTable, final Integer documentId){
 		this.documentTab = documentTab;
 		this.documentForm = documentForm;
 		this.documentTable = documentTable;
 		this.documentId = documentId;
-		this.accountId = accountId;
 		
 		this.tabSheet = documentForm.getTabSheet();
 		this.parentWindow = documentForm.getParentWindow();
@@ -54,6 +52,10 @@ public class DocumentEditListener implements ClickListener {
 		this.accountService = (AccountService) contextHelper.getBean("accountService");
 		this.documentTypeService = (DocumentTypeService) contextHelper.getBean("documentTypeService");
 		this.storageTypeService = (StorageTypeService) contextHelper.getBean("storageTypeService");
+		
+		//get account if from session
+		WebApplicationContext webContext = (WebApplicationContext) parentWindow.getApplication().getContext();
+		this.accountId = (Integer) webContext.getHttpSession().getAttribute("accountId");
 	}
 	
 	@Override
@@ -76,7 +78,7 @@ public class DocumentEditListener implements ClickListener {
 		documentDto.setAccount( accountService.findAccountById(accountId) );
 		documentDto.setDocumentContent( documentForm.getUploadedDocument() );
 		documentDto.setStorageTypeDto(storageTypeDto);
-		documentDto.setDocumentUuid( UUID.randomUUID().toString() );
+		//documentDto.setDocumentUuid( UUID.randomUUID().toString() );
 		
 		try {
 			documentService.update(documentDto);

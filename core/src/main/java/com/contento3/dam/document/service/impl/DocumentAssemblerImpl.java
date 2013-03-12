@@ -31,7 +31,6 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		document.setDocumentId(documentDto.getDocumentId());
 		document.setDocumentTitle(documentDto.getDocumentTitle());
 		document.setDocumentType( documentTypeAssembler.dtoToDomain( documentDto.getDocumentTypeDto() ) );
-		document.setDocumentUuid(documentDto.getDocumentUuid());
 		document.setStorageType( storageTypeAssembler.dtoToDomain( documentDto.getStorageTypeDto()) );
 		document.setUrl(documentDto.getUrl());
 		
@@ -47,7 +46,6 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		documentDto.setDocumentId(domain.getDocumentId());
 		documentDto.setDocumentTitle(domain.getDocumentTitle());
 		documentDto.setDocumentTypeDto( documentTypeAssembler.domainToDto(domain.getDocumentType()) );
-		documentDto.setDocumentUuid(domain.getDocumentUuid());
 		documentDto.setStorageTypeDto( storageTypeAssembler.domainToDto(domain.getStorageType()) );
 		documentDto.setUrl(domain.getUrl());
 		
@@ -74,6 +72,19 @@ public class DocumentAssemblerImpl implements DocumentAssembler {
 		}
 		
 		return documents;
+	}
+
+	@Override
+	public Document dtoToDomain(final DocumentDto dto, final Document domain) {
+		domain.setAccount( accountAssembler.dtoToDomain(dto.getAccount()) );
+		domain.setDocumentContent(dto.getDocumentContent());
+		domain.setDocumentId(dto.getDocumentId());
+		domain.setDocumentTitle(dto.getDocumentTitle());
+		domain.setDocumentType( documentTypeAssembler.dtoToDomain( dto.getDocumentTypeDto() ) );
+		domain.setStorageType( storageTypeAssembler.dtoToDomain( dto.getStorageTypeDto()) );
+		domain.setUrl(dto.getUrl());
+		
+		return domain;
 	}
 
 }

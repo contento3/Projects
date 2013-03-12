@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.dam.document.dao.DocumentTypeDao;
@@ -25,17 +26,22 @@ public class DocumentTypeDaoHibernateImpl
 	/* Finds the DocumentType of a Document by name */
 	@Override
 	public DocumentType findByName(final String typeName) {
-		Criteria criteria = this.getSession().createCriteria(DocumentType.class);
+		final Criteria criteria = this.getSession().createCriteria(DocumentType.class);
 		criteria.add(Restrictions.eq("name", typeName));
 		
-		return (DocumentType) criteria.uniqueResult();
+		DocumentType documentType = null;
+		
+		if(!CollectionUtils.isEmpty(criteria.list()))
+			documentType = (DocumentType) criteria.list().get(0);
+		
+		return documentType;
 	}
 
 	@Override
 	public Collection<DocumentType> findAllTypes() {
-		Criteria criteria = this.getSession().createCriteria(DocumentType.class);
+		final Criteria criteria = this.getSession().createCriteria(DocumentType.class);
 		
-		return (Collection<DocumentType>) criteria.list();
+		return criteria.list();
 	}
 	
 

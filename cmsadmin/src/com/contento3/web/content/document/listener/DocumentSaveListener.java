@@ -1,7 +1,6 @@
 package com.contento3.web.content.document.listener;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -14,9 +13,11 @@ import com.contento3.dam.storagetype.service.StorageTypeService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.content.document.DocumentTableBuilder;
+import com.contento3.web.content.document.StorageTypeEnum;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -24,28 +25,73 @@ import com.vaadin.ui.Window;
 
 public class DocumentSaveListener implements ClickListener {
 	private static final long serialVersionUID = 1L;
-	
+
+	/**
+	 * Document Service for document related operations
+	 */
 	private DocumentService documentService;
-	private AccountService accountService;
-	private DocumentTypeService documentTypeService;
-	private StorageTypeService storageTypeService;
-	private SpringContextHelper contextHelper;
-	private Window parentWindow;
 	
+	/**
+	 * Account Service for account related operations
+	 */
+	private AccountService accountService;
+	
+	/**
+	 * Document Type Service for document type related operations
+	 */
+	private DocumentTypeService documentTypeService;
+	
+	/**
+	 * Storage Type Service for storage type related operations
+	 */
+	private StorageTypeService storageTypeService;
+	
+	/**
+	 * Content helper for keeping track of context
+	 */
+	private SpringContextHelper contextHelper;
+	
+	/**
+     * Represents the parent window of the ui
+     */
+	private Window parentWindow;
+
+	/**
+	 * TabSheet serves as the parent container for the document manager
+	 */
 	private TabSheet tabSheet;
+	
+	/**
+	 * Represents the document tab inside the tabsheet
+	 */
 	private Tab documentTab;
+	
+	/**
+	 * DocumentForm represents the form for document 
+	 */
 	private DocumentForm documentForm;
+	
+	/**
+	 * Represents the table ui of the document
+	 */
 	private Table documentTable;
+	
+	/**
+	 * Holds the document id of the document being saved
+	 */
 	private Integer documentId;
+	
+	/**
+	 * Textfield for document heading
+	 */
 	private Integer accountId;
 	
-	public DocumentSaveListener(final Tab documentTab, final DocumentForm documentForm,final Table documentTable, 
-			final Integer documentId,final Integer accountId){
+	public DocumentSaveListener(final Tab documentTab, final DocumentForm documentForm, 
+								final Table documentTable, final Integer documentId){
 		this.documentTab = documentTab;
 		this.documentForm = documentForm;
 		this.documentTable = documentTable;
 		this.documentId = documentId;
-		this.accountId = accountId;
 		
 		this.tabSheet = documentForm.getTabSheet();
 		this.parentWindow = documentForm.getParentWindow();
@@ -54,17 +100,21 @@ public class DocumentSaveListener implements ClickListener {
 		this.accountService = (AccountService) contextHelper.getBean("accountService");
 		this.documentTypeService = (DocumentTypeService) contextHelper.getBean("documentTypeService");
 		this.storageTypeService = (StorageTypeService) contextHelper.getBean("storageTypeService");
+		
+		//get account if from session
+		WebApplicationContext webContext = (WebApplicationContext) parentWindow.getApplication().getContext();
+		this.accountId = (Integer) webContext.getHttpSession().getAttribute("accountId");
 	}
 	
 	@Override
 	public void click(ClickEvent event) {
 		if(documentForm.getUploadedDocument() == null){
-			parentWindow.showNotification("You must upload a document to Save.");
+			parentWindow.showNotification("You must upload a document to proceed.");
 			return;
 		}
 		
 		DocumentDto documentDto;
-		StorageTypeDto storageTypeDto = (StorageTypeDto) storageTypeService.findByName("DATABASE");
+		final StorageTypeDto storageTypeDto = (StorageTypeDto) storageTypeService.findByName(StorageTypeEnum.DATABASE.getFileType());
 		
 		if(documentId == null)
 			documentDto = new DocumentDto();
@@ -76,7 +126,6 @@ public class DocumentSaveListener implements ClickListener {
 		documentDto.setAccount( accountService.findAccountById(accountId) );
 		documentDto.setDocumentContent( documentForm.getUploadedDocument() );
 		documentDto.setStorageTypeDto(storageTypeDto);
-		documentDto.setDocumentUuid( UUID.randomUUID().toString() );
 		
 		try{
 			if(documentId == null){
@@ -85,11 +134,19 @@ public class DocumentSaveListener implements ClickListener {
 				documentService.update(documentDto);
 			}
 		} catch (EntityAlreadyFoundException e) {
-			e.printStackTrace();
+			parentWindow.showNotification("The document was not created, because a document " +
+										"with the same title already exists in the database");
+			//e.printStackTrace();
+			return;
 		} catch (EntityNotCreatedException e) {
-			e.printStackTrace();
+			parentWindow.showNotification("The document was not created due to errors.");
+			//e.printStackTrace();
+			return;
 		}
 		
+		/* At this point we can assume that the document has been created.
+		 * Otherwise, Java would've thrown an exception by now.
+		 * */
 		String notification = documentDto.getDocumentTitle() + " updated successfully"; 
 		parentWindow.showNotification(notification);
 		tabSheet.removeTab(documentTab);

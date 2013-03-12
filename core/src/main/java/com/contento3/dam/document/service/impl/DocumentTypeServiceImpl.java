@@ -12,17 +12,34 @@ import com.contento3.dam.document.dto.DocumentTypeDto;
 import com.contento3.dam.document.service.DocumentTypeAssembler;
 import com.contento3.dam.document.service.DocumentTypeService;
 
+/**
+ * @author Syed Muhammad Ali
+ * Service implementation for the DocumentType entity.
+ */
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class DocumentTypeServiceImpl implements DocumentTypeService {
 	
+	/**
+	 * Assembler to assemble document type
+	 */
 	private DocumentTypeAssembler documentTypeAssembler;
-	private DocumentTypeDao documentTypeDao;
 	
+	/**
+	 * DAO for document type
+	 */
+	private DocumentTypeDao documentTypeDao;
+
+	/**
+	 * Constructor
+	 */
 	public DocumentTypeServiceImpl(final DocumentTypeAssembler documentTypeAssembler, final DocumentTypeDao documentTypeDao){
 		this.documentTypeAssembler = documentTypeAssembler;
 		this.documentTypeDao = documentTypeDao;
 	}
 
+	/**
+	 * Creates a document type using DocumentTypeDto
+	 */
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Object create(DocumentTypeDto dto)
@@ -36,7 +53,10 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		
 		return documentTypePk;
 	}
-	
+
+	/**
+	 * Deletes a document type using a DocumentTypeDto
+	 */
 	@Transactional(readOnly = true)
 	@Override
 	public void delete(DocumentTypeDto dtoToDelete)
@@ -45,12 +65,18 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		
 	}
 
+	/**
+	 * Finds a document type dto
+	 */
 	@Transactional(readOnly = true)
 	@Override
 	public DocumentTypeDto findByName(String typeName) {
 		return documentTypeAssembler.domainToDto( documentTypeDao.findByName(typeName) );
 	}
 
+	/**
+	 * Finds all document type dtos
+	 */
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<DocumentTypeDto> findAllTypes() {
