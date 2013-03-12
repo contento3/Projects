@@ -13,6 +13,8 @@ import com.contento3.cms.article.model.Article;
 import com.contento3.cms.article.service.ArticleAssembler;
 import com.contento3.cms.article.service.ArticleImageAssembler;
 import com.contento3.cms.article.service.ArticleService;
+import com.contento3.cms.site.structure.dao.SiteDAO;
+import com.contento3.cms.site.structure.service.SiteService;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class ArticleServiceImpl implements ArticleService {
@@ -20,11 +22,13 @@ public class ArticleServiceImpl implements ArticleService {
 	private ArticleAssembler articleAssembler;
 	private ArticleDao articleDao;
 	private ArticleImageAssembler articleImageAssembler;
+	private SiteDAO siteDao; 
 	
-	public ArticleServiceImpl(final ArticleAssembler articleAssembler,final ArticleDao articleDao,final ArticleImageAssembler articleImageAssembler) {
+	public ArticleServiceImpl(final ArticleAssembler articleAssembler,final ArticleDao articleDao,final ArticleImageAssembler articleImageAssembler,final SiteDAO siteDao) {
 		this.articleAssembler = articleAssembler;
 		this.articleDao = articleDao;
 		this.articleImageAssembler = articleImageAssembler;
+		this.siteDao = siteDao;
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -40,7 +44,6 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional(readOnly = false,propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(ArticleDto articleDto){
-	
 		articleDao.update(articleAssembler.dtoToDomain(articleDto));
 	}
 	

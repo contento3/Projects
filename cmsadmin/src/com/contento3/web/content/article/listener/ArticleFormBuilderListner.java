@@ -189,9 +189,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 				article.setLastUpdated(new Date());
 				article.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
 				article.setIsVisible(1);
-				AccountDto account = accountService.findAccountById(accountId);
-				article.setAccount(account);
-				article.setSite(new ArrayList());
+
 				articleService.update(article);
 				String notification =article.getHead()+" updated successfully"; 
 				parentWindow.showNotification(notification);

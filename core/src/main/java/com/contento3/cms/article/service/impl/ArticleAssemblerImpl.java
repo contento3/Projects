@@ -3,6 +3,8 @@ package com.contento3.cms.article.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.util.CollectionUtils;
+
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.model.Article;
@@ -42,7 +44,10 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		domain.setIsVisible(dto.getIsVisible());
 		domain.setSite(siteAssembler.dtosToDomains(dto.getSite()));
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
-		domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategoryDtos()));
+		
+		if (!CollectionUtils.isEmpty(dto.getCategoryDtos())){
+			domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategoryDtos()));
+		}
 		return domain;
 	}
 
