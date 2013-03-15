@@ -40,14 +40,14 @@ public class TemplateAjaxController {
     		@RequestParam (value="templateTypeId",required=false) Integer templateTypeId,
     		@RequestParam (value="accountId",required=true) Integer accountId,
     		Model model) {
-    
+    	
     	TemplateDto templateDto = new TemplateDto();
     	templateDto.setTemplateName(templateName);
     	templateDto.setTemplateText(text);
 
     	TemplateTypeDto templateTypeDto = new TemplateTypeDto();
     	templateTypeDto.setTemplateTypeId(templateTypeId);
-    	templateTypeDto.setTemplateTypeName("TEXT_FREEMARKER");
+    	templateTypeDto.setTemplateTypeName("TEXT_FREEMARKER"); //hard coded - to be adjusted
     	templateDto.setTemplateType(templateTypeDto);
 
     	TemplateDirectoryDto templateDirectoryDto = new TemplateDirectoryDto();
@@ -73,7 +73,7 @@ public class TemplateAjaxController {
 			}
     	}
 	    return "TEMPLATE_CREATED";
-    	}
+    }
 
 
     /**
