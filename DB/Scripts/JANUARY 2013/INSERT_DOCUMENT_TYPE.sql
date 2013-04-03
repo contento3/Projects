@@ -1,5 +1,0 @@
-USE CMS;
-
-INSERT INTO DOCUMENT_TYPE VALUES (NULL, "TXT", "A text file format");
-INSERT INTO DOCUMENT_TYPE VALUES (NULL, "PDF", "Portable Document Format");
-INSERT INTO DOCUMENT_TYPE VALUES (NULL, "DOC", "Microsoft Office Document");
