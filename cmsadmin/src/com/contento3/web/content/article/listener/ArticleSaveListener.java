@@ -79,9 +79,6 @@ public class ArticleSaveListener implements ClickListener{
 		articleDto.setLastUpdated(new Date());
 		articleDto.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
 		articleDto.setIsVisible(1);
-		AccountDto account = accountService.findAccountById(accountId);
-		articleDto.setAccount(account);
-		articleDto.setSite(new ArrayList());
 
 		if (null==articleId){
 			articleDto.setDateCreated(new Date());
