@@ -44,8 +44,15 @@ public class CategoryServiceImpl implements CategoryService {
 	public Integer create(final CategoryDto categoryDto)  {
 		final Account account = accountDao.findById(categoryDto.getAccountId());
 		final Category category = categoryAssembler.dtoToDomain(categoryDto);
+		final Account parentAccountId;
+		
+		if(categoryDto.getParent() != null){
+			parentAccountId = accountDao.findById(categoryDto.getParent().getAccountId());
+			category.getParent().setAccount(parentAccountId);
+		}
+		
 		category.setAccount(account);
-		 return categoryDao.persist(category);
+		return categoryDao.persist(category);
 	}//end create()
 
 
@@ -90,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<CategoryDto> findByAccountId(final Integer accountId){
-		 return categoryAssembler.domainsToDtos(categoryDao.findAll());
+		 return categoryAssembler.domainsToDtos(categoryDao.findAll()); //MARK BROKEN FUNCTIONALITY ???????
 	}
 
 	@Override
