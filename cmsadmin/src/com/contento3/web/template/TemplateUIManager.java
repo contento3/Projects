@@ -383,12 +383,20 @@ public class TemplateUIManager implements UIManager{
 		final FormLayout formLayout = new FormLayout();
 		final TextField name = new TextField();
 		final OptionGroup isGlobalOptionsGroup = new OptionGroup();
+		final Tab createDirTab = this.templateTab.addTab(createNewFolder,"Create directory",null);; //to make the create dir tab autoclose
+		
+		createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+		createNewFolder.addComponent(formLayout);
+		
+		createDirTab.setClosable(true);
+		
 		isGlobalOptionsGroup.addItem("Global");
 		isGlobalOptionsGroup.addItem("Local");
 		isGlobalOptionsGroup.addListener(new Property.ValueChangeListener() {
 			
-			@Override
-			public void valueChange(ValueChangeEvent event) {
+		@Override
+		public void valueChange(ValueChangeEvent event) {
 				selectedTemplateDirScope = (event.getProperty().toString().equals("Global") ? true : false);
 			}
 		});
@@ -444,20 +452,16 @@ public class TemplateUIManager implements UIManager{
 	            	}
 	    			
 	    			if (newDirectory!=null){
+	    				if(createDirTab != null) //sanity check
+	    					templateTab.removeTab(createDirTab);
+	    				
 	    				parentWindow.showNotification(name.getValue()+" folder added successfully");
 	    			}
 				}
 			});
 			formLayout.addComponent(addButton);
-	   			
-			createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-			createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-			createNewFolder.addComponent(formLayout);
-    	
-			Tab tab2= this.templateTab.addTab(createNewFolder,"Create directory",null);
-			tab2.setClosable(true);
+	   		
 			this.templateTab.setSelectedTab(createNewFolder);
-		
 	}
 
 	private String buildPath(Integer id,String path){
