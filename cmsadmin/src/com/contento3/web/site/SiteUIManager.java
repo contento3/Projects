@@ -186,9 +186,20 @@ public class SiteUIManager implements UIManager {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,contextHelper,parentWindow);
-				categoryUIManager.renderCategoryList(1);
+				categoryUIManager.renderCategoryList(siteId);
 			}
 		});
+
+		final Button contentAssignmentButton = new Button("Content Assigner");
+		horizontalLayout.addComponent(contentAssignmentButton);
+		contentAssignmentButton.addListener(new ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				SiteContentAssignmentUIManager siteContentUIManager = new SiteContentAssignmentUIManager(uiTabSheet,contextHelper,parentWindow);
+				siteContentUIManager.render(siteId);
+			}
+		});
+
 	}
 
 	/**

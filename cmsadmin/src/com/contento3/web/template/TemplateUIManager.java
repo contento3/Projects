@@ -15,6 +15,8 @@ import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -29,7 +31,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
@@ -85,10 +87,14 @@ public class TemplateUIManager implements UIManager{
 	
 	TabSheet templateTab;
 	
+	boolean selectedTemplateDirScope;
+	
 	/**
 	 * 
 	 */
-	final HierarchicalContainer templateContainer ;
+	final HierarchicalContainer globalTemplateDirContainer;
+	final HierarchicalContainer localTemplateDirContainer;
+	
 	/**
 	 * Constructor 
 	 * @param helper
@@ -102,7 +108,8 @@ public class TemplateUIManager implements UIManager{
 
 	    //Get accountId from the session
         this.accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
-        this.templateContainer = new HierarchicalContainer();
+        this.globalTemplateDirContainer = new HierarchicalContainer();
+        this.localTemplateDirContainer = new HierarchicalContainer();
         this.templateTab = uiTabSheet;
 	}
 	
@@ -142,7 +149,7 @@ public class TemplateUIManager implements UIManager{
 		populateAccordion(accordion);
 		// A container for the Accordion.
 		Panel panel = new Panel();
-		panel.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+		panel.setWidth(40, Sizeable.UNITS_PERCENTAGE);
 		panel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		panel.addComponent(accordion);
 
@@ -194,8 +201,8 @@ public class TemplateUIManager implements UIManager{
 		accordion.addTab(globalTemplateListLayout, "Global Templates", new ExternalResource("images/template.png"));
 		globalTemplatesTab.setClosable(true);
 		Collection <TemplateDirectoryDto> globalTemplateDirectoryList =  templateDirectoryService.findRootDirectories(true);
-		globalTemplateListLayout.addComponent(populateTemplateList(globalTemplateDirectoryList,templateDirectoryService));
-
+		globalTemplateListLayout.addComponent(populateTemplateList(globalTemplateDirectoryList,templateDirectoryService, true));
+		
 		//Populate the template list
 		VerticalLayout templateListLayout = new VerticalLayout();
 		templateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
@@ -203,10 +210,16 @@ public class TemplateUIManager implements UIManager{
 		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false);
 
 		//Add the tree to the vertical layout for template list.
-		templateListLayout.addComponent(populateTemplateList(templateDirectoryList,templateDirectoryService));
+		templateListLayout.addComponent(populateTemplateList(templateDirectoryList,templateDirectoryService, false));
 	}
-	public Tree populateTemplateList(final Collection<TemplateDirectoryDto> directoryDtos,final TemplateDirectoryService templateDirectoryService){
+	public Tree populateTemplateList(final Collection<TemplateDirectoryDto> directoryDtos,final TemplateDirectoryService templateDirectoryService, final boolean isGlobalDir){
 
+		final HierarchicalContainer templateContainer;
+		
+		if(isGlobalDir)
+			templateContainer = globalTemplateDirContainer;
+		else
+			templateContainer = localTemplateDirContainer;
 		
         root = new Tree("",templateContainer);
         root.setImmediate(true);
@@ -248,7 +261,8 @@ public class TemplateUIManager implements UIManager{
 	}
 	
 	private void addChildrenToSelectedDirectory(final Item parentItem,
-			final TemplateDirectoryService templateDirectoryService,final HierarchicalContainer templateContainer){
+												final TemplateDirectoryService templateDirectoryService,
+												final HierarchicalContainer templateContainer){
 		selectedDirectoryId = Integer.parseInt(parentItem.getItemProperty("id").getValue().toString());
 		String name = parentItem.getItemProperty("name").getValue().toString();
 
@@ -365,11 +379,31 @@ public class TemplateUIManager implements UIManager{
 
 	private void renderFolderTab(final Integer folderId){
 		final VerticalLayout createNewFolder = new VerticalLayout();
-
+		
 		final FormLayout formLayout = new FormLayout();
 		final TextField name = new TextField();
+		final OptionGroup isGlobalOptionsGroup = new OptionGroup();
+		final Tab createDirTab = this.templateTab.addTab(createNewFolder,"Create directory",null);; //to make the create dir tab autoclose
+		
+		createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+		createNewFolder.addComponent(formLayout);
+		
+		createDirTab.setClosable(true);
+		
+		isGlobalOptionsGroup.addItem("Global");
+		isGlobalOptionsGroup.addItem("Local");
+		isGlobalOptionsGroup.addListener(new Property.ValueChangeListener() {
+			
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+				selectedTemplateDirScope = (event.getProperty().toString().equals("Global") ? true : false);
+			}
+		});
+		
 		name.setCaption("Name");
 		formLayout.addComponent(name);
+		formLayout.addComponent(isGlobalOptionsGroup);
 		
 		if (null != folderId){//when no items in tree this will not work
 			TemplateDirectoryDto templateDirectory = templateDirectoryService.findById(folderId);
@@ -391,7 +425,7 @@ public class TemplateUIManager implements UIManager{
 	    			
 	    			TemplateDirectoryDto directoryDto = new TemplateDirectoryDto();
 	    			directoryDto.setDirectoryName(name.getValue().toString());
-	    			directoryDto.setGlobal(false);
+	    			directoryDto.setGlobal(selectedTemplateDirScope);
 	    			directoryDto.setAccount(account);
 	    			
 	    			if (null!=selectedDirectoryId){
@@ -402,6 +436,15 @@ public class TemplateUIManager implements UIManager{
 	    			final Integer newDirectory = templateDirectoryService.create(directoryDto);
 	    			if(folderId == null){ // works when no items in tree
 		    			directoryDto = templateDirectoryService.findById(newDirectory);
+		    			
+
+		    			HierarchicalContainer templateContainer;
+		    			
+		    			if(directoryDto.isGlobal())
+		    				templateContainer = globalTemplateDirContainer;
+		    			else
+		    				templateContainer = localTemplateDirContainer;
+		    			
 		    			Item item = templateContainer.addItem(directoryDto.getId());
 		            	item.getItemProperty("id").setValue(directoryDto.getId());
 		            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
@@ -409,11 +452,15 @@ public class TemplateUIManager implements UIManager{
 	            	}
 	    			
 	    			if (newDirectory!=null){
+	    				if(createDirTab != null) //sanity check
+	    					templateTab.removeTab(createDirTab);
+	    				
 	    				parentWindow.showNotification(name.getValue()+" folder added successfully");
 	    			}
 				}
 			});
 			formLayout.addComponent(addButton);
+
 	   			
 			createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
@@ -421,8 +468,8 @@ public class TemplateUIManager implements UIManager{
     	
 			Tab tab2= this.templateTab.addTab(createNewFolder,"Create directory",new ExternalResource("images/template.png"));
 			tab2.setClosable(true);
+
 			this.templateTab.setSelectedTab(createNewFolder);
-		
 	}
 
 	private String buildPath(Integer id,String path){
