@@ -28,6 +28,7 @@ import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.Application;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -166,7 +167,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	@Override
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(mainLayout, "Image Management");
+		final Tab articleTab = tabSheet.addTab(mainLayout, "Image Management",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 		this.mainLayout.setSpacing(true);
 		this.mainLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
@@ -216,7 +217,7 @@ public class ImageMgmtUIManager extends CustomComponent
 
 			public void buttonClick(ClickEvent event){
 				VerticalLayout newArticleLayout = new VerticalLayout();
-				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"));
+				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"),new ExternalResource("images/content-mgmt.png"));
 				createNew.setClosable(true);
 				tabSheet.setSelectedTab(newArticleLayout);
 				newArticleLayout.addComponent(renderAddEditScreen("Add",null));

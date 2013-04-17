@@ -3,6 +3,10 @@ package com.contento3.web.site;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.service.PageService;
@@ -15,6 +19,7 @@ import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -106,6 +111,8 @@ public class SiteUIManager implements UIManager {
 			uiTabSheet.addComponent(layout);
 			Tab tab1 = uiTabSheet.addTab(layout, "Create site", null);
 			tab1.setClosable(true);
+			Icon icon=new ImageIcon(getClass().getResource("/images/site.png"));
+			tab1.setIcon((Resource) icon);
 			componentToReturn = uiTabSheet;
 		}
 		return componentToReturn;

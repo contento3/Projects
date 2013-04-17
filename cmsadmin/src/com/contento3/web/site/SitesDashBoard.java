@@ -3,6 +3,10 @@ package com.contento3.web.site;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.dto.RelatedArticleDto;
 import com.contento3.cms.article.service.ArticleService;
@@ -19,6 +23,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -116,12 +121,14 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		if (null==siteDashboardTab){ 
 			siteDashboardTab.setHeight("585");
 			siteDashboardTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-	    	
+			Icon icon=new ImageIcon(getClass().getResource("/images/site.png"));
+			siteDashboardTab.setIcon((Resource) icon);
 			verticalLayout.setSpacing(true);
 			verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			renderSiteContent();
 			Tab tab2 =  siteDashboardTab.addTab(verticalLayout,"Site Dashboard",null);
 			tab2.setClosable(true);
+			tab2.setIcon((Resource) icon);
 			siteDashboardTab.setSelectedTab(verticalLayout);
 		}
 	

@@ -12,6 +12,7 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Button;
@@ -94,7 +95,7 @@ public class ArticleMgmtUIManager implements UIManager {
 	@Override
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(verticalLayout, "Article Management");
+		final Tab articleTab = tabSheet.addTab(verticalLayout, "Article Management",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
