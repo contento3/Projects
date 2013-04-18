@@ -460,7 +460,6 @@ public class TemplateUIManager implements UIManager{
 				}
 			});
 			formLayout.addComponent(addButton);
-
 	   			
 			createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
