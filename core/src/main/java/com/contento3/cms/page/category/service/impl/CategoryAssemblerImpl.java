@@ -20,7 +20,6 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		if(dto.getParent()!=null ){
 				domain.setParent(dtoToDomain(dto.getParent()));
 		}
-		
 		return domain;
 	}//end dtoToDomain()
 
@@ -29,12 +28,10 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		CategoryDto dto = new CategoryDto();
 		dto.setCategoryId(domain.getCategoryId());
 		dto.setName(domain.getCategoryName());
-		
-		dto.setAccountId(domain.getAccount().getAccountId());
-		
-		//if(domain.getParent()!=null){ //was commented earlier
-		//	dto.setParent(domainToDto(domain.getParent()));
-		//}
+
+//		if(domain.getParent()!=null){
+//			dto.setParent(domainToDto(domain.getParent()));
+//		}
 		
 		Collection <Category> children = domain.getChild();
 		Collection <CategoryDto> categoryChildren = new ArrayList<CategoryDto>();

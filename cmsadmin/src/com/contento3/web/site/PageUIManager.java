@@ -31,6 +31,7 @@ import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -129,7 +130,7 @@ public class PageUIManager {
 		pagesTab.setWidth("775");
 
 		SiteDto siteDto = siteService.findSiteById(siteId);
-		Tab tab = pagesTab.addTab(pageLayout, siteDto.getSiteName(),null);
+		Tab tab = pagesTab.addTab(pageLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));
 		tab.setClosable(true);
 		pagesTab.setImmediate(true);
 		pagesTab.addListener(new SelectedTabChangeListener() {
@@ -277,7 +278,7 @@ public class PageUIManager {
 			}
 		});
 		Tab newPageTab = pagesTab.addTab(newPageParentlayout, pageTabTitle,
-				null);
+				new ExternalResource("images/site.png"));
 		pagesTab.setSelectedTab(newPageParentlayout);
 		newPageTab.setVisible(true);
 		newPageTab.setEnabled(true);
@@ -429,7 +430,7 @@ public class PageUIManager {
 			final VerticalLayout pageSectionLayout = new VerticalLayout();
 			pageSectionLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			pageSectionLayout.setSpacing(true);
-			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
+			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", new ExternalResource("images/site.png"));
 			tab.setClosable(true);
 			
 			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
@@ -461,7 +462,7 @@ public class PageUIManager {
 			final PageTemplateDto pageTemplateDto,
 			final AbstractTableBuilder templateTableBuilder,
 			final Table templateTable) {
-		Tab tab = pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), null);
+		Tab tab = pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), new ExternalResource("images/site.png"));
 		tab.setClosable(true);
 
 		pageTemplateDto.setSectionTypeId(pageSectionDto.getSectionTypeDto().getId());

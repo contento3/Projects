@@ -15,6 +15,7 @@ import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -68,6 +69,7 @@ public class SiteConfigUIManager {
 		this.parentWindow = parentWindow;
 		this.contextHelper = helper;
 		this.pageLayoutService = (PageLayoutService) contextHelper.getBean("pageLayoutService");
+		
 	}
 
 	/**
@@ -105,7 +107,7 @@ public class SiteConfigUIManager {
 		siteConfigParentLayout.addComponent(siteDomainTable);
 		siteConfigParentLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 
-		final Tab siteConfigTab = siteTabSheet.addTab(siteConfigParentLayout);
+		final Tab siteConfigTab = siteTabSheet.addTab(siteConfigParentLayout,"",new ExternalResource("images/configuration.png"));
 		siteConfigTab.setCaption("Site configuration for :"+siteDto.getSiteName());
 		siteConfigTab.setClosable(true);
 		

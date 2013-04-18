@@ -22,6 +22,7 @@ import com.contento3.web.content.article.ArticleMgmtUIManager;
 import com.contento3.web.content.article.ArticleTableBuilder;
 import com.contento3.web.content.article.AssociatedImagesUIManager;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -212,7 +213,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 		parentLayout.setSizeFull();
 		parentLayout.addComponent(formLayout);
 		
-		articleTab = this.tabSheet.addTab(parentLayout,command+" Article");
+		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 
 		GridLayout toolbarGridLayout = new GridLayout(1,5);

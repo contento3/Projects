@@ -1,5 +1,6 @@
 package com.contento3.web.category;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.util.CollectionUtils;
@@ -94,9 +95,6 @@ implements Window.CloseListener {
         /* Listen for close events for the window. */
         popupWindow.addListener(this);
         popupWindow.setModal(true);
-        
-        /* Reset old selected category. */
-        selectedParentCategory = -1;
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
         final Label categoryLbl = new Label("Name");
@@ -212,12 +210,6 @@ implements Window.CloseListener {
 		final CategoryDto categoryDto = new CategoryDto();
 		categoryDto.setName(textField.getValue().toString());
 		categoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
-		
-		if (selectedParentCategory>0){
-			final CategoryDto parentCategory = categoryService.findById(selectedParentCategory);
-			categoryDto.setParent(parentCategory);
-		}
-		
 		try {
 			categoryService.create(categoryDto);
 			resetTable();

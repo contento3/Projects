@@ -8,6 +8,7 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -75,7 +76,7 @@ public class GroupUIManager implements UIManager {
 	public Component render(final String command) {
 	
 		this.uiTabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		Tab groupTab = uiTabSheet.addTab(verticalLayout, "Group Management");
+		Tab groupTab = uiTabSheet.addTab(verticalLayout, "Group Management",new ExternalResource("images/security.png"));
 		groupTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);

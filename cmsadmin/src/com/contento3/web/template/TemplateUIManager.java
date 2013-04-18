@@ -126,7 +126,7 @@ public class TemplateUIManager implements UIManager{
     	VerticalLayout layout = new VerticalLayout();
     	layout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 
-    	Tab tab2 = templateTab.addTab(layout,"Template",null);
+    	Tab tab2 = templateTab.addTab(layout,"Template",new ExternalResource("images/template.png"));
     	tab2.setClosable(true);
     	renderTemplateListTab(layout);
 		return templateTab;
@@ -197,8 +197,8 @@ public class TemplateUIManager implements UIManager{
 		//Populate the global template list
 		VerticalLayout globalTemplateListLayout = new VerticalLayout();
 		globalTemplateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		Tab globalTemplatesTab = accordion.addTab(globalTemplateListLayout, "Global Templates", null);
-		accordion.addTab(globalTemplateListLayout, "Global Templates", null);
+		Tab globalTemplatesTab = accordion.addTab(globalTemplateListLayout, "Global Templates", new ExternalResource("images/template.png"));
+		accordion.addTab(globalTemplateListLayout, "Global Templates", new ExternalResource("images/template.png"));
 		globalTemplatesTab.setClosable(true);
 		Collection <TemplateDirectoryDto> globalTemplateDirectoryList =  templateDirectoryService.findRootDirectories(true);
 		globalTemplateListLayout.addComponent(populateTemplateList(globalTemplateDirectoryList,templateDirectoryService, true));
@@ -206,7 +206,7 @@ public class TemplateUIManager implements UIManager{
 		//Populate the template list
 		VerticalLayout templateListLayout = new VerticalLayout();
 		templateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		Tab templatesTab = accordion.addTab(templateListLayout, "Templates", null);
+		Tab templatesTab = accordion.addTab(templateListLayout, "Templates", new ExternalResource("images/template.png"));
 		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false);
 
 		//Add the tree to the vertical layout for template list.
@@ -366,9 +366,9 @@ public class TemplateUIManager implements UIManager{
 			createNewTemplate.addComponent(browser);
 			Tab tab2;
 			if(templateDto == null){
-				tab2 = templateTab.addTab(createNewTemplate,"Create template",null);
+				tab2 = templateTab.addTab(createNewTemplate,"Create template",new ExternalResource("images/template.png"));
 			}else{
-				tab2 = templateTab.addTab(createNewTemplate,templateDto.getTemplateName(),null);
+				tab2 = templateTab.addTab(createNewTemplate,templateDto.getTemplateName(),new ExternalResource("images/template.png"));
 			}
 			tab2.setClosable(true);
 			templateTab.setSelectedTab(createNewTemplate);
@@ -460,7 +460,17 @@ public class TemplateUIManager implements UIManager{
 				}
 			});
 			formLayout.addComponent(addButton);
+<<<<<<< HEAD
+	   			
+			createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+			createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+			createNewFolder.addComponent(formLayout);
+    	
+			Tab tab2= this.templateTab.addTab(createNewFolder,"Create directory",new ExternalResource("images/template.png"));
+			tab2.setClosable(true);
+=======
 	   		
+>>>>>>> 6543b72eb0096fdae1d39e232be5a870187fe0f8
 			this.templateTab.setSelectedTab(createNewFolder);
 	}
 
