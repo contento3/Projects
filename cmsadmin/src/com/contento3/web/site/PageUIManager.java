@@ -31,6 +31,7 @@ import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -429,7 +430,7 @@ public class PageUIManager {
 			final VerticalLayout pageSectionLayout = new VerticalLayout();
 			pageSectionLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			pageSectionLayout.setSpacing(true);
-			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", null);
+			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout",null);
 			tab.setClosable(true);
 			
 			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
