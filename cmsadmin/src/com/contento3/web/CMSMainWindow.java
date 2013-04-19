@@ -124,8 +124,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             	final String username = event.getLoginParameter("username");
             	final String password = event.getLoginParameter("password");
             	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
-            	final String ERR_MSG = "The system could not log you in, because the username, or password you entered is not valid."; 
-            	
+
         		subject = SecurityUtils.getSubject();
 
 				try{
@@ -135,15 +134,12 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 					unitUI();
 				}
 				catch(IncorrectCredentialsException ice){
-					getWindow().showNotification(ERR_MSG, Notification.TYPE_ERROR_MESSAGE);
 					LOGGER.error("Username or password for username ["+username+"] is not valid");
 				}
 				catch(CredentialsException ice){
-					getWindow().showNotification(ERR_MSG, Notification.TYPE_ERROR_MESSAGE);
 					LOGGER.error("Error occured while authentication user with username: "+username);
 				}
 				catch(Exception ice){
-					getWindow().showNotification(ERR_MSG, Notification.TYPE_ERROR_MESSAGE);
 					LOGGER.error("Error occured while authenticating user"+ice);
 				}
             }

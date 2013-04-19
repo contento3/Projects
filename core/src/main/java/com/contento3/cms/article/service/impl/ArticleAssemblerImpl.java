@@ -3,14 +3,10 @@ package com.contento3.cms.article.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.springframework.util.CollectionUtils;
-
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.model.Article;
 import com.contento3.cms.article.service.ArticleAssembler;
-import com.contento3.cms.page.category.dto.CategoryDto;
-import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.category.service.CategoryAssembler;
 import com.contento3.cms.site.structure.service.SiteAssembler;
 
@@ -46,12 +42,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		domain.setIsVisible(dto.getIsVisible());
 		domain.setSite(siteAssembler.dtosToDomains(dto.getSite()));
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
-		
-		if (!CollectionUtils.isEmpty(dto.getCategoryDtos()))
-			domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategoryDtos()));
-		else
-			domain.setCategories(new ArrayList<Category>());
-		
+		domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategoryDtos()));
 		return domain;
 	}
 
@@ -71,7 +62,6 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		dto.setSite(siteAssembler.domainsToDtos(domain.getSite()));
 		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setCategoryDtos(categoryAssembler.domainsToDtos(domain.getCategories()));
-		
 		return dto;
 	}
 

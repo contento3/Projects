@@ -9,6 +9,7 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -72,7 +73,7 @@ public class UserUIManager implements UIManager {
 	@Override
 	public Component render(String command) {
 		this.uiTabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		Tab userTab = uiTabSheet.addTab(verticalLayout, "User Management");
+		Tab userTab = uiTabSheet.addTab(verticalLayout, "User Management",new ExternalResource("images/security.png"));
 		userTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);

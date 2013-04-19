@@ -173,7 +173,6 @@
 		<constructor-arg ref="articleAssembler" />
 		<constructor-arg ref="articleDao" />
 		<constructor-arg ref="articleImageAssembler" />
-		<constructor-arg ref="siteDAO" />
 	</bean>
 
 	<bean id="relatedArticleAssembler"

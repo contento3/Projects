@@ -1,6 +1,0 @@
-8th February 2013
-==================================================================
-branch:develop a7e23d09f0515a33c0a6987df5dad865aec251d8
-Database: started from September 2012,2_ALTER_USERS_TABLE to 
-project:cmsadmin,sites
-Notes:

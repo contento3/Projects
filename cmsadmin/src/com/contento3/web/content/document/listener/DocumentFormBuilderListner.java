@@ -14,6 +14,7 @@ import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -182,7 +183,7 @@ public class DocumentFormBuilderListner implements ClickListener {
 		parentLayout.setSizeFull();
 		parentLayout.addComponent(formLayout);
 		
-		documentTab = this.tabSheet.addTab(parentLayout,command+" Document");
+		documentTab = this.tabSheet.addTab(parentLayout,command+" Document",new ExternalResource("images/content-mgmt.png"));
 		documentTab.setClosable(true);
 
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
