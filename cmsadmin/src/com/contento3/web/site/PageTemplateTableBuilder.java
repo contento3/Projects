@@ -4,7 +4,9 @@
 package com.contento3.web.site;
 
 import com.contento3.cms.page.template.dto.PageTemplateDto;
+import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
+import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
@@ -34,6 +36,8 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
      */
 	final Window mainWindow;
 	
+	final TemplateService templateService;
+	
 	/**
 	 * Constructor
 	 * @param helper
@@ -44,7 +48,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		super(table);
 		this.contextHelper = helper;
 		this.mainWindow = window;
-		
+		this.templateService = (TemplateService)helper.getBean("templateService");
 	}
 
 	/**
@@ -53,9 +57,12 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void assignDataToTable(final Dto dto,final  Table table,final Container container) {
 		PageTemplateDto templateDto = (PageTemplateDto) dto;
+		TemplateDirectoryDto templateDirDto = templateService.findTemplateById(templateDto.getTemplateId()).getTemplateDirectoryDto();
 		Item item = container.addItem(templateDto.getTemplateId());
 		item.getItemProperty("associated templates").setValue(templateDto.getTemplateName());
+		item.getItemProperty("url").setValue(buildPath(templateDirDto, templateDto.getTemplateName()));
 		item.getItemProperty("order").setValue(templateDto.getOrder());
+		
 		// adding delete button item into list
 		final Button deleteLink = new Button();
 		deleteLink.setCaption("Delete");
@@ -75,6 +82,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table table,final Container container) {
 		container.addContainerProperty("associated templates", String.class, null);
+		container.addContainerProperty("url", String.class, null);
 		container.addContainerProperty("order", String.class, null);
 		container.addContainerProperty("delete", Button.class, null);
 		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
@@ -91,5 +99,16 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("associated templates").setValue("No template associated.");
 
 	}
-
+	
+	/**
+	 * Build template path
+	 */
+	private String buildPath(TemplateDirectoryDto templateDirDto, String path) {
+		if (templateDirDto.getParent() == null) {
+			return templateDirDto.getDirectoryName() + "/" + path;
+		} else {
+			return buildPath(templateDirDto.getParent(),
+					templateDirDto.getDirectoryName() + "/" + path);
+		}
+	}
 }
