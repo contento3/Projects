@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.Template;
 import com.contento3.cms.page.template.service.TemplateAssembler;
@@ -14,11 +15,14 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
 
 	private TemplateTypeAssembler templateTypeAssembler;
 	private TemplateDirectoryAssembler templateDirectoryAssembler;
+	private AccountAssembler accountAssembler;
 	
 	TemplateAssemblerImpl(final TemplateTypeAssembler templateTypeAssembler,
-			final TemplateDirectoryAssembler templateDirectoryAssembler){
+			final TemplateDirectoryAssembler templateDirectoryAssembler,
+			final AccountAssembler accountAssembler){
 		this.templateTypeAssembler = templateTypeAssembler;
 		this.templateDirectoryAssembler = templateDirectoryAssembler;
+		this.accountAssembler = accountAssembler;
 	}
 	
 	@Override
@@ -44,6 +48,7 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
 		dto.setGlobal(domain.isGlobal());
 		dto.setTemplateName(domain.getTemplateName());
 		dto.setTemplateText(domain.getTemplateText());
+		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setTemplateType(templateTypeAssembler.domainToDto(domain.getTemplateType()));
 		dto.setTemplateDirectoryDto(templateDirectoryAssembler.domainToDto(domain.getDirectory()));
 		return dto;

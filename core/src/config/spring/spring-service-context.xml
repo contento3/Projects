@@ -29,6 +29,7 @@
 		class="com.contento3.cms.page.template.service.impl.TemplateAssemblerImpl">
 		<constructor-arg ref="templateTypeAssembler" />
 		<constructor-arg ref="templateDirectoryAssembler" />
+		<constructor-arg ref="accountAssembler" />
 	</bean>
 
 	<bean id="pageTemplateAssembler"
