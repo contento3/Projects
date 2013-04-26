@@ -28,7 +28,9 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		CategoryDto dto = new CategoryDto();
 		dto.setCategoryId(domain.getCategoryId());
 		dto.setName(domain.getCategoryName());
-
+		
+		dto.setAccountId(domain.getAccount().getAccountId());
+		
 //		if(domain.getParent()!=null){
 //			dto.setParent(domainToDto(domain.getParent()));
 //		}
