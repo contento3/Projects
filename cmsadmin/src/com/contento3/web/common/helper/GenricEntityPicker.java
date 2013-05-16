@@ -33,6 +33,10 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	private final Collection<Dto> dtos;
 
 	/**
+	 * Dtos that are already assigned and need to be checked in the table
+	 */
+	private final Collection<Dto> assignedDto;
+	/**
 	 * Vertical layout to add components
 	 */
 	private VerticalLayout vLayout;
@@ -111,12 +115,13 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * @param vLayout
 	 */
 
-	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener,final boolean isHierarchicalTable) {
+	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<Dto> assignedDtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener,final boolean isHierarchicalTable) {
 		this.listOfColumns = listOfColumns;
 		this.dtos = dtos;
 		this.vLayout = vLayout;
 		this.mainwindow = mainWindow;
 		this.entityListener = entityListener;
+		this.assignedDto = assignedDtos;
 		this.isHierarchicalTable = isHierarchicalTable;
 	}
 
@@ -139,7 +144,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 		}
 		
 		if(!isHierarchicalTable){
-			tableBuilder = new GenricEntityTableBuilder(dtos, listOfColumns, vLayout);
+			tableBuilder = new GenricEntityTableBuilder(entityListener,this,dtos,assignedDto, listOfColumns, vLayout);
 			tableBuilder.build();
 			tableBuilder.table.setPageLength(Integer.parseInt(pageLength));
 		}else{
@@ -195,8 +200,6 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 */
 	@Override
 	public void windowClose(CloseEvent e) {
-		// TODO Auto-generated method stub
-		entityListener.updateList();
 	}
 
 	public void setTableCaption(String caption){

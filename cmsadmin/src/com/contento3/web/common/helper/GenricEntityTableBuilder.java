@@ -2,6 +2,7 @@ package com.contento3.web.common.helper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.contento3.common.dto.Dto;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -9,12 +10,12 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 
@@ -29,6 +30,8 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 * Dtos to be listed in table
 	 */
 	private final Collection<Dto> dtos;
+	
+	private final Collection<Dto> assignedDtos;
 	
 	/**
 	 * Vertical layout to add components
@@ -45,19 +48,25 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 */
 	final Collection<String> selectedItems= new ArrayList<String>();
 	
+	final EntityListener entityListener;
+	
+	final GenricEntityPicker entityPicker;
 	/**
 	 * Constructor
 	 * @param dtos
 	 * @param listOfColumns
 	 * @param vLayout
 	 */
-	public GenricEntityTableBuilder(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
+	public GenricEntityTableBuilder(final EntityListener entityListener,final GenricEntityPicker entityPicker, final Collection<Dto> dtos,final Collection<Dto> assignedDtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
 	
 		super(new Table());
 		this.listOfColumns = listOfColumns;
 		this.addButton = new Button();
 		this.dtos = dtos;
 		this.vLayout = vLayout;
+		this.assignedDtos = assignedDtos;
+		this.entityListener = entityListener;
+		this.entityPicker = entityPicker;
 		
 	}
 	
@@ -98,10 +107,11 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
                      // Get the check-box of this item (row)
                      CheckBox checkBox = (CheckBox) table.getContainerProperty(id, "select").getValue();
                      if (checkBox.booleanValue()) {
-                    	 selectedItems.add(table.getContainerProperty(id, listOfColumns.iterator().next()).getValue().toString());
+                    	 selectedItems.add(id+"");
                      }
                 }//end for
                 vLayout.setData(selectedItems);//adding selected item into vLayout
+                entityListener.updateList();
 			}
 		});
 	}
@@ -111,8 +121,17 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 */
 	@Override
 	public void assignDataToTable(final Dto dto, final Table table,final Container container) {
-		Item item = container.addItem(dto.getName());
-		item.getItemProperty("select").setValue(new CheckBox());
+		Item item = container.addItem(dto.getId());
+		CheckBox checkBox = new CheckBox();
+		
+		if(assignedDtos.contains(dto)){
+			checkBox.setValue(true);
+		}
+		else {
+			checkBox.setValue(false);
+		}
+		
+		item.getItemProperty("select").setValue(checkBox);
 		for(String column:listOfColumns){
 			item.getItemProperty(column).setValue(dto.getName());
 		}
@@ -124,6 +143,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table table, final Container container) {
 		container.addContainerProperty("select", CheckBox.class, null);
+
 		for(String column:listOfColumns){
 			container.addContainerProperty(column, String.class, null);
 		}

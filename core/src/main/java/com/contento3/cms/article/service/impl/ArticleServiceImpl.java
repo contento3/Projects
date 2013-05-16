@@ -101,4 +101,14 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryId, numberOfArticles, siteId));
 	}
 
+	@Override
+	public ArticleDto findArticleByIdAndSiteId(Integer id, Integer siteId) {
+		Article article = articleDao.findArticleByIdAndSiteId(id, siteId);
+		ArticleDto articleDto = null;
+		if (article!=null){
+			articleDto = articleAssembler.domainToDto(article);
+		}
+		return articleDto;
+	}
+
 }

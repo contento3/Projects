@@ -16,7 +16,7 @@ public class ArticleTemplateAssembler {
 	 */
 	public ArticleTemplateDto assemble(final ArticleDto articleDto){
 		final ArticleTemplateDto dto = new ArticleTemplateDto();
-		dto.setArticleId(articleDto.getArticleId());
+		dto.setArticleId(articleDto.getId());
 		dto.setBody(articleDto.getBody());
 		dto.setDateCreated(articleDto.getDateCreated());
 		dto.setDatePosted(articleDto.getDatePosted());

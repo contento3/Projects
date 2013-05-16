@@ -66,5 +66,7 @@ public interface ArticleService extends Service<ArticleDto>{
 	 * Add associated images to article
 	 * @param article
 	 */
-	void updateAssociateImages(final ArticleDto article);
+	void updateAssociateImages(ArticleDto article);
+	
+	ArticleDto findArticleByIdAndSiteId(Integer id,Integer siteId);
 }

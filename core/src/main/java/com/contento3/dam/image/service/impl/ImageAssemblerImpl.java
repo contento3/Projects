@@ -24,8 +24,8 @@ public class ImageAssemblerImpl implements ImageAssembler {
 	public Image dtoToDomain(final ImageDto dto) {
 		Image domain = new Image();
 		
-		if (null!=dto.getImageId()){
-			domain.setImageId(dto.getImageId());
+		if (null!=dto.getId()){
+			domain.setImageId(dto.getId());
 		}
 		domain.setImageUuid(dto.getImageUuid());
 		domain.setAltText(dto.getAltText());
@@ -39,7 +39,7 @@ public class ImageAssemblerImpl implements ImageAssembler {
 	@Override
 	public ImageDto domainToDto(final Image domain) {
 		ImageDto dto = new ImageDto();
-		dto.setImageId(domain.getImageId());
+		dto.setId(domain.getImageId());
 		dto.setAltText(domain.getAltText());
 		dto.setImage(domain.getImage());
 		dto.setImageUuid(domain.getImageUuid());

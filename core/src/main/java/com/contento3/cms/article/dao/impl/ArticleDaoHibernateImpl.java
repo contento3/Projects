@@ -72,11 +72,14 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 				.createCriteria(Article.class)
 				.addOrder(Order.desc("dateCreated"))
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-				.setFirstResult(0).setMaxResults(count)
+				.setFirstResult(0)
 				.add(Restrictions.eq("isVisible", 1))
 				.createCriteria("site")
 				.add(Restrictions.eq("siteId", siteId));
-				
+		
+		if(count!=null){
+			criteria.setMaxResults(count);
+		}
 		return criteria.list();
 	}
 
@@ -96,6 +99,23 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		.add(Restrictions.eq("s.siteId", siteId));
 		
 		return criteria.list();
+	}
+
+	@Override
+	public Article findArticleByIdAndSiteId(Integer articleId,Integer siteId) {
+		Criteria criteria = this.getSession()
+		.createCriteria(Article.class)
+		.add(Restrictions.eq("isVisible", 1))
+		.add(Restrictions.eq("articleId", articleId))
+		.createAlias("site", "s")
+		.add(Restrictions.eq("s.siteId", siteId));
+		
+		Article article = null;
+		if (!CollectionUtils.isEmpty(criteria.list())) {
+			article = (Article) criteria.list().get(0);
+		}
+
+		return article;
 	}
 
 }

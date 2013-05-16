@@ -82,7 +82,7 @@ public class AddAssociatedUsersListener extends EntityListener implements ClickL
 		dtos = (Collection) userService.findUsersByAccountId(accountId);
 		if (dtos!=null) {
 			setCaption("Add user");//extend class method
-			userPicker = new GenricEntityPicker(dtos, listOfColumns,this.vLayout,mainwindow,this,false);
+			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,mainwindow,this,false);
 			userPicker.build();
 			
 		}

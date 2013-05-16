@@ -50,12 +50,12 @@ public class AssociatedImageTableBuilder extends AbstractTableBuilder  {
 	@Override
 	public void assignDataToTable(Dto dto, Table assImagetable, Container imageContainer) {
 		ImageDto image = (ImageDto) dto;
-		Item item = imageContainer.addItem(image.getImageId());
+		Item item = imageContainer.addItem(image.getId());
 		
 		/*Content scope link button*/
 		Button imageLink = new Button("View Image",new ImageViewer(this.mainWindow,image),"openButtonClick");
 		imageLink.setCaption(image.getName());
-		imageLink.setData(image.getImageId());
+		imageLink.setData(image.getId());
 		imageLink.addStyleName("view");
 		imageLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("images").setValue(imageLink);
@@ -63,7 +63,7 @@ public class AssociatedImageTableBuilder extends AbstractTableBuilder  {
 		/*Content scope link button*/
 		Button contentScopeLink = new Button("Scope link",new ArticleAsscContentScopeListener(this.mainWindow,this.helper,this.article,image),"openButtonClick");
 		contentScopeLink.setCaption("view");
-		contentScopeLink.setData(image.getImageId());
+		contentScopeLink.setData(image.getId());
 		contentScopeLink.addStyleName("view");
 		contentScopeLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("content scope").setValue(contentScopeLink);

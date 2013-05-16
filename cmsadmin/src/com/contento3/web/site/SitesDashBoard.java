@@ -263,7 +263,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		articleDto = articleService.findLatestArticleBySiteId(siteId, 5);
 		if(!articleDto.isEmpty()){
 			for(ArticleDto article: articleDto){
-					Item item = articleContainer.addItem(article.getArticleId());
+					Item item = articleContainer.addItem(article.getId());
 					item.getItemProperty("head").setValue(article.getHead());
 					SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 					item.getItemProperty("date_created").setValue(formatter.format(article.getDateCreated()));
@@ -308,7 +308,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		imageDto = imageService.findLatestImagesBySiteId(siteId, 5);
 		if(!imageDto.isEmpty()){
 			for(ImageDto image: imageDto){
-				Item item = imageContainer.addItem(image.getImageId());
+				Item item = imageContainer.addItem(image.getId());
 				item.getItemProperty("name").setValue(image.getName());
 				item.getItemProperty("alt_text").setValue(image.getAltText());
 			}

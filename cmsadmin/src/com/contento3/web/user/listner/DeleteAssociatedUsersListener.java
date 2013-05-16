@@ -85,7 +85,7 @@ public class DeleteAssociatedUsersListener extends EntityListener implements Cli
 		Collection<Dto> dtos = (Collection) groupService.findById(groupId).getMembers();
 		if (dtos!=null) {
 			setCaption("Delete user");//extend class method
-			userPicker = new GenricEntityPicker(dtos, listOfColumns,this.vLayout,mainwindow,this,false);
+			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,mainwindow,this,false);
 			userPicker.build();
 		}
 	}

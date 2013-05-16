@@ -113,7 +113,7 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 			listOfColumns.add("Images");
 			setCaption("Add images");
 			Collection<Dto> dtos = (Collection) imageService.findImageByAccountId(this.accountId);
-			GenricEntityPicker imagePicker = new GenricEntityPicker(dtos, listOfColumns, this.mainLayout, mainWindow, this, false);
+			GenricEntityPicker imagePicker = new GenricEntityPicker(dtos,null, listOfColumns, this.mainLayout, mainWindow, this, false);
 			imagePicker.build();
 			imagePicker.setTableCaption("Select Images");
 			this.mainLayout.addComponentAsFirst(contentScopeCombo);
@@ -138,8 +138,8 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 			Integer scope = Integer.parseInt(this.contentScopeCombo.getValue().toString());
 			AssociatedContentScopeDto contentscope = scopeService.findById(scope);
 			try {
-				for(String name : selectedItems ){
-					final ImageDto image = imageService.findImageByNameAndAccountId(name, accountId);
+				for(String id : selectedItems ){
+					final ImageDto image = imageService.findById(Integer.parseInt(id));
 					final ArticleImageDto dto = new ArticleImageDto();
 					dto.setArticle(article);
 					dto.setImage(image);
@@ -148,10 +148,11 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 					if (!article.getAssociateImagesDtos().contains(dto))
 						article.getAssociateImagesDtos().add(dto);
 				}//end outer for	
-			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		}//end outer for	
+			catch (Exception e) {
+		mainWindow.showNotification("Error occured");
+	}
+
 			articleService.updateAssociateImages(article);
 		}//end if
 	}//end updateList()

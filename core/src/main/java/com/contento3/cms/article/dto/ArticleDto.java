@@ -4,8 +4,11 @@ package com.contento3.cms.article.dto;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.page.category.dto.CategoryDto;
+import com.contento3.cms.page.model.Page;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.dto.Dto;
 
@@ -14,7 +17,7 @@ public class ArticleDto extends Dto {
 	/**
 	 * id for article
 	 */
-	private Integer articleId;
+	private Integer id;
 
 	/**
 	 * unique random UUID
@@ -89,12 +92,12 @@ public class ArticleDto extends Dto {
 		this.isVisible = isVisible;
 	}
 
-	public Integer getArticleId() {
-		return articleId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setArticleId(final Integer articleId) {
-		this.articleId = articleId;
+	public void setId(final Integer id) {
+		this.id = id;
 	}
 
 	public String getUuid() {
@@ -193,6 +196,42 @@ public class ArticleDto extends Dto {
 	public final void setAssociateImagesDtos(final Collection<ArticleImageDto> associateImagesDtos) {
 		this.associateImagesDtos = associateImagesDtos;
 	}
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder(23,31)
+                  .append(this.getId())
+                  .append(this.getName())
+                  .toHashCode();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+      boolean isEqual;
+      
+      if(obj == null) {
+        isEqual = false;
+      } else if(this == obj) {
+    	  isEqual = true;
+      } else if(obj instanceof Dto) {
+    	  final Dto dto = (Dto)obj;
+    	  if (dto.getId() == this.getId())
+    	  isEqual = true;
+    	  else 
+    	  isEqual = false;	  
+      } else {
+        isEqual = false;
+      }
+      return isEqual;
+    }
 
 
 }

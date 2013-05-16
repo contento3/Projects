@@ -31,7 +31,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 	@Override
 	public Article dtoToDomain(final ArticleDto dto) {
 		final Article domain = new Article();
-		domain.setArticleId(dto.getArticleId());
+		domain.setArticleId(dto.getId());
 		domain.setHead(dto.getHead());
 		domain.setBody(dto.getBody());
 		domain.setTeaser(dto.getTeaser());
@@ -49,7 +49,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 	@Override
 	public ArticleDto domainToDto(final Article domain) {
 		ArticleDto dto = new ArticleDto();
-		dto.setArticleId(domain.getArticleId());
+		dto.setId(domain.getArticleId());
 		dto.setUuid(domain.getUuid());
 		dto.setHead(domain.getHead());
 		dto.setBody(domain.getBody());

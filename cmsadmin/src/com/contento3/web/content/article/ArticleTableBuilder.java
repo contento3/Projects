@@ -66,7 +66,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void assignDataToTable(final Dto dto,final Table articleTable,final Container articleContainer) {
 		ArticleDto article = (ArticleDto) dto;
-		Item item = articleContainer.addItem(article.getArticleId());
+		Item item = articleContainer.addItem(article.getId());
 		item.getItemProperty("articles").setValue(article.getHead());
 		String DATE_FORMAT = "dd/MM/yyyy";
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
@@ -80,7 +80,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		/* Associated category button*/
 		Button categoryLink = new Button();
 		categoryLink.setCaption("View");
-		categoryLink.setData(article.getArticleId());
+		categoryLink.setData(article.getId());
 		categoryLink.addStyleName("view");
 		categoryLink.setStyleName(BaseTheme.BUTTON_LINK);
 		categoryLink.addListener(new AssociatedCategoryClickListener(this.window,article));
@@ -88,7 +88,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		
 		Button editLink = new Button();
 		editLink.setCaption("Edit");
-		editLink.setData(article.getArticleId());
+		editLink.setData(article.getId());
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
 		editLink.addListener(new ArticleFormBuilderListner(this.contextHelper, this.window,this.tabSheet,articleTable));
@@ -96,7 +96,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		
 		Button deleteLink = new Button();
 		deleteLink.setCaption("Delete");
-		deleteLink.setData(article.getArticleId());
+		deleteLink.setData(article.getId());
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);

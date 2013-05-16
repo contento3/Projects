@@ -3,14 +3,14 @@ package com.contento3.web.site;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.service.ArticleService;
+import com.contento3.cms.page.service.impl.PageServiceImpl;
 import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.dto.Dto;
-import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.common.helper.HorizontalRuler;
@@ -30,6 +30,8 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 public class SiteContentAssignmentUIManager extends EntityListener  implements ClickListener{
+
+	private static final Logger LOGGER = Logger.getLogger(SiteContentAssignmentUIManager.class);
 
 	private final TabSheet tabSheet;
 
@@ -53,6 +55,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	private ArticleService articleService;
 
 	private SiteDto siteDto = null;
+	
+	private Collection<Dto> assignedDtos;
 	
 	public SiteContentAssignmentUIManager(TabSheet uiTabSheet,
 			SpringContextHelper contextHelper, Window parentWindow) {
@@ -104,7 +108,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		listOfColumns.add("Articles");
 		GenricEntityPicker contentPicker;
 		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute(parentWindow, "accountId")));
-		contentPicker = new GenricEntityPicker(dtos,listOfColumns,verticalLayout,parentWindow,this,false);
+		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null));
+		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayout,parentWindow,this,false);
 		contentPicker.setCaption("Assign Content to Site");
 		contentPicker.build();
 	}
@@ -115,21 +120,39 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			ArticleDto articleDto = null;
 			try {
 				for(String name : selectedItems ){
-					articleDto = articleService.findById(Integer.parseInt(name));
-					articleDto.getSite().add(siteDto);
-					articleService.update(articleDto);
-					parentWindow.showNotification("Article articleDto .getHead()+ saved successfully  for site" + siteDto.getSiteName(), Notification.TYPE_TRAY_NOTIFICATION);
-				}//end outer for	
-			} catch (Exception e) {
+					Integer articleId = Integer.parseInt(name);
+					articleDto = articleService.findArticleByIdAndSiteId(articleId,siteDto.getSiteId());
+					if (articleDto==null){
+						articleDto = articleService.findById(articleId);
+						articleDto.getSite().add(siteDto);
+						articleService.update(articleDto);
+					}
+					else if (assignedDtos.contains(((Dto)articleDto))){
+						assignedDtos.remove(((Dto)articleDto));
+					}
+				}//end outer for
+				removeAssignedContentDtos(assignedDtos);
+				parentWindow.showNotification("Articles saved successfully for site" + siteDto.getSiteName(), Notification.TYPE_TRAY_NOTIFICATION);
+			}
+			catch (Exception e) {
+				LOGGER.error("Unable to assign article to site" + siteDto.getSiteName());
 				parentWindow.showNotification("Unable to associate article with head" + articleDto .getHead()+ " for site" + siteDto.getSiteName(), Notification.TYPE_ERROR_MESSAGE);
 			}
 		}//end if
+	}
+
+	private void removeAssignedContentDtos(Collection<Dto> dtos){
+		for(Dto dto:dtos ){
+			ArticleDto articleDto = articleService.findById(dto.getId());
+			articleDto.getSite().clear();
+			articleService.update(articleDto);
+		}
 	}
 	
 	private Collection<Dto> populateGenericDtoFromArticleDto(final Collection <ArticleDto> articleDtos){
 		Collection <Dto> dtos = new ArrayList<Dto>();
 		for (ArticleDto articleDto : articleDtos){
-			Dto dto = new Dto(articleDto.getArticleId(),articleDto.getHead());
+			Dto dto = new Dto(articleDto.getId(),articleDto.getHead());
 			dtos.add(dto);
 		}
 		return dtos;

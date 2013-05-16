@@ -114,7 +114,7 @@ public class ArticleAsscContentScopeListener extends CustomComponent implements 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void buildAssociateContentScopeTable(){
 		ArticleImageService service = (ArticleImageService) this.helper.getBean("articleImageService");
-		Collection<ArticleImageDto> artImage = service.findAsscArticleImageById(this.article.getArticleId(), image.getImageId());
+		Collection<ArticleImageDto> artImage = service.findAsscArticleImageById(this.article.getId(), image.getId());
 		Collection<AssociatedContentScopeDto> contentScope = new ArrayList<AssociatedContentScopeDto>();
 		for(ArticleImageDto dto:artImage){
 			contentScope.add(dto.getContentScope());

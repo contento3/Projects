@@ -32,8 +32,8 @@ public class ArticleImageDto extends Dto {
 
 		if (v instanceof ArticleImageDto) {
 			ArticleImageDto ptr = (ArticleImageDto) v;
-			retVal = (ptr.article.getArticleId() == this.article.getArticleId()
-					&& ptr.image.getImageId() == this.image.getImageId() && ptr.contentScope
+			retVal = (ptr.article.getId() == this.article.getId()
+					&& ptr.image.getId() == this.image.getId() && ptr.contentScope
 					.getId() == this.contentScope.getId());
 		}
 

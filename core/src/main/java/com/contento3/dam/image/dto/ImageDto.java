@@ -11,7 +11,7 @@ public class ImageDto extends Dto{
 
 	private String imageUuid;
 	
-	private Integer imageId;
+	private Integer id;
 	
 	private String name;
 	
@@ -38,7 +38,7 @@ public class ImageDto extends Dto{
 
 		if (v instanceof ImageDto) {
 			ImageDto ptr = (ImageDto) v;
-			retVal = ptr.imageId.longValue() == this.imageId;
+			retVal = ptr.id.longValue() == this.id;
 		}
 
 		return retVal;
@@ -47,7 +47,7 @@ public class ImageDto extends Dto{
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 17 * hash + (this.imageId != null ? this.imageId.hashCode() : 0);
+		hash = 17 * hash + (this.id != null ? this.id.hashCode() : 0);
 		return hash;
 	}
 
@@ -99,12 +99,12 @@ public class ImageDto extends Dto{
 		this.image = image;
 	}
 
-	public Integer getImageId() {
-		return imageId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setImageId(Integer imageId) {
-		this.imageId = imageId;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getImageUuid() {

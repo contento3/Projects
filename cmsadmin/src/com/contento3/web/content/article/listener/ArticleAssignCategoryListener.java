@@ -63,7 +63,7 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			Collection<Dto> dtos = null;
 			dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
 			setCaption("Add Category");
-			categoryPicker = new GenricEntityPicker(dtos,listOfColumns,mainLayout,mainWindow,this,true);
+			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,mainWindow,this,true);
 			categoryPicker.build();
 		}else{
 			//warning message
