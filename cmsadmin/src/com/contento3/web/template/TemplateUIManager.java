@@ -4,6 +4,8 @@ package com.contento3.web.template;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Set;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
@@ -20,9 +22,18 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.Transferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptAll;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
+import com.vaadin.event.dd.acceptcriteria.SourceIs;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
+import com.vaadin.ui.AbstractSelect.TargetItemIs;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -37,6 +48,9 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.TreeDragMode;
+import com.vaadin.ui.Tree.TreeDropCriterion;
+import com.vaadin.ui.Tree.TreeTargetDetails;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
@@ -224,6 +238,82 @@ public class TemplateUIManager implements UIManager{
         root = new Tree("",templateContainer);
         root.setImmediate(true);
     	root.setItemCaptionPropertyId("name");
+    	
+    	/**
+    	 * Move template code
+    	 * */
+    	root.setDragMode(TreeDragMode.NODE);
+    	root.setDropHandler(new DropHandler() {
+			
+			@Override
+			public AcceptCriterion getAcceptCriterion() {
+				ServerSideCriterion serverCriteria = new ServerSideCriterion() {
+					
+					@Override
+					public boolean accept(DragAndDropEvent dragEvent) {
+						String sourceId = dragEvent.getTransferable().getData("itemId").toString();
+						
+						if(sourceId.startsWith("file:"))
+							return true;
+						else
+							return false;
+					}
+				};
+				
+				return serverCriteria;
+			}
+			
+			@Override
+			public void drop(DragAndDropEvent event) {
+		        // Wrapper for the object that is dragged
+		        Transferable t = event.getTransferable();
+		        
+		        // Make sure the drag source is the same tree
+		        if (t.getSourceComponent() != root)
+		            return;
+		        
+		        TreeTargetDetails target = (TreeTargetDetails)
+		            event.getTargetDetails();
+
+		        // Get ids of the dragged item and the target item
+		        Object sourceItemId = t.getData("itemId");
+		        Object targetItemId = target.getItemIdOver();
+
+		        // On which side of the target the item was dropped 
+		        VerticalDropLocation location = target.getDropLocation();
+		        
+		        HierarchicalContainer container = (HierarchicalContainer)
+		        root.getContainerDataSource();
+
+		        // Drop right on an item -> make it a child
+		        if (location == VerticalDropLocation.MIDDLE){
+		            root.setParent(sourceItemId, targetItemId);
+		            //System.out.println("Source Id: " + sourceItemId.toString().substring(5));
+		            //System.out.println("Target Id: " + targetItemId);
+		        }
+
+		        // Drop at the top of a subtree -> make it previous
+		        else if (location == VerticalDropLocation.TOP) {
+		            Object parentId = container.getParent(targetItemId);
+		            container.setParent(sourceItemId, parentId);
+		            container.moveAfterSibling(sourceItemId, targetItemId);
+		            container.moveAfterSibling(targetItemId, sourceItemId);
+		        }
+		        
+		        // Drop below another item -> make it next 
+		        else if (location == VerticalDropLocation.BOTTOM) {
+		            Object parentId = container.getParent(targetItemId);
+		            container.setParent(sourceItemId, parentId);
+		            container.moveAfterSibling(sourceItemId, targetItemId);
+		        }
+		        
+		        // Modify parent inside the template
+		        TemplateDto templateDto = templateService.findTemplateById( Integer.parseInt(sourceItemId.toString().substring(5)) );
+		        templateDto.setTemplateDirectoryDto(templateDirectoryService.findById((Integer) targetItemId));
+		        templateService.updateTemplate(templateDto);
+			}
+		});
+    	
         templateContainer.addContainerProperty("id", Integer.class, null);
         templateContainer.addContainerProperty("fileid", String.class, null);
         templateContainer.addContainerProperty("name", String.class, null);
@@ -394,11 +484,10 @@ public class TemplateUIManager implements UIManager{
 		isGlobalOptionsGroup.addItem("Global");
 		isGlobalOptionsGroup.addItem("Local");
 		isGlobalOptionsGroup.addListener(new Property.ValueChangeListener() {
-			
-		@Override
-		public void valueChange(ValueChangeEvent event) {
-				selectedTemplateDirScope = (event.getProperty().toString().equals("Global") ? true : false);
-			}
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+					selectedTemplateDirScope = (event.getProperty().toString().equals("Global") ? true : false);
+				}
 		});
 		
 		name.setCaption("Name");
@@ -412,6 +501,14 @@ public class TemplateUIManager implements UIManager{
 			parentPath.setEnabled(false);
 			parentPath.setValue(String.format("/%s",buildPath(folderId,templateDirectory.getDirectoryName())));
 			formLayout.addComponent(parentPath);
+			
+			//to disable global/local if parent exist
+			if(templateDirectory.isGlobal())
+				isGlobalOptionsGroup.select("Global");
+			else
+				isGlobalOptionsGroup.select("Local");
+			
+			isGlobalOptionsGroup.setEnabled(false);
 		}
 			
 			Button addButton = new Button();

@@ -134,8 +134,11 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 					
 					Object order = templateOrdrTxtFld.getValue();
 					
-					if (null!=order){
+					if (!order.toString().equals("")){
 						dto.setOrder(Integer.parseInt((String)order));
+					} else {
+						mainwindow.showNotification("Please enter an order value.",Notification.TYPE_WARNING_MESSAGE);
+						return;
 					}
 					
 					pageTemplateService = (PageTemplateService)helper.getBean("pageTemplateService");
