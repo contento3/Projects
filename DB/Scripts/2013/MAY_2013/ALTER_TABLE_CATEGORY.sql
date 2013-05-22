@@ -1,0 +1,1 @@
+ALTER TABLE `cms`.`category` DROP FOREIGN KEY `category_ibfk_1` ;ALTER TABLE `cms`.`category` CHANGE COLUMN `ACCOUNT_ID` `ACCOUNT_ID` INT(11) NOT NULL  ,   ADD CONSTRAINT `category_ibfk_1`  FOREIGN KEY (`ACCOUNT_ID` )  REFERENCES `cms`.`account` (`account_id` );
