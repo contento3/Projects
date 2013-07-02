@@ -10,7 +10,7 @@ use PLATFORM_USERS;
 
 create table USERS(
   USERNAME varchar(50) not null primary key,
-  PASSWORD varchar(50) not null,
+  PASSWORD varchar(250) not null,
   ENABLED boolean not null,
   SALT varchar(25) not null
   );

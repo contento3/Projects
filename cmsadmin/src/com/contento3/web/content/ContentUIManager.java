@@ -40,7 +40,10 @@ public class ContentUIManager implements UIManager{
 	/**
 	 * Represents the navigation items in the Content Manager section.
 	 */
-	private String[] navigationItems = {NavigationConstant.DOCUMENT_MGMT, NavigationConstant.CONTENT_ART_MGMT,NavigationConstant.CONTENT_IMG_MGMT,NavigationConstant.CONTENT_VID_MGMT};
+	private String[] navigationItems = {NavigationConstant.DOCUMENT_MGMT, NavigationConstant.CONTENT_ART_MGMT
+			,NavigationConstant.CONTENT_IMG_MGMT
+			//TODO Need to uncomment when we add Video related functionality in the cms ,NavigationConstant.CONTENT_VID_MGMT
+			};
 	
 	final CssLayout verticalLayout = new CssLayout();
 

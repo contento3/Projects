@@ -90,6 +90,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	
 	UIManager siteUIMgr;
 	
+    final TabSheet uiTabsheet = new TabSheet();
+
 	CMSMainWindow(final SpringContextHelper helper){ //change
 	//	super(TM.get("app.title"));
 		this.helper = helper;
@@ -196,19 +198,19 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 	    final VerticalSplitPanel vert = new VerticalSplitPanel();
 	    
-	    vert.setSplitPosition(8, Sizeable.UNITS_PERCENTAGE);
+	    vert.setSplitPosition(6, Sizeable.UNITS_PERCENTAGE);
 	    vert.setLocked(true);
 	    this.setCaption("CONTENTO3 CMS");
 	    vert.setStyleName(Reindeer.SPLITPANEL_SMALL);
 
 
 	    HorizontalLayout horizTop = new HorizontalLayout();
-	    horizTop.setStyleName(Reindeer.LAYOUT_BLACK);
+	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);
 	    vLayout.addComponent(vert);
 	       
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-		embedded.setHeight(90, Sizeable.UNITS_PERCENTAGE);
+		embedded.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		horizTop.addComponent(embedded);
 	    horizTop.setComponentAlignment(embedded, Alignment.TOP_LEFT);
 	    horizTop.setSizeFull();
@@ -329,7 +331,6 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
     	root.setImmediate(true);
     	vert.addComponent(mainAndContentSplitter); 
-        final TabSheet uiTabsheet = new TabSheet();
 
 	   //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
@@ -434,6 +435,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     	//If the user right clicks the 'Site' and then click 'Create new site'
     	//Then a new site creation screen needs to be rendered
     	if (action.equals(ACTION_ADD_SITE)) {
+			UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
+
     		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.NEWSITE));
     		//SiteService siteService = (SiteService) helper.getBean("siteService");
     	}
