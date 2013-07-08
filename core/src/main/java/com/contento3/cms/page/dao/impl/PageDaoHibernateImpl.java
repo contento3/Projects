@@ -37,7 +37,7 @@ implements PageDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Page> findPageBySiteId(Integer siteId) {
+	public Collection<Page> findPageBySiteId(final Integer siteId) {
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
 		.addOrder(Order.desc("title"))

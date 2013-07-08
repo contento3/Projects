@@ -20,6 +20,7 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -105,8 +106,8 @@ public class SiteUIManager implements UIManager {
 				componentToReturn = sitesDashBoard.render(null);
 		}
 		else if (command.equals(NEWSITE)) {
-			uiTabSheet.setHeight("675");
-			uiTabSheet.setWidth("775");
+			uiTabSheet.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+			uiTabSheet.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			VerticalLayout layout = renderNewSite();
 			uiTabSheet.addComponent(layout);
 			Tab tab1 = uiTabSheet.addTab(layout, "Create site", new ExternalResource("images/site.png"));

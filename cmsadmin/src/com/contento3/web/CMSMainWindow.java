@@ -113,7 +113,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    vLayout.addComponent(embedded);
 	    
 	    vLayout.setSpacing(true);
-	    
+
+	    //Label to display validation errors while the user logs in.
+		final Label unsuccessfulLoginLbl = new Label();
+		vLayout.addComponent(unsuccessfulLoginLbl);
+
 	    vLayout.addComponent(login);
 		vLayout.setComponentAlignment(login, Alignment.MIDDLE_CENTER);
 		
@@ -137,12 +141,15 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 				}
 				catch(IncorrectCredentialsException ice){
 					LOGGER.error("Username or password for username ["+username+"] is not valid");
+					unsuccessfulLoginLbl.setCaption("Incorrect Email/Password Combination,Contento3 passwords are case sensitive.");
 				}
 				catch(CredentialsException ice){
 					LOGGER.error("Error occured while authentication user with username: "+username);
+					unsuccessfulLoginLbl.setCaption("Incorrect Email/Password Combination,Contento3 passwords are case sensitive.");
 				}
 				catch(Exception ice){
 					LOGGER.error("Error occured while authenticating user"+ice);
+					unsuccessfulLoginLbl.setCaption("Something went wrong when you tried to login.Please report to contento3 support team.");
 				}
             }
         });
@@ -289,8 +296,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
-        root.setItemIcon(contentMgmt, new ExternalResource("images/content-mgmt.png"));
-        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content-mgmt.png"));
+        root.setItemIcon(contentMgmt, new ExternalResource("images/image-view.png"));
+        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content.png"));
 
         
         Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);

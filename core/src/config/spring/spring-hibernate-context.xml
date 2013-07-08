@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-
+<!-- 
  	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -15,7 +15,30 @@
 		<property name="username" value="root" />
 		<property name="password" value="root" />
 	</bean>
+-->
 
+
+<bean id="environmentConfig" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+<property name="algorithm" value="PBEWithMD5AndDES" />
+<property name="passwordEnvName" value="PEV" />
+</bean>
+
+<bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+<property name="config" ref="environmentConfig" />
+</bean>
+
+<bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+<constructor-arg ref="encryptor" />
+<property name="location" value="classpath:/config/spring/db.properties" />
+</bean>
+
+
+<bean id="myDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+           <property name="driverClassName" value="${driver}"/>
+           <property name="url" value="${dburl}"/>
+           <property name="username" value="${dbuser}"/>
+           <property name="password" value="${dbpassword}"/>
+</bean>
 <!--  
 	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
