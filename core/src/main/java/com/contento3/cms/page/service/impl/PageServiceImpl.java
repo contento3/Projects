@@ -63,10 +63,6 @@ public class PageServiceImpl implements PageService {
 		return pageAssembler.domainsToDtos(pageDao.findPageBySiteId(siteId)); 
 	}
 
-	public Collection<PageDto> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize){
-		return pageAssembler.domainsToDtos(pageDao.findPageBySiteId(siteId,pageNumber,pageSize)); 
-	}
-	
 	public PageDto findPageBySiteId(final Integer siteId,final Integer pageId){
 		 return pageAssembler.domainToDto(pageDao.findById(pageId)); 
 	 }

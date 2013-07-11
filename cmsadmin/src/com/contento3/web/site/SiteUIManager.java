@@ -101,13 +101,14 @@ public class SiteUIManager implements UIManager {
 	@Override
 	public Component render(final String command) {
 		Component componentToReturn = null;
+		uiTabSheet.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+		uiTabSheet.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+
 		if(command == null){
 				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper,parentWindow);
 				componentToReturn = sitesDashBoard.render(null);
 		}
 		else if (command.equals(NEWSITE)) {
-			uiTabSheet.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-			uiTabSheet.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			VerticalLayout layout = renderNewSite();
 			uiTabSheet.addComponent(layout);
 			Tab tab1 = uiTabSheet.addTab(layout, "Create site", new ExternalResource("images/site.png"));
@@ -157,6 +158,9 @@ public class SiteUIManager implements UIManager {
 	 * @param pagesTab
 	 */
 	public void renderButtons(final HorizontalLayout horizontalLayout,final Integer siteId,final TabSheet pagesTab){
+		pagesTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+		pagesTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+
 		// Button that when clicked rendered a new page tab.
 		final Button newPageButton = new Button("Create page");
 		horizontalLayout.addComponent(newPageButton);

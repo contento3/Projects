@@ -1,18 +1,15 @@
 package com.contento3.site.template.dto;
 
+/**
+ * Entity that holds the tempalte text.
+ * @author hamakhaa
+ *
+ */
 public class TemplateContentDto {
 
 	private String content;
 
-	public TemplateContentDto () {
-		this.content = 
-				" ${templateService.findTemplateById(1).templateName}";
-//				"<list templateService.findTemplateById(1) as dto>" +
-//				"${dto.templateName}"+
-//				"</list>";	
-	}
-	
-	public void setContent(String content) {
+	public void setContent(final String content) {
 		this.content = content;
 	}
 

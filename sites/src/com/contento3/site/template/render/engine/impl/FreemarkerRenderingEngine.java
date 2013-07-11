@@ -17,6 +17,7 @@ import com.contento3.site.template.render.engine.RenderingEngine;
 
 import freemarker.cache.TemplateLoader;
 import freemarker.core.Environment;
+import freemarker.ext.servlet.FreemarkerServlet;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
@@ -90,6 +91,8 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 			env.importLib(tpl,"spring");
 			env.setGlobalVariable("page", fmModel.get("page"));
 			env.setGlobalVariable("site", fmModel.get("site"));
+			env.setGlobalVariable("request", fmModel.get(FreemarkerServlet.KEY_REQUEST));
+			
 			env.process();
 			
 //			 tpl = configuration.getTemplate("org/springframework/web/servlet/view/freemarker/spring.ftl");

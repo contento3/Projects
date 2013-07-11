@@ -2,6 +2,7 @@ package com.contento3.account.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -20,7 +21,9 @@ public class AccountDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<A
 	
 	@Override
 	public Collection<Account> findAccountBySiteId(final Integer siteId){
-		Criteria criteria = this.getSession()
+		Validate.notNull(siteId,"siteId cannot be null");
+
+		final Criteria criteria = this.getSession()
 		.createCriteria(Account.class)
 		.setCacheable(true)
 		.setCacheRegion(CACHE_REGION)

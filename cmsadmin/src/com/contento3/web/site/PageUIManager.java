@@ -394,8 +394,8 @@ public class PageUIManager {
 	public TabSheet renderPageLayouts(PageDto pageDtoWithLayout) {
 		final PageLayoutDto layoutDto = pageDtoWithLayout.getPageLayoutDto();
 		pageLayoutsTab = new TabSheet();
-		pageLayoutsTab.setHeight("");
-		pageLayoutsTab.setWidth("775");
+		pageLayoutsTab.setHeight(10,Sizeable.UNITS_PERCENTAGE);
+		pageLayoutsTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 
 		PageTemplateDto pageTemplateDto = new PageTemplateDto();
 		//pageTemplateDto.setPageId(selectedPageId);
@@ -419,7 +419,9 @@ public class PageUIManager {
 			while (pageSectionIterator.hasNext()) {
 				final VerticalLayout pageSectionLayout = new VerticalLayout();
 				pageLayoutsTab.addComponent(pageSectionLayout);
-				pageLayoutsTab.setSizeFull();
+				pageLayoutsTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+				pageLayoutsTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+
 				renderPageSection(pageLayoutsTab, pageSectionLayout,
 						pageSectionIterator.next(), pageTemplateDto,templateTableBuilder,templateTable);
 				pageSectionLayout.addComponent(templateTable);
@@ -431,7 +433,7 @@ public class PageUIManager {
 			pageSectionLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			pageSectionLayout.setSpacing(true);
 			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", new ExternalResource("images/site.png"));
-			tab.setClosable(true);
+			tab.setClosable(false);
 			
 			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
 			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM,templateTableBuilder,templateTable);

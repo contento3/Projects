@@ -16,15 +16,6 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 public interface PageService {
 
 	/**
-	 * Returns the {@link Collection} of PageDto by siteId
-	 * @param siteId unique id for {@link Site} class
-	 * @param pageNumber  
-	 * @param pageSize
-	 * @return {@link Collection} of PageDto
-	 */
-	Collection <PageDto> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize);
-
-	/**
 	 * Returns the {@link Collection} of {@link PageDto} by siteId
 	 * @param siteId
 	 * @return {@link Collection} of PageDto
