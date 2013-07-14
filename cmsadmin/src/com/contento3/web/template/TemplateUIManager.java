@@ -186,16 +186,23 @@ public class TemplateUIManager implements UIManager{
 					if(root.getItemIds().isEmpty()){
 						renderFolderTab(null);
 					}
-				//	else if(selectedDirectoryId==null){
-				//		parentWindow.showNotification(String.format("Please select parent folder to add new folder"),Notification.TYPE_WARNING_MESSAGE);
-				//	}
 				}
+			}
+		});
+
+		Button deleteTemplateBtn = new Button();
+		deleteTemplateBtn.setCaption("Delete button");
+		deleteTemplateBtn.addListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
 			}
 		});
 		
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.addComponent(newTemplate);
 		buttonLayout.addComponent(newDirectory);
+		buttonLayout.addComponent(deleteTemplateBtn);
+
 		buttonLayout.setSpacing(true);
 		//Add the accordion
 		vLayout.addComponent(panel);

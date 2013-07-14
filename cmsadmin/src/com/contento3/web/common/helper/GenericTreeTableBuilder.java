@@ -49,6 +49,7 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	 */
 	final Collection<String> selectedItems= new ArrayList<String>();
 	
+	final EntityListener entityListener;
 
 	/**
 	 * Constructor
@@ -56,12 +57,13 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	 * @param listOfColumns
 	 * @param vLayout
 	 */
-	public GenericTreeTableBuilder(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
+	public GenericTreeTableBuilder(final EntityListener entityListener,final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
 		super(new TreeTable());
 		this.listOfColumns = listOfColumns;
 		this.saveButton = new Button();
 		this.dtos = dtos;
 		this.vLayout = vLayout;
+		this.entityListener = entityListener;
 		
 	}
 
@@ -147,17 +149,16 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(ClickEvent event) {	
 				 for (Object id : treeTable.getItemIds()) {
 	                	
                      // Get the check-box of this item (row)
-                      
                      if (treeTable.isSelected(id)) {
-                    	 selectedItems.add(treeTable.getContainerProperty(id, listOfColumns.iterator().next()).getValue().toString());
+                    	 selectedItems.add(id.toString());
                      }
                 }//end for
 				 vLayout.setData(selectedItems);//adding selected item into vLayout
-				 
+	                entityListener.updateList();
 			}
 		});
 		

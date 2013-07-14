@@ -302,6 +302,10 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         root.setItemIcon(contentMgmt, new ExternalResource("images/image-view.png"));
         contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content.png"));
 
+        Item category = hwContainer.addItem(NavigationConstant.CATEGORY_MGMT);
+        category.getItemProperty("name").setValue(NavigationConstant.CATEGORY_MGMT);
+        root.setItemIcon(category, new ExternalResource("images/category.png"));
+        category.getItemProperty("icon").setValue(new ExternalResource("images/category.png"));
         
         Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
         globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
@@ -372,11 +376,15 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper,getWindow());
 	    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
 	        		}
-	        		else if (null!=itemSelected && itemSelected.equals("Template")){
+	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.TEMPLATE)){
 	    	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Template,helper,getWindow());
 	    	    		horiz.setSecondComponent(templateUIMgr.render(null));
 	        		}
-	        		else if (null!=itemSelected && itemSelected.equals("Sites")) {
+	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.CATEGORY_MGMT)){
+	    	    		UIManager categoryUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Category,helper,getWindow());
+	    	    		horiz.setSecondComponent(categoryUIMgr.render(null));
+	        		}
+                	else if (null!=itemSelected && itemSelected.equals("Sites")) {
 	            		hwContainer.setChildrenAllowed("Sites", true);	
 	            		
 	            		//TODO no need to go to fetch sites if they are not null

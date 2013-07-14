@@ -236,6 +236,15 @@ public class ArticleFormBuilderListner implements ClickListener{
 		formLayout.setHeight("100%");
 		formLayout.setWidth("100%");
 		
+		if (null==articleId)
+		{
+			articleForm.getArticleHeading().setValue("");
+			articleForm.getBodyTextField().setValue("");
+			articleForm.getArticleTeaser().setValue("");
+			articleForm.getExpiryDatefield().setValue(null);
+			articleForm.getPostedDatefield().setValue(null);
+		}
+		
 		articleForm.getArticleHeading().setCaption(ArticleMgmtUIManager.ARTICLE_HEADING_LBL);
 		articleForm.getArticleHeading().setColumns(65);
 		articleForm.getArticleTeaser().setCaption(ArticleMgmtUIManager.ARTICLE_TEASER_LBL);

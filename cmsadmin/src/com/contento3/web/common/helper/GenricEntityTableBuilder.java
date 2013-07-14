@@ -107,7 +107,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
                      // Get the check-box of this item (row)
                      CheckBox checkBox = (CheckBox) table.getContainerProperty(id, "select").getValue();
                      if (checkBox.booleanValue()) {
-                    	 selectedItems.add(id+"");
+                    	 selectedItems.add(id.toString());
                      }
                 }//end for
                 vLayout.setData(selectedItems);//adding selected item into vLayout

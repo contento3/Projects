@@ -183,15 +183,16 @@ public class SiteUIManager implements UIManager {
 			}
 		});
 
-		final Button addNewCategoryButton = new Button("Categories");
-		horizontalLayout.addComponent(addNewCategoryButton);
-		addNewCategoryButton.addListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,contextHelper,parentWindow);
-				categoryUIManager.renderCategoryList(siteId);
-			}
-		});
+		//Category is moved to Left Navigation
+//		final Button addNewCategoryButton = new Button("Categories");
+//		horizontalLayout.addComponent(addNewCategoryButton);
+//		addNewCategoryButton.addListener(new ClickListener() {
+//			@Override
+//			public void buttonClick(ClickEvent event) {
+//				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,contextHelper,parentWindow);
+//				categoryUIManager.renderCategoryList();
+//			}
+//		});
 
 		final Button contentAssignmentButton = new Button("Content Assigner");
 		horizontalLayout.addComponent(contentAssignmentButton);

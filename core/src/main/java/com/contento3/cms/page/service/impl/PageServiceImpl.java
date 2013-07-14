@@ -27,6 +27,14 @@ public class PageServiceImpl implements PageService {
 		this.pageAssembler = pageAssembler;
 	}
 
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public PageDto findById(final Integer pageId)  throws PageNotFoundException{
+    	Page page = pageDao.findById(pageId);
+    	return pageAssembler.domainToDto(page);
+    }
+
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
     public Integer create(final PageDto pageDto){
