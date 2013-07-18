@@ -149,7 +149,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 			tableBuilder.build();
 			tableBuilder.table.setPageLength(Integer.parseInt(pageLength));
 		}else{
-			treeTableBuilder = new GenericTreeTableBuilder(entityListener,dtos, listOfColumns, vLayout);
+			treeTableBuilder = new GenericTreeTableBuilder(entityListener,dtos,assignedDto, listOfColumns, vLayout);
 			treeTableBuilder.build();
 			treeTableBuilder.treeTable.setPageLength(Integer.parseInt(pageLength));
 		}

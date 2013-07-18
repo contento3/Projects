@@ -19,8 +19,6 @@ import com.vaadin.ui.VerticalLayout;
 
 public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 
-
-
 	/**
 	 * Used to add or delete item from table
 	 */
@@ -58,7 +56,6 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 * @param vLayout
 	 */
 	public GenricEntityTableBuilder(final EntityListener entityListener,final GenricEntityPicker entityPicker, final Collection<Dto> dtos,final Collection<Dto> assignedDtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
-	
 		super(new Table());
 		this.listOfColumns = listOfColumns;
 		this.addButton = new Button();
@@ -67,7 +64,6 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		this.assignedDtos = assignedDtos;
 		this.entityListener = entityListener;
 		this.entityPicker = entityPicker;
-		
 	}
 	
 	
@@ -75,7 +71,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 * build table and add button click listener
 	 */
 	public void build() {
-		table.setPageLength(25);
+		table.setPageLength(15);
 		build(dtos);
 		Object[] obj = new Object[1];
 		obj[0] = listOfColumns.iterator().next().toString();
