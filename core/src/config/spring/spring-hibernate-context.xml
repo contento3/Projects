@@ -7,17 +7,6 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-<!-- 
- 	<bean id="myDataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/cms" />
-		<property name="username" value="root" />
-		<property name="password" value="root" />
-	</bean>
--->
-
-
 <bean id="environmentConfig" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
 <property name="algorithm" value="PBEWithMD5AndDES" />
 <property name="passwordEnvName" value="PEV" />
@@ -33,25 +22,17 @@
 </bean>
 
 
-<bean id="myDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+<bean id="cmsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
            <property name="driverClassName" value="${driver}"/>
-           <property name="url" value="${dburl}"/>
-           <property name="username" value="${dbuser}"/>
-           <property name="password" value="${dbpassword}"/>
+           <property name="url" value="${dburlCms}"/>
+           <property name="username" value="${dbuserCms}"/>
+           <property name="password" value="${dbpasswordCms}"/>
 </bean>
-<!--  
-	<bean id="myDataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://c3prod.ccqbimjzi68o.us-east-1.rds.amazonaws.com:3306/cms" />
-		<property name="username" value="superuser" />
-		<property name="password" value="superuser" />
-	</bean>
- -->
-	
+
+
 	<bean id="cmsSessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<property name="dataSource" ref="myDataSource" />
+		<property name="dataSource" ref="cmsDataSource" />
 		<property name="annotatedClasses">
 			<list>
 				 <value>com.contento3.cms.page.layout.model.PageLayout</value>

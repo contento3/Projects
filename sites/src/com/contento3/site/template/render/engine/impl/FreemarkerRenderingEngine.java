@@ -72,6 +72,7 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 	public void process(TemplateModelMapImpl fmModel,String requestPagePath,SiteDto site, Writer writer) {
 		try {
 			
+			if (null!=requestPagePath){
 			configuration.setLocalizedLookup(false);
 			configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
 			configuration.setSharedVariable("html_escape", new HtmlEscape());
@@ -94,18 +95,20 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 			env.setGlobalVariable("request", fmModel.get(FreemarkerServlet.KEY_REQUEST));
 			
 			env.process();
-			
-//			 tpl = configuration.getTemplate("org/springframework/web/servlet/view/freemarker/spring.ftl");
-//			tpl.process(modelContext, writer);
-//			configuration.addAutoImport("spring", "org/springframework/web/servlet/view/freemarker/spring.ftl");
-
+			}
+			else {
+				throw new Exception();
+			}
 		} catch (IOException e) {
-			LOGGER.error("error ioexception",e);
+			LOGGER.error(String.format("IOException while trying to process request path [%s]",requestPagePath),e);
 		} catch (TemplateException e) {
-			LOGGER.error("error templateexception",e);
+			LOGGER.error(String.format("TemplateException while trying to process request path [%s]",requestPagePath),e);
+		}
+		catch (NumberFormatException e) {
+			LOGGER.error(String.format("NumberFormatException while trying to process request path [%s].It seems the request path doesnt have the [site] component in it.",requestPagePath),e);
 		}
 		catch (Exception e) {
-			LOGGER.error("error exception",e);
+			LOGGER.error(String.format("Exception while trying to process request path [%s]",requestPagePath),e);
 		}
 	}
 }

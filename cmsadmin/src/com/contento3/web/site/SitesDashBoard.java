@@ -267,7 +267,10 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 					item.getItemProperty("head").setValue(article.getHead());
 					SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 					item.getItemProperty("date_created").setValue(formatter.format(article.getDateCreated()));
-					item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
+					
+					if (null!=article.getExpiryDate()){
+						item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
+					}
 			}
 		}
 

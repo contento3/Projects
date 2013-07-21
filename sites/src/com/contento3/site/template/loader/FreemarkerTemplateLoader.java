@@ -74,6 +74,9 @@ public class FreemarkerTemplateLoader implements TemplateLoader {
 				} catch (PageNotFoundException e) {
 					throw new IOException("Requested page not found",e);
 				}
+				catch (NumberFormatException e) {
+					throw new NumberFormatException("Requested page does not have the site component");
+				}
 			}
 			//Otherwise the path is actually a template 
 			//path which is included in one of the template 

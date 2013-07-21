@@ -69,31 +69,28 @@
     		<beans:property name="passwordService" ref="passwordService" />	
 	</beans:bean> 
     
+	<beans:bean id="environmentConfig" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+		<beans:property name="algorithm" value="PBEWithMD5AndDES" />
+		<beans:property name="passwordEnvName" value="PEV" />
+	</beans:bean>
+
+	<beans:bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<beans:property name="config" ref="environmentConfig" />
+	</beans:bean>
+
+	<beans:bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+		<beans:constructor-arg ref="encryptor" />
+		<beans:property name="location" value="classpath:/config/spring/db.properties" />
+	</beans:bean>
     
+	
 	<beans:bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<beans:property name="driverClassName">
-	    	<beans:value>com.mysql.jdbc.Driver</beans:value>
-		</beans:property>
-		<beans:property name="url">
-	    	<beans:value>jdbc:mysql://localhost:3306/platform_users</beans:value>
-		</beans:property>
-		<beans:property name="username">
-	    	<beans:value>root</beans:value>
-		</beans:property>
-		<beans:property name="password">
-	    	<beans:value>root</beans:value>
-		</beans:property>
+           <beans:property name="driverClassName" value="${driver}"/>
+           <beans:property name="url" value="${dburlPlatformUser}"/>
+           <beans:property name="username" value="${dbuserPlatformUser}"/>
+           <beans:property name="password" value="${dbpasswordPlatformUser}"/>	
 	</beans:bean>
 	
-<!--	 
-	<beans:bean id="jdbcdataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<beans:property name="url" value="jdbc:mysql://c3prod.ccqbimjzi68o.us-east-1.rds.amazonaws.com:3306/platform_users" />
-		<beans:property name="username" value="superuser" />
-		<beans:property name="password" value="superuser" />
-	</beans:bean>
--->	
 	<http auto-config='true'>
 		<intercept-url  pattern="/home/**" access="ROLE_USER" />
 		<intercept-url pattern="/jsp/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
