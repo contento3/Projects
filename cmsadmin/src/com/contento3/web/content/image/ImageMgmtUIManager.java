@@ -167,7 +167,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	@Override
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(mainLayout, "Image Management",new ExternalResource("images/image-view.png"));
+		final Tab articleTab = tabSheet.addTab(mainLayout, "Image Management",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 		this.mainLayout.setSpacing(true);
 		this.mainLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
@@ -217,7 +217,7 @@ public class ImageMgmtUIManager extends CustomComponent
 
 			public void buttonClick(ClickEvent event){
 				VerticalLayout newArticleLayout = new VerticalLayout();
-				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"),new ExternalResource("images/image-view.png"));
+				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"),new ExternalResource("images/content-mgmt.png"));
 				createNew.setClosable(true);
 				tabSheet.setSelectedTab(newArticleLayout);
 				newArticleLayout.addComponent(renderAddEditScreen("Add",null));

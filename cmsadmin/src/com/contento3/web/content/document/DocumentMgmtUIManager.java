@@ -90,7 +90,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	@Override
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(verticalLayout, "Document Management",new ExternalResource("images/document.png"));
+		final Tab articleTab = tabSheet.addTab(verticalLayout, "Document Management",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);

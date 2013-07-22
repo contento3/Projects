@@ -95,7 +95,7 @@ public class ArticleMgmtUIManager implements UIManager {
 	@Override
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(verticalLayout, "Article Management",new ExternalResource("images/article.png"));
+		final Tab articleTab = tabSheet.addTab(verticalLayout, "Article Management",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);

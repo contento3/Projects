@@ -30,12 +30,11 @@ implements PageDao {
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
 		.addOrder(Order.desc("title"))
-		.setCacheable(true)
-		.setCacheRegion(CACHE_REGION)
 		.add(Restrictions
 		.eq("site.siteId", siteId));
 		return criteria.list();
 	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
