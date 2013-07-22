@@ -81,9 +81,5 @@ public final class YesNoDialog extends Window implements Button.ClickListener{
 		//user response
 		void response(boolean ok);
 	}
-
-	
-	
-
 	
 }
