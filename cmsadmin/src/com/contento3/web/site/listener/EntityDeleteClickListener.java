@@ -2,8 +2,6 @@ package com.contento3.web.site.listener;
 
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.service.Service;
-import com.contento3.web.site.PageTemplateTableBuilder;
-import com.vaadin.Application;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -31,11 +29,6 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 	 * used here to delete the record from the displaying table.
 	 */
 	
-	private int decision;
-	// used in delete confirmation promt if true(2) then delete and if false(1) then leave
-	
-	private int response;
-	// check if user click yes or no on deleting template prompt
 	private final Table table;
 	
 	public final T getDtoToDelete() {
@@ -75,31 +68,10 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 	public void buttonClick(ClickEvent event) {
 		// TODO Auto-generated method stub
 		
-		//callConfirmDialog();
-		deleteEntity(dtoToDelete);
-		
-	}
 	
-/**	public String setDicisionValFalse() {
-		// TODO Auto-generated method stub
-		//decision = 0;
-		Window window = table.getApplication().getMainWindow();
-		String val = "false";
-		window.showNotification("canceled..");
-		//notWindow.getWindow();
-		return val;
-	}
-	public String setDicisionValTrue() {
-		// TODO Auto-generated method stub
-		//decision = 1;
-		String val1 = "true";
 		deleteEntity(dtoToDelete);
 		
-		//main.showNotification("Template is successfully unassigned");
-		
-		return val1;
-	}	**/
-				
+	}
 	
 	/**
 	 * Deletes the dto from the db and also the table.
@@ -116,8 +88,7 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 					public void response(boolean ok) {
 						// TODO Auto-generated method stub
 				if(ok)
-					//decision = 1;
-				//else decision = 0;
+					
 				{
 					try {
 						service.delete(dtoToDelete);
@@ -135,33 +106,10 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 					}
 				}
 				));
-		//if(decision == 1){
-		
-		//}
-		
+			
 	}
 	
-
-	
-	/**public void callConfirmDialog(){
-	
-				// TODO Auto-generated method stub
-				main.addWindow(new YesNoDialog(
-						"sure","really want to delete ?","yes","no",
-						new YesNoDialog.YesNoDialogCallback() {
-							
-							@Override
-							public void response(boolean ok) {
-								// TODO Auto-generated method stub
-							main.showNotification(ok ? setDicisionValTrue() : setDicisionValFalse());	
-							}
-						}
-						)); 
-}**/
-
 				
-
-				
-	}
+}
 	
 	
