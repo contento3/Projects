@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
@@ -18,8 +20,16 @@ import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.site.page.section.resolver.HtmlResolver;
 import com.contento3.site.template.dto.TemplateContentDto;
+import com.contento3.util.CachedTypedProperties;
 
+/**
+ * Class to assemble the template for a web page requested.
+ * @author hamakhaa
+ *
+ */
 public class PageAssembler implements Assembler {
+
+	private static final Logger LOGGER = Logger.getLogger(PageAssembler.class);
 
 	private PageService pageService;
 	
@@ -29,6 +39,15 @@ public class PageAssembler implements Assembler {
 	
 	private HtmlResolver htmlResolver;
 	
+	private CachedTypedProperties templateProperties;
+	
+	public PageAssembler(){
+		try {
+			templateProperties = CachedTypedProperties.getInstance("templateconfig.properties");
+		} catch (ClassNotFoundException e) {
+			LOGGER.warn("Unable to process templateconfig.properties",e);
+		}
+	}
 	@Override
 	public TemplateContentDto assemble(final Integer siteId,final String path) throws PageNotFoundException {
 		
@@ -161,6 +180,24 @@ public class PageAssembler implements Assembler {
 	 */
 	public void setHtmlResolver(final HtmlResolver resolver){
 		this.htmlResolver = resolver;
+	}
+
+	@Override
+	public TemplateContentDto fetchDefaultTemplate(final String type) throws PageNotFoundException {
+		final TemplateContentDto templateContentDto = new TemplateContentDto();
+		Integer templateId = null;
+		
+		if (type.equals("ARTICLE")){
+			templateId = templateProperties.getIntProperty("defaultTemplateIdForArticleDetail");
+		} 
+		
+		final TemplateDto templateDto = templateService.findTemplateById(templateId);
+		if (null == templateDto){
+			LOGGER.warn("Unable to fetch default template for ["+type+"] with templateId ["+templateId+"]");
+			throw new PageNotFoundException();
+		}
+		templateContentDto.setContent(templateDto.getTemplateText());
+		return templateContentDto;
 	}
 
 }

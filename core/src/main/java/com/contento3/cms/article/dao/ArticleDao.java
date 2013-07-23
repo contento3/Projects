@@ -21,7 +21,7 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	 * @return 	  
 	 */
 
-	Collection<Article> findLatestArticle(int count);
+	Collection<Article> findLatestArticle(Integer count);
 	
 	
 	/**

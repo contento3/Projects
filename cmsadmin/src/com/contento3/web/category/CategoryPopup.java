@@ -19,6 +19,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -136,7 +137,7 @@ implements Window.CloseListener {
 					if (categoryId==selectedParentCategory){
 						mainwindow.showNotification("Parent category cannot be the same the current category you are editing");
 					}
-					handleEditDomain(categoryNameTxtField,categoryId);
+					handleEditCategory(categoryNameTxtField,categoryId);
 				}	
 			});
     	}
@@ -148,7 +149,7 @@ implements Window.CloseListener {
 	        categoryButton.addListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
-					handleNewDomain(categoryNameTxtField);
+					handleNewCategory(categoryNameTxtField);
 				}	
 			});
     	}
@@ -165,7 +166,7 @@ implements Window.CloseListener {
 		final Collection<CategoryDto> categoryDtos = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 		HierarchicalContainer container = new HierarchicalContainer();
 		container.addContainerProperty("category", String.class, null);
-
+		container.addContainerProperty("select", CheckBox.class, null);
 
 		tree.setContainerDataSource(categoryTable.getContainerDataSource());
 		tree.setItemCaptionPropertyId("category");
@@ -176,12 +177,14 @@ implements Window.CloseListener {
 			if (null==container.getItem(categoryId)){
 				Item item = container.addItem(categoryId);
 				item.getItemProperty("category").setValue(dto.getName());
+				item.getItemProperty("select").setValue(new CheckBox());
 
 				final Collection <CategoryDto> children = dto.getChild();
 				if (!CollectionUtils.isEmpty(children)){
 					for(CategoryDto categoryChild : children){
 						Item childItem = container.addItem(categoryChild.getCategoryId());
 						childItem.getItemProperty("category").setValue(categoryChild.getName());
+						childItem.getItemProperty("select").setValue(new CheckBox());
 
 						container.setParent(categoryChild.getCategoryId(), categoryId);
 						container.setChildrenAllowed(categoryChild.getCategoryId(), true);
@@ -207,7 +210,7 @@ implements Window.CloseListener {
      * Handles adding new SiteDomain
      * @param textField
      */
-	private void handleNewDomain(final TextField textField){
+	private void handleNewCategory(final TextField textField){
 		final CategoryDto categoryDto = new CategoryDto();
 		categoryDto.setName(textField.getValue().toString());
 		categoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
@@ -229,7 +232,7 @@ implements Window.CloseListener {
      * Handles adding new SiteDomain
      * @param textField
      */
-	private void handleEditDomain(final TextField categoryNameTxtField,final Integer categoryId){
+	private void handleEditCategory(final TextField categoryNameTxtField,final Integer categoryId){
 		final CategoryDto updatedCategoryDto = categoryService.findById(categoryId);
 		updatedCategoryDto.setName(categoryNameTxtField.getValue().toString());
 		updatedCategoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));

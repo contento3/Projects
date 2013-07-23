@@ -15,6 +15,7 @@ import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.account.AccountSettingsUIManager;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TabSheetHelper;
 import com.contento3.web.content.SearchUI;
 import com.contento3.web.content.image.ImageLoader;
@@ -203,7 +204,9 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    this.setCaption("CONTENTO3 CMS");
 	    vert.setStyleName(Reindeer.SPLITPANEL_SMALL);
 
-
+	    uiTabsheet.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+	    uiTabsheet.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+	    
 	    HorizontalLayout horizTop = new HorizontalLayout();
 	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);
 	    vLayout.addComponent(vert);
@@ -292,6 +295,10 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         root.setItemIcon(contentMgmt, new ExternalResource("images/content-mgmt.png"));
         contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content-mgmt.png"));
 
+        Item category = hwContainer.addItem(NavigationConstant.CATEGORY_MGMT);
+        category.getItemProperty("name").setValue(NavigationConstant.CATEGORY_MGMT);
+        root.setItemIcon(category, new ExternalResource("images/category.png"));
+        category.getItemProperty("icon").setValue(new ExternalResource("images/category.png"));
         
         Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
         globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
@@ -362,11 +369,15 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper,getWindow());
 	    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
 	        		}
-	        		else if (null!=itemSelected && itemSelected.equals("Template")){
+	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.TEMPLATE)){
 	    	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Template,helper,getWindow());
 	    	    		horiz.setSecondComponent(templateUIMgr.render(null));
 	        		}
-	        		else if (null!=itemSelected && itemSelected.equals("Sites")) {
+	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.CATEGORY_MGMT)){
+	    	    		UIManager categoryUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Category,helper,getWindow());
+	    	    		horiz.setSecondComponent(categoryUIMgr.render(null));
+	        		}
+                	else if (null!=itemSelected && itemSelected.equals("Sites")) {
 	            		hwContainer.setChildrenAllowed("Sites", true);	
 	            		
 	            		//TODO no need to go to fetch sites if they are not null
@@ -374,7 +385,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	            		// so that this new site is added and hence displayed to the tree 
 	            		//if (CollectionUtils.isEmpty(sites)){
 	            			SiteService siteService = (SiteService) helper.getBean("siteService");
-	            			sites = siteService.findSitesByAccountId(1);
+	            			sites = siteService.findSitesByAccountId((Integer)SessionHelper.loadAttribute(getWindow(), "accountId"));
 	            		//}
 	            	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
 	            			
@@ -383,13 +394,13 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	            			
 	            			
 	            		for (SiteDto site: sites){
-	            				Item item = hwContainer.addItem(site.getSiteName());
-	            				if (null != item){
-	            					item.getItemProperty("name").setValue(site.getSiteName());
-	            					item.getItemProperty("id").setValue(site.getSiteId());
-	            					hwContainer.setParent(site.getSiteName(), "Sites");
-	            					hwContainer.setChildrenAllowed(site.getSiteName(), false);
-	            				}
+	           				Item item = hwContainer.addItem(site.getSiteName());
+	           				if (null != item){
+	          					item.getItemProperty("name").setValue(site.getSiteName());
+	           					item.getItemProperty("id").setValue(site.getSiteId());
+	            				hwContainer.setParent(site.getSiteName(), "Sites");
+	            				hwContainer.setChildrenAllowed(site.getSiteName(), false);
+	            			}
 	            		}
 	            	}
 	            	

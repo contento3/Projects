@@ -118,19 +118,19 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	@Override
 	public Component render(String command) {
 		// TODO Auto-generated method stub
-		if (null==siteDashboardTab){ 
-			siteDashboardTab.setHeight("585");
+	//	if (null==siteDashboardTab){ 
+			siteDashboardTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
 			siteDashboardTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-			Icon icon=new ImageIcon(getClass().getResource("/images/site.png"));
-			siteDashboardTab.setIcon((Resource) icon);
+			//Icon icon=new ImageIcon(getClass().getResource("/images/site.png"));
+		//	siteDashboardTab.setIcon((Resource) icon);
 			verticalLayout.setSpacing(true);
 			verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			renderSiteContent();
 			Tab tab2 =  siteDashboardTab.addTab(verticalLayout,"Site Dashboard",null);
 			tab2.setClosable(true);
-			tab2.setIcon((Resource) icon);
+		//	tab2.setIcon((Resource) icon);
 			siteDashboardTab.setSelectedTab(verticalLayout);
-		}
+	//	}
 	
 		return siteDashboardTab;
 	}
@@ -267,7 +267,10 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 					item.getItemProperty("head").setValue(article.getHead());
 					SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 					item.getItemProperty("date_created").setValue(formatter.format(article.getDateCreated()));
-					item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
+					
+					if (null!=article.getExpiryDate()){
+						item.getItemProperty("expiry_date").setValue(formatter.format(article.getExpiryDate()));
+					}
 			}
 		}
 

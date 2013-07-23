@@ -3,9 +3,6 @@ package com.contento3.web.site;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.service.PageService;
@@ -19,7 +16,7 @@ import com.contento3.web.common.helper.TextFieldRendererHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -100,13 +97,14 @@ public class SiteUIManager implements UIManager {
 	@Override
 	public Component render(final String command) {
 		Component componentToReturn = null;
+		uiTabSheet.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+		uiTabSheet.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+
 		if(command == null){
 				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper,parentWindow);
 				componentToReturn = sitesDashBoard.render(null);
 		}
 		else if (command.equals(NEWSITE)) {
-			uiTabSheet.setHeight("675");
-			uiTabSheet.setWidth("775");
 			VerticalLayout layout = renderNewSite();
 			uiTabSheet.addComponent(layout);
 			Tab tab1 = uiTabSheet.addTab(layout, "Create site", new ExternalResource("images/site.png"));
@@ -156,6 +154,9 @@ public class SiteUIManager implements UIManager {
 	 * @param pagesTab
 	 */
 	public void renderButtons(final HorizontalLayout horizontalLayout,final Integer siteId,final TabSheet pagesTab){
+		pagesTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+		pagesTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+
 		// Button that when clicked rendered a new page tab.
 		final Button newPageButton = new Button("Create page");
 		horizontalLayout.addComponent(newPageButton);
@@ -178,15 +179,16 @@ public class SiteUIManager implements UIManager {
 			}
 		});
 
-		final Button addNewCategoryButton = new Button("Categories");
-		horizontalLayout.addComponent(addNewCategoryButton);
-		addNewCategoryButton.addListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,contextHelper,parentWindow);
-				categoryUIManager.renderCategoryList(siteId);
-			}
-		});
+		//Category is moved to Left Navigation
+//		final Button addNewCategoryButton = new Button("Categories");
+//		horizontalLayout.addComponent(addNewCategoryButton);
+//		addNewCategoryButton.addListener(new ClickListener() {
+//			@Override
+//			public void buttonClick(ClickEvent event) {
+//				PageCategoryUIManager categoryUIManager = new PageCategoryUIManager(uiTabSheet,contextHelper,parentWindow);
+//				categoryUIManager.renderCategoryList();
+//			}
+//		});
 
 		final Button contentAssignmentButton = new Button("Content Assigner");
 		horizontalLayout.addComponent(contentAssignmentButton);

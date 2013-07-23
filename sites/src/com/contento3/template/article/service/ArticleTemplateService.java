@@ -23,5 +23,19 @@ public interface ArticleTemplateService {
 	 */
 	Collection <ArticleTemplateDto> findLatestArticleByCategory(Integer categoryId,Integer numberOfArticles,Integer siteId);
 	
+	/**
+	 * Finds the article by category name for a site.
+	 * @param categoryName
+	 * @param siteId
+	 * @return
+	 */
 	ArticleTemplateDto findArticleByCategoryName(String categoryName,Integer siteId);
+	
+	/**
+	 * Finds article by id 
+	 * @param articleId
+	 * @return
+	 */
+	ArticleTemplateDto findArticleById(Integer articleId);
+	
 }

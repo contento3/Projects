@@ -38,4 +38,9 @@ public class ArticleTemplateServiceImpl implements ArticleTemplateService {
 		this.articleService = articleService;
 	}
 
+	@Override
+	public ArticleTemplateDto findArticleById(final Integer articleId) {
+		return articleTemplateAssembler.assemble(articleService.findById(articleId));
+	}
+
 }
