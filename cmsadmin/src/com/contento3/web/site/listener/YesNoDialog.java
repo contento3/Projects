@@ -9,7 +9,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.VerticalLayout;
 
 
-
+/** class that creats the confirmation dialog prompt**/
 public final class YesNoDialog extends Window implements Button.ClickListener{
 
 	//dialog height
@@ -27,11 +27,12 @@ public final class YesNoDialog extends Window implements Button.ClickListener{
 	//cancel button
 	private final Button cancelButton;
 	
-	//constructor for YesNoDialog 
-	//@param caption the dialog title
-	//@param question the dialog question
-	//@param ok and cancel button
-	//@param callback
+	
+	/**constructor for YesNoDialog 
+	@param caption the dialog title
+	@param question the dialog question
+	@param ok and cancel button
+	@param callback**/
 	
 	public YesNoDialog(final String caption, final String question, final String okLabel,
 			final String cancelLabel, final YesNoDialogCallback callback){
@@ -45,38 +46,40 @@ public final class YesNoDialog extends Window implements Button.ClickListener{
 		
 		this.callback = callback;
 		
-		if(question != null)
+		if(question != null){
 			addComponent(new Label(question));
-		
+		}
 		 
 	
-	//button layout
-	 HorizontalLayout layout = new HorizontalLayout();
-    layout.setSpacing(true);
-    layout.addComponent(okButton);
-    layout.addComponent(cancelButton);
-    addComponent(layout);
+	    //button layout
+	    HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        layout.addComponent(okButton);
+        layout.addComponent(cancelButton);
+        addComponent(layout);
     
 	
-	((VerticalLayout) getContent()).setHeight(ONE_HUNDRED_PERCENT,YesNoDialog.UNITS_PERCENTAGE);
+	    ((VerticalLayout) getContent()).setHeight(ONE_HUNDRED_PERCENT,YesNoDialog.UNITS_PERCENTAGE);
 	
-	((VerticalLayout) getContent()).setComponentAlignment(layout,Alignment.BOTTOM_CENTER);
-}// constructor body ends
+	    ((VerticalLayout) getContent()).setComponentAlignment(layout,Alignment.BOTTOM_CENTER);
+    
+	 }// constructor body ends
 	
 	
-	//event handler for button click
-	
-	public void buttonClick(ClickEvent event) {
-		// TODO Auto-generated method stub
+	 //event handler for button click
+	 public void buttonClick(ClickEvent event) {
 		
-		if(getParent() != null)
+		if(getParent() != null){
+		
 			((Window) getParent()).removeWindow(this);
 		
+		}
+		
 		callback.response(event.getSource() == okButton);
-	}
+	 }
 	
-	//intrface yesnodialog callback
-	public interface YesNoDialogCallback {
+	 //intrface yesnodialog callback
+	 public interface YesNoDialogCallback {
 		
 		//user response
 		void response(boolean ok);
