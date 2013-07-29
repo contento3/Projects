@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.article.dao.ArticleDao;
+import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.model.Article;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
@@ -132,4 +133,47 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		return article;
 	}
 
-}
+	@Override
+	public Collection<Article> findByHeaderName(String header) {
+		
+		Validate.notNull(header,"header cannot be null");
+
+		final Criteria criteria = this.getSession()
+	    .createCriteria(Article.class)
+		.add(Restrictions.eq("head", header))
+		.add(Restrictions.eq("isVisible", 1));
+		return criteria.list();
+
+	}
+
+	@Override
+	public Collection<Article> findBySearch(String header, String catagory) {
+	
+		
+	//Validate.notNull(header, "header cannot be null");
+	//Validate.notNull(catagory, "catagory cannot");
+	
+		final Criteria criteria = this.getSession()
+				.createCriteria(Article.class);
+				
+				if(!header.isEmpty()){
+				
+					criteria.add(Restrictions.eq("head",header));
+				}
+				criteria.add(Restrictions.eq("isVisible",1));
+	
+				
+				if(!catagory.isEmpty()){
+				
+					criteria.createAlias("categories", "category")
+					.add(Restrictions.eq("category.categoryName", catagory));
+				}
+				criteria.add(Restrictions.eq("isVisible", 1));
+				
+		return criteria.list();
+	}
+
+	
+
+	}
+
