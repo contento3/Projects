@@ -1,7 +1,5 @@
 package com.contento3.cms.site.structure.domain.dao.impl;
 
-import java.util.Collection;
-
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;

@@ -2,7 +2,9 @@ package com.contento3.web.content.article;
 
 import java.util.Collection;
 
+import javax.management.Notification;
 import javax.servlet.http.HttpSession;
+import javax.swing.table.TableCellEditor;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
@@ -11,18 +13,33 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
+import com.google.gwt.layout.client.Layout;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Container.Filterable;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+
+
 
 public class ArticleMgmtUIManager implements UIManager {
 	
@@ -67,6 +84,9 @@ public class ArticleMgmtUIManager implements UIManager {
 	 */
 	private Integer accountId;
 	
+	//change
+	private String header;
+	
 
 	/**
 	 * constructor
@@ -82,8 +102,11 @@ public class ArticleMgmtUIManager implements UIManager {
         WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
         HttpSession session = ctx.getHttpSession();
         this.accountId =(Integer)session.getAttribute("accountId");
+        
 	}
 
+	
+    
 	@Override
 	public void render() {
 
@@ -117,16 +140,45 @@ public class ArticleMgmtUIManager implements UIManager {
 	}
 	
 	private void renderArticleComponent() {
+		
 		Label articleHeading = new Label("Article Manager");
 		articleHeading.setStyleName("screenHeading");
 		this.verticalLayout.addComponent(articleHeading);
 		this.verticalLayout.addComponent(new HorizontalRuler());
 		this.verticalLayout.setMargin(true);
+		
 		addArticleButton();
+		
+		final TextField searchHeader = new TextField("header name");
+		searchHeader.setInputPrompt("Article Header name");
+		final TextField searchCatagory = new TextField("catagory name");
+		searchCatagory.setInputPrompt("Article Category");
+		Button searchItem = new Button("search");
+		this.verticalLayout.addComponent(searchHeader);
+		this.verticalLayout.addComponent(searchCatagory);
+		this.verticalLayout.addComponent(searchItem);
+		
 		this.verticalLayout.addComponent(new HorizontalRuler());
+		
 		renderArticleTable();
-		
-		
+		/**
+		 * search button listener .. 		
+		 */
+		searchItem.addListener(new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				
+				String itemHeader = (String)searchHeader.getValue();
+				String itemCatagory = (String)searchCatagory.getValue();
+				
+				if(!itemHeader.isEmpty() || !itemCatagory.isEmpty()){
+				
+					renderArticTableBySearch(itemHeader,itemCatagory);
+				}
+			}
+		});
+			
 	}
 	/**
 	 * Render article table
@@ -140,7 +192,29 @@ public class ArticleMgmtUIManager implements UIManager {
 		this.verticalLayout.addComponent(this.articleTable);
 		
 	}
-
+	
+	
+	/**
+	 * Render article table by using header name
+	 */
+	
+	/**private void renderArticleTableByHeader(String header){
+		
+		final AbstractTableBuilder reBuiltTable = new ArticleTableBuilder(this.parentWindow,this.contextHelper,
+				this.tabSheet,this.articleTable);
+		Collection<ArticleDto> articles = this.articleService.findByHeaderName(header);
+		reBuiltTable.rebuild((Collection)articles);
+		
+	}***/
+	
+	private void renderArticTableBySearch(String header, String catagory){
+		
+		final AbstractTableBuilder reBuiltTable = new ArticleTableBuilder(this.parentWindow,this.contextHelper,
+				this.tabSheet,this.articleTable);
+		Collection<ArticleDto> articles = this.articleService.findBySearch(header, catagory);
+		reBuiltTable.rebuild((Collection)articles);
+	}
+	
 	/**
 	 * Display "Add Article" button on the top of tab 
 	 */

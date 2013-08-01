@@ -115,7 +115,8 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * @param vLayout
 	 */
 
-	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<Dto> assignedDtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener,final boolean isHierarchicalTable) {
+	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<Dto> assignedDtos,final Collection<String> listOfColumns,
+			final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener,final boolean isHierarchicalTable) {
 		this.listOfColumns = listOfColumns;
 		this.dtos = dtos;
 		this.vLayout = vLayout;
@@ -148,11 +149,10 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 			tableBuilder.build();
 			tableBuilder.table.setPageLength(Integer.parseInt(pageLength));
 		}else{
-			treeTableBuilder = new GenericTreeTableBuilder(dtos, listOfColumns, vLayout);
+			treeTableBuilder = new GenericTreeTableBuilder(entityListener,dtos,assignedDto, listOfColumns, vLayout);
 			treeTableBuilder.build();
 			treeTableBuilder.treeTable.setPageLength(Integer.parseInt(pageLength));
 		}
-
 		
         renderPopUp();
 	}

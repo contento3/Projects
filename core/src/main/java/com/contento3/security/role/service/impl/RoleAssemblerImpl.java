@@ -2,18 +2,19 @@ package com.contento3.security.role.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.role.service.RoleAssembler;
-
+import com.contento3.security.permission.service.PermissionAssembler;
 
 public class RoleAssemblerImpl implements RoleAssembler{
 	private AccountAssembler accountAssembler;
- RoleAssemblerImpl(final AccountAssembler accountAssembler)
+	//private PermissionAssembler permissionAssembler;
+	RoleAssemblerImpl(final AccountAssembler accountAssembler)
  {
 	 this.accountAssembler = accountAssembler;
+//	 this.permissionAssembler=permissionAssembler;
  }
 	@Override
 	public Role dtoToDomain(RoleDto dto) {

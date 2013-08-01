@@ -83,7 +83,7 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			ArticleService articleService = (ArticleService) helper.getBean("articleService");
 			ArticleDto article = articleService.findById(articleId);
 			for(String name : selectedItems ){
-				CategoryDto category = categoryService.findCategoryByName(name, accountId);
+				CategoryDto category = categoryService.findById(Integer.parseInt(name));
 				// validation
 				 boolean isAddable = true;
 				 for(CategoryDto dto:article.getCategoryDtos()){

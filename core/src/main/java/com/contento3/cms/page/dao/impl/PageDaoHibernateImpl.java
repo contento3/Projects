@@ -3,6 +3,7 @@ package com.contento3.cms.page.dao.impl;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -24,34 +25,23 @@ implements PageDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Page> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize) {
+	public Collection<Page> findPageBySiteId(final Integer siteId) {
+		Validate.notNull(siteId,"siteId cannot be null");
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
-		.setFirstResult(pageSize * (pageNumber-1 ))
-		.setMaxResults(pageSize)
 		.addOrder(Order.desc("title"))
 		.add(Restrictions
 		.eq("site.siteId", siteId));
 		return criteria.list();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Collection<Page> findPageBySiteId(Integer siteId) {
-		Criteria criteria = this.getSession()
-		.createCriteria(Page.class)
-		.addOrder(Order.desc("title"))
-		.setCacheable(true)
-		.setCacheRegion(CACHE_REGION)
-		.add(Restrictions
-		.eq("site.siteId", siteId));
-		return criteria.list();
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Page findPageByPathAndSiteId(final String path,final Integer siteId) {
-		
+		Validate.notNull(siteId,"siteId cannot be null");
+		Validate.notNull(path,"path cannot be null");
+
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
 		.add(Restrictions
@@ -68,6 +58,9 @@ implements PageDao {
 
 	@Override
 	public Page findPageByTitleAndSiteId(final String title,final Integer siteId){
+		Validate.notNull(siteId,"siteId cannot be null");
+		Validate.notNull(title,"title cannot be null");
+
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
 		.add(Restrictions
@@ -83,6 +76,8 @@ implements PageDao {
 	}
 
 	public Long findTotalPagesForSite(Integer siteId){
+		Validate.notNull(siteId,"title cannot be null");
+
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
 		.setProjection(Projections.rowCount())
@@ -95,9 +90,6 @@ implements PageDao {
 		if (!result.isEmpty()) {
 		rowCount = (Long) result.get(0);
 
-	//http://www.kodejava.org/examples/397.html
-//	.setProjection(Projections.rowCount());
-	//https://forum.hibernate.org/viewtopic.php?t=974802 	 
 		}
 		return rowCount;
 	}

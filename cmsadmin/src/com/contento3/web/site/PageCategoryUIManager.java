@@ -6,6 +6,7 @@ import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.web.UIManager;
 import com.contento3.web.category.CategoryPopup;
 import com.contento3.web.category.CategoryTableBuilder;
 import com.contento3.web.common.helper.AbstractTreeTableBuilder;
@@ -13,6 +14,7 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -27,7 +29,7 @@ import com.vaadin.ui.Window;
  * @author HAMMAD
  *
  */
-public class PageCategoryUIManager {
+public class PageCategoryUIManager implements UIManager{
 
 
 	/**
@@ -58,7 +60,7 @@ public class PageCategoryUIManager {
 	/**
 	 * Article table which shows articles
 	 */
-	private final TreeTable categoryTable =  new TreeTable("Cateogory");
+	private final TreeTable categoryTable =  new TreeTable("Category");
 
 	private final TabSheet tabSheet;
 
@@ -77,8 +79,8 @@ public class PageCategoryUIManager {
 		this.tabSheet = uiTabSheet;
 	}
 
-
-	public Component renderCategoryList(final Integer siteId) {
+	@Override
+	public Component render(final String command) {
 		final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Category Management");
 		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.categoryTable);
 		Collection<CategoryDto> categories=this.categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(parentWindow, "accountId"));
@@ -98,5 +100,25 @@ public class PageCategoryUIManager {
 		verticalLayout.addComponent(new HorizontalRuler());
 		return tabSheet;
 	}//end renderCategory()
+
+
+	@Override
+	public void render() {
+	}
+
+
+	@Override
+	public Component render(String command, Integer entityFilterId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Component render(String command,
+			HierarchicalContainer treeItemContainer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

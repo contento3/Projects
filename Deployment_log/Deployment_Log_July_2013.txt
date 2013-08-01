@@ -1,0 +1,7 @@
+28th October,2012
+==================================================================
+branch:develop 9d47b17191f1a2621d2170f33af7ff69a20ca79f
+database: no script
+project deployed:cmsadmin,sites
+Notes:
+1.Bug fixes.

@@ -27,6 +27,14 @@ public class PageServiceImpl implements PageService {
 		this.pageAssembler = pageAssembler;
 	}
 
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public PageDto findById(final Integer pageId)  throws PageNotFoundException{
+    	Page page = pageDao.findById(pageId);
+    	return pageAssembler.domainToDto(page);
+    }
+
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
     public Integer create(final PageDto pageDto){
@@ -63,10 +71,6 @@ public class PageServiceImpl implements PageService {
 		return pageAssembler.domainsToDtos(pageDao.findPageBySiteId(siteId)); 
 	}
 
-	public Collection<PageDto> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize){
-		return pageAssembler.domainsToDtos(pageDao.findPageBySiteId(siteId,pageNumber,pageSize)); 
-	}
-	
 	public PageDto findPageBySiteId(final Integer siteId,final Integer pageId){
 		 return pageAssembler.domainToDto(pageDao.findById(pageId)); 
 	 }

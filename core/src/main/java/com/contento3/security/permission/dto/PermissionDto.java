@@ -1,0 +1,40 @@
+package com.contento3.security.permission.dto;
+
+import com.contento3.common.dto.Dto;
+import com.contento3.security.entity.dto.EntityDto;
+import com.contento3.security.entity.model.PermissionEntity;
+import com.contento3.security.entityoperation.dto.EntityOperationDto;
+import com.contento3.security.entityoperation.model.EntityOperation;
+
+public class PermissionDto extends Dto{
+	private Integer permissionId;
+	private EntityDto entity;
+	private EntityOperationDto entityOperation;
+	
+	public Integer getPermissionId()
+	{
+		return permissionId;
+	}
+	public EntityDto getEntity()
+	{
+		return entity;
+	}
+	public EntityOperationDto getEntityOperation()
+	{
+		return entityOperation;
+	}
+	
+	public void setPermissionId(Integer permissionId)
+	{
+		this.permissionId= permissionId;
+	}
+	public void setEntity(EntityDto entity)
+	{
+		this.entity = entity;
+	}
+	public void setEntityOperation(EntityOperationDto entityOperation)
+	{
+		this.entityOperation = entityOperation ;
+	}
+}
+ 

@@ -15,8 +15,11 @@
 			    <value>com.contento3.security.group.model.Group</value>
 			    <value>com.contento3.security.group.model.GroupAuthority</value>
 			    <value>com.contento3.security.role.model.Role</value> 
+			    <value>com.contento3.security.permission.model.Permission</value> 
 			    <value>com.contento3.security.user.model.SaltedHibernateUser</value>
 			    <value>com.contento3.account.model.Account</value>
+			    <value>com.contento3.security.entity.model.PermissionEntity</value>
+				<value>com.contento3.security.entityoperation.model.EntityOperation</value>
 			</list>
 		</property>	
 		<property name="hibernateProperties">
@@ -65,5 +68,16 @@
 		class="com.contento3.security.role.dao.impl.RoleDaoImpl">
 		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
 	</bean>
-
+	<bean id="permissionDao"
+		class="com.contento3.security.permission.dao.impl.PermissionDaoImpl">
+		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
+	</bean>
+	<bean id="entityDao"
+		class="com.contento3.security.entity.dao.impl.EntityDaoImpl">
+		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
+	</bean>
+	<bean id="entityOperationDao"
+		class="com.contento3.security.entityoperation.dao.impl.EntityOperationDaoImpl">
+		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
+	</bean>
 </beans>

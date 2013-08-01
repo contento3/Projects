@@ -3,6 +3,8 @@ package com.contento3.cms.page.category.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.util.CollectionUtils;
+
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.category.service.CategoryAssembler;
@@ -57,10 +59,10 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 	@Override
 	public Collection<Category> dtosToDomains(Collection<CategoryDto> dtos) {
 		Collection <Category> domains = new ArrayList<Category>();
-		//parentStack= new Stack<String>();
-		for (CategoryDto category : dtos){
-			domains.add(dtoToDomain(category));
-		}
+		if (!CollectionUtils.isEmpty(dtos))
+			for (CategoryDto category : dtos){
+				domains.add(dtoToDomain(category));
+			}
 		return domains;
 	}//end dtosToDomains()
 	

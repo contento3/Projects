@@ -8,4 +8,14 @@ public interface Assembler {
 
 	TemplateContentDto assembleInclude(Integer siteId, String path)
 			throws PageNotFoundException;
+	
+	/**
+	 * Fetches the default template for specific type of content other than the page itself.
+	 * For e.g. an article have a default global template to render the article.
+	 * @param type
+	 * @param id
+	 * @return
+	 * @throws PageNotFoundException 
+	 */
+	TemplateContentDto fetchDefaultTemplate (String type) throws PageNotFoundException;
 }
