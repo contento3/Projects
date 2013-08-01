@@ -28,7 +28,7 @@ public class SecurityUIManager implements UIManager {
 	/**
 	 * Navigation item for user manager
 	 */
-	private String[] navigationItems = {NavigationConstant.USER_GRP_MGMT,NavigationConstant.USER_MANAGER};
+	private String[] navigationItems = {NavigationConstant.USER_GRP_MGMT,NavigationConstant.USER_MANAGER,NavigationConstant.USR_ROLE_MGMT};
 
 	/**
 	 * 
@@ -73,7 +73,9 @@ public class SecurityUIManager implements UIManager {
 		else if (command.equals(NavigationConstant.USER_MANAGER)){
 			uiTabSheet = (TabSheet) renderElementUI("User");
 		}
-		
+		else if (command.equals(NavigationConstant.USR_ROLE_MGMT)){
+			uiTabSheet = (TabSheet) renderElementUI("Role");
+		}
 		return uiTabSheet;
 	}
 	
@@ -98,7 +100,10 @@ public class SecurityUIManager implements UIManager {
 			UserUIManager userManager = new UserUIManager(uiTabSheet,helper, parentWindow);
 			elementTab = (TabSheet) userManager.render(null);
 		}		
-	
+		else if(element.equals("Role")){
+			RoleUIManager roleManager = new RoleUIManager(uiTabSheet,helper, parentWindow);
+			elementTab = (TabSheet) roleManager.render(null);
+		}
 		return elementTab;
 	}
 }

@@ -197,7 +197,7 @@
 		<constructor-arg ref="groupAssembler" />
 		<constructor-arg ref="groupDao" />
 	</bean>
-
+	
 	<bean id="imageLibraryAssembler" class="com.contento3.dam.image.library.service.impl.ImageLibraryAssemblerImpl">
 		<constructor-arg ref="accountAssembler" />
 	</bean>
@@ -217,6 +217,16 @@
 		class="com.contento3.security.user.service.impl.SaltedHibernateUserServiceImpl">
 		<constructor-arg ref="saltedHibernateUserDao" />
 		<constructor-arg ref="saltedHibernateUserAssembler" />
+	</bean>
+		<bean id="roleAssembler"
+		class="com.contento3.security.role.service.impl.RoleAssemblerImpl">
+		<constructor-arg ref="accountAssembler" />
+	</bean>
+
+	<bean id="roleService"
+		class="com.contento3.security.role.service.impl.RoleServiceImpl">
+		<constructor-arg ref="roleDao" />
+		<constructor-arg ref="roleAssembler" />
 	</bean>
 
 	<bean id="associatedContentScopeAssembler"
