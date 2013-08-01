@@ -3,6 +3,7 @@ package com.contento3.cms.site.structure.dao.impl;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +24,8 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Site> findByAccount(final Integer accountId){
-		Criteria criteria = this.getSession()
+		Validate.notNull(accountId,"accountId cannot be null");
+		final Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
 								.createCriteria("account")
 								.setCacheable(true)
@@ -34,13 +36,15 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 	}
 
 	@Override
-	public Site findByDomain(String domain){
+	public Site findByDomain(final String domain){
+		Validate.notNull(domain,"domain cannot be null");
+
 		Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
 								.createCriteria("siteDomain")
 								.add(Restrictions
 								.eq("domainName", domain));
-		List<Site> sites = criteria.list();
+		final List<Site> sites = criteria.list();
 		Site site = null;
 		
 		if (!CollectionUtils.isEmpty(sites)){

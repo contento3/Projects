@@ -49,6 +49,21 @@ public class ArticleServiceImpl implements ArticleService {
 	public Collection<ArticleDto> findByAccountId(Integer accountId) {
 		return articleAssembler.domainsToDtos(articleDao.findByAccountId(accountId));
 	}
+	
+	
+	@Override
+	public Collection<ArticleDto> findByHeaderName(String header) {
+		
+		return articleAssembler.domainsToDtos(articleDao.findByHeaderName(header));
+	}
+
+	@Override
+	public Collection<ArticleDto> findBySearch(String header, String catagory) {
+		
+		return articleAssembler.domainsToDtos(articleDao.findBySearch(header,catagory));
+	}
+	
+	
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -57,6 +72,8 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticle(count));
 	}
 
+		
+	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ArticleDto findByUuid(String uuid) {
@@ -111,4 +128,9 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleDto;
 	}
 
+	
+	
+
+	
+	
 }

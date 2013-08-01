@@ -19,4 +19,6 @@ public class NavigationConstant {
 	public static final String SECURITY = "Security";
 	
 	public static final String DOCUMENT_MGMT = "Document Manager";
+	public static final String CATEGORY_MGMT = "Categories";            
+
 }

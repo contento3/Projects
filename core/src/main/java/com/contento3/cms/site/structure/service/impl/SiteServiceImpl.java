@@ -12,7 +12,6 @@ import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteAssembler;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.common.exception.EntityAlreadyFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class SiteServiceImpl implements SiteService {

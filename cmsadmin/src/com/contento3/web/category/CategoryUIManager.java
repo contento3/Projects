@@ -1,7 +1,6 @@
 package com.contento3.web.category;
 
 import com.contento3.cms.page.category.service.CategoryService;
-import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;

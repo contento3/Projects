@@ -28,7 +28,11 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
+import com.contento3.web.common.helper.ScreenHeader;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.PageAssignCategoryListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ExternalResource;
@@ -38,6 +42,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
@@ -142,42 +147,6 @@ public class PageUIManager {
 			}
 		});
 		
-
-		// Button that when clicked rendered a new page tab.
-//		Button newPageButton = new Button("Create new page");
-//		horizontalLayout.addComponent(newPageButton);
-//		newPageButton.addListener(new ClickListener() {
-//			private static final long serialVersionUID = 1L;
-//
-//			public void buttonClick(ClickEvent event) {
-//				renderNewPage(siteId, pagesTab, null);
-//			}
-//		});
-
-		// Button for site configuration
-//		String buttonText = "Site Config";
-//		Button siteConfigButton = new Button(buttonText);
-//		horizontalLayout.addComponent(siteConfigButton);
-//		siteConfigButton.addListener(new ClickListener() {
-//			private static final long serialVersionUID = 1L;
-//
-//			public void buttonClick(ClickEvent event) {
-//			//	renderSiteConfig(siteId, pagesTab, null);
-//			}
-//		});
-//		
-		
-//		Button addNewCategoryButton = new Button("Add New Category");
-//		horizontalLayout.addComponent(addNewCategoryButton);
-//		addNewCategoryButton.addListener(new ClickListener() {
-//			
-//			@Override
-//			public void buttonClick(ClickEvent event) {
-//				CategoryTreeRender categoryTree = new CategoryTreeRender(contextHelper, parentWindow);
-//				categoryTree.renderTreeToAddNewCategory(siteId, pagesTab, null);
-//				
-//			}
-//		});
 		final PageService pageService = (PageService) contextHelper.getBean("pageService");
 		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
 
@@ -211,30 +180,43 @@ public class PageUIManager {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void renderNewPage(final Integer siteId, final TabSheet pagesTab,
 			final Integer pageId) {
+
+
+		final HorizontalLayout newPageRootlayout = new HorizontalLayout();
 		final VerticalLayout newPageParentlayout = new VerticalLayout();
+		newPageParentlayout.setSpacing(true);
+		
+		ScreenHeader screenHeader = new ScreenHeader(newPageParentlayout,"Page");
+
+        newPageRootlayout.setSpacing(true);
+		newPageRootlayout.addComponent(newPageParentlayout);
 
 		final FormLayout newPageFormLayout = new FormLayout();
 		newPageParentlayout.addComponent(newPageFormLayout);
+		pagesTab.setSelectedTab(newPageRootlayout);
 
 		final TextField titleTxt = new TextField();
 		titleTxt.setCaption("Title");
 
 		final TextField uriTxt = new TextField();
 		uriTxt.setCaption("Uri");
-		final Label categoryLabel = new Label();
 
-		// Button for assigning category 
-		//categoryLabel
-		String addCateogryButtonText = "Assign Category";
-		Button addCateogryButton = new Button(addCateogryButtonText);
-		addCateogryButton.setEnabled(false);
-		HorizontalLayout horiz = new HorizontalLayout();
-		horiz.setSpacing(true);
-		horiz.addComponent(categoryLabel);
-		horiz.addComponent(addCateogryButton);
-		newPageFormLayout.addComponent(horiz);
 		newPageFormLayout.addComponent(titleTxt);
 		newPageFormLayout.addComponent(uriTxt);
+		newPageFormLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		newPageFormLayout.setSpacing(true);
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new PageAssignCategoryListener(parentWindow,contextHelper,pageId,(Integer)SessionHelper.loadAttribute(parentWindow, "accountId")));
+		
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+
+		newPageRootlayout.addComponent(toolbarGridLayout);
+		newPageRootlayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		
+		newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
+		newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
 
 		// TODO get it from a property file
 		String pageTabTitle = "Untitled page";
@@ -256,28 +238,9 @@ public class PageUIManager {
 		
 			//categories = pageDto.getCategories();
 			Iterator<CategoryDto> itr=pageDto.getCategories().iterator();
-			addCateogryButton.setEnabled(true);
-			if(itr.hasNext()){
-				CategoryDto dto = itr.next();
-				categoryLabel.setValue("Category: " + dto.getName());
-				addCateogryButton.setCaption("Edit Categories");
-				
-			}
-			else{
-				categoryLabel.setValue("No Category Assigned");
-				addCateogryButton.setCaption("Assign Category");
-				
-			}
 		}
 		
-		addCateogryButton.addListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			public void buttonClick(ClickEvent event) {
-				//renderCategory(siteId, pagesTab, pageId,categoryLabel);
-			}
-		});
-		Tab newPageTab = pagesTab.addTab(newPageParentlayout, pageTabTitle,
+		Tab newPageTab = pagesTab.addTab(newPageRootlayout, pageTabTitle,
 				new ExternalResource("images/site.png"));
 		pagesTab.setSelectedTab(newPageParentlayout);
 		newPageTab.setVisible(true);
@@ -394,8 +357,8 @@ public class PageUIManager {
 	public TabSheet renderPageLayouts(PageDto pageDtoWithLayout) {
 		final PageLayoutDto layoutDto = pageDtoWithLayout.getPageLayoutDto();
 		pageLayoutsTab = new TabSheet();
-		pageLayoutsTab.setHeight("");
-		pageLayoutsTab.setWidth("775");
+		pageLayoutsTab.setHeight(10,Sizeable.UNITS_PERCENTAGE);
+		pageLayoutsTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 
 		PageTemplateDto pageTemplateDto = new PageTemplateDto();
 		//pageTemplateDto.setPageId(selectedPageId);
@@ -419,7 +382,9 @@ public class PageUIManager {
 			while (pageSectionIterator.hasNext()) {
 				final VerticalLayout pageSectionLayout = new VerticalLayout();
 				pageLayoutsTab.addComponent(pageSectionLayout);
-				pageLayoutsTab.setSizeFull();
+				pageLayoutsTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+				pageLayoutsTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+
 				renderPageSection(pageLayoutsTab, pageSectionLayout,
 						pageSectionIterator.next(), pageTemplateDto,templateTableBuilder,templateTable);
 				pageSectionLayout.addComponent(templateTable);
@@ -431,7 +396,7 @@ public class PageUIManager {
 			pageSectionLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			pageSectionLayout.setSpacing(true);
 			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", new ExternalResource("images/site.png"));
-			tab.setClosable(true);
+			tab.setClosable(false);
 			
 			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
 			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM,templateTableBuilder,templateTable);
@@ -485,16 +450,16 @@ public class PageUIManager {
 	private TabSheet populatePage(final PageDto pageDto,
 			final FormLayout newPageFormLayout) {
 
-		((TextField) newPageFormLayout.getComponent(1)).setValue(pageDto
+		((TextField) newPageFormLayout.getComponent(0)).setValue(pageDto
 				.getTitle());
-		((TextField) newPageFormLayout.getComponent(2)).setValue(pageDto
+		((TextField) newPageFormLayout.getComponent(1)).setValue(pageDto
 				.getUri());
 
 		// This will be used to be passed to the template assignment sub window
 		selectedPageId = pageDto.getPageId();
 
 		if (null != pageDto.getPageLayoutDto()) {
-			((ComboBox) newPageFormLayout.getComponent(3)).select(pageDto
+			((ComboBox) newPageFormLayout.getComponent(2)).select(pageDto
 					.getPageLayoutDto().getId());
 		}
 		return renderPageLayouts(pageDto);

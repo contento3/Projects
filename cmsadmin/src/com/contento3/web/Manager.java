@@ -7,7 +7,8 @@ public enum Manager {
 	Module("module"),
 	Global("global"),
 	Template("template"),
-	User("user");
+	User("user"),
+	Category("category");
 	
 	private String managerName;
 	

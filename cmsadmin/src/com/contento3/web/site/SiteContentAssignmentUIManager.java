@@ -70,10 +70,6 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	public Component render(final Integer siteId){
 		siteDto = siteService.findSiteById(siteId);
 		final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Assign Content to Site : "+siteDto.getSiteName());
-//		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.categoryTable);
-//		Collection<CategoryDto> categories=this.categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(parentWindow, "accountId"));
-//		tableBuilder.build((Collection)categories);
-	//	verticalLayout.addComponent(categoryTable);
 		verticalLayout.setSpacing(true);
 		verticalLayout.setMargin(true);
 

@@ -4,8 +4,6 @@ import java.util.Collection;
 
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
-import com.contento3.cms.page.layout.dto.PageLayoutDto;
-import com.contento3.cms.page.model.Page;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 
 /**
@@ -16,13 +14,11 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 public interface PageService {
 
 	/**
-	 * Returns the {@link Collection} of PageDto by siteId
-	 * @param siteId unique id for {@link Site} class
-	 * @param pageNumber  
-	 * @param pageSize
+	 * Returns the {@link Collection} of {@link PageDto} by siteId
+	 * @param siteId
 	 * @return {@link Collection} of PageDto
 	 */
-	Collection <PageDto> findPageBySiteId(Integer siteId,Integer pageNumber,Integer pageSize);
+	 PageDto findById(Integer pageId)  throws PageNotFoundException;
 
 	/**
 	 * Returns the {@link Collection} of {@link PageDto} by siteId

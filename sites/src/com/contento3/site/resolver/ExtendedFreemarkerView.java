@@ -52,9 +52,10 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 		String requestURI = request.getRequestURI();
 		String[] pageUri = requestURI.split("/page");
 		String pagePath = "";
-
+		boolean isPageRequest = false;
 		if (requestURI.contains("page/")) {
 			pagePath = pageUri[1];
+			isPageRequest = true;
 		} else {
 			pagePath = pageUri[0];
 		}
@@ -70,7 +71,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 				logger.debug("Rendering FreeMarker template [" + getUrl() + "] in FreeMarkerView '" + getBeanName() + "'");
 			}
 
-			freemarkerRenderingEngine.process(buildModelMap(model,request,response,siteDto,pagePath),pagePath,siteDto, writer);
+			freemarkerRenderingEngine.process(buildModelMap(isPageRequest,model,request,response,siteDto,pagePath),pagePath,siteDto, writer);
 		} catch (Exception e) {
 			LOGGER.error(String
 					.format("Something went wrong while accessing the page [%s:] [%s] ",
@@ -90,7 +91,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 	 * @return
 	 * @throws Exception
 	 */
-	private TemplateModelMapImpl buildModelMap(final Map<String,Object> model,final HttpServletRequest request, final HttpServletResponse response, final SiteDto siteDto,final String pagePath) throws Exception {
+	private TemplateModelMapImpl buildModelMap(boolean isPageRequest,final Map<String,Object> model,final HttpServletRequest request, final HttpServletResponse response, final SiteDto siteDto,final String pagePath) throws Exception {
 		// Read the data file and process the template using FreeMarker
 			model.put(AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, new RequestContext(
                     request,
@@ -101,9 +102,8 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 			setExposeRequestAttributes(true);
 			setExposeSessionAttributes(true);
 			setExposeSpringMacroHelpers(true);
-
 			exposeModelAsRequestAttributes(model, request);
-			
+			setRequestContextAttribute("rc");
 			model.put(FreeMarkerView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, 
 					new RequestContext(request,response,this.getServletContext(),model));
 				
@@ -117,7 +117,11 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 	                request.removeAttribute(modelName);
 	            }
 	        }    
-			
+			request.setAttribute("id", "test");
+			request.setAttribute("requestURL",request.getRequestURL());
+			request.setAttribute("requestURI",request.getRequestURI());
+			request.setAttribute("contextPath",request.getContextPath());
+
 	        // Expose all standard FreeMarker hash models.
 		    model.put( FreemarkerServlet.KEY_JSP_TAGLIBS, this.taglibFactory );
 		    model.put( FreemarkerServlet.KEY_APPLICATION, this.servletContextHashModel );
@@ -125,9 +129,11 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 		    model.put( FreemarkerServlet.KEY_REQUEST, new HttpRequestHashModel(request, response, getObjectWrapper() ) );
 		    model.put( FreemarkerServlet.KEY_REQUEST_PARAMETERS,new HttpRequestParametersHashModel( request ) );
 		    model.put( FreemarkerServlet.KEY_INCLUDE, new IncludePage( request,response ) );
+		    if (isPageRequest){
+		    	final PageDto page = pageService.findByPathForSite(pagePath, siteDto.getSiteId());
+		    	model.put( "page", page );
+		    }
 
-			final PageDto page = pageService.findByPathForSite(pagePath, siteDto.getSiteId());
-		    model.put( "page", page );
 		    model.put( "site", siteDto );
 		    
 		    TemplateModelMapImpl modelMap = new TemplateModelMapImpl();

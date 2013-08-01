@@ -69,7 +69,7 @@ public class ScreenToolbarBuilder {
 	 */
 	public void build(){
 		gridLayout.addStyleName("bordertest");
-		gridLayout.setWidth(26,Sizeable.UNITS_PIXELS);
+		gridLayout.setWidth(35,Sizeable.UNITS_PIXELS);
 		
 		final int totalRows = gridLayout.getRows();
 		int count = 0;

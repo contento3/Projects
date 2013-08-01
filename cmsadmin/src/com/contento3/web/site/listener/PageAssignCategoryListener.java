@@ -1,13 +1,15 @@
-package com.contento3.web.content.article.listener;
+package com.contento3.web.site.listener;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
+import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageNotFoundException;
+import com.contento3.cms.page.service.PageService;
 import com.contento3.common.dto.Dto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
@@ -17,13 +19,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
-public class ArticleAssignCategoryListener extends EntityListener implements ClickListener {
+public class PageAssignCategoryListener extends EntityListener implements ClickListener {
 
 	private static final long serialVersionUID = 1L;
 
 	private final VerticalLayout mainLayout;
 	
-	private Integer articleId;
+	private Integer pageId;
 	
 	private Integer accountId;
 	
@@ -40,9 +42,9 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 	 * @param articleId
 	 * @param accountId
 	 */
-	public ArticleAssignCategoryListener(final Window mainWindow,final SpringContextHelper helper,final Integer articleId,final Integer accountId){
+	public PageAssignCategoryListener(final Window mainWindow,final SpringContextHelper helper,final Integer pageId,final Integer accountId){
 		this.accountId = accountId;
-		this.articleId = articleId;
+		this.pageId = pageId;
 		this.helper = helper;
 		categoryService = (CategoryService)helper.getBean("categoryService");
 		mainLayout = new VerticalLayout();
@@ -56,7 +58,7 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 	@Override
 	public void click(ClickEvent event) {
 		//validation article exist
-		if(articleId != null){
+		if(pageId != null){
 			Collection<String> listOfColumns = new ArrayList<String>();
 			listOfColumns.add("Categories");
 			GenricEntityPicker categoryPicker;
@@ -67,35 +69,46 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			categoryPicker.build();
 		}else{
 			//warning message
-			mainWindow.showNotification("Opening failed", "create article first", Notification.TYPE_WARNING_MESSAGE);
+			mainWindow.showNotification("Opening failed", "create page first", Notification.TYPE_WARNING_MESSAGE);
 		}
 	}
 	
 	/**
-	 * Assign selected category to article
+	 * Assign selected category to page
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void updateList() {
-		/* update article */
+		/* update page */
 		Collection<String> selectedItems =(Collection<String>) this.mainLayout.getData();
 		if(selectedItems != null){
-			ArticleService articleService = (ArticleService) helper.getBean("articleService");
-			ArticleDto article = articleService.findById(articleId);
+			PageService pageService = (PageService) helper.getBean("pageService");
+			PageDto page=null;
+			try {
+				page = pageService.findById(pageId);
+			} catch (PageNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			for(String name : selectedItems ){
 				CategoryDto category = categoryService.findById(Integer.parseInt(name));
 				// validation
 				 boolean isAddable = true;
-				 for(CategoryDto dto:article.getCategoryDtos()){
+				 for(CategoryDto dto:page.getCategories()){
 					 if(dto.getName().equals(category.getName()))
 		     			 isAddable = false;
 				 }//end inner for
 				 if(isAddable){
-		     		article.getCategoryDtos().add(category);
+					 page.getCategories().add(category);
 		     	 }//end if
 			}//end outer for
 			
-			articleService.update(article);
+			try {
+				pageService.update(page);
+			} catch (EntityAlreadyFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}

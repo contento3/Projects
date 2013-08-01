@@ -3,6 +3,8 @@ package com.contento3.cms.site.structure.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.util.CollectionUtils;
+
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.site.structure.domain.service.SiteDomainAssembler;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -74,8 +76,11 @@ public class SiteAssemblerImpl implements SiteAssembler {
 	@Override
 	public Collection<Site> dtosToDomains(Collection<SiteDto> dtos) {
 		Collection<Site> domains = new ArrayList<Site>();
-		for (SiteDto siteDto : dtos){
-			domains.add(dtoToDomain(siteDto));
+		
+		if (!CollectionUtils.isEmpty(dtos)){
+			for (SiteDto siteDto : dtos){
+				domains.add(dtoToDomain(siteDto));
+			}
 		}
 		return domains;
 	}

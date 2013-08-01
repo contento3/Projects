@@ -15,6 +15,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -49,20 +50,24 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	 */
 	final Collection<String> selectedItems= new ArrayList<String>();
 	
+	final EntityListener entityListener;
 
+	final Collection<Dto> assignedDtos;
+	
 	/**
 	 * Constructor
 	 * @param dtos
 	 * @param listOfColumns
 	 * @param vLayout
 	 */
-	public GenericTreeTableBuilder(final Collection<Dto> dtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
+	public GenericTreeTableBuilder(final EntityListener entityListener,final Collection<Dto> dtos,final Collection <Dto> assignedDtos,final Collection<String> listOfColumns,final VerticalLayout vLayout) {
 		super(new TreeTable());
 		this.listOfColumns = listOfColumns;
 		this.saveButton = new Button();
 		this.dtos = dtos;
 		this.vLayout = vLayout;
-		
+		this.entityListener = entityListener;
+		this.assignedDtos = assignedDtos;
 	}
 
 	/**
@@ -131,8 +136,19 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 		
 		final Integer id = dto.getId();
 		Item item = container.addItem(id);
+
 		item.getItemProperty(listOfColumns.iterator().next()).setValue(dto.getName());
 
+		if(null!=assignedDtos && assignedDtos.contains(dto)){
+			this.treeTable.select(id);
+		}
+		else {
+			this.treeTable.unselect(id);
+		}
+		
+		for(String column:listOfColumns){
+			item.getItemProperty(column).setValue(dto.getName());
+		}
 	}
 
 	/**
@@ -147,17 +163,16 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(ClickEvent event) {	
 				 for (Object id : treeTable.getItemIds()) {
 	                	
                      // Get the check-box of this item (row)
-                      
                      if (treeTable.isSelected(id)) {
-                    	 selectedItems.add(treeTable.getContainerProperty(id, listOfColumns.iterator().next()).getValue().toString());
+                    	 selectedItems.add(id.toString());
                      }
                 }//end for
 				 vLayout.setData(selectedItems);//adding selected item into vLayout
-				 
+	                entityListener.updateList();
 			}
 		});
 		
@@ -168,7 +183,6 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	 */
 	@Override
 	public void buildHeader(TreeTable treeTable, HierarchicalContainer container) {
-		
 		for(String column:listOfColumns){
 			container.addContainerProperty(column, String.class, null);
 		}

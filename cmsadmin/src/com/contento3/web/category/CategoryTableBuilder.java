@@ -6,7 +6,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
-import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
 import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTreeTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
@@ -16,7 +15,6 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
