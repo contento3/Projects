@@ -13,6 +13,7 @@ public class ArticleForm extends UIContext {
 	 * Textfield for article heading
 	 */
 	private TextField articleHeading = new TextField();
+
 	
 	/**
 	 * TextField article teaser
@@ -43,8 +44,16 @@ public class ArticleForm extends UIContext {
 	 * Article Heading
 	 * @return
 	 */
+	
+	
+	
+	
 	public TextField getArticleHeading() {
+	
+		articleHeading.setRequired(true);
+		articleHeading.setRequiredError("header Required");
 		return articleHeading;
+		
 	}
 
 	/**
@@ -68,6 +77,9 @@ public class ArticleForm extends UIContext {
 	 * @return
 	 */
 	public CKEditorTextField getBodyTextField() {
+		
+		bodyTextField.setRequired(true);
+		bodyTextField.setRequiredError("body required");
 		return bodyTextField;
 	}
 
@@ -93,6 +105,8 @@ public class ArticleForm extends UIContext {
 	 */
 	public void setArticleHeading(final TextField articleHeading) {
 		this.articleHeading = articleHeading;
+	    this.articleHeading.setRequired(true);
+	    this.articleHeading.setRequiredError("required header");
 	}
 
 	/**
@@ -117,6 +131,8 @@ public class ArticleForm extends UIContext {
 	 */
 	public void setBodyTextField(final CKEditorTextField bodyTextField) {
 		this.bodyTextField = bodyTextField;
+		this.bodyTextField.setRequired(true);
+		this.bodyTextField.setRequiredError("body required");
 	}
 
 	/**
@@ -133,7 +149,7 @@ public class ArticleForm extends UIContext {
 	 */
 	public void setExpiryDatefield(final PopupDateField expiryDatefield) {
 		this.expiryDatefield = expiryDatefield;
+
 	}
 
-	
 }
