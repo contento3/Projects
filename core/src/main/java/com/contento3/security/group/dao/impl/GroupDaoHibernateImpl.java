@@ -1,5 +1,7 @@
 package com.contento3.security.group.dao.impl;
 
+import java.util.Collection;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -16,9 +18,9 @@ implements GroupDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Group findByGroupName(String groupName)
+	public Group findByGroupName(final String groupName)
 	{
-		Criteria criteria = this.getSession()
+		final Criteria criteria = this.getSession()
 		.createCriteria(Group.class)
 		.add(Restrictions
 		.eq("name", groupName));
@@ -30,6 +32,16 @@ implements GroupDao {
 		
 		return group;
 		
+	}
+
+	@Override
+	public Collection<Group> findByUserId(final Integer userid) {
+		final Criteria criteria = this.getSession()
+		.createCriteria(Group.class)
+		.createAlias("members", "member")
+		.add(Restrictions.eq("member.userId", userid));
+		
+		return criteria.list();
 	}
 	
 }

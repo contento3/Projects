@@ -14,6 +14,8 @@ import org.apache.shiro.subject.Subject;
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
+import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.account.AccountSettingsUIManager;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TabSheetHelper;
@@ -82,6 +84,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	UIManager uiMgr;
 	
 	Subject subject;
+	SaltedHibernateUserService userService;
 	
 	/**
 	 * Horizontal split panel that contains the navigation 
@@ -98,7 +101,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		this.helper = helper;
 		this.logoutButton = new Button("Log Out");
 		logoutButton.addStyleName("link");
-	
+        this.userService = (SaltedHibernateUserService)helper.getBean("saltedHibernateUserService");
 		buildLogin();
 	}
 	
@@ -129,7 +132,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
 
         		subject = SecurityUtils.getSubject();
-
+        		
 				try{
 					subject.login(token);
 					subject.getSession().setAttribute("userName", username);
@@ -142,8 +145,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 				catch(CredentialsException ice){
 					LOGGER.error("Error occured while authentication user with username: "+username);
 				}
-				catch(Exception ice){
-					LOGGER.error("Error occured while authenticating user"+ice);
+				catch(Exception e){
+					LOGGER.error("Error occured while authenticating user",e);
 				}
             }
         });
@@ -227,6 +230,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		final Button accountButton = new Button ("Account Settings");
 		accountButton.addListener(new AccountSettingsUIManager(this,helper));
 		
+		final SaltedHibernateUserDto user = userService.findUserByUsername((String)SessionHelper.loadAttribute(this, "userName"));
+		final String welcomeUsrMsg = "<b>Welcome "+ user.getFirstName() + "!</b>"; 
+		final Label welcomeUserLbl = new Label(welcomeUsrMsg);
+		welcomeUserLbl.setContentMode(Label.CONTENT_XHTML);
+		buttonsLayout.addComponent(welcomeUserLbl);
 		buttonsLayout.addComponent(accountButton);
 		accountButton.addStyleName("link");
 		

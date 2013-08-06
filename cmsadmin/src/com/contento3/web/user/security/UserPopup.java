@@ -19,6 +19,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -177,7 +178,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
      	/* adding last name text field */
         final HorizontalLayout pwdLayout = new HorizontalLayout();
        
-        final TextField pwdTxtFld = new TextField("Password");
+        final PasswordField pwdTxtFld = new PasswordField("Password");
         pwdTxtFld.setInputPrompt("Enter password");
         pwdTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
         pwdTxtFld.setColumns(15);
@@ -191,10 +192,11 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
      	/* adding last name text field */
         final HorizontalLayout confirmPwdLayout = new HorizontalLayout();
        
-        final TextField confirmPwdTxtFld = new TextField("Confirm Password");
+        final PasswordField confirmPwdTxtFld = new PasswordField("Confirm Password");
         confirmPwdTxtFld.setInputPrompt("Confirm Password");
         confirmPwdTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
         confirmPwdTxtFld.setColumns(20);
+        
      	
         confirmPwdLayout.setSizeFull();
         confirmPwdLayout.setSpacing(true);
@@ -220,8 +222,15 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 				userButton.setCaption("Save");
 				popupWindow.setCaption("Edit user");
 				final String username = (String) event.getButton().getData();
-				SaltedHibernateUserDto userDto = userService.findUserByName(username);
+				SaltedHibernateUserDto userDto = userService.findUserByUsername(username);
 				userNameTxtFld.setValue(userDto.getName());
+				lNameTxtFld.setValue(userDto.getLastName());
+				fNameTxtFld.setValue(userDto.getFirstName());
+				
+				if (null!=userDto.getEmail()){
+					emailTxtFld.setValue(userDto.getEmail());
+				}
+				
 		        userButton.addListener(new ClickListener() {
 					private static final long serialVersionUID = 1L;
 					public void buttonClick(ClickEvent event) {
@@ -250,12 +259,15 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
      * Handles adding new SiteDomain
      * @param textField
      */
-	private void handleNewUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final TextField pwdTxtFld){
+	private void handleNewUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final PasswordField pwdTxtFld){
 		SaltedHibernateUserDto userDto = new SaltedHibernateUserDto();
 		try {
 			userDto.setUserName(username.getValue().toString());
 			userDto.setEnabled(true);
 			userDto.setPassword(pwdTxtFld.getValue().toString());
+			userDto.setFirstName(firstName.getValue().toString());
+			userDto.setLastName(lastName.getValue().toString());
+			userDto.setEmail(emailField.getValue().toString());
 			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
 			userDto.setAccount(accountDto);
 			userService.create(userDto);
@@ -273,8 +285,8 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
      * Handles editing users
      * @param textField
      */
-	private void handleEditUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final String editId,final TextField password){
-		final SaltedHibernateUserDto userDto = userService.findUserByName(editId);
+	private void handleEditUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final String editId,final PasswordField password){
+		final SaltedHibernateUserDto userDto = userService.findUserByUsername(editId);
 		userDto.setUserName(username.getValue().toString());
 		userDto.setPassword(password.getValue().toString());
 		//userService.update(userDto);

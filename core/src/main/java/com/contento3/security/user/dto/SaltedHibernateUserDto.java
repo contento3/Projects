@@ -8,8 +8,13 @@ public class SaltedHibernateUserDto extends Dto {
 	/**
 	 * Primary key of users table
 	 */
-	private String username;
+	private Integer id;
 	
+	/**
+	 * unique username
+	 */
+	private String username;
+
 	/**
 	 * User enabled or not
 	 */
@@ -29,7 +34,23 @@ public class SaltedHibernateUserDto extends Dto {
 	 * Account associated to user
 	 */
 	private AccountDto account;
+
+	/**
+	 * FirstName of the user
+	 */
+	private String firstName;
 	
+	/**
+	 * Last Name of the user
+	 */
+	private String lastName;
+	
+	/**
+	 * Email of the user
+	 */
+	private String email;
+	
+
 	@Override
 	public String getName() {
 		return username;
@@ -74,4 +95,54 @@ public class SaltedHibernateUserDto extends Dto {
 	public void setSalt(final String salt) {
 		this.salt = salt;
 	}
+	
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+
+	public void setFirstName(final String firstName) {
+		this.firstName = firstName;
+	}
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public void setLastName(final String lastName) {
+		this.lastName = lastName;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(final String email) {
+		this.email = email;
+	}
+
+	@Override
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(final Integer id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(final String username) {
+		this.username = username;
+	}
+
+
+
 }

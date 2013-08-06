@@ -3,6 +3,8 @@ package com.contento3.web.common.helper;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.util.CollectionUtils;
+
 import com.contento3.common.dto.Dto;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -120,7 +122,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		Item item = container.addItem(dto.getId());
 		CheckBox checkBox = new CheckBox();
 		
-		if(assignedDtos.contains(dto)){
+		if(!CollectionUtils.isEmpty(assignedDtos) && assignedDtos.contains(dto)){
 			checkBox.setValue(true);
 		}
 		else {

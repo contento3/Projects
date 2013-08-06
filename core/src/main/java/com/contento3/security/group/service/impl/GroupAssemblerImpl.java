@@ -3,6 +3,7 @@ package com.contento3.security.group.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.contento3.account.service.AccountAssembler;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.model.Group;
 import com.contento3.security.group.service.GroupAssembler;
@@ -16,8 +17,14 @@ public class GroupAssemblerImpl implements GroupAssembler {
 	 */
 	private SaltedHibernateUserAssembler saltedHibernateUserAssembler ;
 	
-	public GroupAssemblerImpl(final SaltedHibernateUserAssembler saltedHibernateUserAssembler ) {
+	/**
+	 * AccountAssembler
+	 */
+	private AccountAssembler accountAssembler;
+	
+	public GroupAssemblerImpl(final SaltedHibernateUserAssembler saltedHibernateUserAssembler,final AccountAssembler accountAssembler) {
 		this.saltedHibernateUserAssembler = saltedHibernateUserAssembler;
+		this.accountAssembler = accountAssembler;
 	}
 	
 	public Group dtoToDomain(final GroupDto dto){
@@ -27,6 +34,7 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		group.setDescription(dto.getDescription());
 		group.setAuthorities(dto.getAuthorities());
 		group.setMembers(saltedHibernateUserAssembler.dtosToDomains(dto.getMembers()));
+		group.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		return group;
 	}
 
@@ -36,6 +44,7 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		domain.setDescription(dto.getDescription());
 		domain.setAuthorities(dto.getAuthorities());
 		domain.setMembers(saltedHibernateUserAssembler.dtosToDomains(dto.getMembers()));
+		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		return domain;
 	}
 
@@ -46,6 +55,8 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		dto.setDescription(domain.getDescription());
 		dto.setAuthorities(domain.getAuthorities());
 		dto.setMembers(saltedHibernateUserAssembler.domainsToDtos(domain.getMembers()));
+		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
+
 		return dto;
 	}
 
@@ -58,7 +69,7 @@ public class GroupAssemblerImpl implements GroupAssembler {
 	}
 
 	@Override
-	public Collection<Group> dtosToDomains(Collection<GroupDto> dtos) {
+	public Collection<Group> dtosToDomains(final Collection<GroupDto> dtos) {
 		Collection<Group> domains = new ArrayList<Group>();
 		for (GroupDto page : dtos){
 			domains.add(dtoToDomain(page));

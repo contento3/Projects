@@ -3,11 +3,14 @@ package com.contento3.web.user.security;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.contento3.account.dto.AccountDto;
+import com.contento3.account.service.AccountService;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.model.GroupAuthority;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -59,6 +62,11 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 	GroupService groupService;
 	
 	/**
+	 * AccountService used for account manipulation
+	 */
+	AccountService accountService;
+	
+	/**
 	 * Table for Group
 	 */
     final Table groupTable;
@@ -75,8 +83,9 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		this.helper = helper;
 		this.groupTable = table;
 		this.groupService = (GroupService) this.helper.getBean("groupService");
-		
-		 // The component contains a button that opens the window.
+		this.accountService = (AccountService) this.helper.getBean("accountService");
+
+		// The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
         openbutton = new Button("Add Group", this, "openButtonClick");
         layout.addComponent(openbutton);
@@ -185,15 +194,19 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
     }
 
     /**
-     * Handles adding new SiteDomain
+     * Handles adding new Group
      * @param textField
      */
 	private void handleNewGroup(final TextField textField,final TextArea descriptionArea){
-		GroupDto groupDto = new GroupDto();
+		final GroupDto groupDto = new GroupDto();
 		groupDto.setGroupName(textField.getValue().toString());
 		groupDto.setDescription(descriptionArea.getValue().toString());
 		groupDto.setMembers(new ArrayList<SaltedHibernateUserDto>());
 		groupDto.setAuthorities(new ArrayList<GroupAuthority>());
+		
+		final AccountDto accountDto = accountService.findAccountById(((Integer)SessionHelper.loadAttribute(mainwindow, "accountId")));
+		groupDto.setAccountDto(accountDto);
+		
 		groupService.create(groupDto);
 		mainwindow.showNotification(groupDto.getGroupName()+" group created succesfully");
 		resetTable();

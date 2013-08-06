@@ -2,6 +2,8 @@ package com.contento3.security.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -10,16 +12,19 @@ import javax.persistence.Table;
 import com.contento3.account.model.Account;
 
 @Entity
-@Table( name="USERS" , schema ="PLATFORM_USERS" )
+@Table( name="USER" , schema ="PLATFORM_USERS" )
 public class SaltedHibernateUser {
 
 	/**
-	 * Primary key of users table
+	 * Primary key of user table
 	 */
-	@Id
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="USER_ID")
+	private Integer userId;
+	
 	@Column(name="USERNAME")
 	private String userName;
-	
+
 	@Column(name="PASSWORD")
 	private String password;
 	
@@ -28,6 +33,15 @@ public class SaltedHibernateUser {
 	
 	@Column(name="ENABLED")
 	private boolean enabled;
+	
+	@Column(name="FIRST_NAME")
+	private String firstName;
+	
+	@Column(name="LAST_NAME")
+	private String lastName;
+	
+	@Column(name="EMAIL")
+	private String email;
 	
 	public String getPassword() {
 		return password;
@@ -83,5 +97,42 @@ public class SaltedHibernateUser {
 		return enabled;
 	}
 
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+
+	public void setFirstName(final String firstName) {
+		this.firstName = firstName;
+	}
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public void setLastName(final String lastName) {
+		this.lastName = lastName;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(final String email) {
+		this.email = email;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setId(final Integer userId) {
+		this.userId = userId;
+	}
 
 }

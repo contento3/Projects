@@ -190,6 +190,7 @@
 	<bean id="groupAssembler"
 		class="com.contento3.security.group.service.impl.GroupAssemblerImpl">
 		<constructor-arg ref="saltedHibernateUserAssembler" />
+		<constructor-arg ref="accountAssembler" />
 	</bean>
 
 	<bean id="groupService"
@@ -217,6 +218,7 @@
 		class="com.contento3.security.user.service.impl.SaltedHibernateUserServiceImpl">
 		<constructor-arg ref="saltedHibernateUserDao" />
 		<constructor-arg ref="saltedHibernateUserAssembler" />
+		<constructor-arg ref="groupDao" />
 	</bean>
 		<bean id="roleAssembler"
 		class="com.contento3.security.role.service.impl.RoleAssemblerImpl">
