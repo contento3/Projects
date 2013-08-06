@@ -35,6 +35,7 @@ import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -122,6 +123,7 @@ public class ArticleFormBuilderListner implements ClickListener{
         articleForm.setContextHelper(helper);
         articleForm.setParentWindow(parentWindow);
         articleForm.setTabSheet(tabSheet);
+        
 	}
 	
 	
@@ -134,34 +136,6 @@ public class ArticleFormBuilderListner implements ClickListener{
 
 		articleForm.getPostedDatefield().setValue(new Date());
 
-        final Button saveButton = new Button("Save");
-        saveButton.addListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				final ArticleDto article = new ArticleDto();
-				article.setHead(articleForm.getArticleHeading().getValue().toString());
-				article.setTeaser(articleForm.getArticleTeaser().getValue().toString());
-				article.setBody(articleForm.getBodyTextField().getValue().toString());
-				articleForm.getPostedDatefield().getValue();
-				article.setDatePosted((Date)articleForm.getPostedDatefield().getValue());
-				
-				final Date createdDate= new Date();
-				article.setDateCreated(createdDate);
-				article.setLastUpdated(createdDate);
-				article.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
-				article.setIsVisible(1);
-				
-				final AccountDto account = accountService.findAccountById(accountId);
-				article.setAccount(account);
-				article.setSite(new ArrayList<SiteDto>());
-				articleService.create(article);
-				
-				final String notification ="Article added successfully"; 
-				parentWindow.showNotification(notification);
-				resetTable();
-				tabSheet.removeTab(articleTab);
-			}
-		});
       }
 	
 	/**
@@ -172,33 +146,13 @@ public class ArticleFormBuilderListner implements ClickListener{
 	public Component renderEditScreen(final Integer editId){
         buildArticleUI("Edit",editId);
 		
-        final ArticleDto article = this.articleService.findById(editId);
+      final ArticleDto article = this.articleService.findById(editId);
 		articleForm.getArticleHeading().setValue(article.getHead());
-		articleForm.getArticleTeaser().setValue(article.getTeaser());
+			articleForm.getArticleTeaser().setValue(article.getTeaser());
 		articleForm.getBodyTextField().setValue(article.getBody());
 		articleForm.getPostedDatefield().setValue(article.getDatePosted());
 		articleForm.getExpiryDatefield().setValue(article.getExpiryDate());
-		final Button editButton = new Button("Save");
-		editButton.addListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				article.setHead(articleForm.getArticleHeading().getValue().toString());
-				article.setTeaser(articleForm.getArticleTeaser().getValue().toString());
-				article.setBody(articleForm.getBodyTextField().getValue().toString());
-				Date date = (Date) articleForm.getPostedDatefield().getValue();
-				article.setDatePosted(date);
-				article.setLastUpdated(new Date());
-				article.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
-				article.setIsVisible(1);
-
-				articleService.update(article);
-				String notification =article.getHead()+" updated successfully"; 
-				parentWindow.showNotification(notification);
-				tabSheet.removeTab(articleTab);
-				resetTable();
-				tabSheet.removeTab(articleTab);
-			}
-		});
+		
 		return formLayout;
 	}
 	
@@ -305,14 +259,4 @@ public class ArticleFormBuilderListner implements ClickListener{
 		}
 	}
 	
-	/**
-	 * Reset table
-	 */
-	 @SuppressWarnings({ "rawtypes", "unchecked" })
-	 private void resetTable(){
-		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
-		final Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
-		tableBuilder.rebuild((Collection)articles);
-	}
-
 }

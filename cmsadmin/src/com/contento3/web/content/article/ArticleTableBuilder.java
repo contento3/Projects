@@ -17,6 +17,8 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -49,6 +51,11 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 	 * @param helper
 	 * @param table
 	 */
+	
+	
+
+	
+	
 	public ArticleTableBuilder(final Window window,final SpringContextHelper helper,final TabSheet tabSheet,final Table table) {
 		super(table);
 		this.contextHelper = helper;
@@ -57,6 +64,9 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		this.articleService = (ArticleService) contextHelper.getBean("articleService");
 	}
 
+	
+    
+     
 	/**
 	 * Assign data to table
 	 * @param dto
