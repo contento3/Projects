@@ -16,6 +16,7 @@ import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -34,9 +35,10 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.event.MouseEvents.ClickListener;
+
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -135,7 +137,7 @@ public class TemplateUIManager implements UIManager{
 		
     	VerticalLayout layout = new VerticalLayout();
     	layout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-
+    	
     	Tab tab2 = templateTab.addTab(layout,"Template",new ExternalResource("images/template.png"));
     	tab2.setClosable(true);
     	renderTemplateListTab(layout);
@@ -154,7 +156,7 @@ public class TemplateUIManager implements UIManager{
 
 		// Have it take all space available in the layout.
 		accordion.setWidth(80, Sizeable.UNITS_PERCENTAGE);
-		accordion.setHeight(80, Sizeable.UNITS_PERCENTAGE);
+		accordion.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 
 		populateAccordion(accordion);
 		// A container for the Accordion.
@@ -163,21 +165,25 @@ public class TemplateUIManager implements UIManager{
 		panel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		panel.addComponent(accordion);
 		
-
-		Button newTemplate = new Button();
-		newTemplate.setCaption("Create template");
-		newTemplate.addListener(new ClickListener() {
+		final ImageLoader imageLoader = new ImageLoader();
+	    final Embedded icon = imageLoader.loadEmbeddedImageByPath("images/add.png");
+	    icon.setDescription("Add template");
+		//Button newTemplate = new Button();
+		//newTemplate.setCaption("Create template");
+		icon.addListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
+			public void click(ClickEvent event) {
 				renderTemplate(null);
 			}
 		});
 
-		Button newDirectory = new Button();
-		newDirectory.setCaption("Create folder");
-		newDirectory.addListener(new ClickListener() {
+	    final Embedded iconDirectory = imageLoader.loadEmbeddedImageByPath("images/folder-add.png");
+	    iconDirectory.setDescription("Add directory");
+//		Button newDirectory = new Button();
+//		newDirectory.setCaption("Create folder");
+		iconDirectory.addListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
+			public void click(ClickEvent event) {
 				try {
 				renderFolderTab(selectedDirectoryId);
 				}
@@ -190,24 +196,40 @@ public class TemplateUIManager implements UIManager{
 			}
 		});
 
-		Button deleteTemplateBtn = new Button();
-		deleteTemplateBtn.setCaption("Delete button");
-		deleteTemplateBtn.addListener(new ClickListener() {
+	    final Embedded deleteIcon = imageLoader.loadEmbeddedImageByPath("images/delete.png");
+	    deleteIcon.setDescription("Delete template");
+
+//		Button deleteTemplateBtn = new Button();
+//		deleteTemplateBtn.setCaption("Delete button");
+		deleteIcon.addListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
+			public void click(ClickEvent event) {
 			}
 		});
 		
 		HorizontalLayout buttonLayout = new HorizontalLayout();
-		buttonLayout.addComponent(newTemplate);
-		buttonLayout.addComponent(newDirectory);
-		buttonLayout.addComponent(deleteTemplateBtn);
+		buttonLayout.addComponent(icon);
+		buttonLayout.addComponent(deleteIcon);
+		buttonLayout.addComponent(iconDirectory);
 
+		buttonLayout.setHeight(100,Sizeable.UNITS_PERCENTAGE);
 		buttonLayout.setSpacing(true);
 		//Add the accordion
 		vLayout.addComponent(panel);
 		vLayout.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-		panel.addComponent(buttonLayout);
+		
+		
+		Panel buttonPanel = new Panel();
+		buttonLayout.setSpacing(true);
+		buttonLayout.setSizeFull();		
+		buttonPanel.setWidth(20, Sizeable.UNITS_PERCENTAGE);
+		buttonPanel.setScrollable(false);
+		buttonPanel.addComponent(buttonLayout);
+		vLayout.addComponent(buttonPanel);
+		vLayout.setExpandRatio(panel, 85);
+		vLayout.setExpandRatio(buttonPanel, 1);
+		
+		
 	}
 
 	
@@ -517,12 +539,15 @@ public class TemplateUIManager implements UIManager{
 			isGlobalOptionsGroup.setEnabled(false);
 		}
 			
-			Button addButton = new Button();
-			addButton.setCaption("Add Folder");
-			addButton.addListener(new ClickListener() {
+			final ImageLoader imageLoader = new ImageLoader();
+			final Embedded icon = imageLoader.loadEmbeddedImageByPath("images/add.png");
+
+//			Button addButton = new Button();
+//			addButton.setCaption("Add Folder");
+			icon.addListener(new ClickListener() {
 				
 				@Override
-				public void buttonClick(ClickEvent event) {
+				public void click(ClickEvent event) {
 					AccountService accountService = (AccountService) helper.getBean("accountService");
 	    			AccountDto account = accountService.findAccountById(accountId);
 	    			
@@ -562,7 +587,7 @@ public class TemplateUIManager implements UIManager{
 	    			}
 				}
 			});
-			formLayout.addComponent(addButton);
+			formLayout.addComponent(icon);
 	   			
 			createNewFolder.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 			createNewFolder.setHeight(100,Sizeable.UNITS_PERCENTAGE);
