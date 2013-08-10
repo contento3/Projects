@@ -2,6 +2,7 @@ package com.contento3.web.user.listner;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.site.listener.EntityDeleteClickListener;
@@ -67,17 +68,16 @@ public class UserDeleteClickListener extends EntityDeleteClickListener<SaltedHib
 	 * @param groupService
 	 * @param id
 	 */
-	private void deleteUser(Object id){
+	private void deleteUser(final Object id){
 		try {
-			SaltedHibernateUserDto dtoToDelete = ((SaltedHibernateUserService) getService()).findUserByName(getDtoToDelete().getName());
+			SaltedHibernateUserDto dtoToDelete = ((SaltedHibernateUserService) getService()).findUserById(getDtoToDelete().getId());
 			((SaltedHibernateUserService) getService()).delete(dtoToDelete);
 			getTable().removeItem(id);
 			getTable().setPageLength(getTable().getPageLength()-1);
 			window.showNotification(getDtoToDelete().getName()+" user deleted succesfully");
-		} catch (Exception e) {
+		} catch (EntityCannotBeDeletedException e) {
 			String description= "User " + getDtoToDelete().getName() + " cannot be deleted as users are associated with the group.";
 			window.showNotification("Delete Failed",description,Notification.TYPE_WARNING_MESSAGE);
-			e.printStackTrace();
 		}
     	
 	}

@@ -4,7 +4,8 @@ package com.contento3.web.template;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -25,15 +26,12 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
-import com.vaadin.event.dd.acceptcriteria.SourceIs;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
-import com.vaadin.ui.AbstractSelect.TargetItemIs;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -49,12 +47,10 @@ import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.TreeDragMode;
-import com.vaadin.ui.Tree.TreeDropCriterion;
 import com.vaadin.ui.Tree.TreeTargetDetails;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
-import org.apache.log4j.Logger;
 
 public class TemplateUIManager implements UIManager{
 
@@ -134,9 +130,9 @@ public class TemplateUIManager implements UIManager{
 
 	@Override
 	public Component render(String command) {
-		templateTab.setHeight("585");
+		templateTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
 		templateTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-	    	
+		
     	VerticalLayout layout = new VerticalLayout();
     	layout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
 
@@ -157,15 +153,16 @@ public class TemplateUIManager implements UIManager{
 		final Accordion accordion = new Accordion();
 
 		// Have it take all space available in the layout.
-		accordion.setWidth(90, Sizeable.UNITS_PERCENTAGE);
-
+		accordion.setWidth(80, Sizeable.UNITS_PERCENTAGE);
+		accordion.setHeight(80, Sizeable.UNITS_PERCENTAGE);
 
 		populateAccordion(accordion);
 		// A container for the Accordion.
 		Panel panel = new Panel();
-		panel.setWidth(40, Sizeable.UNITS_PERCENTAGE);
+		panel.setWidth(20, Sizeable.UNITS_PERCENTAGE);
 		panel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		panel.addComponent(accordion);
+		
 
 		Button newTemplate = new Button();
 		newTemplate.setCaption("Create template");
@@ -213,6 +210,7 @@ public class TemplateUIManager implements UIManager{
 		panel.addComponent(buttonLayout);
 	}
 
+	
 	public void populateAccordion(final Accordion accordion){
 
 		//Populate the global template list
@@ -228,6 +226,7 @@ public class TemplateUIManager implements UIManager{
 		VerticalLayout templateListLayout = new VerticalLayout();
 		templateListLayout.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 		Tab templatesTab = accordion.addTab(templateListLayout, "Templates", new ExternalResource("images/template.png"));
+
 		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false);
 
 		//Add the tree to the vertical layout for template list.

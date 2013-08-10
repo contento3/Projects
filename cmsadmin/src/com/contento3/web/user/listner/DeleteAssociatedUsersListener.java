@@ -103,8 +103,8 @@ public class DeleteAssociatedUsersListener extends EntityListener implements Cli
 			Collection<SaltedHibernateUserDto> itemsToDelete = new ArrayList<SaltedHibernateUserDto>();
 			SaltedHibernateUserService userService =(SaltedHibernateUserService) this.helper.getBean("saltedHibernateUserService");
 			GroupDto group = groupService.findById(groupId);
-			for(String name : selectedItems ){
-				 SaltedHibernateUserDto user = userService.findUserByName(name);
+			for(String id : selectedItems ){
+				 SaltedHibernateUserDto user = userService.findUserById(Integer.parseInt(id));
 		     	// validation
 	
 		     	 for(SaltedHibernateUserDto dto : group.getMembers()){

@@ -1,15 +1,11 @@
 package com.contento3.web.account;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.CredentialsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 
 import com.contento3.account.service.AccountService;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
-import com.contento3.web.CMSMainWindow;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
@@ -43,7 +39,6 @@ implements Window.CloseListener,Button.ClickListener {
     
     SpringContextHelper contextHelper;
     
-    private Integer categoryId;
 
     /**
      * Renders the tree with categories for Parent category selection.
@@ -71,7 +66,6 @@ implements Window.CloseListener,Button.ClickListener {
     	accountForm.getNewPassword().setCaption("New Password");
     	accountForm.getConfirmNewPassword().setCaption("Confirm Password");
     	accountForm.getSubmitButton().addListener(new AccountSettingsUpdateListener(main, userService, accountService, accountForm, contextHelper));
-    	//accountForm.getSubmitButton().addListener(this);
     	
         setCompositionRoot(layout);
     }
@@ -79,7 +73,6 @@ implements Window.CloseListener,Button.ClickListener {
     /** Handle the clicks for the two buttons. */
     public void openButtonClick(Button.ClickEvent event) {
         /* Create a new window. */
-        final Button categoryButton = new Button();
 		popupWindow = new Window("Account Settings");
     	
 		popupWindow.setPositionX(200);
@@ -105,6 +98,7 @@ implements Window.CloseListener,Button.ClickListener {
         /* Listen for close events for the window. */
         popupWindow.addListener(this);
         popupWindow.setModal(true);
+        populateAccountForm();
     }
     
     /** Handle Close button click and close the window. */
@@ -119,14 +113,23 @@ implements Window.CloseListener,Button.ClickListener {
     }
 
 	@Override
-	public void windowClose(CloseEvent e) {
+	public void windowClose(final CloseEvent e) {
         /* Return to initial state. */
         openbutton.setEnabled(true);
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
+	public void buttonClick(final ClickEvent event) {
 		openButtonClick(event);
+	}
+	
+	private void populateAccountForm(){
+		final SaltedHibernateUserDto user = userService.findUserByUsername((String)SessionHelper.loadAttribute(mainwindow, "userName"));
+		accountForm.getFirstName().setValue(user.getFirstName());
+		accountForm.getLastName().setValue(user.getLastName());
+		
+		if (null!=user.getEmail())
+			accountForm.getEmail().setValue(user.getEmail());
 	}
 }
 

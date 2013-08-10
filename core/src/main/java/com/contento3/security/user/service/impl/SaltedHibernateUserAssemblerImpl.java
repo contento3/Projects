@@ -25,6 +25,14 @@ public class SaltedHibernateUserAssemblerImpl implements SaltedHibernateUserAsse
 		domain.setPassword(dto.getPassword());
 		domain.setEnabled(dto.isEnabled());
 		domain.setSalt(dto.getSalt());
+		domain.setFirstName(dto.getFirstName());
+		domain.setLastName(dto.getLastName());
+		domain.setId(dto.getId());
+		
+		if (dto.getEmail()!=null){
+			domain.setEmail(dto.getEmail());
+		}
+		
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		return domain;
 	}
@@ -37,7 +45,13 @@ public class SaltedHibernateUserAssemblerImpl implements SaltedHibernateUserAsse
 		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setEnabled(domain.isEnabled());
 		dto.setSalt(domain.getSalt());
+		dto.setFirstName(domain.getFirstName());
+		dto.setLastName(domain.getLastName());
+		dto.setId(domain.getUserId());
 		
+		if (null!=domain.getEmail()){
+			dto.setEmail(domain.getEmail());
+		}
 		return dto;
 	}
 

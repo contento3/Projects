@@ -78,8 +78,10 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 	@Override
 	public void updateList() {
 		/* update article */
+		
 		Collection<String> selectedItems =(Collection<String>) this.mainLayout.getData();
 		if(selectedItems != null){
+			
 			ArticleService articleService = (ArticleService) helper.getBean("articleService");
 			ArticleDto article = articleService.findById(articleId);
 			for(String name : selectedItems ){
@@ -92,10 +94,14 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 				 }//end inner for
 				 if(isAddable){
 		     		article.getCategoryDtos().add(category);
+		     
 		     	 }//end if
 			}//end outer for
 			
 			articleService.update(article);
+			mainWindow.showNotification("Assigned"," successfully assigned to "+article.getHead(),
+				Notification.TYPE_HUMANIZED_MESSAGE);
+			
 		}
 		
 	}

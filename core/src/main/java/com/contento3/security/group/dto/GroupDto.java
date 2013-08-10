@@ -2,8 +2,8 @@ package com.contento3.security.group.dto;
 
 import java.util.Collection;
 
+import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
-
 import com.contento3.security.group.model.GroupAuthority;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
@@ -32,6 +32,11 @@ public class GroupDto extends Dto {
 	 * Members associated to group
 	 */
 	private Collection<SaltedHibernateUserDto> members;
+	
+	/**
+	 * Account to which this group belongs to.
+	 */
+	private AccountDto accountDto;
 	
 	/**
 	 * Return group related authorites
@@ -119,6 +124,22 @@ public class GroupDto extends Dto {
 	public Integer getGroupId()
 	{
 		return(id);
+	}
+
+	/**
+	 * Sets the AccountDto
+	 * @param accountDto
+	 */
+	public void setAccountDto(final AccountDto accountDto) {
+		this.accountDto = accountDto;
+	}
+
+	/**
+	 * Gets the AccountDto
+	 * @return
+	 */
+	public AccountDto getAccountDto() {
+		return accountDto;
 	}
 
 }

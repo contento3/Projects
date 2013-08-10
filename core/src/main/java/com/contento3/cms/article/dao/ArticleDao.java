@@ -20,7 +20,7 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	 * @param count 
 	 * @return 	  
 	 */
-
+	
 	Collection<Article> findLatestArticle(Integer count);
 	
 	
@@ -54,5 +54,23 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	  * @return
 	  */
 	Article findArticleByIdAndSiteId(Integer articleId, Integer siteId);
-		
+	
+	
+	//Collection<Article> findByHeaderName(String header);
+		/**
+		 * Returns article based on header name
+		 * @param header
+		 * @return
+		 */
+	
+	Collection<Article> findBySearch(String header, String catagory);
+	/**
+	 * returns article based on header name and catagory assigned
+	 * param header and catagory
+
+	 */
+
+	
 }
+
+

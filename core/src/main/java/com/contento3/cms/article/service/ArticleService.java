@@ -19,7 +19,14 @@ public interface ArticleService extends Service<ArticleDto>{
 	 * @param count 
 	 * @return 	  
 	 */
-
+	
+	Collection<ArticleDto> findBySearch(String header, String catagory);
+	/**
+	 * used to search article by header name or catagory
+	 * @param count
+	 * @return
+	 */
+	
 	Collection<ArticleDto> findLatestArticle(int count);
 	/**
 	 * used to create new article
@@ -69,4 +76,7 @@ public interface ArticleService extends Service<ArticleDto>{
 	void updateAssociateImages(ArticleDto article);
 	
 	ArticleDto findArticleByIdAndSiteId(Integer id,Integer siteId);
+
+	
+	
 }

@@ -27,6 +27,7 @@ public class ArticleDto extends Dto {
 	 * Head section of article
 	 */
 	private String head;
+	
 
 	/**
 	 * Teaser section of article
@@ -122,6 +123,7 @@ public class ArticleDto extends Dto {
 
 	public void setHead(final String head) {
 		this.head = head;
+	
 	}
 
 	public String getTeaser() {
@@ -232,5 +234,5 @@ public class ArticleDto extends Dto {
       return isEqual;
     }
 
-
+ 
 }

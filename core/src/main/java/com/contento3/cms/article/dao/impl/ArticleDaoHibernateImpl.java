@@ -93,36 +93,36 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Article> findLatestArticleByCategory(final Integer categoryId,
-			final Integer numberOfArticles,final Integer siteId) {
-		Validate.notNull(categoryId,"siteId cannot be null");
-		Validate.notNull(siteId,"siteId cannot be null");
-		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
+		final Integer numberOfArticles,final Integer siteId) {
+			Validate.notNull(categoryId,"siteId cannot be null");
+			Validate.notNull(siteId,"siteId cannot be null");
+			Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
 
 		final Criteria criteria = this.getSession()
-		.createCriteria(Article.class)
-		.addOrder(Order.desc("dateCreated"))
-		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-		.setFirstResult(0).setMaxResults(numberOfArticles)
-		.add(Restrictions.eq("isVisible", 1))
-		.createAlias("categories", "category")
-		.add(Restrictions.eq("category.categoryId", categoryId))
-		.createAlias("site", "s")
-		.add(Restrictions.eq("s.siteId", siteId));
+			.createCriteria(Article.class)
+		    .addOrder(Order.desc("dateCreated"))
+		    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+		    .setFirstResult(0).setMaxResults(numberOfArticles)
+		    .add(Restrictions.eq("isVisible", 1))
+		    .createAlias("categories", "category")
+		    .add(Restrictions.eq("category.categoryId", categoryId))
+		    .createAlias("site", "s")
+		    .add(Restrictions.eq("s.siteId", siteId));
 		
 		return criteria.list();
 	}
 
 	@Override
 	public Article findArticleByIdAndSiteId(final Integer articleId,final Integer siteId) {
-		Validate.notNull(articleId,"articleId cannot be null");
-		Validate.notNull(siteId,"siteId cannot be null");
+			Validate.notNull(articleId,"articleId cannot be null");
+			Validate.notNull(siteId,"siteId cannot be null");
 
 		final Criteria criteria = this.getSession()
-		.createCriteria(Article.class)
-		.add(Restrictions.eq("isVisible", 1))
-		.add(Restrictions.eq("articleId", articleId))
-		.createAlias("site", "s")
-		.add(Restrictions.eq("s.siteId", siteId));
+			.createCriteria(Article.class)
+			.add(Restrictions.eq("isVisible", 1))
+			.add(Restrictions.eq("articleId", articleId))
+			.createAlias("site", "s")
+			.add(Restrictions.eq("s.siteId", siteId));
 		
 		Article article = null;
 		if (!CollectionUtils.isEmpty(criteria.list())) {
@@ -132,4 +132,29 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		return article;
 	}
 
+	@Override
+	public Collection<Article> findBySearch(String header, String catagory) {
+	
+		final Criteria criteria = this.getSession()
+				.createCriteria(Article.class);
+				
+				if(!header.isEmpty()){
+				
+					criteria.add(Restrictions.eq("head",header));
+				}
+				criteria.add(Restrictions.eq("isVisible",1));
+	
+				
+				if(!catagory.isEmpty()){
+				
+					criteria.createAlias("categories", "category")
+					.add(Restrictions.eq("category.categoryName", catagory));
+				}
+				criteria.add(Restrictions.eq("isVisible", 1));
+				
+		return criteria.list();
+	}
+
+	
 }
+
