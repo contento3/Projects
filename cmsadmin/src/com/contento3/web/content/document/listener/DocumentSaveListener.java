@@ -114,7 +114,7 @@ public class DocumentSaveListener implements ClickListener {
 		}
 		
 		DocumentDto documentDto;
-		final StorageTypeDto storageTypeDto = (StorageTypeDto) storageTypeService.findByName(StorageTypeEnum.DATABASE.getFileType());
+		final StorageTypeDto storageTypeDto = (StorageTypeDto) storageTypeService.findByName(StorageTypeEnum.DATABASE.getType());
 		
 		if(documentId == null)
 			documentDto = new DocumentDto();

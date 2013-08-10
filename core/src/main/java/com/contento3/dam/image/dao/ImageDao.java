@@ -46,6 +46,7 @@ public interface ImageDao extends GenericDao<Image,Integer>{
 	 * @return 
 	 */
 	Image findByUuid(String uuid);
+
 	
 
 }

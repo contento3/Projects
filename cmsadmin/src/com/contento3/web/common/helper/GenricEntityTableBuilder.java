@@ -3,6 +3,8 @@ package com.contento3.web.common.helper;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.util.CollectionUtils;
+
 import com.contento3.common.dto.Dto;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -29,7 +31,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 */
 	private final Collection<Dto> dtos;
 	
-	private final Collection<Dto> assignedDtos;
+	private Collection<Dto> assignedDtos;
 	
 	/**
 	 * Vertical layout to add components
@@ -120,7 +122,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		Item item = container.addItem(dto.getId());
 		CheckBox checkBox = new CheckBox();
 		
-		if(assignedDtos.contains(dto)){
+		if(!CollectionUtils.isEmpty(assignedDtos) && assignedDtos.contains(dto)){
 			checkBox.setValue(true);
 		}
 		else {
@@ -157,4 +159,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		item.getItemProperty(listOfColumns.iterator().next()).setValue("No record found.");
 	}
 
+	public void setAssignedDto (final Collection <Dto> assignedDto){
+		this.assignedDtos = assignedDto;
+	}
 }

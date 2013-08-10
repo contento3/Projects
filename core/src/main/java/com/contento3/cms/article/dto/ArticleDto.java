@@ -8,7 +8,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.page.category.dto.CategoryDto;
-import com.contento3.cms.page.model.Page;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.dto.Dto;
 

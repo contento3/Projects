@@ -210,4 +210,13 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 			this.treeTableBuilder.treeTable.setCaption(caption);
 		}
 	}
+	
+	public void setAssignedDtos (final Collection <Dto> assignedDtos){
+		this.tableBuilder.setAssignedDto(assignedDtos);
+	}
+	
+	public void rebuildWithNewAssignedDtos (final Collection <Dto> assignedDtos,final Collection <Dto> dtos){
+		setAssignedDtos(assignedDtos);
+		this.tableBuilder.rebuild(dtos);
+	}
 }
