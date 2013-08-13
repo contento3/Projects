@@ -1,24 +1,23 @@
 package com.contento3.dam.document.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
 import javax.annotation.Resource;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 
 import com.contento3.account.dao.impl.AccountDaoHibernateImpl;
 import com.contento3.account.model.Account;
 import com.contento3.account.service.AccountAssembler;
-import com.contento3.common.exception.EntityAlreadyFoundException;
-import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.dam.document.dao.DocumentTypeDao;
 import com.contento3.dam.document.dao.impl.DocumentDaoHibernateImpl;
 import com.contento3.dam.document.dto.DocumentDto;
-import com.contento3.dam.document.dto.DocumentTypeDto;
 import com.contento3.dam.document.model.Document;
 import com.contento3.dam.document.model.DocumentType;
 import com.contento3.dam.document.service.DocumentAssembler;

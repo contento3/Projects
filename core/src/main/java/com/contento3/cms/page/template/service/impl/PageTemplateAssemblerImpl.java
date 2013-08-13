@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.model.PageTemplate;
-import com.contento3.cms.page.template.model.PageTemplatePK;
 import com.contento3.cms.page.template.service.PageTemplateAssembler;
 import com.contento3.cms.page.template.service.TemplateAssembler;
 

@@ -12,6 +12,7 @@ import com.contento3.web.content.article.ArticleTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -80,7 +81,7 @@ public class ArticleSaveListener implements ClickListener{
 		// header or body cannot be null
 		if(articleDto.getHead().isEmpty() || articleDto.getBody().isEmpty()){
 			
-			parentWindow.showNotification(unsaveNotification);
+			Notification.show(unsaveNotification);
 		}
 		else{
 			final Date createdDate= new Date();
@@ -100,14 +101,14 @@ public class ArticleSaveListener implements ClickListener{
 			articleDto.setDateCreated(new Date());
 			articleDto.setAccount(accountService.findAccountById(accountId));
 			articleService.create(articleDto);
-			parentWindow.showNotification(saveNotification);
+			Notification.show(saveNotification);
 			tabSheet.removeTab(articleTab);
 			resetTable();
 			tabSheet.removeTab(articleTab);
 		}
 		else{
 			articleService.update(articleDto);
-			parentWindow.showNotification(updateNotification);
+			Notification.show(updateNotification);
 			tabSheet.removeTab(articleTab);
 			resetTable();
 			tabSheet.removeTab(articleTab);

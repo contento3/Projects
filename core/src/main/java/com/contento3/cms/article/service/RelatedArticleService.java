@@ -3,8 +3,6 @@ package com.contento3.cms.article.service;
 import java.util.Collection;
 
 import com.contento3.cms.article.dto.RelatedArticleDto;
-import com.contento3.cms.article.model.RelatedArticleLinkPK;
-
 import com.contento3.common.service.Service;
 
 public interface RelatedArticleService extends Service<RelatedArticleDto> {

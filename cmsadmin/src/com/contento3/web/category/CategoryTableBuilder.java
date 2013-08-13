@@ -12,11 +12,10 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 public class CategoryTableBuilder extends AbstractTreeTableBuilder {
@@ -25,11 +24,6 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 	 * Helper to get the spring bean
 	 */
 	final SpringContextHelper contextHelper;
-
-	 /**
-     * Represents the parent window of the ui
-     */
-	final Window window;
 
 	/**
 	 * TabSheet serves as the parent container for the article manager
@@ -42,10 +36,9 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 	final CategoryService categoryService;
 
 
-	public CategoryTableBuilder(final Window window,final SpringContextHelper helper,final TabSheet tabSheet,final TreeTable treeTable) {
+	public CategoryTableBuilder(final SpringContextHelper helper,final TabSheet tabSheet,final TreeTable treeTable) {
 		super(treeTable);
 		this.contextHelper = helper;
-		this.window = window;
 		this.tabSheet = tabSheet;
 		this.categoryService = (CategoryService) contextHelper.getBean("categoryService");
 	}
@@ -78,14 +71,15 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 		Item item = container.addItem(categoryId);
 		item.getItemProperty("category").setValue(category.getName());
 
-		Button editButton = new Button("Edit", new CategoryPopup(window, contextHelper,(TreeTable)treeTable,tabSheet), "openButtonClick");
+		Button editButton = new Button("Edit");
+		editButton.addClickListener(new CategoryPopup(contextHelper,(TreeTable)treeTable,tabSheet));
 		editButton.setStyleName(BaseTheme.BUTTON_LINK);
 		editButton.setData(categoryId);
 
 		Button deleteButton = new Button("Delete");
 		deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
 		deleteButton.setData(categoryId);
-		deleteButton.addListener(new EntityDeleteClickListener<CategoryDto>(category,categoryService,deleteButton,treeTable));
+		deleteButton.addClickListener(new EntityDeleteClickListener<CategoryDto>(category,categoryService,deleteButton,treeTable));
 
 		item.getItemProperty("Edit").setValue(editButton);
 		item.getItemProperty("Delete").setValue(deleteButton);
@@ -98,7 +92,7 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 		container.addContainerProperty("Edit", Button.class, null);
 		container.addContainerProperty("Delete", Button.class, null);
 
-		treeTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		treeTable.setWidth(100, Unit.PERCENTAGE);
 		treeTable.setContainerDataSource(container);
 		treeTable.setSelectable(true);
 		treeTable.setMultiSelect(false);

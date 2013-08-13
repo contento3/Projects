@@ -3,10 +3,7 @@ package com.contento3.cms.article.dao;
 
 import java.util.Collection;
 
-import com.contento3.cms.article.model.Article;
 import com.contento3.cms.article.model.RelatedArticle;
-import com.contento3.cms.article.model.RelatedArticleLinkPK;
-
 import com.contento3.common.dao.GenericDao;
 
 public interface RelatedArticleDao extends GenericDao<RelatedArticle,Integer>{

@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 
-import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.site.template.model.TemplateModelContext;
 import com.contento3.site.template.model.TemplateModelMapImpl;
@@ -51,7 +50,7 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 		cfg.setLocalizedLookup(false);
 		cfg.setNumberFormat("0.######");
 		
-		Map map = new HashMap();
+		Map<String,String> map = new HashMap<String,String>();
 		map.put("spring", "org/springframework/web/servlet/view/freemarker/spring.ftl");
 		cfg.setAutoImports(map);
 	}

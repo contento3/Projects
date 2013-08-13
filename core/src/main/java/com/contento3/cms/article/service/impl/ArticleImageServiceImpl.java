@@ -49,7 +49,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 
 	@Override
 	public void deleteAll(Collection<ArticleImageDto> articleImageDtos) throws EntityCannotBeDeletedException {
-		Iterator it = articleImageDtos.iterator();
+		Iterator<ArticleImageDto> it = articleImageDtos.iterator();
 		while (it.hasNext()){
 			delete ((ArticleImageDto)it.next());
 		}

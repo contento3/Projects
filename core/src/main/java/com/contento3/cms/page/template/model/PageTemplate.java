@@ -17,6 +17,9 @@ import javax.persistence.Table;
 @Table(name="PAGE_TEMPLATE_ASSOCIATION")
 public class PageTemplate implements Serializable {
 
+	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Primary key consist of page,template and section type.
 	 * This means a recored is representing a template for a 

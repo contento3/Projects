@@ -20,13 +20,12 @@ public class ArticleTemplateServiceImpl implements ArticleTemplateService {
 	@Override
 	public List<ArticleTemplateDto> findLatestArticleByCategory(
 			final Integer categoryId,final Integer numberOfArticles,final Integer siteId) {
-		return (List) articleTemplateAssembler.assemble(articleService.findLatestArticleByCategory(categoryId, numberOfArticles, siteId));
+		return (List<ArticleTemplateDto>) articleTemplateAssembler.assemble(articleService.findLatestArticleByCategory(categoryId, numberOfArticles, siteId));
 	}
 
 	@Override
 	public ArticleTemplateDto findArticleByCategoryName(String categoryName,
 			Integer siteId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

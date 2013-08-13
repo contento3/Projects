@@ -8,11 +8,11 @@ import com.contento3.web.content.image.ImageMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.UI;
 
 
 /**
@@ -27,11 +27,6 @@ public class ContentUIManager implements UIManager{
 	 */
     private SpringContextHelper helper;
     
-    /**
-     * Parent window that contains all the ui components.Used primarily to set notifications.
-     */
-	private Window parentWindow;
-	
 	/**
 	 * Main tabsheet that hold all the content.
 	 */
@@ -53,9 +48,8 @@ public class ContentUIManager implements UIManager{
 	 * @param helper
 	 * @param parentWindow
 	 */
-	public ContentUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow){
+	public ContentUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper){
 		this.helper = helper;
-		this.parentWindow = parentWindow;
 		this.elementTab = uiTabSheet;
 	}
 
@@ -138,21 +132,21 @@ public class ContentUIManager implements UIManager{
 	 */
 	private Component renderContentElementUI(final String element){
 		//final TabSheet elementTab = new TabSheet();
-		elementTab.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		elementTab.setHeight(100, Unit.PERCENTAGE);
 
 		
 		if(element.equals("Article")){
-			ArticleMgmtUIManager articleManager = new ArticleMgmtUIManager(elementTab,helper, parentWindow);
+			ArticleMgmtUIManager articleManager = new ArticleMgmtUIManager(elementTab,helper);
 			elementTab = (TabSheet) articleManager.render(null);
 		}
 		else if(element.equals("Image")){
 			
-			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper,parentWindow);
+			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper);
 			elementTab = (TabSheet) imageMgmtUIMgr.render(null);	
 		}
 		else if(element.equals("Document")){
 			
-			final DocumentMgmtUIManager documentMgmtUIMgr = new DocumentMgmtUIManager(elementTab,helper,parentWindow);
+			final DocumentMgmtUIManager documentMgmtUIMgr = new DocumentMgmtUIManager(elementTab,helper);
 			elementTab = (TabSheet) documentMgmtUIMgr.render(null);	
 		}
 

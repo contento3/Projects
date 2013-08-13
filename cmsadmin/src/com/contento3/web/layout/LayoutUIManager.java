@@ -2,13 +2,9 @@ package com.contento3.web.layout;
 
 import java.util.Collection;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
-import com.contento3.cms.page.dto.PageDto;
-import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.LayoutBuilder;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.dto.PageLayoutTypeDto;
@@ -16,19 +12,19 @@ import com.contento3.cms.page.layout.service.PageLayoutService;
 import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 import com.contento3.cms.page.section.dto.PageSectionDto;
 import com.contento3.cms.page.service.PageService;
-import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.web.UIManager;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Alignment;
@@ -46,10 +42,9 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -60,9 +55,8 @@ public class LayoutUIManager implements UIManager {
 	PageLayoutService pageLayoutService;
 
 
-	public LayoutUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow){
+	public LayoutUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper){
 		this.helper = helper;
-		this.parentWindow = parentWindow;
 		this.layoutManagerTab = uiTabSheet;
 //		this.layoutService = (SiteService) helper.getBean("layoutService");
 //		this.pageService = (PageService) helper.getBean("pageService");
@@ -111,19 +105,15 @@ public class LayoutUIManager implements UIManager {
 	//	final Collection<PageDto> layoutDtos = pageService.getPageBySiteId(id);
 	//	if (null==layoutManagerTab){ 
     	layoutManagerTab.setHeight("675");
-    	layoutManagerTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+    	layoutManagerTab.setWidth(100,Unit.PERCENTAGE);
     	
     	
-    	//Get accountId from the session
-        WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-       
-        HttpSession session = ctx.getHttpSession();
-        Integer accountId = (Integer)session.getAttribute("accountId");
+        final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
         final Collection<PageLayoutDto> layoutDtos = pageLayoutService.findPageLayoutByAccount(accountId);
         if(!CollectionUtils.isEmpty(layoutDtos)){
         	container.addContainerProperty("Name", String.class, null);
         	container.addContainerProperty("Edit", Button.class, null);
-			table.setWidth(100, Sizeable.UNITS_PERCENTAGE);        
+			table.setWidth(100, Unit.PERCENTAGE);        
 			table.setPageLength(25);
 			Button link = null;
 			table.setContainerDataSource(container);
@@ -151,7 +141,9 @@ public class LayoutUIManager implements UIManager {
 		item.getItemProperty("Name").setValue(page.getName());
 		link = new Button();
 
-		link.addListener(new Button.ClickListener() {
+		link.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+
 			public void buttonClick(ClickEvent event) {
 				// Get the item identifier from the user-defined data.
 				// Integer pageId = (Integer)event.getButton().getData();
@@ -159,10 +151,12 @@ public class LayoutUIManager implements UIManager {
 		    	horiz = new HorizontalSplitPanel();
 		        horiz.setSplitPosition(35);
 
-		        horiz.addListener(new SplitterClickListener(){
+		        horiz.addSplitterClickListener(new SplitterClickListener(){
+					private static final long serialVersionUID = 1L;
+
 					public void splitterClick(SplitterClickEvent event){
 						
-						int splitPosition = horiz.getSplitPosition();
+						float splitPosition = horiz.getSplitPosition();
 						
 				        if (splitPosition==0)
 				        	horiz.setSplitPosition(35);
@@ -173,7 +167,7 @@ public class LayoutUIManager implements UIManager {
 		    	});
 		    	
 		    	VerticalLayout createNewLayout = new VerticalLayout();
-		    	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		    	createNewLayout.setWidth(100,Unit.PERCENTAGE);
 		        horiz.addComponent(createNewLayout);
 
 		    	Tab tab3 = layoutManagerTab.addTab(horiz,"Create new layout",null);
@@ -215,8 +209,10 @@ public class LayoutUIManager implements UIManager {
     	leftSection.addItem("Left Navigation");
     	leftSection.addItem("Right Navigation");
     	leftSection.setImmediate(true);
-    	leftSection.addListener(new ValueChangeListener(){
-    	    public void valueChange(ValueChangeEvent event) {
+    	leftSection.addValueChangeListener(new ValueChangeListener(){
+    	   private static final long serialVersionUID = 1L;
+
+			public void valueChange(ValueChangeEvent event) {
     	    	String selectedValue = (String) event.getProperty().getValue();
 	    		pageLeftSectionWidthLayout.removeComponent(pageLeftSectionCombo);
     	    	if (selectedValue.equals("Left Navigation")){
@@ -242,7 +238,7 @@ public class LayoutUIManager implements UIManager {
     	
     	header.setCaption("Header");
     	header.setImmediate(true);
-    	header.setWidth(10,Sizeable.UNITS_PERCENTAGE);
+    	header.setWidth(10,Unit.PERCENTAGE);
         final TextField headerHeight = new TextField();
         headerHeight.setCaption("Height");
         headerHeight.setColumns(4);
@@ -251,7 +247,7 @@ public class LayoutUIManager implements UIManager {
         
         footer.setCaption("Footer");
     	footer.setImmediate(true);
-    	footer.setWidth(10,Sizeable.UNITS_PERCENTAGE);
+    	footer.setWidth(10,Unit.PERCENTAGE);
 
         final TextField footerHeight = new TextField();
         footerHeight.setCaption("Height");
@@ -274,7 +270,7 @@ public class LayoutUIManager implements UIManager {
         glayout.setColumnExpandRatio(0, 3);
         glayout.setColumnExpandRatio(1, 10);
         
-        glayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        glayout.setWidth(100,Unit.PERCENTAGE);
         glayout.setComponentAlignment(formLayout, Alignment.MIDDLE_LEFT);
         glayout.setComponentAlignment(footerFormLayout, Alignment.MIDDLE_LEFT);
 
@@ -291,14 +287,16 @@ public class LayoutUIManager implements UIManager {
         footerHeightLabel.setCaption("Footer height in px:");
        
         final ComboBox mainBodySplit = new ComboBox("Select row",getMainBodySplit());
-        mainBodySplit.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        mainBodySplit.setWidth(100,Unit.PERCENTAGE);
     	HorizontalLayout mainBodySplitLayout = new HorizontalLayout();
     	Button link = new Button();
     	link.setCaption("Add new row");
-    	link.setWidth(55,Sizeable.UNITS_PERCENTAGE);
+    	link.setWidth(55,Unit.PERCENTAGE);
 
 
-		link.addListener(new ClickListener(){
+		link.addClickListener(new ClickListener(){
+
+			private static final long serialVersionUID = 1L;
 
 			public void buttonClick(ClickEvent event){
 				String selectedBodySize = (String)bodySizeCombo.getValue();
@@ -318,7 +316,7 @@ public class LayoutUIManager implements UIManager {
 			}
     	});
     	
-    	mainBodySplitLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+    	mainBodySplitLayout.setWidth(100,Unit.PERCENTAGE);
         
     	Button saveButton = new Button();
     	saveButton.setCaption("Save");
@@ -337,7 +335,9 @@ public class LayoutUIManager implements UIManager {
     	horizButtonsLayout.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
     	horizButtonsLayout.setComponentAlignment(previewLayoutButton, Alignment.BOTTOM_RIGHT);
     	
-    	saveButton.addListener(new ClickListener(){
+    	saveButton.addClickListener(new ClickListener(){
+			private static final long serialVersionUID = 1L;
+
 			public void buttonClick(ClickEvent event){
 				String selectedBodySize = (String)bodySizeCombo.getValue();
 				String selectedBodyStyle=getSelectedBodySize(selectedBodySize);
@@ -352,16 +352,16 @@ public class LayoutUIManager implements UIManager {
 					layoutBuilder.addBodyWidth(selectedBodyStyle);
 				}
 				
-				if (header.booleanValue())	{
+				if (header.getValue())	{
 					layoutBuilder.addHeader();
 				}
-				if (footer.booleanValue()){
+				if (footer.getValue()){
 					layoutBuilder.addFooter();
 				}	
-				if (!header.booleanValue())	{
+				if (!header.getValue())	{
 					layoutBuilder.removeHeader();
 				}
-				if (!footer.booleanValue()){
+				if (!footer.getValue()){
 					layoutBuilder.removeFooter();
 				}	
 				
@@ -406,7 +406,7 @@ public class LayoutUIManager implements UIManager {
     	
     	FormLayout mainBodySplitFormLayout = new FormLayout();
     	mainBodySplitFormLayout.addComponent(mainBodySplit);
-    	mainBodySplitFormLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+    	mainBodySplitFormLayout.setWidth(100, Unit.PERCENTAGE);
     	
     	mainBodySplitLayout.setSpacing(true);
     	mainBodySplitLayout.addComponent(mainBodySplitFormLayout);
@@ -457,9 +457,9 @@ public class LayoutUIManager implements UIManager {
 			if (label==null)
 			label = new Label(layoutBuilder.getLayoutHTML());
 			
-			label.requestRepaint();
+			label.markAsDirty();
 						//label.setCaption(layoutBuilder.getLayoutHTML());
-			label.setContentMode(Label.CONTENT_RAW);
+			label.setContentMode(ContentMode.RAW);
 			label.setImmediate(true);
 			
 			if (horiz.getComponentCount()<2)

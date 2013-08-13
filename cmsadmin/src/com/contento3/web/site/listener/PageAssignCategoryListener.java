@@ -15,9 +15,9 @@ import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 public class PageAssignCategoryListener extends EntityListener implements ClickListener {
 
@@ -42,13 +42,12 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 	 * @param articleId
 	 * @param accountId
 	 */
-	public PageAssignCategoryListener(final Window mainWindow,final SpringContextHelper helper,final Integer pageId,final Integer accountId){
+	public PageAssignCategoryListener(final SpringContextHelper helper,final Integer pageId,final Integer accountId){
 		this.accountId = accountId;
 		this.pageId = pageId;
 		this.helper = helper;
 		categoryService = (CategoryService)helper.getBean("categoryService");
 		mainLayout = new VerticalLayout();
-		this.mainWindow = mainWindow;
 	}
 	
 	/**
@@ -65,11 +64,11 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 			Collection<Dto> dtos = null;
 			dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
 			setCaption("Add Category");
-			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,mainWindow,this,true);
+			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
 			categoryPicker.build();
 		}else{
 			//warning message
-			mainWindow.showNotification("Opening failed", "create page first", Notification.TYPE_WARNING_MESSAGE);
+			Notification.show("Opening failed", "create page first", Notification.Type.WARNING_MESSAGE);
 		}
 	}
 	

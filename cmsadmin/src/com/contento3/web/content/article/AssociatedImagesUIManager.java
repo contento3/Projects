@@ -11,14 +11,14 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.Notification;
 
 public class AssociatedImagesUIManager extends CustomComponent  implements ClickListener, Window.CloseListener {
 	
@@ -71,11 +71,11 @@ public class AssociatedImagesUIManager extends CustomComponent  implements Click
 	public void click(ClickEvent event) {
 		ArticleService articleService = (ArticleService) this.helper.getBean("articleService");
 		if (articleId == null) {
-			mainWindow.showNotification("Opening failed","create article first", Notification.TYPE_WARNING_MESSAGE);
+			Notification.show("Opening failed","create article first", Notification.Type.WARNING_MESSAGE);
 		} else {
 			article = articleService.findById(this.articleId);
 			if (article.getAssociateImagesDtos().isEmpty()) {
-				mainWindow.showNotification("Opening failed", "no images assigned",Notification.TYPE_WARNING_MESSAGE);
+				Notification.show("Opening failed", "no images assigned",Notification.Type.WARNING_MESSAGE);
 			} else {
 				renderAssocImagesPopup();
 				renderAssociatedImageTable();
@@ -89,15 +89,15 @@ public class AssociatedImagesUIManager extends CustomComponent  implements Click
 		popupWindow = new Window();
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
-    	popupWindow.setHeight(60,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(35,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(60,Unit.PERCENTAGE);
+    	popupWindow.setWidth(35,Unit.PERCENTAGE);
 
     	/* Add the window inside the main window. */
-        mainWindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         popupWindow.setModal(true);
         popupWindow.setCaption("Associate Images");
         mainLayout.setSpacing(true);
-        popupWindow.addComponent(mainLayout);
+        popupWindow.setContent(mainLayout);
         popupWindow.setResizable(false);
 	}
 	
@@ -124,10 +124,9 @@ public class AssociatedImagesUIManager extends CustomComponent  implements Click
 	 * Handle Close button click and close the window.
 	 */
 	public void closeButtonClick(Button.ClickEvent event) {
-
 		if (!isModalWindowClosable) {
 			/* Windows are managed by the application object. */
-			mainWindow.removeWindow(popupWindow);
+			UI.getCurrent().removeWindow(popupWindow);
 		}
 	}
 
@@ -136,7 +135,6 @@ public class AssociatedImagesUIManager extends CustomComponent  implements Click
 	 */
 	@Override
 	public void windowClose(CloseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	

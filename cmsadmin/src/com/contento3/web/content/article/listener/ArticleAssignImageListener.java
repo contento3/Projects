@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.shiro.util.CollectionUtils;
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
@@ -27,10 +25,9 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Select;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 public class ArticleAssignImageListener extends EntityListener implements ClickListener {
 
@@ -120,7 +117,7 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 			final ComboDataLoader comboDataLoader = new ComboDataLoader();
 			final Collection<AssociatedContentScope> contentScopeForImage = (Collection) contentScopeService.getContentScopeForType(AssociatedContentScopeTypeEnum.IMAGE);
 			contentScopeCombo = new ComboBox("Select Content Scope",comboDataLoader.loadDataInContainer((Collection)contentScopeForImage));
-			contentScopeCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+			contentScopeCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 			contentScopeCombo.setItemCaptionPropertyId("name");
 			contentScopeCombo.setImmediate(true);
 			
@@ -134,19 +131,20 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 
 			assignedDtos = new ArrayList<Dto>();
 			
-			GenricEntityPicker imagePicker = new GenricEntityPicker(dtos,assignedDtos, listOfColumns, this.mainLayout, mainWindow, this, false);
+			GenricEntityPicker imagePicker = new GenricEntityPicker(dtos,assignedDtos, listOfColumns, this.mainLayout, this, false);
 			imagePicker.build();
 			imagePicker.setTableCaption("Select Images");
 
-			contentScopeCombo.addListener(new ContentScopeChangeListener(articleId,accountId,helper,imagePicker));
+			contentScopeCombo.addValueChangeListener(new ContentScopeChangeListener(articleId,accountId,helper,imagePicker));
 
 			this.mainLayout.addComponentAsFirst(contentScopeCombo);
 		}else{
 			//warning message
-			mainWindow.showNotification("Unable to assign image to article before creating the article itself", "please create the article first", Notification.TYPE_WARNING_MESSAGE);
+			Notification.show("Unable to assign image to article before creating the article itself", "please create the article first", Notification.TYPE_WARNING_MESSAGE);
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private Collection <Dto> populateImageDtos(Collection <ArticleImageDto> articleImageDtos){
 		Collection <Dto> dtos = new ArrayList<Dto>();
 		Dto dto;
@@ -189,7 +187,7 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 				}//end outer for	
 		}//end outer for	
 			catch (Exception e) {
-		mainWindow.showNotification("Error occured");
+				Notification.show("Error occured");
 	}
 			Collection<ArticleImageDto> articleImageDtoToDelete  = new ArrayList<ArticleImageDto>();
 			Collection<ArticleImageDto> articleImagesLatest  = article.getAssociateImagesDtos();

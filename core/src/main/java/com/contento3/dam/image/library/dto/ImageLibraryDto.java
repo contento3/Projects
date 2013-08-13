@@ -2,6 +2,7 @@ package com.contento3.dam.image.library.dto;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
 

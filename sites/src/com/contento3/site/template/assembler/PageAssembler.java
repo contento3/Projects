@@ -102,7 +102,7 @@ public class PageAssembler implements Assembler {
 		
 		for (PageSectionDto pageSectionDto : pageSectionDtos){
 			String pageSectionName = pageSectionDto.getSectionTypeDto().getName();
-			List<PageTemplateDto> pageTemplateDtos = (ArrayList)pageTemplateService.findByPageAndPageSectionType(pageDto.getPageId(), pageSectionDto.getSectionTypeDto().getId());
+			List<PageTemplateDto> pageTemplateDtos = (ArrayList<PageTemplateDto>)pageTemplateService.findByPageAndPageSectionType(pageDto.getPageId(), pageSectionDto.getSectionTypeDto().getId());
 			Collections.sort(pageTemplateDtos);
 
 			if (pageSectionName.equals(PageSectionTypeEnum.BODY.toString())){

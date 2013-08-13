@@ -1,6 +1,6 @@
 package com.contento3.storagetype.dao.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
 

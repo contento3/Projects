@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.cms.page.service.impl.PageServiceImpl;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.dto.Dto;
@@ -23,13 +22,18 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 public class SiteContentAssignmentUIManager extends EntityListener  implements ClickListener{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = Logger.getLogger(SiteContentAssignmentUIManager.class);
 
@@ -39,11 +43,6 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	 * Helper use to load spring beans
 	 */
 	private final SpringContextHelper contextHelper;
-
-	/**
-	 * Parent window that contains this ui
-	 */
-	private final Window parentWindow;
 
 	/**
 	 * main layout for content assignment screen
@@ -59,10 +58,9 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	private Collection<Dto> assignedDtos;
 	
 	public SiteContentAssignmentUIManager(TabSheet uiTabSheet,
-			SpringContextHelper contextHelper, Window parentWindow) {
+			SpringContextHelper contextHelper) {
 		tabSheet = uiTabSheet;
 		this.contextHelper = contextHelper;
-		this.parentWindow = parentWindow;
 		this.siteService = (SiteService)contextHelper.getBean("siteService");
 		this.articleService = (ArticleService)contextHelper.getBean("articleService");
 	}
@@ -92,7 +90,7 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		
 		final Button button = new Button("Assign Content");
 		formLayout.addComponent(button);
-		button.addListener(this);
+		button.addClickListener(this);
 		verticalLayout.addComponent(formLayout);
 		verticalLayout.addComponent(new HorizontalRuler());
 		return tabSheet;
@@ -103,9 +101,9 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("Articles");
 		GenricEntityPicker contentPicker;
-		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute(parentWindow, "accountId")));
+		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
 		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null));
-		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayout,parentWindow,this,false);
+		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayout,this,false);
 		contentPicker.setCaption("Assign Content to Site");
 		contentPicker.build();
 	}
@@ -128,11 +126,11 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 					}
 				}//end outer for
 				removeAssignedContentDtos(assignedDtos);
-				parentWindow.showNotification("Articles saved successfully for site" + siteDto.getSiteName(), Notification.TYPE_TRAY_NOTIFICATION);
+				Notification.show("Articles saved successfully for site" + siteDto.getSiteName(), Notification.Type.TRAY_NOTIFICATION);
 			}
 			catch (Exception e) {
 				LOGGER.error("Unable to assign article to site" + siteDto.getSiteName());
-				parentWindow.showNotification("Unable to associate article with head" + articleDto .getHead()+ " for site" + siteDto.getSiteName(), Notification.TYPE_ERROR_MESSAGE);
+				Notification.show("Unable to associate article with head" + articleDto .getHead()+ " for site" + siteDto.getSiteName(), Notification.Type.ERROR_MESSAGE);
 			}
 		}//end if
 	}

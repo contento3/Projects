@@ -13,12 +13,10 @@ import com.contento3.web.content.article.listener.AssociatedCategoryClickListene
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -93,7 +91,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		categoryLink.setData(article.getId());
 		categoryLink.addStyleName("view");
 		categoryLink.setStyleName(BaseTheme.BUTTON_LINK);
-		categoryLink.addListener(new AssociatedCategoryClickListener(this.window,article));
+		categoryLink.addClickListener(new AssociatedCategoryClickListener(article));
 		item.getItemProperty("Associated Category").setValue(categoryLink);
 		
 		Button editLink = new Button();
@@ -101,7 +99,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		editLink.setData(article.getId());
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
-		editLink.addListener(new ArticleFormBuilderListner(this.contextHelper, this.window,this.tabSheet,articleTable));
+		editLink.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,articleTable));
 		item.getItemProperty("edit").setValue(editLink);
 		
 		Button deleteLink = new Button();
@@ -110,7 +108,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new ArticleDeleteClickListner(article, window, articleService, deleteLink, articleTable));
+		deleteLink.addClickListener(new ArticleDeleteClickListner(article, articleService, deleteLink, articleTable));
 	}
 
 	/**
@@ -125,7 +123,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		articleContainer.addContainerProperty("Associated Category", Button.class, null);
 		articleContainer.addContainerProperty("edit", Button.class, null);
 		articleContainer.addContainerProperty("delete", Button.class, null);
-		articleTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		articleTable.setWidth(100, Unit.PERCENTAGE);
 		articleTable.setContainerDataSource(articleContainer);
 	}
 

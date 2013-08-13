@@ -2,7 +2,6 @@ package com.contento3.template.article.service;
 
 import java.util.Collection;
 
-import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.template.article.dto.ArticleTemplateDto;
 
 /**

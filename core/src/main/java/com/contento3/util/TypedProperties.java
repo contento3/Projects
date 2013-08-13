@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Extends properties to implement parsing for types other than String.
  */
 public class TypedProperties extends java.util.Properties {
 
   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+/**
    * Read a required string
    *
    * @param propertyName name of the property to read

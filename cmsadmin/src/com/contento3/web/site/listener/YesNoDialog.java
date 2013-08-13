@@ -1,12 +1,13 @@
 package com.contento3.web.site.listener;
 
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 
 /** class that creats the confirmation dialog prompt**/
@@ -38,8 +39,8 @@ public final class YesNoDialog extends Window implements Button.ClickListener{
 			final String cancelLabel, final YesNoDialogCallback callback){
 		
 		super(caption);
-		setWidth(CONFIRMATION_DIALOG_WIDTH, YesNoDialog.UNITS_PIXELS);
-		setHeight(CONFIRMATION_DIALOG_HIEGHT, YesNoDialog.UNITS_PIXELS);
+		setWidth(CONFIRMATION_DIALOG_WIDTH, Unit.PIXELS);
+		setHeight(CONFIRMATION_DIALOG_HIEGHT, Unit.PIXELS);
 		okButton = new Button(okLabel, this);
 		cancelButton = new Button(cancelLabel, this);
 		setModal(true);
@@ -47,7 +48,7 @@ public final class YesNoDialog extends Window implements Button.ClickListener{
 		this.callback = callback;
 		
 		if(question != null){
-			addComponent(new Label(question));
+			setContent(new Label(question));
 		}
 		 
 	
@@ -56,10 +57,13 @@ public final class YesNoDialog extends Window implements Button.ClickListener{
         layout.setSpacing(true);
         layout.addComponent(okButton);
         layout.addComponent(cancelButton);
-        addComponent(layout);
+        
+        VerticalLayout rootLayout = new VerticalLayout();
+        rootLayout.addComponent(layout);
+        setContent(rootLayout);
     
 	
-	    ((VerticalLayout) getContent()).setHeight(ONE_HUNDRED_PERCENT,YesNoDialog.UNITS_PERCENTAGE);
+	    ((VerticalLayout) getContent()).setHeight(ONE_HUNDRED_PERCENT,Unit.PERCENTAGE);
 	
 	    ((VerticalLayout) getContent()).setComponentAlignment(layout,Alignment.BOTTOM_CENTER);
     
@@ -71,7 +75,7 @@ public final class YesNoDialog extends Window implements Button.ClickListener{
 		
 		if(getParent() != null){
 		
-			((Window) getParent()).removeWindow(this);
+			UI.getCurrent().removeWindow(this);
 		
 		}
 		

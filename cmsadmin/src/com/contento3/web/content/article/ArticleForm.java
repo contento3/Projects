@@ -80,6 +80,7 @@ public class ArticleForm extends UIContext {
 		
 		bodyTextField.setRequired(true);
 		bodyTextField.setRequiredError("body required");
+		
 		return bodyTextField;
 	}
 
@@ -131,6 +132,7 @@ public class ArticleForm extends UIContext {
 	 */
 	public void setBodyTextField(final CKEditorTextField bodyTextField) {
 		this.bodyTextField = bodyTextField;
+		
 		this.bodyTextField.setRequired(true);
 		this.bodyTextField.setRequiredError("body required");
 	}

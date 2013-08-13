@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import com.contento3.common.dto.Dto;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -116,11 +116,10 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 */
 
 	public GenricEntityPicker(final Collection<Dto> dtos,final Collection<Dto> assignedDtos,final Collection<String> listOfColumns,
-			final VerticalLayout vLayout,final Window mainWindow,EntityListener entityListener,final boolean isHierarchicalTable) {
+			final VerticalLayout vLayout,EntityListener entityListener,final boolean isHierarchicalTable) {
 		this.listOfColumns = listOfColumns;
 		this.dtos = dtos;
 		this.vLayout = vLayout;
-		this.mainwindow = mainWindow;
 		this.entityListener = entityListener;
 		this.assignedDto = assignedDtos;
 		this.isHierarchicalTable = isHierarchicalTable;
@@ -166,20 +165,20 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 			popupWindow = new Window();
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
-	    	popupWindow.setHeight(Integer.parseInt(height),Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(Integer.parseInt(width),Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setHeight(Integer.parseInt(height),Unit.PERCENTAGE);
+	    	popupWindow.setWidth(Integer.parseInt(width),Unit.PERCENTAGE);
 
 	    	/* Add the window inside the main window. */
-	        mainwindow.addWindow(popupWindow);
+	        UI.getCurrent().addWindow(popupWindow);
 
 	        /* Listen for close events for the window. */
-	        popupWindow.addListener(this);
+	        popupWindow.addCloseListener(this);
 	        popupWindow.setModal(true);
 	        if(entityListener.getCaption() !=  null)
 	        popupWindow.setCaption(entityListener.getCaption());
 	        popupMainLayout.setSpacing(true);
 	        popupMainLayout.addComponent(vLayout);
-	        popupWindow.addComponent(popupMainLayout);
+	        popupWindow.setContent(popupMainLayout);
 	        popupWindow.setResizable(false);
 
 	    }
@@ -191,7 +190,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 
 		if (!isModalWindowClosable) {
 			/* Windows are managed by the application object. */
-			mainwindow.removeWindow(popupWindow);
+			UI.getCurrent().removeWindow(popupWindow);
 		}
 	}
 

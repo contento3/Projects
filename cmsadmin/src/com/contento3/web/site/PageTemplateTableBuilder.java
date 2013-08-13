@@ -14,10 +14,9 @@ import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -31,11 +30,6 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	 */
 	final SpringContextHelper contextHelper;
 	
-	 /**
-     * Represents the parent window of the template ui
-     */
-	final Window mainWindow;
-	
 	final TemplateService templateService;
 	
 	/**
@@ -44,11 +38,10 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	 * @param window
 	 * @param table
 	 */
-	public PageTemplateTableBuilder(final SpringContextHelper helper,final Window window,final Table table) {
+	public PageTemplateTableBuilder(final SpringContextHelper helper,final Table table) {
 		super(table);
 		this.contextHelper = helper;
-		this.mainWindow = window;
-		this.templateService = (TemplateService)helper.getBean("templateService");
+	this.templateService = (TemplateService)helper.getBean("templateService");
 	}
 
 	/**
@@ -71,7 +64,7 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
 		PageTemplateService service = (PageTemplateService) this.contextHelper.getBean("pageTemplateService");
-		deleteLink.addListener(new EntityDeleteClickListener<PageTemplateDto>(templateDto,service,deleteLink,table));
+		deleteLink.addClickListener(new EntityDeleteClickListener<PageTemplateDto>(templateDto,service,deleteLink,table));
 		
 		((IndexedContainer) container).sort(new Object[] { "order" }, new boolean[] { true });
 	}
@@ -83,9 +76,9 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 	public void buildHeader(final Table table,final Container container) {
 		container.addContainerProperty("associated templates", String.class, null);
 		container.addContainerProperty("url", String.class, null);
-		container.addContainerProperty("order", String.class, null);
+		container.addContainerProperty("order", Integer.class, null);
 		container.addContainerProperty("delete", Button.class, null);
-		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		table.setWidth(100, Unit.PERCENTAGE);
 		table.setContainerDataSource(container);
 
 	}

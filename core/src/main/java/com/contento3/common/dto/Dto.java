@@ -2,9 +2,6 @@ package com.contento3.common.dto;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.page.model.Page;
-
 
 public class Dto {
 

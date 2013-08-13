@@ -1,6 +1,7 @@
 package com.contento3.cms.article.model;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

@@ -1,13 +1,14 @@
 package com.contento3.web.user.security;
 
 import java.util.Collection;
+
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.AddAssociatedUsersListener;
 import com.contento3.web.user.listner.DeleteAssociatedUsersListener;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
@@ -15,11 +16,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class AssociatedUserPopup extends CustomComponent implements Window.CloseListener {
+public class AssociatedUserPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -64,30 +62,31 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	 */
 	private  AbstractTableBuilder tableBuilder;
 	
+	final private VerticalLayout layout;
 	/**
 	 * Constructor
 	 * @param main
 	 * @param helper
 	 * @param table
 	 */
-	public AssociatedUserPopup(final Window main,final SpringContextHelper helper,final Table table) {
-		this.mainwindow = main;
+	public AssociatedUserPopup(final SpringContextHelper helper,final Table table) {
 		this.helper = helper;
 		this.groupService = (GroupService) this.helper.getBean("groupService");
 		this.userTable = new Table();
 		
 		 // The component contains a button that opens the window.
-        final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Associated user", this, "openButtonClick");
+        layout = new VerticalLayout();
+        openbutton = new Button("Associated user");
+        openbutton.addClickListener(this);
+        
         layout.addComponent(openbutton);
         setCompositionRoot(layout);
-		
 	}
 	
 	/** 
 	 * Button click listener
 	 */
-	  public void openButtonClick(Button.ClickEvent event) {
+	  public void openButtonClick(final Button.ClickEvent event) {
 	        /* Create a new window. */
 		  	popupWindow = new Window();
 		  	this.tableBuilder = new AssociatedUserTableBuilder(popupWindow,helper,userTable);
@@ -95,20 +94,20 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		  	Integer groupId = Integer.parseInt(event.getButton().getData().toString());
 		  	
 	        final Button addUserButton = new Button("Add");
-	        addUserButton.addListener(new AddAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
+	        addUserButton.addClickListener(new AddAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
 	        final Button deleteUserButton = new Button("Delete");
-	    	deleteUserButton.addListener(new DeleteAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
+	    	deleteUserButton.addClickListener(new DeleteAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
 
-	    	popupWindow.setHeight(40,Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(37,Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setHeight(40,Unit.PERCENTAGE);
+	    	popupWindow.setWidth(37,Unit.PERCENTAGE);
 	       
 	    	/* Add the window inside the main window. */
-	        mainwindow.addWindow(popupWindow);
+	        layout.addComponent(popupWindow);
 	        
 	        /* Listen for close events for the window. */
-	        popupWindow.addListener(this);
+	        popupWindow.addCloseListener(this);
 	        popupWindow.setModal(true);
 	        popupWindow.setCaption("Associated users");
 	        final VerticalLayout popupMainLayout = new VerticalLayout();
@@ -121,7 +120,7 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	        
 	        /* Adding user table to pop-up */
 	        popupMainLayout.addComponent(renderAssociatedUserTable(groupId));
-	        popupWindow.addComponent(popupMainLayout);
+	        popupWindow.setContent(popupMainLayout);
 	        popupWindow.setResizable(false);
 	        /* Allow opening only one window at a time. */
 	        openbutton.setEnabled(false);
@@ -133,20 +132,19 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	   * @return
 	   */
 	  @SuppressWarnings({ "rawtypes", "unchecked" })
-	  private Table  renderAssociatedUserTable(Integer groupId){
+	  private Table renderAssociatedUserTable(final Integer groupId){
 		  userTable.setPageLength(25);
 		  tableBuilder.build((Collection)groupService.findById(groupId).getMembers());
 		return userTable;
-		  
 	  }
 	  
 	  /**
 	   *  Handle Close button click and close the window.
 	   */
-	    public void closeButtonClick(Button.ClickEvent event) {
+	    public void closeButtonClick(final Button.ClickEvent event) {
 	    	if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */
-	        mainwindow.removeWindow(popupWindow);
+	        layout.removeComponent(popupWindow);
 	        
 	        /* Return to initial state. */
 	        openbutton.setEnabled(true);
@@ -157,9 +155,14 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	     * Handle window close event
 	     */
 		@Override
-		public void windowClose(CloseEvent e) {
+		public void windowClose(final CloseEvent e) {
 			  /* Return to initial state. */
 	        openbutton.setEnabled(true);
+		}
+
+		@Override
+		public void buttonClick(final ClickEvent event) {
+			this.openButtonClick(event);
 		}
 
 }

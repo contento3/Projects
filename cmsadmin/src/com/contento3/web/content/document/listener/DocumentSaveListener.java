@@ -11,13 +11,14 @@ import com.contento3.dam.document.service.DocumentTypeService;
 import com.contento3.dam.storagetype.dto.StorageTypeDto;
 import com.contento3.dam.storagetype.service.StorageTypeService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.content.document.DocumentTableBuilder;
 import com.contento3.web.content.document.StorageTypeEnum;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -102,14 +103,13 @@ public class DocumentSaveListener implements ClickListener {
 		this.storageTypeService = (StorageTypeService) contextHelper.getBean("storageTypeService");
 		
 		//get account if from session
-		WebApplicationContext webContext = (WebApplicationContext) parentWindow.getApplication().getContext();
-		this.accountId = (Integer) webContext.getHttpSession().getAttribute("accountId");
+		this.accountId = (Integer) SessionHelper.loadAttribute("accountId");
 	}
 	
 	@Override
 	public void click(ClickEvent event) {
 		if(documentForm.getUploadedDocument() == null){
-			parentWindow.showNotification("You must upload a document to proceed.");
+			Notification.show("You must upload a document to proceed.");
 			return;
 		}
 		
@@ -134,12 +134,12 @@ public class DocumentSaveListener implements ClickListener {
 				documentService.update(documentDto);
 			}
 		} catch (EntityAlreadyFoundException e) {
-			parentWindow.showNotification("The document was not created, because a document " +
+			Notification.show("The document was not created, because a document " +
 										"with the same title already exists in the database");
 			//e.printStackTrace();
 			return;
 		} catch (EntityNotCreatedException e) {
-			parentWindow.showNotification("The document was not created due to errors.");
+			Notification.show("The document was not created due to errors.");
 			//e.printStackTrace();
 			return;
 		}
@@ -147,8 +147,8 @@ public class DocumentSaveListener implements ClickListener {
 		/* At this point we can assume that the document has been created.
 		 * Otherwise, Java would've thrown an exception by now.
 		 * */
-		String notification = documentDto.getDocumentTitle() + " updated successfully"; 
-		parentWindow.showNotification(notification);
+		final String notification = documentDto.getDocumentTitle() + " updated successfully"; 
+		Notification.show(notification);
 		tabSheet.removeTab(documentTab);
 		resetTable();
 		tabSheet.removeTab(documentTab);
@@ -159,7 +159,7 @@ public class DocumentSaveListener implements ClickListener {
 	 */
 	 @SuppressWarnings("rawtypes")
 	 private void resetTable(){
-		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.documentTable);
+		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper,this.tabSheet,this.documentTable);
 		final Collection<DocumentDto> document = this.documentService.findByAccountId(accountId);
 		tableBuilder.rebuild((Collection) document);
 	}

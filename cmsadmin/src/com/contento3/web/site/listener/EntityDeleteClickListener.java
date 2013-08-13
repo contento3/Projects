@@ -5,7 +5,9 @@ import com.contento3.common.service.Service;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 
@@ -77,8 +79,7 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 	 */
 	protected void deleteEntity(final T dtoToDelete) {
 		final Object id = deleteLink.getData();
-		final Window window = table.getApplication().getMainWindow();
-		window.addWindow(new YesNoDialog(
+		UI.getCurrent().addWindow((new YesNoDialog(
 				"Confirmation","Do you really want to delete template ?", "Yes", "No",
 				new YesNoDialog.YesNoDialogCallback() {
 					
@@ -91,17 +92,17 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 						service.delete(dtoToDelete);
 						table.removeItem(id);
 						table.setPageLength(table.getPageLength()-1);			
-					    window.showNotification("successfully unassigned");
+					    Notification.show("successfully unassigned");
 					    } 
 					catch (EntityCannotBeDeletedException e)
 					    {						
-					    window.showNotification("Unable to delete entity");
+					    Notification.show("Unable to delete entity");
 				        }
 				}
 				
 			}
 		}
-				));
+		)		));
 			
 	}
 	

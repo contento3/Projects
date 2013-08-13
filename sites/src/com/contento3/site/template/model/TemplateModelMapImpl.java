@@ -2,6 +2,7 @@ package com.contento3.site.template.model;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleCollection;
 import freemarker.template.TemplateCollectionModel;

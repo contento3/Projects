@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.content.image.ImageLoader;
 import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
@@ -69,7 +69,7 @@ public class ScreenToolbarBuilder {
 	 */
 	public void build(){
 		gridLayout.addStyleName("bordertest");
-		gridLayout.setWidth(35,Sizeable.UNITS_PIXELS);
+		gridLayout.setWidth(35,Unit.PIXELS);
 		
 		final int totalRows = gridLayout.getRows();
 		int count = 0;
@@ -97,7 +97,7 @@ public class ScreenToolbarBuilder {
 	    final Embedded icon = imageLoader.loadEmbeddedImageByPath(path);
 	    
 	    if (null!=listener){
-	    	icon.addListener(listener);
+	    	icon.addClickListener(listener);
 	    }
 	    
 	    icon.setDescription(tooltip);

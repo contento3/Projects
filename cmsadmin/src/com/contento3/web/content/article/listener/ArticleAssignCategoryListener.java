@@ -13,9 +13,9 @@ import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 public class ArticleAssignCategoryListener extends EntityListener implements ClickListener {
 
@@ -63,11 +63,11 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			Collection<Dto> dtos = null;
 			dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
 			setCaption("Add Category");
-			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,mainWindow,this,true);
+			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
 			categoryPicker.build();
 		}else{
 			//warning message
-			mainWindow.showNotification("Opening failed", "create article first", Notification.TYPE_WARNING_MESSAGE);
+			Notification.show("Opening failed", "create article first", Notification.Type.WARNING_MESSAGE);
 		}
 	}
 	
@@ -99,8 +99,8 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			}//end outer for
 			
 			articleService.update(article);
-			mainWindow.showNotification("Assigned"," successfully assigned to "+article.getHead(),
-				Notification.TYPE_HUMANIZED_MESSAGE);
+			Notification.show("Assigned"," successfully assigned to "+article.getHead(),
+				Notification.Type.HUMANIZED_MESSAGE);
 			
 		}
 		

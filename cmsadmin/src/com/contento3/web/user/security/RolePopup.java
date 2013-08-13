@@ -7,12 +7,9 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
-import com.contento3.security.user.dto.SaltedHibernateUserDto;
-import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -20,22 +17,18 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.Notification;
 
-public class RolePopup extends CustomComponent implements Window.CloseListener {
+public class RolePopup extends CustomComponent implements Window.CloseListener,Button.ClickListener {
 	
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 *  Reference to main window
-	 */
-	Window mainwindow; 
-	
 	/**
 	 * The window to be opened
 	 */
@@ -73,8 +66,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
     
 	boolean isModalWindowClosable = true;
 
-	public RolePopup(final Window main,final SpringContextHelper helper,final Table table) {
-		this.mainwindow = main;
+	public RolePopup(final SpringContextHelper helper,final Table table) {
 		this.helper = helper;
 		this.roleTable = table;
 		this.roleService = (RoleService) this.helper.getBean("roleService");
@@ -82,7 +74,8 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
 
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add Role", this, "openButtonClick");
+        openbutton = new Button("Add Role");
+        openbutton.addClickListener(this);
         layout.addComponent(openbutton);
 
         setCompositionRoot(layout);
@@ -96,23 +89,23 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(61,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(23,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(61,Unit.PERCENTAGE);
+    	popupWindow.setWidth(23,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainwindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
         final Label label = new Label("Role Name");
-        label.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        label.setWidth(100,Unit.PERCENTAGE);
         final HorizontalLayout inputDataLayout = new HorizontalLayout();
         final TextField roleNameTxtFld = new TextField("Role Name");
         roleNameTxtFld.setInputPrompt("Enter role name");
-        roleNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        roleNameTxtFld.setWidth(100,Unit.PERCENTAGE);
         roleNameTxtFld.setColumns(15);
         
         inputDataLayout.setSizeFull();
@@ -130,7 +123,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
        
         final TextField roledescTxtFld = new TextField("Role Description");
         roledescTxtFld.setInputPrompt("Enter role description name");
-        roledescTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        roledescTxtFld.setWidth(100,Unit.PERCENTAGE);
         roledescTxtFld.setColumns(15);
      	
         firstNameLayout.setSizeFull();
@@ -143,7 +136,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
           
           final TextField roleidTxtFld = new TextField("Role id");
           roleidTxtFld.setInputPrompt("Enter role id");
-          roleidTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+          roleidTxtFld.setWidth(100,Unit.PERCENTAGE);
           roleidTxtFld.setColumns(15);
        	
           lastNameLayout.setSizeFull();
@@ -156,9 +149,9 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
 
         addButtonLayout.addComponent(roleButton);
         addButtonLayout.setComponentAlignment(roleButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
         
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
@@ -170,8 +163,8 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
 			final int rolename =  (Integer) event.getButton().getData();
 			RoleDto roleDto = roleService.findById(rolename);
 			//roleNameTxtFld.setValue(roleDto.getName());
-			roleidTxtFld.setValue(roleDto.getRoleid());
-        	roleButton.addListener(new ClickListener() {
+			roleidTxtFld.setValue(roleDto.getRoleid().toString());
+        	roleButton.addClickListener(new ClickListener() {
     			private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
     			{
@@ -184,7 +177,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
         
         	roleButton.setCaption("Add");
         	popupWindow.setCaption("Add new role");
-        	roleButton.addListener(new ClickListener() {
+        	roleButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) 
 			{
@@ -205,16 +198,16 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
 			roleDto.setRoleid(tempint);
 			roleDto.setRoleName(rolename.getValue().toString());
 			roleDto.setRoleDesc(roledesc.getValue().toString());
-			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute("accountId"));
 			roleDto.setAccount(accountDto);
 			roleService.create(roleDto);
 		} catch (EntityAlreadyFoundException e) {
-			mainwindow.showNotification("Role already exists", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("Role already exists", Notification.Type.ERROR_MESSAGE);
 		}
 		catch (EntityNotCreatedException e) {
-			mainwindow.showNotification("Role not created", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("Role not created", Notification.Type.ERROR_MESSAGE);
 		}
-		mainwindow.showNotification(roleDto.getName()+" role created succesfully");
+		Notification.show(roleDto.getName()+" role created succesfully");
 		resetTable();
     }
 	private void handleEditRole(final TextField rolename,final TextField roledesc,final TextField roleid,final Integer editId){
@@ -226,23 +219,23 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
 		roleDto.setRoleName(rolename.getValue().toString());
 		roleDto.setRoleDesc(roledesc.getValue().toString());
 		roleService.update(roleDto);
-		mainwindow.showNotification(roleDto.getName()+" role edit succesfully");
+		Notification.show(roleDto.getName()+" role edit succesfully");
 		resetTable();
     }
 	@SuppressWarnings("rawtypes")
 	private void resetTable(){
-		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(mainwindow,helper,roleTable);
+		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(helper,roleTable);
 		//final Collection<RoleDto> roleDto = roleService.findAllRoles();
-		final Collection<RoleDto> roleDto = roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+		final Collection<RoleDto> roleDto = roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 		tableBuilder.rebuild((Collection)roleDto);
-		mainwindow.removeWindow(popupWindow);
+		UI.getCurrent().removeWindow(popupWindow);
         openbutton.setEnabled(true);
     }
  
 	 public void closeButtonClick(Button.ClickEvent event) {
 	    	if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */
-	        mainwindow.removeWindow(popupWindow);
+	    		UI.getCurrent().removeWindow(popupWindow);
 	        
 	        /* Return to initial state. */
 	        openbutton.setEnabled(true);
@@ -254,5 +247,10 @@ public class RolePopup extends CustomComponent implements Window.CloseListener {
 			  /* Return to initial state. */
 	        openbutton.setEnabled(true);
 		}
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		this.openButtonClick(event);		
+	}
 
 }
