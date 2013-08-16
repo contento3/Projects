@@ -1,41 +1,32 @@
 package com.contento3.web.content.article.listener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 
-import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.ArticleForm;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
-import com.contento3.web.content.article.ArticleTableBuilder;
 import com.contento3.web.content.article.AssociatedImagesUIManager;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -108,17 +99,15 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 * @param tabSheet
 	 * @param articleTable
 	 */
-	public ArticleFormBuilderListner(final SpringContextHelper helper,final Window parentWindow,final TabSheet tabSheet,final Table articleTable) {
+	public ArticleFormBuilderListner(final SpringContextHelper helper,final TabSheet tabSheet,final Table articleTable) {
 		this.contextHelper= helper;
-		this.parentWindow = parentWindow;
 		this.tabSheet = tabSheet;
 		this.articleService = (ArticleService) this.contextHelper.getBean("articleService");
 		this.accountService = (AccountService) this.contextHelper.getBean("accountService");
 		this.articleTable = articleTable;
+		
 		//Get accountId from the session
-        final WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-        final HttpSession session = ctx.getHttpSession();
-        this.accountId =(Integer)session.getAttribute("accountId");
+        this.accountId =(Integer)SessionHelper.loadAttribute("accountId");
         articleForm = new ArticleForm();
         articleForm.setContextHelper(helper);
         articleForm.setParentWindow(parentWindow);
@@ -212,16 +201,16 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleForm.getConfig().setToolbarCanCollapse(false);
 		articleForm.getConfig().disableElementsPath();       
 		articleForm.getConfig().disableSpellChecker();
-		articleForm.getConfig().addCustomToolbarLine("['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']");
+		//articleForm.getConfig().addCustomToolbarLine("['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']");
 		articleForm.getConfig().setWidth("95%");
 		articleForm.getConfig().setHeight("95%");
         
         articleForm.getPostedDatefield().setInputPrompt("Insert Date");
         
         // Set the correct resolution only date
-        articleForm.getPostedDatefield().setResolution(PopupDateField.RESOLUTION_DAY);
+        articleForm.getPostedDatefield().setResolution(Resolution.DAY);
         articleForm.getExpiryDatefield().setInputPrompt("Insert Date");
-        articleForm.getExpiryDatefield().setResolution(PopupDateField.RESOLUTION_DAY);
+        articleForm.getExpiryDatefield().setResolution(Resolution.DAY);
         
         formLayout.setSpacing(true);
         formLayout.setMargin(true);

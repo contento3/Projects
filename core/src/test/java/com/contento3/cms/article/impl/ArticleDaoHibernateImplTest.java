@@ -1,32 +1,15 @@
 package com.contento3.cms.article.impl;
 
-import static org.junit.Assert.*;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import static org.junit.Assert.assertTrue;
 
 import javax.annotation.Resource;
 
-import org.hibernate.*;
-import org.hibernate.jmx.HibernateService;
-import org.hibernate.stat.CollectionStatistics;
-import org.hibernate.stat.EntityStatistics;
-import org.hibernate.stat.QueryStatistics;
-import org.hibernate.stat.SecondLevelCacheStatistics;
-import org.hibernate.stat.Statistics;
-import org.springframework.util.*;
-
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.hibernate.SingletonEhCacheProvider;
+import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.orm.hibernate3.HibernateAccessor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 
-import com.contento3.cms.article.dao.impl.ArticleDaoHibernateImpl;
 import com.contento3.cms.article.model.Article;
 
 //Test Case Class for 2nd Level Cache Task

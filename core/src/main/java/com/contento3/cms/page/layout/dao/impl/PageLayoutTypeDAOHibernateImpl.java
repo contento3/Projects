@@ -7,7 +7,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.contento3.cms.page.layout.dao.PageLayoutTypeDAO;
-import com.contento3.cms.page.layout.model.PageLayout;
 import com.contento3.cms.page.layout.model.PageLayoutType;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 

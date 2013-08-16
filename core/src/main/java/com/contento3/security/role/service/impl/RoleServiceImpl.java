@@ -2,20 +2,14 @@ package com.contento3.security.role.service.impl;
 
 import java.util.Collection;
 
-
-
-import com.contento3.account.dto.AccountDto;
-import com.contento3.account.model.Account;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
-import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.role.dao.RoleDao;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.role.service.RoleAssembler;
 import com.contento3.security.role.service.RoleService;
-import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
 public class RoleServiceImpl implements RoleService{
 

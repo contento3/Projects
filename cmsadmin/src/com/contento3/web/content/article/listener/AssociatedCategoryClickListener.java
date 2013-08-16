@@ -1,12 +1,13 @@
  package com.contento3.web.content.article.listener;
 
 import java.util.Collection;
+
 import org.apache.log4j.Logger;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.article.AssociatedCategoryTableBuilder;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -25,11 +26,6 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 	
 	private static final Logger LOGGER = Logger.getLogger(AssociatedCategoryClickListener.class);
 
-	 /**
-     * Represents the parent window of the ui
-     */
-	private Window parentWindow;
-	
 	/**
 	 * The window to be opened
 	 */
@@ -67,8 +63,7 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 	 * @param parentWindow
 	 * @param article
 	 */
-	public AssociatedCategoryClickListener(final Window parentWindow,final ArticleDto article) {
-		this.parentWindow = parentWindow;
+	public AssociatedCategoryClickListener(final ArticleDto article) {
 		this.article = article;
 	}
 	
@@ -109,19 +104,18 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 			popupWindow.setCaption("Associated Category");
 			popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
-	    	popupWindow.setHeight(Integer.parseInt(height)-10,Sizeable.UNITS_PERCENTAGE);
-	    	popupWindow.setWidth(Integer.parseInt(width),Sizeable.UNITS_PERCENTAGE);
+	    	popupWindow.setHeight(Integer.parseInt(height)-10,Unit.PERCENTAGE);
+	    	popupWindow.setWidth(Integer.parseInt(width),Unit.PERCENTAGE);
 
 	    	/* Add the window inside the main window. */
-	        parentWindow.addWindow(popupWindow);
+	        vLayout.addComponent(popupWindow);
 
 	        /* Listen for close events for the window. */
-	        popupWindow.addListener(this);
+	        popupWindow.addCloseListener(this);
 	        popupWindow.setModal(true);
 	        vLayout.setSpacing(true);
-	        popupWindow.addComponent(vLayout);
+	        popupWindow.setContent(vLayout);
 	        popupWindow.setResizable(false);
-
 	    }
 
 	/**
@@ -131,7 +125,7 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 
 		if (!isModalWindowClosable) {
 			/* Windows are managed by the application object. */
-			parentWindow.removeWindow(popupWindow);
+			vLayout.removeComponent(popupWindow);
 		}
 	}
 

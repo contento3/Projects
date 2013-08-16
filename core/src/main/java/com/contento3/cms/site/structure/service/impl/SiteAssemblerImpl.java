@@ -10,7 +10,6 @@ import com.contento3.cms.site.structure.domain.service.SiteDomainAssembler;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.model.Site;
 import com.contento3.cms.site.structure.service.SiteAssembler;
-import com.contento3.dam.image.service.ImageAssembler;
 
 /**
  * Transform Site to SiteDto and vice versa.

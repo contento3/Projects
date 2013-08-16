@@ -1,6 +1,7 @@
 package com.contento3.security.group.model;
 
 import java.io.Serializable;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;

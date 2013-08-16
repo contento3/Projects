@@ -14,7 +14,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -23,21 +23,22 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
 public class CategoryPopup extends CustomComponent
-implements Window.CloseListener {
+implements Window.CloseListener,Button.ClickListener {
 
 	private static final long serialVersionUID = 1L;
 
-    Window mainwindow;  // Reference to main window
     Window popupWindow;    // The window to be opened
     Button openbutton;  // Button for opening the window
     Button closebutton; // A button in the window
@@ -62,38 +63,41 @@ implements Window.CloseListener {
     
     Integer selectedParentCategory = -1;
     
-    public CategoryPopup(final Window main,final SpringContextHelper helper,final TreeTable table,final TabSheet tabSheet) {
-        mainwindow = main;
+    final VerticalLayout parentLayout;
+    
+    public CategoryPopup(final SpringContextHelper helper,final TreeTable table,final TabSheet tabSheet) {
         this.helper = helper;
         this.categoryService = (CategoryService)helper.getBean("categoryService");
         this.tabSheet = tabSheet;
         this.categoryTable = table;
         tree = new Tree();
         // The component contains a button that opens the window.
-        final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add Category", this, "openButtonClick");
-        layout.addComponent(openbutton);
+        parentLayout = new VerticalLayout();
+        openbutton = new Button("Add Category");
+        openbutton.addClickListener(this);
+        parentLayout.addComponent(openbutton);
 
-        setCompositionRoot(layout);
+        setCompositionRoot(parentLayout);
     }
 
     /** Handle the clicks for the two buttons. */
     public void openButtonClick(Button.ClickEvent event) {
-        /* Create a new window. */
+        
+    	/* Create a new window. */
         final Button categoryButton = new Button();
 		popupWindow = new Window();
     	
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(56,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(30,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(56,Unit.PERCENTAGE);
+    	popupWindow.setWidth(30,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainwindow.addWindow(popupWindow);
+    	UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         /* Reset old selected category. */
         selectedParentCategory = -1;
@@ -107,7 +111,7 @@ implements Window.CloseListener {
         final TextArea categoryDescriptionTxtField = new TextArea("");
         categoryDescriptionTxtField.setInputPrompt("Enter Description Name");
         
-        final Label parentCategoryLbl = new Label("<b>Select Parent Category</b>", Label.CONTENT_XHTML);
+        final Label parentCategoryLbl = new Label("<b>Select Parent Category</b>", ContentMode.HTML);
         inputDataLayout.setSpacing(true);
         inputDataLayout.setMargin(true);
         inputDataLayout.addComponent(categoryLbl);
@@ -119,7 +123,7 @@ implements Window.CloseListener {
         popupMainLayout.setSpacing(true);
         popupMainLayout.addComponent(parentCategoryLbl);
         
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
@@ -131,11 +135,11 @@ implements Window.CloseListener {
 	        CategoryDto categoryDto = categoryService.findById(categoryId);
 	        categoryNameTxtField.setValue(categoryDto.getName());
 	        buildTree(popupMainLayout);
-	        categoryButton.addListener(new ClickListener() {
+	        categoryButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
 					if (categoryId==selectedParentCategory){
-						mainwindow.showNotification("Parent category cannot be the same the current category you are editing");
+						Notification.show("Parent category cannot be the same the current category you are editing");
 					}
 					handleEditCategory(categoryNameTxtField,categoryId);
 				}	
@@ -146,7 +150,7 @@ implements Window.CloseListener {
     		categoryButton.setCaption("Add");
 	        popupWindow.setCaption("Add Category");
 	        buildTree(popupMainLayout);
-	        categoryButton.addListener(new ClickListener() {
+	        categoryButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
 					handleNewCategory(categoryNameTxtField);
@@ -159,11 +163,11 @@ implements Window.CloseListener {
 
         addButtonLayout.addComponent(categoryButton);
         addButtonLayout.setComponentAlignment(categoryButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
     }
 
     private void buildTree(final VerticalLayout parentLayout){
-		final Collection<CategoryDto> categoryDtos = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+		final Collection<CategoryDto> categoryDtos = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
 		HierarchicalContainer container = new HierarchicalContainer();
 		container.addContainerProperty("category", String.class, null);
 		container.addContainerProperty("select", CheckBox.class, null);
@@ -195,7 +199,7 @@ implements Window.CloseListener {
 		parentLayout.addComponent(tree);
 
 		tree.setImmediate(true);		
-        tree.addListener(new ItemClickListener() {
+        tree.addItemClickListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
         	public void itemClick(ItemClickEvent event) {
         		String itemId = event.getItemId().toString();
@@ -213,7 +217,7 @@ implements Window.CloseListener {
 	private void handleNewCategory(final TextField textField){
 		final CategoryDto categoryDto = new CategoryDto();
 		categoryDto.setName(textField.getValue().toString());
-		categoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+		categoryDto.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 		
 		if (selectedParentCategory>0){
 			final CategoryDto parentCategory = categoryService.findById(selectedParentCategory);
@@ -224,7 +228,7 @@ implements Window.CloseListener {
 			categoryService.create(categoryDto);
 			resetTable();
 		} catch (EntityAlreadyFoundException e) {
-			mainwindow.showNotification("Category already found.");
+			Notification.show("Category already found.");
 		}
     }
 
@@ -235,7 +239,7 @@ implements Window.CloseListener {
 	private void handleEditCategory(final TextField categoryNameTxtField,final Integer categoryId){
 		final CategoryDto updatedCategoryDto = categoryService.findById(categoryId);
 		updatedCategoryDto.setName(categoryNameTxtField.getValue().toString());
-		updatedCategoryDto.setAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+		updatedCategoryDto.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 		if (selectedParentCategory>0){
 			categoryService.update(updatedCategoryDto,selectedParentCategory);
 		}
@@ -247,10 +251,10 @@ implements Window.CloseListener {
 
     @SuppressWarnings("rawtypes")
 	private void resetTable(){
-		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(mainwindow,helper,tabSheet,categoryTable);
-		final Collection<CategoryDto> updatedCategoryDto = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(helper,tabSheet,categoryTable);
+		final Collection<CategoryDto> updatedCategoryDto = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
 		tableBuilder.rebuild((Collection)updatedCategoryDto);
-		mainwindow.removeWindow(popupWindow);
+		parentLayout.removeComponent(popupWindow);
         openbutton.setEnabled(true);
     }
     
@@ -258,7 +262,7 @@ implements Window.CloseListener {
     public void closeButtonClick(Button.ClickEvent event) {
     	if (!isModalWindowClosable){
         /* Windows are managed by the application object. */
-        mainwindow.removeWindow(popupWindow);
+        parentLayout.removeComponent(popupWindow);
         
         /* Return to initial state. */
         openbutton.setEnabled(true);
@@ -270,5 +274,10 @@ implements Window.CloseListener {
         /* Return to initial state. */
         openbutton.setEnabled(true);
     }
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		this.openButtonClick(event);
+	}
 
 }

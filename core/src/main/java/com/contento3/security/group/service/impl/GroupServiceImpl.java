@@ -1,13 +1,14 @@
 package com.contento3.security.group.service.impl;
 
 import java.util.Collection;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.contento3.security.group.dao.GroupDao;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupAssembler;
 import com.contento3.security.group.service.GroupService;
-import com.contento3.security.group.service.impl.GroupServiceImpl;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
 

@@ -25,7 +25,7 @@ public class ComboDataLoader implements IComboDataLoader<Dto> {
 	public IndexedContainer loadDataInContainer(final Collection<Dto> dtoList) {
 		IndexedContainer container = new IndexedContainer();
 		container.addContainerProperty("name", String.class, null);
-		container.addContainerProperty("value", String.class, null);
+		container.addContainerProperty("value", Integer.class, null);
 
 		Iterator<Dto> dtoIterator = dtoList.iterator();
 

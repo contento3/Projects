@@ -3,7 +3,6 @@ package com.contento3.web.content.image;
 import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
-import com.contento3.account.service.AccountService;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
@@ -11,23 +10,24 @@ import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Window.CloseEvent;
 
 public class ImageEditListner extends  CustomComponent
-implements Window.CloseListener{
+implements Window.CloseListener,Button.ClickListener{
 	
 	/**
 	 * 
@@ -38,11 +38,6 @@ implements Window.CloseListener{
 	 * Helper to load the spring context
 	 */
     private SpringContextHelper helper;
-    
-    /**
-     * ParentWindow that holds this screen
-     */
-	private Window mainWindow;
 	
 	/**
 	 * The window to be opened
@@ -71,16 +66,15 @@ implements Window.CloseListener{
 	
 	boolean isModalWindowClosable = true;
 	 
-	public ImageEditListner(final SpringContextHelper helper,final Window parentWindow,final ImageDto imageDto ) {
+	public ImageEditListner(final SpringContextHelper helper,final ImageDto imageDto ) {
 		this.helper = helper;
-		this.mainWindow = parentWindow;
 		this.imageService = (ImageService)helper.getBean("imageService");
 		this.imageLibraryService = (ImageLibraryService) helper.getBean("imageLibraryService");
 		this.imageDto = imageDto;
 		
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Edit Image", this, "openButtonClick");
+        openbutton = new Button("Edit Image");
         layout.addComponent(openbutton);
         setCompositionRoot(layout);
 	}
@@ -95,14 +89,14 @@ implements Window.CloseListener{
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(30,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(22,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(30,Unit.PERCENTAGE);
+    	popupWindow.setWidth(22,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainWindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
@@ -136,12 +130,12 @@ implements Window.CloseListener{
         final Label libraryLabel = new Label("Select library");
         
         //Get accountId from the session
-        final Integer accountId = (Integer)SessionHelper.loadAttribute(mainWindow, "accountId");
+        final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
         Collection<ImageLibraryDto> imageLibraryDto = this.imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 		final ComboBox imageLibrayCombo = new ComboBox();
 		imageLibrayCombo.setContainerDataSource(comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
-		imageLibrayCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		imageLibrayCombo.setItemCaptionMode(ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
 		imageLibrayCombo.setValue(imageDto.getImageLibraryDto().getId());
 		imageLibraryDataLayout.setSpacing(true);
@@ -150,8 +144,10 @@ implements Window.CloseListener{
 		imageLibraryDataLayout.setComponentAlignment(libraryLabel, Alignment.BOTTOM_RIGHT);
 		popupMainLayout.addComponent(imageLibraryDataLayout);
 		
-		saveButton.addListener(new ClickListener() {
+		saveButton.addClickListener(new ClickListener() {
 			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				
@@ -169,8 +165,8 @@ implements Window.CloseListener{
 	            accountDto.setAccountId(accountId);
 				imageDto.setAccountDto(accountDto);
 	            imageService.update(imageDto);
-	    		mainWindow.showNotification(imageDto.getName() +" updated succesfully");
-	    		mainWindow.removeWindow(popupWindow);
+	    		Notification.show(imageDto.getName() +" updated succesfully");
+	    		UI.getCurrent().removeWindow(popupWindow);
 		        openbutton.setEnabled(true);
 			}
 		});
@@ -179,9 +175,9 @@ implements Window.CloseListener{
         popupMainLayout.addComponent(addButtonLayout);
         addButtonLayout.addComponent(saveButton);
         addButtonLayout.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
         popupWindow.setCaption("Edit image");
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
@@ -191,7 +187,7 @@ implements Window.CloseListener{
     public void closeButtonClick(Button.ClickEvent event) {
     	if (!isModalWindowClosable){
         /* Windows are managed by the application object. */
-        mainWindow.removeWindow(popupWindow);
+        UI.getCurrent().removeWindow(popupWindow);
         
         /* Return to initial state. */
         openbutton.setEnabled(true);
@@ -203,5 +199,10 @@ implements Window.CloseListener{
         /* Return to initial state. */
         openbutton.setEnabled(true);
     }
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		this.openButtonClick(event);		
+	}
 
 }

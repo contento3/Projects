@@ -15,8 +15,8 @@ import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -44,11 +44,6 @@ public class SiteUIManager implements UIManager {
 	 * Used to get spring beans.  
 	 */
 	private SpringContextHelper contextHelper;
-
-	/**
-	 * Application parent window that holds all the screens
-	 */
-	private Window parentWindow;
 
 	/**
 	 * Service layer that use to provide functionality related to site.
@@ -80,9 +75,8 @@ public class SiteUIManager implements UIManager {
 	 */
 	private TabSheet uiTabSheet;
 
-	public SiteUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
+	public SiteUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper) {
 		this.contextHelper = helper;
-		this.parentWindow = parentWindow;
 		this.siteService = (SiteService) contextHelper.getBean("siteService");
 		this.pageService = (PageService) contextHelper.getBean("pageService");
 		this.accountService = (AccountService) contextHelper.getBean("accountService");
@@ -97,11 +91,11 @@ public class SiteUIManager implements UIManager {
 	@Override
 	public Component render(final String command) {
 		Component componentToReturn = null;
-		uiTabSheet.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-		uiTabSheet.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		uiTabSheet.setHeight(100,Unit.PERCENTAGE);
+		uiTabSheet.setWidth(100,Unit.PERCENTAGE);
 
 		if(command == null){
-				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper,parentWindow);
+				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper);
 				componentToReturn = sitesDashBoard.render(null);
 		}
 		else if (command.equals(NEWSITE)) {
@@ -140,7 +134,7 @@ public class SiteUIManager implements UIManager {
 		veticalLayout.addComponent(heading);
 		veticalLayout.addComponent(new HorizontalRuler());
 		veticalLayout.setMargin(true);
-		pageUIManager = new PageUIManager(siteService,pageService,contextHelper,parentWindow);
+		pageUIManager = new PageUIManager(siteService,pageService,contextHelper);
 		Component component = pageUIManager.renderPageListing(siteId,uiTabSheet,horizontalLayout,veticalLayout);
 		renderButtons(horizontalLayout,siteId,uiTabSheet);
 		return component;
@@ -154,13 +148,13 @@ public class SiteUIManager implements UIManager {
 	 * @param pagesTab
 	 */
 	public void renderButtons(final HorizontalLayout horizontalLayout,final Integer siteId,final TabSheet pagesTab){
-		pagesTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-		pagesTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		pagesTab.setHeight(100,Unit.PERCENTAGE);
+		pagesTab.setWidth(100,Unit.PERCENTAGE);
 
 		// Button that when clicked rendered a new page tab.
 		final Button newPageButton = new Button("Create page");
 		horizontalLayout.addComponent(newPageButton);
-		newPageButton.addListener(new ClickListener() {
+		newPageButton.addClickListener(new ClickListener() {
 		private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				pageUIManager.renderNewPage(siteId, pagesTab, null);
@@ -171,8 +165,8 @@ public class SiteUIManager implements UIManager {
 		final String buttonText = "Site Configuration";
 		final Button siteConfigButton = new Button(buttonText);
 		horizontalLayout.addComponent(siteConfigButton);
-		siteConfigUIManager = new SiteConfigUIManager(siteService,contextHelper,parentWindow);
-		siteConfigButton.addListener(new ClickListener() {
+		siteConfigUIManager = new SiteConfigUIManager(siteService,contextHelper);
+		siteConfigButton.addClickListener(new ClickListener() {
 		private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				siteConfigUIManager.renderSiteConfig(siteId, pagesTab, null);
@@ -192,10 +186,12 @@ public class SiteUIManager implements UIManager {
 
 		final Button contentAssignmentButton = new Button("Content Assigner");
 		horizontalLayout.addComponent(contentAssignmentButton);
-		contentAssignmentButton.addListener(new ClickListener() {
+		contentAssignmentButton.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
-				SiteContentAssignmentUIManager siteContentUIManager = new SiteContentAssignmentUIManager(uiTabSheet,contextHelper,parentWindow);
+				SiteContentAssignmentUIManager siteContentUIManager = new SiteContentAssignmentUIManager(uiTabSheet,contextHelper);
 				siteContentUIManager.render(siteId);
 			}
 		});
@@ -215,12 +211,12 @@ public class SiteUIManager implements UIManager {
 		txtHelper.addTextInputs(newSiteInputLayout, "Site Name", "Site Domain");
 		txtHelper.addSubmitButton(newSiteInputLayout, "Add Site");
 
-		((Button) newSiteInputLayout.getComponent(2)).addListener(new ClickListener() {
+		((Button) newSiteInputLayout.getComponent(2)).addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				SiteDto siteDto = new SiteDto();
 				siteDto.setSiteName((String) ((TextField) newSiteInputLayout.getComponent(0)).getValue());
-				final AccountDto account = accountService.findAccountById((Integer)SessionHelper.loadAttribute(parentWindow,"accountId"));
+				final AccountDto account = accountService.findAccountById((Integer)SessionHelper.loadAttribute("accountId"));
 				siteDto.setAccountDto(account);
 				final SiteDomainDto siteDomainDto = new SiteDomainDto();
 				siteDomainDto.setDomainName((String) ((TextField) newSiteInputLayout.getComponent(1)).getValue());
@@ -236,7 +232,6 @@ public class SiteUIManager implements UIManager {
 	@Override
 	public Component render(String command,
 			HierarchicalContainer treeItemContainer) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

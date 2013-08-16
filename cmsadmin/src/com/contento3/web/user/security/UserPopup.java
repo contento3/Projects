@@ -11,7 +11,6 @@ import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -19,21 +18,17 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.Notification;
 
-public class UserPopup extends CustomComponent implements Window.CloseListener{
+public class UserPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener{
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 *  Reference to main window
-	 */
-	Window mainwindow; 
 	
 	/**
 	 * The window to be opened
@@ -72,24 +67,27 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
     
 	boolean isModalWindowClosable = true;
 	
+	final VerticalLayout layout;
+	
 	/**
 	 * Constructor
 	 * @param main
 	 * @param helper
 	 * @param table
 	 */
-	public UserPopup(final Window main,final SpringContextHelper helper,final Table table) {
-		this.mainwindow = main;
+	public UserPopup(final SpringContextHelper helper,final Table table) {
 		this.helper = helper;
 		this.userTable = table;
 		this.userService = (SaltedHibernateUserService) this.helper.getBean("saltedHibernateUserService");
 		this.accountService = (AccountService) this.helper.getBean("accountService");
 
 		 // The component contains a button that opens the window.
-        final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add User", this, "openButtonClick");
-        layout.addComponent(openbutton);
+        layout = new VerticalLayout();
 
+        openbutton = new Button("Add User");
+        openbutton.addClickListener(this);
+        
+        layout.addComponent(openbutton);
         setCompositionRoot(layout);
 	}
 	
@@ -104,23 +102,23 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(61,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(23,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(61,Unit.PERCENTAGE);
+    	popupWindow.setWidth(23,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainwindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
         final Label label = new Label("User Name");
-        label.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        label.setWidth(100,Unit.PERCENTAGE);
         final HorizontalLayout inputDataLayout = new HorizontalLayout();
         final TextField userNameTxtFld = new TextField("User Name");
         userNameTxtFld.setInputPrompt("Enter user name");
-        userNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        userNameTxtFld.setWidth(100,Unit.PERCENTAGE);
         userNameTxtFld.setColumns(15);
         
         inputDataLayout.setSizeFull();
@@ -136,7 +134,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
        
         final TextField emailTxtFld = new TextField("Email");
         emailTxtFld.setInputPrompt("Enter user email");
-        emailTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        emailTxtFld.setWidth(100,Unit.PERCENTAGE);
         emailTxtFld.setColumns(15);
      	
         emailLayout.setSizeFull();
@@ -150,7 +148,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
        
         final TextField fNameTxtFld = new TextField("First Name");
         fNameTxtFld.setInputPrompt("Enter first name");
-        fNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        fNameTxtFld.setWidth(100,Unit.PERCENTAGE);
         fNameTxtFld.setColumns(15);
      	
         firstNameLayout.setSizeFull();
@@ -165,7 +163,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
        
         final TextField lNameTxtFld = new TextField("Last Name");
         lNameTxtFld.setInputPrompt("Enter last name");
-        lNameTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        lNameTxtFld.setWidth(100,Unit.PERCENTAGE);
         lNameTxtFld.setColumns(15);
      	
         lastNameLayout.setSizeFull();
@@ -180,7 +178,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
        
         final PasswordField pwdTxtFld = new PasswordField("Password");
         pwdTxtFld.setInputPrompt("Enter password");
-        pwdTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        pwdTxtFld.setWidth(100,Unit.PERCENTAGE);
         pwdTxtFld.setColumns(15);
      	
         pwdLayout.setSizeFull();
@@ -194,7 +192,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
        
         final PasswordField confirmPwdTxtFld = new PasswordField("Confirm Password");
         confirmPwdTxtFld.setInputPrompt("Confirm Password");
-        confirmPwdTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        confirmPwdTxtFld.setWidth(100,Unit.PERCENTAGE);
         confirmPwdTxtFld.setColumns(20);
         
      	
@@ -209,9 +207,9 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 
         addButtonLayout.addComponent(userButton);
         addButtonLayout.setComponentAlignment(userButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
         
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
@@ -231,7 +229,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 					emailTxtFld.setValue(userDto.getEmail());
 				}
 				
-		        userButton.addListener(new ClickListener() {
+		        userButton.addClickListener(new ClickListener() {
 					private static final long serialVersionUID = 1L;
 					public void buttonClick(ClickEvent event) {
 						handleEditUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,username,pwdTxtFld);
@@ -242,7 +240,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 	    	{
 		        userButton.setCaption("Add");
 		        popupWindow.setCaption("Add new user");
-		        userButton.addListener(new ClickListener() {
+		        userButton.addClickListener(new ClickListener() {
 					private static final long serialVersionUID = 1L;
 					public void buttonClick(ClickEvent event) {
 							handleNewUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,pwdTxtFld);
@@ -251,7 +249,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 	    	}
 		}
 		else {
-			popupWindow.showNotification("Password and confirm password field does not match", Notification.TYPE_WARNING_MESSAGE);
+			Notification.show("Password and confirm password field does not match", Notification.Type.WARNING_MESSAGE);
 		}
     }
 
@@ -268,16 +266,16 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 			userDto.setFirstName(firstName.getValue().toString());
 			userDto.setLastName(lastName.getValue().toString());
 			userDto.setEmail(emailField.getValue().toString());
-			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute("accountId"));
 			userDto.setAccount(accountDto);
 			userService.create(userDto);
 		} catch (EntityAlreadyFoundException e) {
-			mainwindow.showNotification("User already exists", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("User already exists", Notification.Type.ERROR_MESSAGE);
 		}
 		catch (EntityNotCreatedException e) {
-			mainwindow.showNotification("User not created", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("User not created", Notification.Type.ERROR_MESSAGE);
 		}
-		mainwindow.showNotification(userDto.getName()+" user created succesfully");
+		Notification.show(userDto.getName()+" user created succesfully");
 		resetTable();
     }
     
@@ -290,7 +288,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 		userDto.setUserName(username.getValue().toString());
 		userDto.setPassword(password.getValue().toString());
 		//userService.update(userDto);
-		mainwindow.showNotification(userDto.getName()+" user edit succesfully");
+		Notification.show(userDto.getName()+" user edit succesfully");
 		resetTable();
     }
 	
@@ -299,10 +297,11 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 	 */
 	 @SuppressWarnings("rawtypes")
 		private void resetTable(){
-			final AbstractTableBuilder tableBuilder = new UserTableBuilder(mainwindow,helper,userTable);
-			final Collection<SaltedHibernateUserDto> userDto = userService.findUsersByAccountId((Integer)SessionHelper.loadAttribute(mainwindow, "accountId"));
+			final AbstractTableBuilder tableBuilder = new UserTableBuilder(helper,userTable);
+			final Collection<SaltedHibernateUserDto> userDto = userService.findUsersByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 			tableBuilder.rebuild((Collection)userDto);
-			mainwindow.removeWindow(popupWindow);
+			layout.removeComponent(popupWindow);
+
 	        openbutton.setEnabled(true);
 	    }
 	 
@@ -312,7 +311,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 	    public void closeButtonClick(Button.ClickEvent event) {
 	    	if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */
-	        mainwindow.removeWindow(popupWindow);
+	        layout.removeComponent(popupWindow);
 	        
 	        /* Return to initial state. */
 	        openbutton.setEnabled(true);
@@ -326,6 +325,11 @@ public class UserPopup extends CustomComponent implements Window.CloseListener{
 		public void windowClose(CloseEvent e) {
 			  /* Return to initial state. */
 	        openbutton.setEnabled(true);
+		}
+
+		@Override
+		public void buttonClick(ClickEvent event) {
+			this.openButtonClick(event);
 		}
 
 

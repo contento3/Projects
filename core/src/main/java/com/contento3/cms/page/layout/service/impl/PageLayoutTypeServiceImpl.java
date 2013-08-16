@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.contento3.cms.page.layout.dao.PageLayoutTypeDAO;
 import com.contento3.cms.page.layout.dto.PageLayoutTypeDto;
 import com.contento3.cms.page.layout.model.PageLayoutType;
-import com.contento3.cms.page.layout.service.PageLayoutAssembler;
 import com.contento3.cms.page.layout.service.PageLayoutTypeAssembler;
 import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 

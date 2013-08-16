@@ -7,10 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import com.contento3.cms.article.dao.RelatedArticleDao;
-import com.contento3.cms.article.dto.RelatedArticleDto;
-import com.contento3.cms.article.model.Article;
 import com.contento3.cms.article.model.RelatedArticle;
-import com.contento3.cms.article.model.RelatedArticleLinkPK;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
 public class RelatedArticleDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<RelatedArticle, Integer> implements RelatedArticleDao{

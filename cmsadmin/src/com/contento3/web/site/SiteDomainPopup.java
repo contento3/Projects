@@ -8,7 +8,6 @@ import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -18,15 +17,15 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
 public class SiteDomainPopup extends CustomComponent
-implements Window.CloseListener{
+implements Window.CloseListener, Button.ClickListener{
 	private static final long serialVersionUID = 1L;
 
-    Window mainwindow;  // Reference to main window
     Window popupWindow;    // The window to be opened
     Button openbutton;  // Button for opening the window
     Button closebutton; // A button in the window
@@ -40,8 +39,7 @@ implements Window.CloseListener{
     
     final Table siteDomainTable;
     
-    public SiteDomainPopup(final Window main,final SpringContextHelper helper,final Integer siteId,final Table table) {
-        mainwindow = main;
+    public SiteDomainPopup(final SpringContextHelper helper,final Integer siteId,final Table table) {
         this.helper = helper;
         this.siteService = (SiteService)helper.getBean("siteService");
         this.siteDomainService = (SiteDomainService)helper.getBean("siteDomainService");
@@ -51,7 +49,7 @@ implements Window.CloseListener{
         // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
         this.siteId = siteId;
-        openbutton = new Button("Add Site Domain", this, "openButtonClick");
+        openbutton = new Button("Add Site Domain", this);
         layout.addComponent(openbutton);
 
         setCompositionRoot(layout);
@@ -66,14 +64,14 @@ implements Window.CloseListener{
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(25,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(21,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(25,Unit.PERCENTAGE);
+    	popupWindow.setWidth(21,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainwindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
@@ -95,9 +93,9 @@ implements Window.CloseListener{
 
         addButtonLayout.addComponent(siteDomainButton);
         addButtonLayout.setComponentAlignment(siteDomainButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
         
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
@@ -111,7 +109,7 @@ implements Window.CloseListener{
 	        domainId = (Integer)event.getButton().getData();
 	        final SiteDomainDto siteDomainDto = siteDomainService.findById(domainId);
 	        textField.setValue(siteDomainDto.getDomainName());
-	        siteDomainButton.addListener(new ClickListener() {
+	        siteDomainButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
 					handleEditDomain(textField,domainId,siteDomainDto);
@@ -122,7 +120,7 @@ implements Window.CloseListener{
     	{
 	        siteDomainButton.setCaption("Add");
 	        popupWindow.setCaption("Add new domain");
-	        siteDomainButton.addListener(new ClickListener() {
+	        siteDomainButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
 					handleNewDomain(textField,updatedSiteDto);
@@ -160,11 +158,11 @@ implements Window.CloseListener{
 
     @SuppressWarnings("rawtypes")
 	private void resetTable(){
-		final AbstractTableBuilder tableBuilder = new SiteDomainTableBuilder(mainwindow,helper,siteDomainTable);
+		final AbstractTableBuilder tableBuilder = new SiteDomainTableBuilder(helper,siteDomainTable);
 		final SiteDto updatedSiteDto = siteService.findSiteById(siteId);
 		tableBuilder.rebuild((Collection)updatedSiteDto.getSiteDomainDto());
 		
-		mainwindow.removeWindow(popupWindow);
+		UI.getCurrent().removeWindow(popupWindow);
         openbutton.setEnabled(true);
     }
     
@@ -172,7 +170,7 @@ implements Window.CloseListener{
     public void closeButtonClick(Button.ClickEvent event) {
     	if (!isModalWindowClosable){
         /* Windows are managed by the application object. */
-        mainwindow.removeWindow(popupWindow);
+        UI.getCurrent().removeWindow(popupWindow);
         
         /* Return to initial state. */
         openbutton.setEnabled(true);
@@ -184,5 +182,10 @@ implements Window.CloseListener{
         /* Return to initial state. */
         openbutton.setEnabled(true);
     }
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		this.openButtonClick(event);		
+	}
 
 }

@@ -7,8 +7,7 @@ import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.AbstractSelect.Filtering;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
@@ -26,6 +25,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class SiteMainAreaRenderer implements Button.ClickListener {
     
+	private static final long serialVersionUID = 1L;
+
 	public SiteMainAreaRenderer(final SpringContextHelper helper){
 		this.helper = helper;	
 	}
@@ -58,7 +59,7 @@ public class SiteMainAreaRenderer implements Button.ClickListener {
     	tab3.setClosable(true);
     	
     	Button createPageButton = new Button("Create new page");
-    	createPageButton.addListener(this); // react to clicks
+    	createPageButton.addClickListener(this); // react to clicks
 
     	pageLayout.addComponent(sitePages);
     	pageLayout.addComponent(createPageButton);
@@ -86,13 +87,13 @@ public class SiteMainAreaRenderer implements Button.ClickListener {
     	       
     	        // Sets the combobox to show a certain property as the item caption
     	        l.setItemCaptionPropertyId("name");
-    	        l.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+    	        l.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 
     	        // Set a reasonable width
     	        l.setSizeUndefined();
 
     	        // Set the appropriate filtering mode for this example
-    	        l.setFilteringMode(Filtering.FILTERINGMODE_CONTAINS);
+    	        l.setFilteringMode(FilteringMode.CONTAINS);
     	        l.setImmediate(true);
     	        //l.addListener(this);
 

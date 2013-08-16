@@ -9,13 +9,12 @@ import com.contento3.common.dto.Dto;
 import com.contento3.common.dto.TreeDto;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.AbstractSelect.MultiSelectMode;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.MultiSelectMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -86,7 +85,7 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 		this.vLayout.addComponent(addButtonLayout);
 	    addButtonLayout.addComponent(saveButton);
 	    addButtonLayout.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
-	    addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+	    addButtonLayout.setWidth(100, Unit.PERCENTAGE);
 		treeTable.setSelectable(true);
 		treeTable.setMultiSelect(true);
 		treeTable.setMultiSelectMode(MultiSelectMode.SIMPLE);
@@ -155,7 +154,7 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	 * Handle Save event
 	 */
 	public void buttonlistner() {
-		saveButton.addListener(new ClickListener() {
+		saveButton.addClickListener(new ClickListener() {
 			
 			/**
 			 * 
@@ -186,7 +185,7 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 		for(String column:listOfColumns){
 			container.addContainerProperty(column, String.class, null);
 		}
-		treeTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		treeTable.setWidth(100, Unit.PERCENTAGE);
 		treeTable.setContainerDataSource(container);
 		treeTable.setSelectable(true);
 		treeTable.setMultiSelect(false);

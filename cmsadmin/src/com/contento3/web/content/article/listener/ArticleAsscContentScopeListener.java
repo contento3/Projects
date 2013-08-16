@@ -11,15 +11,15 @@ import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.article.AsscContentScopeTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class ArticleAsscContentScopeListener extends CustomComponent implements Window.CloseListener{
+public class ArticleAsscContentScopeListener extends CustomComponent implements Window.CloseListener,Button.ClickListener{
 
 	/**
 	 * 
@@ -78,7 +78,8 @@ public class ArticleAsscContentScopeListener extends CustomComponent implements 
 		
 		// The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add Group", this, "openButtonClick");
+        openbutton = new Button("Add Group");
+        openbutton.addClickListener(this);
         layout.addComponent(openbutton);
         setCompositionRoot(layout);
 	}
@@ -90,19 +91,20 @@ public class ArticleAsscContentScopeListener extends CustomComponent implements 
 		popupWindow = new Window();
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
-    	popupWindow.setHeight(41,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(20,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(41,Unit.PERCENTAGE);
+    	popupWindow.setWidth(20,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainWindow.addWindow(popupWindow);
+    	popupMainLayout.addComponent(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         popupWindow.setCaption("Content scope");
         popupMainLayout = new VerticalLayout();
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
+        
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
         buildAssociateContentScopeTable();
@@ -131,7 +133,7 @@ public class ArticleAsscContentScopeListener extends CustomComponent implements 
 	    public void closeButtonClick(Button.ClickEvent event) {
 	    	if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */
-	        mainWindow.removeWindow(popupWindow);
+	    	popupMainLayout.addComponent(popupWindow);
 	        
 	        /* Return to initial state. */
 	        openbutton.setEnabled(true);
@@ -147,6 +149,9 @@ public class ArticleAsscContentScopeListener extends CustomComponent implements 
 	        openbutton.setEnabled(true);
 		}
 
-
+		@Override
+		public void buttonClick(ClickEvent event) {
+			this.openButtonClick(event);			
+		}
 
 }

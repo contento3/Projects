@@ -15,14 +15,15 @@ import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -44,11 +45,6 @@ public class SiteConfigUIManager {
 	final SpringContextHelper contextHelper;
 	
 	/**
-	 * Application ui window that contains all the ui
-	 */
-	final Window parentWindow;
-
-	/**
 	 * 	Layout that contains all the elements on 
 	 * the site configuration screen
 	 */
@@ -64,9 +60,8 @@ public class SiteConfigUIManager {
 	 */
 	final PageLayoutService pageLayoutService;
 	
-	public SiteConfigUIManager (final SiteService siteService,final SpringContextHelper helper,final Window parentWindow){
+	public SiteConfigUIManager (final SiteService siteService,final SpringContextHelper helper){
 		this.siteService = siteService;
-		this.parentWindow = parentWindow;
 		this.contextHelper = helper;
 		this.pageLayoutService = (PageLayoutService) contextHelper.getBean("pageLayoutService");
 		
@@ -100,12 +95,12 @@ public class SiteConfigUIManager {
 
 		if (null==siteDomainTable){
 			siteDomainTable = new Table();
-			final AbstractTableBuilder tableBuilder = new SiteDomainTableBuilder(parentWindow,contextHelper,siteDomainTable);
+			final AbstractTableBuilder tableBuilder = new SiteDomainTableBuilder(contextHelper,siteDomainTable);
 			tableBuilder.build((Collection)siteDto.getSiteDomainDto());
 		}
 
 		siteConfigParentLayout.addComponent(siteDomainTable);
-		siteConfigParentLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		siteConfigParentLayout.setWidth(100, Unit.PERCENTAGE);
 
 		final Tab siteConfigTab = siteTabSheet.addTab(siteConfigParentLayout,"",new ExternalResource("images/configuration.png"));
 		siteConfigTab.setCaption("Site configuration for :"+siteDto.getSiteName());
@@ -114,7 +109,7 @@ public class SiteConfigUIManager {
 		siteTabSheet.setSelectedTab(siteConfigParentLayout);
 		
 		//Pop-up that adds a new domain
-		final Button button = new Button("Add domain", new SiteDomainPopup(parentWindow, contextHelper,siteDto.getSiteId(),siteDomainTable), "openButtonClick");
+		final Button button = new Button("Add domain", new SiteDomainPopup(contextHelper,siteDto.getSiteId(),siteDomainTable));
 		siteConfigParentLayout.addComponent(button);
         siteConfigParentLayout.addComponent(new HorizontalRuler());
 	}
@@ -125,7 +120,7 @@ public class SiteConfigUIManager {
 		final Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 		final ComboBox pageLayoutCombo = new ComboBox("Default Page Layout",comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
-		pageLayoutCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		pageLayoutCombo.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 		pageLayoutCombo.setValue(siteDto.getDefaultLayoutId());
 		
@@ -159,11 +154,11 @@ public class SiteConfigUIManager {
 		final Button siteSaveButton = new Button("Save");
 		siteConfigParentLayout.addComponent(siteSaveButton);
 
-		siteSaveButton.addListener(new ClickListener() {
+		siteSaveButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				saveSite(siteDto,  pageLayoutCombo,languageCombo);
-				parentWindow.showNotification(String.format("SiteConfig for %s saved successfullly",siteDto.getSiteName()));
+				Notification.show(String.format("SiteConfig for %s saved successfullly",siteDto.getSiteName()));
 			}// end buttonClick
 		});// end siteSaveButton listener
 	}

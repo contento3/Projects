@@ -1,10 +1,5 @@
 package com.contento3.cms.page.template.dto;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-import com.contento3.cms.page.template.model.TemplateContentTypeEnum;
 
 public class TemplateTypeDto {
 

@@ -12,7 +12,6 @@ import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -20,14 +19,16 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class GroupPopup extends CustomComponent implements Window.CloseListener {
+public class GroupPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -78,8 +79,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 	 * @param helper
 	 * @param table
 	 */
-	public GroupPopup(final Window main,final SpringContextHelper helper,final Table table) {
-		this.mainwindow = main;
+	public GroupPopup(final SpringContextHelper helper,final Table table) {
 		this.helper = helper;
 		this.groupTable = table;
 		this.groupService = (GroupService) this.helper.getBean("groupService");
@@ -87,7 +87,8 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 
 		// The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add Group", this, "openButtonClick");
+        openbutton = new Button("Add Group", this);
+        openbutton.addClickListener(this);
         layout.addComponent(openbutton);
 
         setCompositionRoot(layout);
@@ -104,23 +105,23 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(41,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(20,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(41,Unit.PERCENTAGE);
+    	popupWindow.setWidth(20,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainwindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
         final Label label = new Label("Group Name");
-        label.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        label.setWidth(100,Unit.PERCENTAGE);
         final HorizontalLayout inputDataLayout = new HorizontalLayout();
         final TextField textField = new TextField("Group Name");
         textField.setInputPrompt("Enter group name");
-        textField.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        textField.setWidth(100,Unit.PERCENTAGE);
         textField.setColumns(20);
         
         inputDataLayout.setSizeFull();
@@ -136,7 +137,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
        
         final TextArea descriptionArea = new TextArea("Description");
         descriptionArea.setInputPrompt("Enter group description");
-     	descriptionArea.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+     	descriptionArea.setWidth(100,Unit.PERCENTAGE);
      	descriptionArea.setColumns(20);
     	descriptionArea.setRows(5);
      	
@@ -151,9 +152,9 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 
         addButtonLayout.addComponent(groupButton);
         addButtonLayout.setComponentAlignment(groupButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
         
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
@@ -173,7 +174,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 			}else{
 				descriptionArea.setValue(description);
 			}
-	        groupButton.addListener(new ClickListener() {
+	        groupButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
 					handleEditGroup(textField,descriptionArea,Id);
@@ -184,7 +185,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
     	{
 	        groupButton.setCaption("Add");
 	        popupWindow.setCaption("Add new group");
-	        groupButton.addListener(new ClickListener() {
+	        groupButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
 					handleNewGroup(textField,descriptionArea);
@@ -204,11 +205,11 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		groupDto.setMembers(new ArrayList<SaltedHibernateUserDto>());
 		groupDto.setAuthorities(new ArrayList<GroupAuthority>());
 		
-		final AccountDto accountDto = accountService.findAccountById(((Integer)SessionHelper.loadAttribute(mainwindow, "accountId")));
+		final AccountDto accountDto = accountService.findAccountById(((Integer)SessionHelper.loadAttribute("accountId")));
 		groupDto.setAccountDto(accountDto);
 		
 		groupService.create(groupDto);
-		mainwindow.showNotification(groupDto.getGroupName()+" group created succesfully");
+		Notification.show(groupDto.getGroupName()+" group created succesfully");
 		resetTable();
     }
 
@@ -222,7 +223,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 			groupDto.setGroupName(textField.getValue().toString());
 			groupDto.setDescription(descriptionArea.getValue().toString());
 			groupService.update(groupDto);
-			mainwindow.showNotification(groupDto.getGroupName()+" group edit succesfully");
+			Notification.show(groupDto.getGroupName()+" group edit succesfully");
 		resetTable();
     }
 	/**
@@ -230,10 +231,10 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 	 */
 	 @SuppressWarnings("rawtypes")
 		private void resetTable(){
-			final AbstractTableBuilder tableBuilder = new GroupTableBuilder(mainwindow,helper,groupTable);
+			final AbstractTableBuilder tableBuilder = new GroupTableBuilder(helper,groupTable);
 			final Collection<GroupDto> groupDto = this.groupService.findAllGroups();
 			tableBuilder.rebuild((Collection)groupDto);
-			mainwindow.removeWindow(popupWindow);
+			UI.getCurrent().removeWindow(popupWindow);
 	        openbutton.setEnabled(true);
 	    }
 	 
@@ -243,7 +244,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 	    public void closeButtonClick(Button.ClickEvent event) {
 	    	if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */
-	        mainwindow.removeWindow(popupWindow);
+	        UI.getCurrent().removeWindow(popupWindow);
 	        
 	        /* Return to initial state. */
 	        openbutton.setEnabled(true);
@@ -257,6 +258,11 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener 
 		public void windowClose(CloseEvent e) {
 			  /* Return to initial state. */
 	        openbutton.setEnabled(true);
+		}
+
+		@Override
+		public void buttonClick(ClickEvent event) {
+			this.openButtonClick(event);
 		}
 
 }

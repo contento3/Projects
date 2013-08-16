@@ -12,17 +12,16 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.content.document.listener.DocumentFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 public class DocumentMgmtUIManager implements UIManager {
 	private static final long serialVersionUID = 1L;
@@ -32,11 +31,6 @@ public class DocumentMgmtUIManager implements UIManager {
 	 * Used to get service beans from spring context.
 	 */
 	private final SpringContextHelper contextHelper;
-	
-	/**
-     * Represents the parent window of the ui
-     */
-	private final Window parentWindow;
 	
 	/**
 	 * TabSheet serves as the parent container for the document manager
@@ -70,15 +64,14 @@ public class DocumentMgmtUIManager implements UIManager {
 	 * @param contextHelper
 	 * @param parentWindow
 	 */
-	public DocumentMgmtUIManager(final TabSheet tabSheet, final SpringContextHelper contextHelper,final Window parentWindow) {
+	public DocumentMgmtUIManager(final TabSheet tabSheet, final SpringContextHelper contextHelper) {
 		this.tabSheet = tabSheet;
 		this.contextHelper = contextHelper;
-		this.parentWindow = parentWindow;
 		this.documentService = (DocumentService) this.contextHelper.getBean("documentService");
 		
 		//get account if from session
-		WebApplicationContext webContext = (WebApplicationContext) parentWindow.getApplication().getContext();
-		this.accountId = (Integer) webContext.getHttpSession().getAttribute("accountId");
+		//WebApplicationContext webContext = (WebApplicationContext) VaadinServlet.getCurrent().getServletContext();
+		this.accountId = (Integer) UI.getCurrent().getSession().getAttribute(("accountId"));
 	}
 	
 	@Override
@@ -89,11 +82,11 @@ public class DocumentMgmtUIManager implements UIManager {
 
 	@Override
 	public Component render(String command) {
-		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		this.tabSheet.setHeight(100, Unit.PERCENTAGE);
 		final Tab articleTab = tabSheet.addTab(verticalLayout, "Document Management",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
 		renderDocumentComponent();
 		return this.tabSheet;
 	}
@@ -127,7 +120,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private void renderDocumentTable() {
-		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.parentWindow ,this.contextHelper, this.tabSheet, this.documentTable);
+		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper, this.tabSheet, this.documentTable);
 		Collection<DocumentDto> documents = this.documentService.findByAccountId(accountId);
 		tableBuilder.build((Collection)documents);
 		this.verticalLayout.addComponent(this.documentTable);
@@ -139,7 +132,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	 */
 	private void addDocumentButton(){
 		final Button addButton = new Button("Add Document");
-		addButton.addListener(new DocumentFormBuilderListner(this.contextHelper, this.parentWindow,this.tabSheet,this.documentTable));
+		addButton.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,this.documentTable));
 		this.verticalLayout.addComponent(addButton);
 	}
 	

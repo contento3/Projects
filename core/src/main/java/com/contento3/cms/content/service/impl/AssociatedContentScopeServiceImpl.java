@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.cms.content.dao.AssociatedContentScopeDao;
 import com.contento3.cms.content.dto.AssociatedContentScopeDto;
+import com.contento3.cms.content.model.AssociatedContentScopeTypeEnum;
 import com.contento3.cms.content.service.AssociatedContentScopeAssembler;
 import com.contento3.cms.content.service.AssociatedContentScopeService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -45,7 +46,8 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 	}
 
 	@Override
-	public Collection<AssociatedContentScopeDto> allContentScope() {
+	public 	Collection<AssociatedContentScopeDto> getContentScopeForType(final AssociatedContentScopeTypeEnum scopeType)
+	{
 		return this.associatedContentScopeAssembler.domainsToDtos(this.associatedContentScopeDao.findAll());
 	}
 

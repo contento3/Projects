@@ -21,7 +21,6 @@ import org.w3c.dom.Node;
 
 import com.contento3.cms.page.layout.LayoutBuilder;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
-import com.contento3.cms.page.layout.service.PageLayoutTypeService;
 import com.contento3.cms.page.section.dto.PageSectionDto;
 import com.contento3.cms.page.section.dto.PageSectionTypeDto;
 import com.contento3.cms.page.section.model.PageSectionTypeEnum;
@@ -371,7 +370,8 @@ public class LayoutBuilderImpl implements LayoutBuilder  {
     	headTag.appendChild(scriptTwoTag);
     	}
     
-    private String appendLayoutScript(){
+    @SuppressWarnings("unused")
+	private String appendLayoutScript(){
     	StringBuilder builder = new StringBuilder();
     	builder.append("<script>");
     	builder.append("(function() {");

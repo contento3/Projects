@@ -8,10 +8,9 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.UserDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 public class UserTableBuilder extends AbstractTableBuilder  {
@@ -20,10 +19,6 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 	 */
 	final SpringContextHelper contextHelper;
 	
-	 /**
-     * Represents the parent window of the template ui
-     */
-	final Window window;
 	
 	/**
 	 * user service used for user related operations
@@ -35,10 +30,9 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 	 * @param helper
 	 * @param table
 	 */
-	public UserTableBuilder(final Window window,final SpringContextHelper helper,final Table table){
+	public UserTableBuilder(final SpringContextHelper helper,final Table table){
 		super(table);
 		this.contextHelper = helper;
-		this.window = window;
 		this.userService = (SaltedHibernateUserService) contextHelper.getBean("saltedHibernateUserService");
 	}
 	
@@ -55,7 +49,8 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 		item.getItemProperty("users").setValue(user.getName());
 	
 		//adding edit button item into list
-	    final Button editLink = new Button("Edit users",new UserPopup(window, contextHelper, userTable), "openButtonClick");
+	    final Button editLink = new Button("Edit users");
+	    editLink.addClickListener(new UserPopup(contextHelper, userTable));
 		editLink.setCaption("Edit");
 		editLink.setData(user.getName());
 		editLink.addStyleName("edit");
@@ -69,7 +64,7 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new UserDeleteClickListener(user, userService, window, deleteLink, userTable));
+		deleteLink.addClickListener(new UserDeleteClickListener(user, userService, deleteLink, userTable));
 		
 	}
 
@@ -84,7 +79,7 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 		userContainer.addContainerProperty("edit", Button.class, null);
 		userContainer.addContainerProperty("delete", Button.class, null);
 
-		userTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		userTable.setWidth(100, Unit.PERCENTAGE);
 		userTable.setContainerDataSource(userContainer);
 	}
 

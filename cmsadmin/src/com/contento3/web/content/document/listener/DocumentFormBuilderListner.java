@@ -3,8 +3,6 @@ package com.contento3.web.content.document.listener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import com.contento3.account.service.AccountService;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.dto.DocumentTypeDto;
@@ -12,21 +10,20 @@ import com.contento3.dam.document.service.DocumentService;
 import com.contento3.dam.document.service.DocumentTypeService;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.TabSheet.Tab;
 
 public class DocumentFormBuilderListner implements ClickListener {
 	private static final long serialVersionUID = 1L;
@@ -36,11 +33,7 @@ public class DocumentFormBuilderListner implements ClickListener {
 	 */
 	private SpringContextHelper contextHelper;
 	
-	 /**
-     * Represents the parent window of the ui
-     */
-	private Window parentWindow;
-	
+
 	/**
 	 * TabSheet serves as the parent container for the document manager
 	 */
@@ -90,17 +83,13 @@ public class DocumentFormBuilderListner implements ClickListener {
 
 	private Tab documentTab;
 	
-	public DocumentFormBuilderListner(final SpringContextHelper helper,final Window parentWindow,final TabSheet tabSheet,final Table documentTable) {
+	public DocumentFormBuilderListner(final SpringContextHelper helper,final TabSheet tabSheet,final Table documentTable) {
 		this.contextHelper= helper;
-		this.parentWindow = parentWindow;
 		this.tabSheet = tabSheet;
 		this.documentService = (DocumentService) this.contextHelper.getBean("documentService");
 		this.accountService = (AccountService) this.contextHelper.getBean("accountService");
 		this.documentTable = documentTable;
-		
-        final WebApplicationContext webAppContext = ((WebApplicationContext) parentWindow.getApplication().getContext());
-        final HttpSession session = webAppContext.getHttpSession();
-        this.accountId =(Integer)session.getAttribute("accountId");
+		this.accountId =(Integer)SessionHelper.loadAttribute("accountId");
         
         /**
          * The fileUploadListener must know the Upload that it's listening to.
@@ -109,10 +98,9 @@ public class DocumentFormBuilderListner implements ClickListener {
          * throw an exception.
          * - Ali.
          */
-        final FileUploadListener fileUploadListener = new FileUploadListener(parentWindow);
+        final FileUploadListener fileUploadListener = new FileUploadListener();
         documentForm = new DocumentForm(fileUploadListener);
         documentForm.setContextHelper(helper);
-        documentForm.setParentWindow(parentWindow);
         documentForm.setTabSheet(tabSheet);
         
         fileUploadListener.setUpload(documentForm.getUploadDocument());
@@ -145,8 +133,10 @@ public class DocumentFormBuilderListner implements ClickListener {
 		
 		//Redundant code below - no longer used
 		final Button saveButton = new Button("Save");
-		saveButton.addListener( new ClickListener() {
+		saveButton.addClickListener( new ClickListener() {
 			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				final DocumentDto document = new DocumentDto();
@@ -166,8 +156,10 @@ public class DocumentFormBuilderListner implements ClickListener {
 		//Redundant code below - no longer used
 		final Button editButton = new Button("Edit");
 		
-		editButton.addListener( new ClickListener() {
+		editButton.addClickListener( new ClickListener() {
 			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				//save edited doc

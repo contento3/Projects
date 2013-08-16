@@ -1,8 +1,6 @@
 package com.contento3.cms.site.structure.domain.dao;
 
 
-import java.util.Collection;
-
 import com.contento3.cms.site.structure.domain.model.SiteDomain;
 import com.contento3.common.dao.GenericDao;
 

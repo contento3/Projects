@@ -8,7 +8,6 @@ import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -16,25 +15,19 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.Notification;
 
-public class ImageLibraryPopup extends CustomComponent implements Window.CloseListener{
+public class ImageLibraryPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener{
 
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 *  Reference to main window
-	 */
-	Window mainWindow; 
-	
+
 	/**
 	 * Used to get service beans from spring context.
 	 */
@@ -67,14 +60,14 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 	 * @param main
 	 * @param helper
 	 */
-	public ImageLibraryPopup(final Window main,final SpringContextHelper helper) {
-		this.mainWindow = main;
+	public ImageLibraryPopup(final SpringContextHelper helper) {
 		this.helper = helper;
 		this.imageLibraryService = (ImageLibraryService) helper.getBean("imageLibraryService");
 		
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add Group", this, "openButtonClick");
+        openbutton = new Button("Add Group");
+        openbutton.addClickListener(this);
         layout.addComponent(openbutton);
 
         setCompositionRoot(layout);
@@ -93,14 +86,14 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 		popupWindow.setPositionX(200);
 		popupWindow.setPositionY(100);
 		
-		popupWindow.setHeight(27,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(26,Sizeable.UNITS_PERCENTAGE);
+		popupWindow.setHeight(27,Unit.PERCENTAGE);
+    	popupWindow.setWidth(26,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainWindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
@@ -137,7 +130,9 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 			descriptionTextField.setValue("");
 			
 			librarybutton.setCaption("Add");
-			librarybutton.addListener(new ClickListener() {
+			librarybutton.addClickListener(new ClickListener() {
+				private static final long serialVersionUID = 1L;
+
 				public void buttonClick(ClickEvent event) {
 					
 					ImageLibraryDto library = new ImageLibraryDto();
@@ -145,7 +140,7 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 					library.setDescription(descriptionTextField.getValue().toString());
 					
 					 //Get accountId from the session
-		            final Integer accountId = (Integer)SessionHelper.loadAttribute(mainWindow, "accountId");
+		            final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
 		            final AccountService accountService = (AccountService)helper.getBean("accountService");
 		            final AccountDto accountDto = accountService.findAccountById(accountId);
 		            library.setAccountDto(accountDto);
@@ -155,17 +150,17 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 		            {
 						try {
 							imageLibraryService.create(library);
-							mainWindow.showNotification(library.getName() +" added succesfully");
+							Notification.show(library.getName() +" added succesfully");
 						} catch (EntityAlreadyFoundException e) {
 							e.printStackTrace();
 						}
 						catch (EntityNotCreatedException e) {
 							e.printStackTrace();
 						}
-			    		mainWindow.removeWindow(popupWindow);
+			    		UI.getCurrent().removeWindow(popupWindow);
 				        openbutton.setEnabled(true);
 		            }else{
-		            	mainWindow.showNotification("Add Failed","One or more field is empty",Notification.TYPE_WARNING_MESSAGE);
+		            	Notification.show("Add Failed","One or more field is empty",Notification.Type.WARNING_MESSAGE);
 		            }
 					
 				}
@@ -178,9 +173,9 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 		addButtonLayout.addComponent(librarybutton);
 		addButtonLayout.setComponentAlignment(librarybutton,
 				Alignment.BOTTOM_RIGHT);
-		addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		addButtonLayout.setWidth(100, Unit.PERCENTAGE);
 		popupWindow.setCaption("Add Library");
-		popupWindow.addComponent(popupMainLayout);
+		popupWindow.setContent(popupMainLayout);
 		popupWindow.setResizable(false);
 		/* Allow opening only one window at a time. */
 		openbutton.setEnabled(false);
@@ -193,7 +188,7 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 	public void closeButtonClick(final Button.ClickEvent event) {
 		if (!isModalWindowClosable) {
 			/* Windows are managed by the application object. */
-			mainWindow.removeWindow(popupWindow);
+			UI.getCurrent().removeWindow(popupWindow);
 
 			/* Return to initial state. */
 			openbutton.setEnabled(true);
@@ -207,5 +202,14 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 	public void windowClose(final CloseEvent e) {
 		/* Return to initial state. */
 		openbutton.setEnabled(true);
+	}
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		try {
+			this.openButtonClick(event);
+		} catch (EntityAlreadyFoundException e) {
+			e.printStackTrace();
+		}		
 	}
 }

@@ -1,7 +1,6 @@
 package com.contento3.dam.storagetype.service;
 
 import com.contento3.common.service.Service;
-
 import com.contento3.dam.storagetype.dto.StorageTypeDto;
 /**
  * @author Syed Muhammad Ali

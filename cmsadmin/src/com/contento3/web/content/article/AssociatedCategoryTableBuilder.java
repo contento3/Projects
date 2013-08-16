@@ -5,7 +5,7 @@ import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Table;
 
 public class AssociatedCategoryTableBuilder extends AbstractTableBuilder {
@@ -35,7 +35,7 @@ public class AssociatedCategoryTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table categoryTable,final Container categoryContainer) {
 		categoryContainer.addContainerProperty("category", String.class, null);
-		categoryTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		categoryTable.setWidth(100, Unit.PERCENTAGE);
 		categoryTable.setContainerDataSource(categoryContainer);
 		
 	}

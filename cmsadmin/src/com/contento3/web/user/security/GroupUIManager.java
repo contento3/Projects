@@ -8,8 +8,8 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -17,7 +17,6 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 public class GroupUIManager implements UIManager {
 
@@ -26,11 +25,6 @@ public class GroupUIManager implements UIManager {
 	 */
     private SpringContextHelper contextHelper;
     
-    /**
-     * Represents the parent window of the template ui
-     */
-	private Window parentWindow;
-	
 	/**
 	 * layout for group manager screen
 	 */
@@ -58,9 +52,8 @@ public class GroupUIManager implements UIManager {
 	 * @param helper
 	 * @param parentWindow
 	 */
-	public GroupUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
+	public GroupUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper) {
 		this.contextHelper = helper;
-		this.parentWindow = parentWindow;
 		this.groupService = (GroupService) this.contextHelper.getBean("groupService");
 		this.uiTabSheet = uiTabSheet;
 	}
@@ -75,11 +68,11 @@ public class GroupUIManager implements UIManager {
 	@Override
 	public Component render(final String command) {
 	
-		this.uiTabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		this.uiTabSheet.setHeight(100, Unit.PERCENTAGE);
 		Tab groupTab = uiTabSheet.addTab(verticalLayout, "Group Management",new ExternalResource("images/security.png"));
 		groupTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
 		
 		renderGroupContent();
 		
@@ -120,7 +113,7 @@ public class GroupUIManager implements UIManager {
 	 * display "Add Group" button on the top of tab sheet
 	 */
 	private void addGroupButton(){
-		Button addButton = new Button("Add Group", new GroupPopup(parentWindow, contextHelper,groupTable), "openButtonClick");
+		Button addButton = new Button("Add Group", new GroupPopup(contextHelper,groupTable));
 		this.verticalLayout.addComponent(addButton);
 	}
 
@@ -129,7 +122,7 @@ public class GroupUIManager implements UIManager {
 	 */
 	private void renderGroupTable() {
 		
-		final AbstractTableBuilder tableBuilder = new GroupTableBuilder(parentWindow,contextHelper,groupTable);
+		final AbstractTableBuilder tableBuilder = new GroupTableBuilder(contextHelper,groupTable);
 		
 		tableBuilder.build((Collection)groupService.findAllGroups());
 		

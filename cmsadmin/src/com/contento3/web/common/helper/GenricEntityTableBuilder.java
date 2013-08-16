@@ -3,13 +3,13 @@ package com.contento3.web.common.helper;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.shiro.util.CollectionUtils;
+import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.dto.Dto;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -31,7 +31,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 */
 	private final Collection<Dto> dtos;
 	
-	private final Collection<Dto> assignedDtos;
+	private Collection<Dto> assignedDtos;
 	
 	/**
 	 * Vertical layout to add components
@@ -85,7 +85,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		this.vLayout.addComponent(addButtonLayout);
 	    addButtonLayout.addComponent(addButton);
 	    addButtonLayout.setComponentAlignment(addButton, Alignment.BOTTOM_RIGHT);
-	    addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+	    addButtonLayout.setWidth(100, Unit.PERCENTAGE);
 		buttonlistner();
 	}
 	
@@ -96,7 +96,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	 * @param button
 	 */
 	public void buttonlistner(){
-		addButton.addListener(new ClickListener() {
+		addButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -104,7 +104,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
                 	
                      // Get the check-box of this item (row)
                      CheckBox checkBox = (CheckBox) table.getContainerProperty(id, "select").getValue();
-                     if (checkBox.booleanValue()) {
+                     if (checkBox.getValue()!=null && checkBox.getValue()) {
                     	 selectedItems.add(id.toString());
                      }
                 }//end for
@@ -145,7 +145,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		for(String column:listOfColumns){
 			container.addContainerProperty(column, String.class, null);
 		}
-		table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		table.setWidth(100, Unit.PERCENTAGE);
 		table.setColumnWidth("select", 40);
 		table.setContainerDataSource(container);
 	}
@@ -159,4 +159,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		item.getItemProperty(listOfColumns.iterator().next()).setValue("No record found.");
 	}
 
+	public void setAssignedDto (final Collection <Dto> assignedDto){
+		this.assignedDtos = assignedDto;
+	}
 }
