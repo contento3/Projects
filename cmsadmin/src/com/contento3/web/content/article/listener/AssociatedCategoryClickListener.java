@@ -4,20 +4,22 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import com.contento3.cms.article.dto.ArticleDto;
+import com.contento3.cms.article.service.ArticleService;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.common.helper.AbstractTableBuilder;
+import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.content.article.AssociatedCategoryTableBuilder;
+import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class AssociatedCategoryClickListener extends CustomComponent implements Window.CloseListener, ClickListener {
+public class AssociatedCategoryClickListener extends EntityListener implements Window.CloseListener, com.vaadin.event.MouseEvents.ClickListener {
 
 	/**
 	 * 
@@ -44,7 +46,7 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 	/**
 	 * Article Dto 
 	 */
-	private ArticleDto article;
+	private Integer articleId;
 	
 	/**
 	 * Vertical layout to add components
@@ -58,27 +60,16 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 	 */
 	private Table table;
 	
+	private ArticleService articleService;
+	
 	/**
 	 * Constructor
 	 * @param parentWindow
 	 * @param article
 	 */
-	public AssociatedCategoryClickListener(final ArticleDto article) {
-		this.article = article;
-	}
-	
-	/**
-	 * Button click handler
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public void buttonClick(ClickEvent event) {
-		this.vLayout = new VerticalLayout();
-		this.table = new Table();
-		AbstractTableBuilder categoryTable = new AssociatedCategoryTableBuilder(table);
-		categoryTable.build((Collection)article.getCategoryDtos());
-		vLayout.addComponent(table);
-		renderPopUp();
+	public AssociatedCategoryClickListener(final Integer articleId,final SpringContextHelper contextHelper) {
+		this.articleId = articleId;
+		articleService = (ArticleService)contextHelper.getBean("articleService");
 	}
 	
 	/**
@@ -107,8 +98,7 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 	    	popupWindow.setHeight(Integer.parseInt(height)-10,Unit.PERCENTAGE);
 	    	popupWindow.setWidth(Integer.parseInt(width),Unit.PERCENTAGE);
 
-	    	/* Add the window inside the main window. */
-	        vLayout.addComponent(popupWindow);
+	        UI.getCurrent().addWindow(popupWindow);
 
 	        /* Listen for close events for the window. */
 	        popupWindow.addCloseListener(this);
@@ -121,7 +111,7 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 	/**
 	 * Handle Close button click and close the window.
 	 */
-	public void closeButtonClick(Button.ClickEvent event) {
+	public void closeButtonClick(ClickEvent event) {
 
 		if (!isModalWindowClosable) {
 			/* Windows are managed by the application object. */
@@ -136,6 +126,16 @@ public class AssociatedCategoryClickListener extends CustomComponent implements 
 	public void windowClose(CloseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void click(ClickEvent event) {
+		this.vLayout = new VerticalLayout();
+		this.table = new Table();
+		AbstractTableBuilder categoryTable = new AssociatedCategoryTableBuilder(table);
+		categoryTable.build((Collection)articleService.findById(articleId).getCategoryDtos());
+		vLayout.addComponent(table);
+		renderPopUp();
 	}
 
 }
