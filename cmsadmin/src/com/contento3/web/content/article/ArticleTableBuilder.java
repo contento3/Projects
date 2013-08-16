@@ -85,14 +85,6 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		if (null!=expiryDate){
 			item.getItemProperty("expiry date").setValue(sdf.format(expiryDate));
 		}
-		/* Associated category button*/
-		Button categoryLink = new Button();
-		categoryLink.setCaption("View");
-		categoryLink.setData(article.getId());
-		categoryLink.addStyleName("view");
-		categoryLink.setStyleName(BaseTheme.BUTTON_LINK);
-		categoryLink.addClickListener(new AssociatedCategoryClickListener(article));
-		item.getItemProperty("Associated Category").setValue(categoryLink);
 		
 		Button editLink = new Button();
 		editLink.setCaption("Edit");
@@ -117,10 +109,10 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table articleTable,final Container articleContainer) {
 		articleContainer.addContainerProperty("articles", String.class, null);
+		articleTable.setColumnExpandRatio("articles", 30);
 		articleContainer.addContainerProperty("date created", String.class, null);
 		articleContainer.addContainerProperty("date posted", String.class, null);
 		articleContainer.addContainerProperty("expiry date", String.class, null);
-		articleContainer.addContainerProperty("Associated Category", Button.class, null);
 		articleContainer.addContainerProperty("edit", Button.class, null);
 		articleContainer.addContainerProperty("delete", Button.class, null);
 		articleTable.setWidth(100, Unit.PERCENTAGE);

@@ -318,8 +318,8 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
-        root.setItemIcon(contentMgmt, new ExternalResource("images/content-mgmt.png"));
-        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content-mgmt.png"));
+        root.setItemIcon(contentMgmt, new ExternalResource("images/content.png"));
+        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content.png"));
 
         Item category = hwContainer.addItem(NavigationConstant.CATEGORY_MGMT);
         category.getItemProperty("name").setValue(NavigationConstant.CATEGORY_MGMT);
