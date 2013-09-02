@@ -68,14 +68,15 @@ public class FreemarkerTemplateLoader implements TemplateLoader {
 			//2. siteid
 	
 			if (pathSplitter.length==2){
-				siteId = Integer.parseInt(pathSplitter[1].split("_")[0]);
 				try {
+					siteId = Integer.parseInt(pathSplitter[1].split("_")[0]);
 					dto = pageAssembler.assemble(siteId,String.format("/%s",pathSplitter[0]));
 				} catch (PageNotFoundException e) {
 					throw new IOException("Requested page not found",e);
 				}
 				catch (NumberFormatException e) {
-					throw new NumberFormatException("Requested page does not have the site component");
+					//throw new NumberFormatException("Requested page with path ["+path+"]does not have the site component");
+					return new TemplateContentDto();
 				}
 			}
 			//Otherwise the path is actually a template 
@@ -102,18 +103,21 @@ public class FreemarkerTemplateLoader implements TemplateLoader {
 	
 	@Override
 	public long getLastModified(Object arg0) {
-		return 0;
+		return -1;
 	}
 
 	@Override
 	public Reader getReader(Object source, String encoding) throws IOException {
+		if (null == ((TemplateContentDto)source).getContent())
+			return new StringReader("");
+
 		return new StringReader(((TemplateContentDto)source).getContent());
 	}
 
 	public void setPageAssembler(final Assembler pageAssembler){
 		this.pageAssembler = pageAssembler;
 	}
-	
+		
 	public void setTemplateService(final TemplateService templateService){
 		this.templateService = templateService;
 	}

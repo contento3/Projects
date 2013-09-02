@@ -7,9 +7,8 @@
   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
   ">
 
-<!-- 
+
  <import resource="applicationContext-site-security.xml"/>
-  -->
   
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
@@ -28,7 +27,8 @@
 	<property name="freeMarkerView" ref="fmView" />
 </bean>
  
-<bean id="registrationController" class="com.contento3.site.register.controller.RegistrationController">
+<bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
+	<property name="freeMarkerView" ref="fmView" />
 	<property name="registrationService" ref="userRegistrationService" />
 </bean>
 
