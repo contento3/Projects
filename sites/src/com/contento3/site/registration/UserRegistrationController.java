@@ -65,14 +65,15 @@ public class UserRegistrationController {
      * @throws Exception
      */
     @RequestMapping(value = "/register/form", method = RequestMethod.GET)
-    public ModelAndView showRegistrationForm(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public ModelAndView showRegistrationForm(@ModelAttribute("user") User user,BindingResult result) throws Exception {
     	LOGGER.info("User Registration");	
-    	
-		ModelAndView modelAndView = null;
-		modelAndView = new ModelAndView();
-		modelAndView.addObject("command", new User());
-		modelAndView.setView(freemarkerView); 
 
+
+		ModelAndView modelAndView = new ModelAndView();
+		user.setUsername("abc");
+		modelAndView.getModelMap().addAttribute("user", user);
+		modelAndView.addAllObjects(result.getModel());
+		modelAndView.setView(freemarkerView); 
 		return modelAndView;
     }
 

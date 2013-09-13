@@ -188,12 +188,12 @@
 		class="com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
-	<!--  missing 
+
 	<bean id="siteUserDao"
 		class="com.contento3.site.user.dao.impl.UserDaoHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
-	-->
+
 	<!-- SiteDomainDao -->
 	<bean id="siteDomainDao"
 		class="com.contento3.cms.site.structure.domain.dao.impl.SiteDomainDaoHibernateImpl">
