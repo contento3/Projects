@@ -157,6 +157,7 @@ public class ArticleMgmtUIManager implements UIManager {
 		});
 			
 	}
+	
 	/**
 	 * Render article table
 	 */
