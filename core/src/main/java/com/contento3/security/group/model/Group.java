@@ -1,6 +1,7 @@
 package com.contento3.security.group.model;
 
 import java.util.Collection;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,9 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Cascade;
+
+import com.contento3.account.model.Account;
 import com.contento3.security.user.model.SaltedHibernateUser;
 
 /**
@@ -22,26 +27,27 @@ import com.contento3.security.user.model.SaltedHibernateUser;
  * 
  */
 @Entity
-@Table(name= "groups")
+@Table( name="GROUP" , schema ="PLATFORM_USERS" )
 public class Group {
 	/**
 	 * Primary key id for group
 	 */
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="id")
+	@Column(name="GROUP_ID")
 	private Integer id;
 	
 	/**
 	 * Group name
 	 */
-	@Column(name="group_name")
+	@Column(name="GROUP_NAME")
 	private String name;
 
 	/**
 	 * Group description
 	 */
-	@Column(name="description")
+	@Column(name="DESCRIPTION")
 	private String description;
+	
 	
 	/**
 	 * Authorities associated to group
@@ -55,14 +61,27 @@ public class Group {
 	 * Members associated to group
 	 */
 	@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	@JoinTable(name= "GROUP_MEMBERS",
+	@JoinTable(name= "GROUP_MEMBER",
 	joinColumns={
 			@JoinColumn(name="GROUP_ID",unique= true)},
 	inverseJoinColumns={
-			@JoinColumn(name="USERNAME",unique= true)})
+			@JoinColumn(name="USER_ID",unique= true)})
 	private Collection<SaltedHibernateUser> members;
 	
 
+	@ManyToOne
+	@JoinColumn(name = "ACCOUNT_ID")
+	private Account account;
+	
+
+	public Account getAccount() {
+		return account;
+	}
+
+
+	public void setAccount(final Account account) {
+		this.account = account;
+	}
 
 
 	public Collection<SaltedHibernateUser> getMembers() {

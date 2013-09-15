@@ -8,7 +8,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
-import com.contento3.cms.page.section.model.PageSectionTypeEnum;
 import com.contento3.cms.page.template.dao.TemplateDao;
 import com.contento3.cms.page.template.dao.TemplateDirectoryDao;
 import com.contento3.cms.page.template.dao.TemplateTypeDao;

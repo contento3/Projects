@@ -1,30 +1,53 @@
 package com.contento3.web.account;
 
-import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Hash;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 
 import com.contento3.account.service.AccountService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Listener that updates the currently logged in user information.
+ * @author hammad.afridi
+ *
+ */
 public class AccountSettingsUpdateListener implements Button.ClickListener {
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Bean that represent the user account form
+	 */
 	AccountForm accountForm;
-	AccountService accountService;
-	SaltedHibernateUserService userService;
-	Window parentWindow;
-	SpringContextHelper contextHelper;
-	Integer accountId;
-	String userName;
 	
-	public AccountSettingsUpdateListener(final Window parentWindow, 
+	/**
+	 * Service layer for account entity
+	 */
+	AccountService accountService;
+	
+	/**
+	 * Service layer for user 
+	 */
+	SaltedHibernateUserService userService;
+	
+	/**
+	 * Parent window
+	 */
+	VerticalLayout parentWindow;
+	
+	/**
+	 * Helper that loads the spring bean.
+	 */
+	SpringContextHelper contextHelper;
+	
+	public AccountSettingsUpdateListener(final VerticalLayout parentWindow, 
 										final SaltedHibernateUserService userService, 
 										final AccountService accountService, 
 										final AccountForm accountForm, 
@@ -35,9 +58,6 @@ public class AccountSettingsUpdateListener implements Button.ClickListener {
 		this.contextHelper = contextHelper;
 		this.accountService = accountService;
 		
-		WebApplicationContext webContext = (WebApplicationContext) parentWindow.getApplication().getContext();
-		this.accountId = (Integer) webContext.getHttpSession().getAttribute("accountId");
-		this.userName = (String) webContext.getHttpSession().getAttribute("userName");
 	}
 	
 	@Override
@@ -46,24 +66,23 @@ public class AccountSettingsUpdateListener implements Button.ClickListener {
 		final String confirmPswd = accountForm.getConfirmNewPassword().getValue().toString();
 		
 		if(!newPswd.equals(confirmPswd)){
-			parentWindow.showNotification("Passwords do not match.");
+			Notification.show("Passwords do not match.");
 			return;
 		}
+
+		final String userName = (String) SessionHelper.loadAttribute("userName");
+		final SaltedHibernateUserDto userDto = userService.findUserByUsername(userName);
+		userDto.setEmail(accountForm.getEmail().getValue().toString());
+		userDto.setFirstName(accountForm.getFirstName().getValue().toString());
+		userDto.setLastName(accountForm.getLastName().getValue().toString());
 		
-		String salt = new SecureRandomNumberGenerator().nextBytes().toBase64();
-		
-		SaltedHibernateUserDto userDto = new SaltedHibernateUserDto();
-		Hash hashedPswd = new Sha256Hash(newPswd, salt, 1);
-		
-		userDto.setAccount( accountService.findAccountById(accountId) );
-		userDto.setEnabled(true);
-		userDto.setPassword(hashedPswd.toString());
-		userDto.setUserName(userName);
-		userDto.setSalt(salt);
-		
+		if (StringUtils.isNotEmpty(newPswd)){
+			final Hash hashedPswd = new Sha256Hash(newPswd, userDto.getSalt(), 1);
+			userDto.setPassword(hashedPswd.toString());
+		}
+				
 		userService.update(userDto);
-		parentWindow.showNotification("Password changed successfully.");
-		parentWindow.removeWindow(event.getComponent().getWindow());
+		Notification.show(userDto.getFirstName() + ", you have changed your information successfully.");
 	}
 
 }

@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.cms.article.dao.RelatedArticleDao;
 import com.contento3.cms.article.dto.RelatedArticleDto;
-import com.contento3.cms.article.model.RelatedArticleLinkPK;
 import com.contento3.cms.article.service.RelatedArticleAssembler;
 import com.contento3.cms.article.service.RelatedArticleService;
 import com.contento3.common.exception.EntityAlreadyFoundException;

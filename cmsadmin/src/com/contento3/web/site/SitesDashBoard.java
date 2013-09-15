@@ -4,13 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
 import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.dto.RelatedArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.cms.article.service.RelatedArticleService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.dam.image.dto.ImageDto;
@@ -23,14 +18,14 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -46,11 +41,6 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 * Used to get service beans from spring context.
 	 */
 	final SpringContextHelper helper;
-	
-    /**
-     * Represents the parent window of the template ui
-     */
-	private final Window parentWindow;
 	
 	/**
 	 * VerticalLayout serves as the parent container for the dashboard.
@@ -94,9 +84,8 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 * @param parentWindow
 	 */
 	
-	public SitesDashBoard(final TabSheet uiTabSheet,final SpringContextHelper contextHelper,final Window parentWindow) {
+	public SitesDashBoard(final TabSheet uiTabSheet,final SpringContextHelper contextHelper) {
 		this.helper = contextHelper;
-		this.parentWindow = parentWindow;
 		siteService = (SiteService) contextHelper.getBean("siteService");
 		articleService = (ArticleService) contextHelper.getBean("articleService");
 		imageService = (ImageService) contextHelper.getBean("imageService");
@@ -105,7 +94,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		imageTable = new Table("Latest Images");
 		siteDashboardTab = uiTabSheet; 
 		//Get accountId from the session
-        accountId = (Integer)SessionHelper.loadAttribute(parentWindow, "accountId");
+        accountId = (Integer)SessionHelper.loadAttribute("accountId");
         //RelatedArticleService relatedArticleService = (RelatedArticleService) contextHelper.getBean("relatedArticleService");
 	}
 	
@@ -119,16 +108,15 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	public Component render(String command) {
 		// TODO Auto-generated method stub
 	//	if (null==siteDashboardTab){ 
-			siteDashboardTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-			siteDashboardTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+			siteDashboardTab.setHeight(100,Unit.PERCENTAGE);
+			siteDashboardTab.setWidth(100,Unit.PERCENTAGE);
 			//Icon icon=new ImageIcon(getClass().getResource("/images/site.png"));
 		//	siteDashboardTab.setIcon((Resource) icon);
 			verticalLayout.setSpacing(true);
-			verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+			verticalLayout.setWidth(100,Unit.PERCENTAGE);
 			renderSiteContent();
 			Tab tab2 =  siteDashboardTab.addTab(verticalLayout,"Site Dashboard",null);
 			tab2.setClosable(true);
-		//	tab2.setIcon((Resource) icon);
 			siteDashboardTab.setSelectedTab(verticalLayout);
 	//	}
 	
@@ -165,10 +153,12 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		else {
 			Button linkButton = new Button("Create new site");
 			linkButton.setStyleName(BaseTheme.BUTTON_LINK);
-			linkButton.addListener(new ClickListener() {
+			linkButton.addClickListener(new ClickListener() {
 				
+				private static final long serialVersionUID = 1L;
+
 				public void buttonClick(ClickEvent event) {
-					final SiteUIManager siteUiManager = new SiteUIManager(siteDashboardTab,helper, parentWindow);
+					final SiteUIManager siteUiManager = new SiteUIManager(siteDashboardTab,helper);
 					VerticalLayout newlayout = siteUiManager.renderNewSite();
 					Tab tab1 = siteDashboardTab.addTab(newlayout, "Create site", null);
 					tab1.setClosable(true);
@@ -198,7 +188,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		siteName = sitesName.iterator().next();
 		siteComboBox.setValue(siteName);
 		siteComboBox.setImmediate(true);
-		siteComboBox.addListener(this);
+		siteComboBox.addValueChangeListener(this);
 		verticalLayout.addComponent(siteComboBox);
 	}
 
@@ -208,7 +198,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 */
 	@Override
 	public void valueChange(ValueChangeEvent event) {
-		parentWindow.showNotification("Loading "+event.getProperty()+" latest contents");
+		Notification.show("Loading "+event.getProperty()+" latest contents");
 		siteName =  event.getProperty().getValue().toString();
 		renderArticleTable();
 		renderImageTable();
@@ -235,11 +225,11 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 * i.e. sets the properties for the table.
 	 */
 	private void buildTables(){
-		articleTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+		articleTable.setWidth(50, Unit.PERCENTAGE);
 		articleTable.setPageLength(5);
 		label = new Label("No article found");
 		label2 = new Label("No image found");
-		imageTable.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+		imageTable.setWidth(50, Unit.PERCENTAGE);
 		imageTable.setPageLength(5);
 	}
 	

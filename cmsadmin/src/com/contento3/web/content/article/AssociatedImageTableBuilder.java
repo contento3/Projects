@@ -9,7 +9,7 @@ import com.contento3.web.content.article.listener.ArticleAsscContentScopeListene
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -53,7 +53,7 @@ public class AssociatedImageTableBuilder extends AbstractTableBuilder  {
 		Item item = imageContainer.addItem(image.getId());
 		
 		/*Content scope link button*/
-		Button imageLink = new Button("View Image",new ImageViewer(this.mainWindow,image),"openButtonClick");
+		Button imageLink = new Button("View Image",new ImageViewer(this.mainWindow,image));
 		imageLink.setCaption(image.getName());
 		imageLink.setData(image.getId());
 		imageLink.addStyleName("view");
@@ -61,7 +61,7 @@ public class AssociatedImageTableBuilder extends AbstractTableBuilder  {
 		item.getItemProperty("images").setValue(imageLink);
 		
 		/*Content scope link button*/
-		Button contentScopeLink = new Button("Scope link",new ArticleAsscContentScopeListener(this.mainWindow,this.helper,this.article,image),"openButtonClick");
+		Button contentScopeLink = new Button("Scope link",new ArticleAsscContentScopeListener(this.mainWindow,this.helper,this.article,image));
 		contentScopeLink.setCaption("view");
 		contentScopeLink.setData(image.getId());
 		contentScopeLink.addStyleName("view");
@@ -77,7 +77,7 @@ public class AssociatedImageTableBuilder extends AbstractTableBuilder  {
 		imageContainer.addContainerProperty("images", Button.class, null);
 		imageContainer.addContainerProperty("content scope", Button.class, null);
 		//imageContainer.addContainerProperty("view", Button.class, null);
-		imageTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		imageTable.setWidth(100, Unit.PERCENTAGE);
 		imageTable.setContainerDataSource(imageContainer);
 	}
 

@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 
-import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.site.template.model.TemplateModelContext;
 import com.contento3.site.template.model.TemplateModelMapImpl;
@@ -51,7 +50,7 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 		cfg.setLocalizedLookup(false);
 		cfg.setNumberFormat("0.######");
 		
-		Map map = new HashMap();
+		Map<String,String> map = new HashMap<String,String>();
 		map.put("spring", "org/springframework/web/servlet/view/freemarker/spring.ftl");
 		cfg.setAutoImports(map);
 	}
@@ -81,6 +80,14 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 			// our loader is already cached and also do a validation
 			// cfg.setCacheStorage(new DisableCache());
 
+			Map <String,Object> maptest = fmModel.getMap();
+
+			System.out.println("====================================================================================================");
+			for (Map.Entry<String, Object> entry : maptest.entrySet()) {
+			    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+			}
+		    System.out.println("====================================================================================================");
+			
 			modelContext.getModels().add(fmModel);
 			configuration.setClassForTemplateLoading(getClass(), "/");
 			Template  tpl = configuration.getTemplate("org/springframework/web/servlet/view/freemarker/spring.ftl");
@@ -93,8 +100,9 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 			env.setGlobalVariable("page", fmModel.get("page"));
 			env.setGlobalVariable("site", fmModel.get("site"));
 			env.setGlobalVariable("request", fmModel.get(FreemarkerServlet.KEY_REQUEST));
-			
+
 			env.process();
+			
 			}
 			else {
 				throw new Exception();

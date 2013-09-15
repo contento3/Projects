@@ -3,7 +3,6 @@ package com.contento3.dam.document.dto;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
 import com.contento3.dam.storagetype.dto.StorageTypeDto;
-import com.contento3.dam.document.dto.DocumentTypeDto;
 
 public class DocumentDto extends Dto {
 	/**

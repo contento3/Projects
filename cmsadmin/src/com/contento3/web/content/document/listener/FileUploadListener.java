@@ -10,10 +10,11 @@ import java.io.OutputStream;
 import org.apache.log4j.Logger;
 import org.vaadin.dialogs.ConfirmDialog;
 
-import com.vaadin.terminal.FileResource;
+import com.vaadin.server.FileResource;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Window;
 
 /**
  * @author Syed Muhammad Ali
@@ -28,11 +29,6 @@ public class FileUploadListener
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = Logger.getLogger(FileUploadListener.class);
-
-	/**
-     * Represents the parent window of the ui
-     */
-	private Window parentWindow;
 	
     /**
      * FileOutputStream used in file upload.
@@ -57,8 +53,7 @@ public class FileUploadListener
     Upload upload;
     
    //Constructor
-    public FileUploadListener(Window parentWindow){
-    	this.parentWindow = parentWindow;
+    public FileUploadListener(){
     }
     
     /**
@@ -79,8 +74,10 @@ public class FileUploadListener
     		 */
     		final long fileSize = upload.getUploadSize();
 			
-    		ConfirmDialog.show(parentWindow, "Please Confirm", "This is overwrite the previously uploaded file. Are you sure you want to proceed?", "Yes", "No", new ConfirmDialog.Listener() {
+    		ConfirmDialog.show(UI.getCurrent(), "Please Confirm", "This is overwrite the previously uploaded file. Are you sure you want to proceed?", "Yes", "No", new ConfirmDialog.Listener() {
 				
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				public void onClose(ConfirmDialog dialog) {
 					if(dialog.isConfirmed()){
@@ -99,7 +96,7 @@ public class FileUploadListener
     	}
     	
     	if(upload != null && upload.getUploadSize() > 10000000){
-    		parentWindow.showNotification("The file size must be small than 10MB");
+    		Notification.show("The file size must be small than 10MB");
     		upload.interruptUpload();
     	}
     	
@@ -119,8 +116,8 @@ public class FileUploadListener
      */
     public void uploadSucceeded(Upload.SucceededEvent event) {
         // Log the upload on screen.
-        parentWindow.showNotification(String.format("File %s of type ' %s ' uploaded.",event.getFilename(),event.getMIMEType()));
-        fileResource = new FileResource(file, parentWindow.getApplication());
+        Notification.show(String.format("File %s of type ' %s ' uploaded.",event.getFilename(),event.getMIMEType()));
+        fileResource = new FileResource(file);
         
         bFile = new byte[(int) file.length()];
         FileInputStream fis = null;
@@ -143,7 +140,7 @@ public class FileUploadListener
      */
     public void uploadFailed(Upload.FailedEvent event) {
     	if(!upload.getData().equals("Upload interrupted due to possible overwrite."))
-    		parentWindow.showNotification( String.format("Uploading of %s of type %s failed.",event.getFilename(),event.getMIMEType()) );
+    		Notification.show( String.format("Uploading of %s of type %s failed.",event.getFilename(),event.getMIMEType()) );
     	
     	upload.setData(null);
     }

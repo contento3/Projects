@@ -7,14 +7,13 @@
   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
   ">
 
-<!-- 
+
  <import resource="applicationContext-site-security.xml"/>
-  -->
   
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<value>
-	<!--  	 	/register/**/*=registrationController -->
+	  	 	/register/**/*=registrationController
 	 		/page/**/*=pageController  
 			/image/**/*=staticResourceController
 			/js/**/*=staticResourceController
@@ -27,14 +26,12 @@
 <bean id="pageController" class="com.contento3.site.controller.PageController">
 	<property name="freeMarkerView" ref="fmView" />
 </bean>
-
-
-<!-- 
+ 
 <bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
 	<property name="freeMarkerView" ref="fmView" />
 	<property name="registrationService" ref="userRegistrationService" />
 </bean>
- -->
+
 <!-- This is used to return the javascript,css and images that are stored in the database and potentially stored on amazon s3  -->
 <bean id="staticResourceController" class="com.contento3.site.controller.StaticResourceController">
 	<property name="staticResourceViewResolver" ref="staticResourceView" />

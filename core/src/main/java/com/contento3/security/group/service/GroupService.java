@@ -2,11 +2,8 @@ package com.contento3.security.group.service;
 
 import java.util.Collection;
 
-import com.contento3.cms.page.dto.PageDto;
-import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.common.service.Service;
 import com.contento3.security.group.dto.GroupDto;
-import com.contento3.security.group.model.Group;
 
 
 /**

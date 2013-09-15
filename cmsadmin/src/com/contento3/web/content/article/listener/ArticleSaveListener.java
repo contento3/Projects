@@ -1,20 +1,18 @@
 package com.contento3.web.content.article.listener;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
-import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.ArticleForm;
 import com.contento3.web.content.article.ArticleTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -71,32 +69,55 @@ public class ArticleSaveListener implements ClickListener{
 		if (null!= articleId){
 			articleDto = articleService.findById(articleId);
 		}
-
-		articleDto.setHead(articleForm.getArticleHeading().getValue().toString());
-		articleDto.setTeaser(articleForm.getArticleTeaser().getValue().toString());
-		articleDto.setBody(articleForm.getBodyTextField().getValue().toString());
-		Date date = (Date) articleForm.getPostedDatefield().getValue();
-		articleDto.setDatePosted(date);
-		articleDto.setLastUpdated(new Date());
-		articleDto.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
-		articleDto.setIsVisible(1);
-
+			
+			articleDto.setHead(articleForm.getArticleHeading().getValue().toString());
+			articleDto.setTeaser(articleForm.getArticleTeaser().getValue().toString());
+			articleDto.setBody(articleForm.getBodyTextField().getValue().toString());
+		
+		final String unsaveNotification ="cannot add article";
+		final String saveNotification =articleDto.getHead()+" saved successfully";
+		final String updateNotification =articleDto.getHead()+" updated successfully";
+		
+		// header or body cannot be null
+		if(articleDto.getHead().isEmpty() || articleDto.getBody().isEmpty()){
+			
+			Notification.show(unsaveNotification);
+		}
+		else{
+			final Date createdDate= new Date();
+			articleDto.setDateCreated(createdDate);
+			articleDto.setLastUpdated(createdDate);
+			
+			Date date = (Date) articleForm.getPostedDatefield().getValue();
+			articleDto.setDatePosted(date);
+			articleDto.setLastUpdated(new Date());
+			articleDto.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
+			articleDto.setIsVisible(1);
+			articleForm.getPostedDatefield().getValue();
+			articleDto.setDatePosted((Date)articleForm.getPostedDatefield().getValue());
+		
+		//new article is creating is article id == null
 		if (null==articleId){
 			articleDto.setDateCreated(new Date());
 			articleDto.setAccount(accountService.findAccountById(accountId));
 			articleService.create(articleDto);
+			Notification.show(saveNotification);
+			tabSheet.removeTab(articleTab);
+			resetTable();
+			tabSheet.removeTab(articleTab);
 		}
-		else {
+		else{
 			articleService.update(articleDto);
+			Notification.show(updateNotification);
+			tabSheet.removeTab(articleTab);
+			resetTable();
+			tabSheet.removeTab(articleTab);
 		}
-
-		String notification =articleDto.getHead()+" updated successfully"; 
-		parentWindow.showNotification(notification);
-		tabSheet.removeTab(articleTab);
-		resetTable();
-		tabSheet.removeTab(articleTab);
+		   
+	  }
+		
 	}
-
+	
 	/**
 	 * Reset table
 	 */

@@ -25,4 +25,23 @@ public class ArticleImageDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<ArticleImage> findAsscArticleImageByArticleId(final Integer articleId) {
+		Criteria criteria = this.getSession()
+				.createCriteria(ArticleImage.class)
+				.add(Restrictions.eq("primaryKey.article.articleId", articleId));
+		return criteria.list();
+	}
+
+	@Override
+	public Collection<ArticleImage> findAsscArticleImageByArticleIdAndScopeId(
+			Integer articleId, Integer scopeId) {
+		Criteria criteria = this.getSession()
+				.createCriteria(ArticleImage.class)
+				.add(Restrictions.eq("primaryKey.contentScope.id", scopeId))
+				.add(Restrictions.eq("primaryKey.article.articleId", articleId));
+		return criteria.list();
+	}
+
 }

@@ -3,23 +3,21 @@ package com.contento3.web.user.security;
 import java.util.Collection;
 
 import com.contento3.security.role.service.RoleService;
-import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.TabSheet.Tab;
 
 public class RoleUIManager implements UIManager {
 
@@ -28,10 +26,6 @@ public class RoleUIManager implements UIManager {
 	 */
     private SpringContextHelper contextHelper;
     
-    /**
-     * Represents the parent window of the template ui
-     */
-	private Window parentWindow;
 	
 	/**
 	 * layout for group manager screen
@@ -53,9 +47,8 @@ public class RoleUIManager implements UIManager {
 	 */
 	RoleService roleService;
 	
-	public RoleUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
+	public RoleUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper) {
 		this.contextHelper = helper;
-		this.parentWindow = parentWindow;
 		this.uiTabSheet = uiTabSheet;
 		this.roleService = (RoleService) this.contextHelper.getBean("roleService");
 	}
@@ -69,11 +62,11 @@ public class RoleUIManager implements UIManager {
 	@Override
 	public Component render(String command) {
 		// TODO Auto-generated method stub
-		this.uiTabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		this.uiTabSheet.setHeight(100, Unit.PERCENTAGE);
 		Tab userTab = uiTabSheet.addTab(verticalLayout, "Role Management",new ExternalResource("images/security.png"));
 		userTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
 
 		renderRoleContent();
 		return this.uiTabSheet;
@@ -104,14 +97,14 @@ public class RoleUIManager implements UIManager {
 		return null;
 	}
 	private void addRoleButton(){
-		Button addButton = new Button("Add Role", new RolePopup(parentWindow, contextHelper,roleTable), "openButtonClick");
+		Button addButton = new Button("Add Role", new RolePopup(contextHelper,roleTable));
 		this.verticalLayout.addComponent(addButton);
 	}
 
 	private void renderRoleTable() {
-		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(parentWindow,contextHelper,roleTable);
+		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(contextHelper,roleTable);
 		//tableBuilder.build((Collection)roleService.findAllRoles());
-		tableBuilder.build((Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute(parentWindow, "accountId")));
+		tableBuilder.build((Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
         
 		this.verticalLayout.addComponent(roleTable);
 		

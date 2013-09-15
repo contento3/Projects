@@ -16,11 +16,6 @@ public class SecurityUIManager implements UIManager {
 	 */
     private SpringContextHelper helper;
     
-    /**
-     * Represents the parent window of the template ui
-     */
-	private Window parentWindow;
-
 	/**
 	 * Tab sheet to display user management ui
 	 */
@@ -35,9 +30,8 @@ public class SecurityUIManager implements UIManager {
 	 */
 	private TabSheet uiTabSheet;
 	
-	public SecurityUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
+	public SecurityUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper) {
 		this.helper = helper;
-		this.parentWindow = parentWindow;
 		this.uiTabSheet = uiTabSheet;
 	}
 
@@ -60,8 +54,7 @@ public class SecurityUIManager implements UIManager {
 	 * @param hwContainer
 	 */
 	@Override
-	public Component render(final String command,
-			HierarchicalContainer hwContainer) {
+	public Component render(final String command,final HierarchicalContainer hwContainer) {
 		
 		if (command.equals(NavigationConstant.SECURITY)){
 			//Add the group screen tab and also add the child items
@@ -96,15 +89,15 @@ public class SecurityUIManager implements UIManager {
 	private Component renderElementUI(final String element){
 		TabSheet elementTab = null;
 		if(element.equals("Group")){
-			GroupUIManager groupManager = new GroupUIManager(uiTabSheet,helper, parentWindow);
+			GroupUIManager groupManager = new GroupUIManager(uiTabSheet,helper);
 			elementTab = (TabSheet) groupManager.render(null);
 		}
 		else if(element.equals("User")){
-			UserUIManager userManager = new UserUIManager(uiTabSheet,helper, parentWindow);
+			UserUIManager userManager = new UserUIManager(uiTabSheet,helper);
 			elementTab = (TabSheet) userManager.render(null);
 		}		
 		else if(element.equals("Role")){
-			RoleUIManager roleManager = new RoleUIManager(uiTabSheet,helper, parentWindow);
+			RoleUIManager roleManager = new RoleUIManager(uiTabSheet,helper);
 			elementTab = (TabSheet) roleManager.render(null);
 		}
 		else if(element.equals("Permission")){

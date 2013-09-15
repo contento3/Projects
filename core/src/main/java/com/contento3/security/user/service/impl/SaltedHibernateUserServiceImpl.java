@@ -1,6 +1,5 @@
 package com.contento3.security.user.service.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
 import org.apache.shiro.crypto.RandomNumberGenerator;
@@ -8,9 +7,13 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Hash;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.util.CollectionUtils;
 
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
+import com.contento3.security.group.dao.GroupDao;
+import com.contento3.security.group.model.Group;
 import com.contento3.security.user.dao.SaltedHibernateUserDao;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.model.SaltedHibernateUser;
@@ -24,23 +27,21 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 	 */
 	private  SaltedHibernateUserDao userDao;
 	
+	private GroupDao groupDao;
+	
 	/**
 	 * SaltedUserAssembler
 	 */
 	private SaltedHibernateUserAssembler userAssembler;
 	
-	/**
-	 * Used in generating salt
-	 */
-	private byte[] seed = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	
-	public SaltedHibernateUserServiceImpl(final SaltedHibernateUserDao saltedHibernateUserDao,final SaltedHibernateUserAssembler saltedHibernateUserAssembler) {
+	public SaltedHibernateUserServiceImpl(final SaltedHibernateUserDao saltedHibernateUserDao,final SaltedHibernateUserAssembler saltedHibernateUserAssembler,final GroupDao groupDao) {
 		this.userDao = saltedHibernateUserDao;
 		this.userAssembler = saltedHibernateUserAssembler;
+		this.groupDao = groupDao;
 	}
 
 	@Override
-	public String create(final SaltedHibernateUserDto dto)
+	public Integer create(final SaltedHibernateUserDto dto)
 			throws EntityAlreadyFoundException, EntityNotCreatedException {
 		final SaltedHibernateUser user = userAssembler.dtoToDomain(dto);
 		final RandomNumberGenerator saltGenerator = new SecureRandomNumberGenerator();
@@ -52,17 +53,25 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 			
 		user.setPassword(finalHash);
 		user.setSalt(salt);
-		String username = userDao.persist(user);
+		Integer userId = userDao.persist(user);
 		
-		if (null==username){
+		if (null==userId){
 			throw new EntityNotCreatedException();
 		}
-		return username;
+		return userId;
 	}
 
 	@Override
-	public void delete(final SaltedHibernateUserDto dtoToDelete) {
-		userDao.delete(userAssembler.dtoToDomain(dtoToDelete));
+	public void delete(final SaltedHibernateUserDto dtoToDelete) throws EntityCannotBeDeletedException {
+		//Check the user if it is associated to a groups
+		Collection <Group> associatedGroups = groupDao.findByUserId(dtoToDelete.getId());
+		
+		if (CollectionUtils.isEmpty(associatedGroups)){
+			userDao.delete(userAssembler.dtoToDomain(dtoToDelete));
+		}
+		else {
+			throw new EntityCannotBeDeletedException("User with id ["+ dtoToDelete.getId() +"]" + "cannot be deleted.");
+		} 
 	}
 	
 	public Collection<SaltedHibernateUserDto> findUsersByAccountId(final Integer accountId) {
@@ -70,8 +79,13 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 	}
 
 	@Override
-	public SaltedHibernateUserDto findUserByName(final String name) {
-		return userAssembler.domainToDto(userDao.findById(name));
+	public SaltedHibernateUserDto findUserById(final Integer userId) {
+		return userAssembler.domainToDto(userDao.findById(userId));
+	}
+
+	@Override
+	public SaltedHibernateUserDto findUserByUsername(final String username) {
+		return userAssembler.domainToDto(userDao.findByUsername(username));
 	}
 
 	@Override

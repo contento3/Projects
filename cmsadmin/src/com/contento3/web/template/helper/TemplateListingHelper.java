@@ -40,7 +40,7 @@ public class TemplateListingHelper {
         }
 
         root.expandItem(new Integer (1));
-        root.addListener(new ItemClickListener() {
+        root.addItemClickListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
         	public void itemClick(ItemClickEvent event) {
         		

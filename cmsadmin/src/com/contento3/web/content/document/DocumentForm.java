@@ -7,6 +7,7 @@ import com.contento3.web.common.UIContext;
 import com.contento3.web.content.document.listener.FileUploadListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
@@ -28,7 +29,7 @@ public class DocumentForm extends UIContext implements ValueChangeListener {
 	/**
 	 * Select for DocumentType
 	 */
-	private Select selectDocumentType = new Select();
+	private ComboBox selectDocumentType = new ComboBox();
 
 	/**
 	 * Listener for the Upload Field
@@ -47,10 +48,10 @@ public class DocumentForm extends UIContext implements ValueChangeListener {
 		documentUploadListener = fileUploadListener;
 		
 		uploadDocument.setReceiver((Upload.Receiver) documentUploadListener);
-		uploadDocument.addListener((Upload.SucceededListener) documentUploadListener);
-		uploadDocument.addListener((Upload.FailedListener) documentUploadListener);
+		uploadDocument.addSucceededListener((Upload.SucceededListener) documentUploadListener);
+		uploadDocument.addFailedListener((Upload.FailedListener) documentUploadListener);
 		
-		selectDocumentType.addListener(this);
+		selectDocumentType.addValueChangeListener(this);
 	}
 	
 	/**
@@ -94,7 +95,7 @@ public class DocumentForm extends UIContext implements ValueChangeListener {
 	 * @param none
 	 * @return Select
 	 */
-	public Select getSelectDocumentType() {
+	public ComboBox getSelectDocumentType() {
 		return selectDocumentType;
 	}
 	

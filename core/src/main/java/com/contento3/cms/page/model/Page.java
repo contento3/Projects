@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.layout.model.PageLayout;
 import com.contento3.cms.page.template.model.TemplateDirectory;
@@ -28,6 +29,7 @@ import com.contento3.cms.site.structure.model.Site;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "PAGE")
 public class Page implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * URI for the page

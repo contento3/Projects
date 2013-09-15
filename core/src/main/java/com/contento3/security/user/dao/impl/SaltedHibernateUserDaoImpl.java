@@ -16,7 +16,7 @@ import com.contento3.security.user.model.SaltedHibernateUser;
  * @author HAMMAD
  *
  */
-public class SaltedHibernateUserDaoImpl extends GenericDaoSpringHibernateTemplate <SaltedHibernateUser,String>
+public class SaltedHibernateUserDaoImpl extends GenericDaoSpringHibernateTemplate <SaltedHibernateUser,Integer>
 implements SaltedHibernateUserDao {
 
 	public SaltedHibernateUserDaoImpl() {

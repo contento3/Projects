@@ -3,6 +3,8 @@ package com.contento3.web.content;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -20,7 +22,9 @@ public class SearchUI {
 		//a form layout, that contains the search form
 		final VerticalLayout searchUIParentLayout = new VerticalLayout();
 		searchUIParentLayout.setSpacing(true);
-		searchUIParentLayout.setMargin(true, false, true, true);
+		
+		MarginInfo marginInfo = new MarginInfo(true, false, true, true);
+		searchUIParentLayout.setMargin(marginInfo);
 		//Form layout that displays the search form component.
 		final FormLayout searchFormLayout = new FormLayout();
 		searchFormLayout.setCaption("Search Content");
@@ -44,7 +48,7 @@ public class SearchUI {
         creationDate.setValue(new java.util.Date());
 
         // Set the correct resolution
-        creationDate.setResolution(PopupDateField.RESOLUTION_DAY);
+        creationDate.setResolution(Resolution.DAY);
         creationDate.setImmediate(true);
 		
         final Button advancedSearchButton = new Button("Advanced Search");

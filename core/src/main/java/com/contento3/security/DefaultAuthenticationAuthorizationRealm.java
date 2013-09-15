@@ -29,19 +29,12 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 	
 	
 	/**
-	WHEN USER LOGS IN !!!
-	**/
+	 * This is called when the users logs in.
+	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken token) {
 		final UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 		
-	//	credentialsMatcher.setHashAlgorithmName(Sha256Hash.ALGORITHM_NAME);
-       // HashedCredentialsMatcher hcm = new HashedCredentialsMatcher(); 
-      //  hcm.setHashAlgorithmName(Sha256Hash.ALGORITHM_NAME); 
-      //  hcm.setStoredCredentialsHexEncoded(false); 
-      //  hcm.setHashIterations(1);
-        //setCredentialsMatcher(hcm); 
-        
 		SaltedHibernateUser user;
 		try {
 			user = saltedHibernateUserDao.findByUsername(upToken.getUsername());
@@ -53,7 +46,7 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 			throw new AuthenticationException("Login name [" + upToken.getUsername() + "] not found!");
 		}
 		
-		LOGGER.info("Found user with username [{}]"+ upToken.getUsername());
+		LOGGER.info("Found user with username [{"+ upToken.getUsername()+"}]");
 		return new SimpleAuthenticationInfo(user, user.getPassword().toCharArray(), SimpleByteSource.Util.bytes(user.getSalt()), getName());
 	}
 

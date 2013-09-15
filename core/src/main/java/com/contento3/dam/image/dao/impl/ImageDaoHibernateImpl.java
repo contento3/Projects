@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
+
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.model.Image;

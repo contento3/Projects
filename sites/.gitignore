@@ -1,5 +1,4 @@
 /WEB-INF
-/**/*
 # Java class files
 *.class
 /classes/**/*

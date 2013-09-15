@@ -10,16 +10,17 @@ import com.contento3.dam.document.service.DocumentTypeService;
 import com.contento3.dam.storagetype.dto.StorageTypeDto;
 import com.contento3.dam.storagetype.service.StorageTypeService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.document.DocumentForm;
 import com.contento3.web.content.document.DocumentTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.TabSheet.Tab;
 
 public class DocumentEditListener implements ClickListener {
 	private static final long serialVersionUID = 1L;
@@ -53,15 +54,13 @@ public class DocumentEditListener implements ClickListener {
 		this.documentTypeService = (DocumentTypeService) contextHelper.getBean("documentTypeService");
 		this.storageTypeService = (StorageTypeService) contextHelper.getBean("storageTypeService");
 		
-		//get account if from session
-		WebApplicationContext webContext = (WebApplicationContext) parentWindow.getApplication().getContext();
-		this.accountId = (Integer) webContext.getHttpSession().getAttribute("accountId");
+		this.accountId = (Integer) SessionHelper.loadAttribute("accountId");
 	}
 	
 	@Override
 	public void click(ClickEvent event) {
 		if(documentForm.getUploadedDocument() == null){
-			parentWindow.showNotification("You must upload a document to Save.");
+			Notification.show("You must upload a document to Save.");
 			return;
 		}
 		
@@ -87,7 +86,7 @@ public class DocumentEditListener implements ClickListener {
 		}
 		
 		String notification = documentDto.getDocumentTitle() + " updated successfully"; 
-		parentWindow.showNotification(notification);
+		Notification.show(notification);
 		tabSheet.removeTab(documentTab);
 		resetTable();
 		tabSheet.removeTab(documentTab);
@@ -98,7 +97,7 @@ public class DocumentEditListener implements ClickListener {
 	 */
 	 @SuppressWarnings("rawtypes")
 	 private void resetTable(){
-		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.documentTable);
+		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper,this.tabSheet,this.documentTable);
 		final Collection<DocumentDto> document = this.documentService.findByAccountId(accountId);
 		tableBuilder.rebuild((Collection) document);
 	}

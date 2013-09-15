@@ -7,7 +7,8 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Alignment;
@@ -63,7 +64,7 @@ public class LayoutManagerRenderer
 		if (null==layoutManagerTab){ 
     	layoutManagerTab = new TabSheet();
     	layoutManagerTab.setHeight("675");
-    	layoutManagerTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+    	layoutManagerTab.setWidth(100,Unit.PERCENTAGE);
     	
     	
     	Label layoutTypes = new Label("Layout Type");
@@ -73,10 +74,12 @@ public class LayoutManagerRenderer
     	horiz = new HorizontalSplitPanel();
         horiz.setSplitPosition(35);
 
-        horiz.addListener(new SplitterClickListener(){
+        horiz.addSplitterClickListener(new SplitterClickListener(){
+			private static final long serialVersionUID = 1L;
+
 			public void splitterClick(SplitterClickEvent event){
 				
-				int splitPosition = horiz.getSplitPosition();
+				float splitPosition = horiz.getSplitPosition();
 				
 		        if (splitPosition==0)
 		        	horiz.setSplitPosition(35);
@@ -89,7 +92,7 @@ public class LayoutManagerRenderer
 
     	VerticalLayout layout = new VerticalLayout();
     	VerticalLayout createNewLayout = new VerticalLayout();
-    	createNewLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+    	createNewLayout.setWidth(100,Unit.PERCENTAGE);
         horiz.addComponent(createNewLayout);
 
     	Tab tab1 = layoutManagerTab.addTab(layoutTypes,"Layout Type",null);
@@ -128,8 +131,10 @@ public class LayoutManagerRenderer
     	leftSection.addItem("Left Navigation");
     	leftSection.addItem("Right Navigation");
     	leftSection.setImmediate(true);
-    	leftSection.addListener(new ValueChangeListener(){
-    	    public void valueChange(ValueChangeEvent event) {
+    	leftSection.addValueChangeListener(new ValueChangeListener(){
+			private static final long serialVersionUID = 1L;
+
+			public void valueChange(ValueChangeEvent event) {
     	    	String selectedValue = (String) event.getProperty().getValue();
 	    		pageLeftSectionWidthLayout.removeComponent(pageLeftSectionCombo);
     	    	if (selectedValue.equals("Left Navigation")){
@@ -155,7 +160,7 @@ public class LayoutManagerRenderer
     	
     	header.setCaption("Header");
     	header.setImmediate(true);
-    	header.setWidth(10,Sizeable.UNITS_PERCENTAGE);
+    	header.setWidth(10,Unit.PERCENTAGE);
         final TextField headerHeight = new TextField();
         headerHeight.setCaption("Height");
         headerHeight.setColumns(4);
@@ -164,7 +169,7 @@ public class LayoutManagerRenderer
         
         footer.setCaption("Footer");
     	footer.setImmediate(true);
-    	footer.setWidth(10,Sizeable.UNITS_PERCENTAGE);
+    	footer.setWidth(10,Unit.PERCENTAGE);
 
         final TextField footerHeight = new TextField();
         footerHeight.setCaption("Height");
@@ -187,7 +192,7 @@ public class LayoutManagerRenderer
         glayout.setColumnExpandRatio(0, 3);
         glayout.setColumnExpandRatio(1, 10);
         
-        glayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        glayout.setWidth(100,Unit.PERCENTAGE);
         glayout.setComponentAlignment(formLayout, Alignment.MIDDLE_LEFT);
         glayout.setComponentAlignment(footerFormLayout, Alignment.MIDDLE_LEFT);
 
@@ -204,14 +209,16 @@ public class LayoutManagerRenderer
         footerHeightLabel.setCaption("Footer height in px:");
        
         final ComboBox mainBodySplit = new ComboBox("Select row",getMainBodySplit());
-        mainBodySplit.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        mainBodySplit.setWidth(100,Unit.PERCENTAGE);
     	HorizontalLayout mainBodySplitLayout = new HorizontalLayout();
     	Button link = new Button();
     	link.setCaption("Add new row");
-    	link.setWidth(55,Sizeable.UNITS_PERCENTAGE);
+    	link.setWidth(55,Unit.PERCENTAGE);
 
 
-		link.addListener(new ClickListener(){
+		link.addClickListener(new ClickListener(){
+
+			private static final long serialVersionUID = 1L;
 
 			public void buttonClick(ClickEvent event){
 				String selectedBodySize = (String)bodySizeCombo.getValue();
@@ -229,7 +236,7 @@ public class LayoutManagerRenderer
 			}
     	});
     	
-    	mainBodySplitLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+    	mainBodySplitLayout.setWidth(100,Unit.PERCENTAGE);
         
     	Button saveButton = new Button();
     	saveButton.setCaption("Save");
@@ -248,7 +255,9 @@ public class LayoutManagerRenderer
     	horizButtonsLayout.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
     	horizButtonsLayout.setComponentAlignment(previewLayoutButton, Alignment.BOTTOM_RIGHT);
     	
-    	saveButton.addListener(new ClickListener(){
+    	saveButton.addClickListener(new ClickListener(){
+			private static final long serialVersionUID = 1L;
+
 			public void buttonClick(ClickEvent event){
 				String selectedBodySize = (String)bodySizeCombo.getValue();
 				String selectedBodyStyle=getSelectedBodySize(selectedBodySize);
@@ -260,16 +269,16 @@ public class LayoutManagerRenderer
 					layoutBuilder.addBodyWidth(selectedBodyStyle);
 				}
 				
-				if (header.booleanValue())	{
+				if (header.getValue())	{
 					layoutBuilder.addHeader();
 				}
-				if (footer.booleanValue()){
+				if (footer.getValue()){
 					layoutBuilder.addFooter();
 				}	
-				if (!header.booleanValue())	{
+				if (!header.getValue())	{
 					layoutBuilder.removeHeader();
 				}
-				if (!footer.booleanValue()){
+				if (!footer.getValue()){
 					layoutBuilder.removeFooter();
 				}	
 				
@@ -286,7 +295,7 @@ public class LayoutManagerRenderer
     	
     	FormLayout mainBodySplitFormLayout = new FormLayout();
     	mainBodySplitFormLayout.addComponent(mainBodySplit);
-    	mainBodySplitFormLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+    	mainBodySplitFormLayout.setWidth(100, Unit.PERCENTAGE);
     	
     	mainBodySplitLayout.setSpacing(true);
     	mainBodySplitLayout.addComponent(mainBodySplitFormLayout);
@@ -337,9 +346,9 @@ public class LayoutManagerRenderer
 			if (label==null)
 			label = new Label(layoutBuilder.getLayoutHTML());
 			
-			label.requestRepaint();
+			label.markAsDirty();
 						//label.setCaption(layoutBuilder.getLayoutHTML());
-			label.setContentMode(Label.CONTENT_RAW);
+			label.setContentMode(ContentMode.RAW);
 			label.setImmediate(true);
 			
 			if (horiz.getComponentCount()<2)

@@ -2,6 +2,8 @@ package com.contento3.template.article.dto;
 
 import java.util.Date;
 
+import com.contento3.template.article.service.impl.ArticleImageTemplateDto;
+
 /**
  * Article Dto that is used in freemarker templates
  * @author HAMMAD
@@ -49,7 +51,12 @@ public class ArticleTemplateDto {
 	 */
 	private Date expiryDate;
 
-	public void setArticleId(Integer articleId) {
+	/**
+	 * Object that holds the associated images for an article.
+	 */
+	private ArticleImageTemplateDto articleImageTemplateDto;
+	
+	public void setArticleId(final Integer articleId) {
 		this.articleId = articleId;
 	}
 
@@ -111,6 +118,10 @@ public class ArticleTemplateDto {
 
 	public Date getExpiryDate() {
 		return expiryDate;
+	}
+
+	public ArticleImageTemplateDto getArticleImageTemplateDto() {
+		return articleImageTemplateDto;
 	}
 
 }

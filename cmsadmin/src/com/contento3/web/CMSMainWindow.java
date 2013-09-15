@@ -2,8 +2,6 @@ package com.contento3.web;
 
 import java.util.Collection;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.CredentialsException;
@@ -14,7 +12,8 @@ import org.apache.shiro.subject.Subject;
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.web.account.AccountSettingsUIManager;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
+import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TabSheetHelper;
 import com.contento3.web.content.SearchUI;
@@ -28,10 +27,12 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Page;
+import com.vaadin.server.Page.UriFragmentChangedEvent;
+import com.vaadin.server.Resource;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickEvent;
 import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Alignment;
@@ -44,20 +45,17 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.LoginForm.LoginEvent;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
-import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
-public class CMSMainWindow extends Window implements Action.Handler,FragmentChangedListener {
-	public static String brownFox = "Welcome to Olive Admin"; 
+public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
 	private static final Logger LOGGER = Logger.getLogger(CMSMainWindow.class);
 
@@ -78,10 +76,13 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	SiteMainAreaRenderer siteMainRenderer;
 	LayoutManagerRenderer layoutManagerRenderer;
 	SpringContextHelper helper;
-	UriFragmentUtility uri;
+	//UriFragmentUtility uri;
 	UIManager uiMgr;
 	
 	Subject subject;
+	SaltedHibernateUserService userService;
+	
+	final SaltedHibernateUserDto user = null;
 	
 	/**
 	 * Horizontal split panel that contains the navigation 
@@ -98,43 +99,48 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		this.helper = helper;
 		this.logoutButton = new Button("Log Out");
 		logoutButton.addStyleName("link");
-	
+        this.userService = (SaltedHibernateUserService)helper.getBean("saltedHibernateUserService");
 		buildLogin();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void buildLogin(){
-		final VerticalLayout vLayout = new VerticalLayout();
+		final VerticalLayout appRootLayout = new VerticalLayout();
 		LoginForm login = new LoginForm();
-		vLayout.setStyleName("loginform");
+		appRootLayout.setStyleName("loginform");
 		
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-	    embedded.setHeight(55,Sizeable.UNITS_PERCENTAGE);
-	    embedded.setWidth(30,Sizeable.UNITS_PERCENTAGE);
-	    vLayout.addComponent(embedded);
+	    embedded.setHeight(55,Unit.PERCENTAGE);
+	    embedded.setWidth(30,Unit.PERCENTAGE);
+	    appRootLayout.addComponent(embedded);
 	    
-	    vLayout.setSpacing(true);
+	    appRootLayout.setSpacing(true);
 	    
-	    vLayout.addComponent(login);
-		vLayout.setComponentAlignment(login, Alignment.MIDDLE_CENTER);
+	    appRootLayout.addComponent(login);
+		appRootLayout.setComponentAlignment(login, Alignment.MIDDLE_CENTER);
 		
-		this.addComponent(vLayout);
+		this.addComponent(appRootLayout);
 		
-		this.setScrollable(false);
+		//this.setWindowMode(WindowMode.MAXIMIZED);
 		
-		login.addListener(new LoginForm.LoginListener() {
-            public void onLogin(LoginEvent event) {
+		login.addLoginListener(new LoginForm.LoginListener() {
+            private static final long serialVersionUID = 1L;
+
+			public void onLogin(LoginEvent event) {
             	final String username = event.getLoginParameter("username");
             	final String password = event.getLoginParameter("password");
             	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
 
         		subject = SecurityUtils.getSubject();
-
 				try{
 					subject.login(token);
 					subject.getSession().setAttribute("userName", username);
 					LOGGER.info("User with username ["+username+"] logged in successfully");
-					unitUI();
+					
+					final SaltedHibernateUserDto user = userService.findUserByUsername(username);
+					VaadinSession.getCurrent().getSession().setAttribute("accountId",user.getAccount().getAccountId());
+					buildUI();
 				}
 				catch(IncorrectCredentialsException ice){
 					LOGGER.error("Username or password for username ["+username+"] is not valid");
@@ -142,13 +148,13 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 				catch(CredentialsException ice){
 					LOGGER.error("Error occured while authentication user with username: "+username);
 				}
-				catch(Exception ice){
-					LOGGER.error("Error occured while authenticating user"+ice);
+				catch(Exception e){
+					LOGGER.error("Error occured while authenticating user",e);
 				}
             }
         });
 		
-		logoutButton.addListener(new Button.ClickListener()
+		logoutButton.addClickListener(new Button.ClickListener()
 		{
             	private static final long serialVersionUID = 1L;
 				@Override
@@ -157,8 +163,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 					subject = SecurityUtils.getSubject();
 					subject.logout();
 
-					getApplication().setLogoutURL(getApplication().getURL().toExternalForm()
-							.substring(0,getApplication().getURL().toExternalForm().length()-1));
+					Page.getCurrent().getLocation().getHost()
+							.substring(0,Page.getCurrent().getLocation().getHost().length()-1);
 				}
 			});
 
@@ -166,8 +172,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 
 	private static final long serialVersionUID = 1L;
 	
-	public void fragmentChanged(FragmentChangedEvent source) {
-            String frag = source.getUriFragmentUtility().getFragment();
+	public void fragmentChanged(UriFragmentChangedEvent source) {
+            String frag = source.getUriFragment();
             String selectedUIMgr = "layout";
             
             if (frag.equals(NavigationConstant.LAYOUT_MANAGER)){
@@ -187,33 +193,38 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         }
  
 	
-	private void unitUI(){
-    	uri = new UriFragmentUtility();
-        uri.addListener(this);
-        uri.setImmediate(true);
+	private void buildUI(){
+//CHANGED
+		   // 	uri = Page.getCurrent().getUriFragment();
+       // uri.addListener(this);
+//        uri.setImmediate(true);
 
-        VerticalLayout vLayout = new VerticalLayout();
+		//Parent Layout that holds the ui of the application
+        final VerticalLayout appRootLayout = new VerticalLayout();
         
-        setContent(vLayout);
-        vLayout.setSizeFull();
+        this.removeAllComponents();
+        this.addComponent(appRootLayout);
+        UI.getCurrent().setContent(appRootLayout);
+        appRootLayout.setSizeFull();
 
 	    final VerticalSplitPanel vert = new VerticalSplitPanel();
 	    
-	    vert.setSplitPosition(6, Sizeable.UNITS_PERCENTAGE);
+	    vert.setSplitPosition(6, Unit.PERCENTAGE);
 	    vert.setLocked(true);
 	    this.setCaption("CONTENTO3 CMS");
 	    vert.setStyleName(Reindeer.SPLITPANEL_SMALL);
 
-	    uiTabsheet.setWidth(100,Sizeable.UNITS_PERCENTAGE);
-	    uiTabsheet.setHeight(100,Sizeable.UNITS_PERCENTAGE);
+	    uiTabsheet.setWidth(100,Unit.PERCENTAGE);
+	    uiTabsheet.setHeight(100,Unit.PERCENTAGE);
 	    
 	    HorizontalLayout horizTop = new HorizontalLayout();
 	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);
-	    vLayout.addComponent(vert);
-	       
+	    appRootLayout.addComponent(vert);
+
+	    
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-		embedded.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		embedded.setHeight(100, Unit.PERCENTAGE);
 		horizTop.addComponent(embedded);
 	    horizTop.setComponentAlignment(embedded, Alignment.TOP_LEFT);
 	    horizTop.setSizeFull();
@@ -225,8 +236,13 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 		horizTop.addComponent(buttonsLayout);
 		horizTop.setComponentAlignment(buttonsLayout, Alignment.TOP_RIGHT);
 		final Button accountButton = new Button ("Account Settings");
-		accountButton.addListener(new AccountSettingsUIManager(this,helper));
+	//	accountButton.addClickListener(new AccountSettingsUIManager(this,helper));
 		
+		final SaltedHibernateUserDto user = userService.findUserByUsername((String)SessionHelper.loadAttribute("userName"));
+		final String welcomeUsrMsg = "<b>Welcome "+ user.getFirstName() + "!</b>"; 
+		final Label welcomeUserLbl = new Label(welcomeUsrMsg);
+		welcomeUserLbl.setContentMode(ContentMode.HTML);
+		buttonsLayout.addComponent(welcomeUserLbl);
 		buttonsLayout.addComponent(accountButton);
 		accountButton.addStyleName("link");
 		
@@ -243,16 +259,21 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         //Then add the content SearchUI object that renders the content search ui
         final SearchUI searchUI = new SearchUI();
         mainAndContentSplitter.addComponent(searchUI.render());
-        mainAndContentSplitter.setSplitPosition(75,Sizeable.UNITS_PERCENTAGE);
+        mainAndContentSplitter.setSplitPosition(75,Unit.PERCENTAGE);
         
-        mainAndContentSplitter.addListener(new SplitterClickListener(){
+        mainAndContentSplitter.addSplitterClickListener(new SplitterClickListener(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void splitterClick(SplitterClickEvent event){
-				int splitPosition = mainAndContentSplitter.getSplitPosition();
+				float splitPosition = mainAndContentSplitter.getSplitPosition();
 				
 		        if (splitPosition==96)
-		        	mainAndContentSplitter.setSplitPosition(75,Sizeable.UNITS_PERCENTAGE);
+		        	mainAndContentSplitter.setSplitPosition(75,Unit.PERCENTAGE);
 		        else
-		        	mainAndContentSplitter.setSplitPosition(96,Sizeable.UNITS_PERCENTAGE);
+		        	mainAndContentSplitter.setSplitPosition(96,Unit.PERCENTAGE);
 			}
     	});
 
@@ -260,9 +281,14 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         horiz.setLocked(true);
         horiz.setSplitPosition(15);
         
-        horiz.addListener(new SplitterClickListener(){
+        horiz.addSplitterClickListener(new SplitterClickListener(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void splitterClick(SplitterClickEvent event){
-				int splitPosition = horiz.getSplitPosition();
+				float splitPosition = horiz.getSplitPosition();
 				
 		        if (splitPosition==2)
 		        	horiz.setSplitPosition(15);
@@ -292,8 +318,8 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
-        root.setItemIcon(contentMgmt, new ExternalResource("images/content-mgmt.png"));
-        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content-mgmt.png"));
+        root.setItemIcon(contentMgmt, new ExternalResource("images/content.png"));
+        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content.png"));
 
         Item category = hwContainer.addItem(NavigationConstant.CATEGORY_MGMT);
         category.getItemProperty("name").setValue(NavigationConstant.CATEGORY_MGMT);
@@ -327,21 +353,19 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
         Item childItem = null;
 
         hLayout.addComponent(root);
-        hLayout.addComponent(uri);
-        hLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+       // hLayout.addComponent(uri);
+        hLayout.setWidth(100,Unit.PERCENTAGE);
         horiz.addComponent(hLayout);
-        horiz.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        Window window = new Window();
-        window.addComponent(new Label(brownFox));
+        horiz.setWidth(100, Unit.PERCENTAGE);
         horiz.addComponent(l);
-    	l.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+    	l.setWidth(100, Unit.PERCENTAGE);
 
     	root.setImmediate(true);
     	vert.addComponent(mainAndContentSplitter); 
 
 	   //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
-        root.addListener(new ItemClickListener() {
+        root.addItemClickListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
 			Collection<SiteDto> sites;
         	public void itemClick(ItemClickEvent event) {
@@ -352,12 +376,12 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
             	if (!TabSheetHelper.isTabLocked(uiTabsheet)){
 	
 	                if (null!=itemSelected && itemSelected.equals("Layout Manager")){
-	                		UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper,getWindow());
+	                		UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper);
 	                		horiz.setSecondComponent(layoutUIMgr.render(null));
 	        		}
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
-	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper,getWindow());
+	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper);
 	    	    		
 	    	    		Component tabSheet = contentUIMgr.render(itemSelected,hwContainer);
 	    	    		if (null!=tabSheet){
@@ -366,15 +390,15 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	        		}
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.SECURITY) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SECURITY)))){
-	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper,getWindow());
+	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper);
 	    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
 	        		}
 	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.TEMPLATE)){
-	    	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Template,helper,getWindow());
+	    	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Template,helper);
 	    	    		horiz.setSecondComponent(templateUIMgr.render(null));
 	        		}
 	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.CATEGORY_MGMT)){
-	    	    		UIManager categoryUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Category,helper,getWindow());
+	    	    		UIManager categoryUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Category,helper);
 	    	    		horiz.setSecondComponent(categoryUIMgr.render(null));
 	        		}
                 	else if (null!=itemSelected && itemSelected.equals("Sites")) {
@@ -385,11 +409,11 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	            		// so that this new site is added and hence displayed to the tree 
 	            		//if (CollectionUtils.isEmpty(sites)){
 	            			SiteService siteService = (SiteService) helper.getBean("siteService");
-	            			sites = siteService.findSitesByAccountId((Integer)SessionHelper.loadAttribute(getWindow(), "accountId"));
+	            			sites = siteService.findSitesByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 	            		//}
 	            	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
 	            			
-	            			UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
+	            			UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper);
 	            			horiz.setSecondComponent(siteUIMgr.render(null));
 	            			
 	            			
@@ -409,14 +433,15 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
 	            		Integer selectedSiteId = (Integer)event.getItem().getItemProperty("id").getValue();
 	            		for (SiteDto siteDto : sites){
 	            			if (selectedSiteId == siteDto.getSiteId()){
-	            	    		siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
+	            	    		siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper);
 	            	    		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.SITEDASHBOARD,selectedSiteId));
 	            			}
 	            		}
 	            	}
-	           	}	
+	
+            		}	
         	   	else {
-        	   		getWindow().showNotification("You cannot add more than 10 tab at a time.Please close the currently opened tab first.");
+        	   		Notification.show("You cannot add more than 10 tab at a time.Please close the currently opened tab first.");
         	   	}
         	}
         });
@@ -446,7 +471,7 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     	//If the user right clicks the 'Site' and then click 'Create new site'
     	//Then a new site creation screen needs to be rendered
     	if (action.equals(ACTION_ADD_SITE)) {
-			UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
+		//	UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
 
     		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.NEWSITE));
     		//SiteService siteService = (SiteService) helper.getBean("siteService");
@@ -456,15 +481,15 @@ public class CMSMainWindow extends Window implements Action.Handler,FragmentChan
     @Override
     public void attach() {
         super.attach(); // Must call.
-          WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
-          HttpSession session = ctx.getHttpSession();
+//CHAGNED          WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
+//CHANGED          HttpSession session = ctx.getHttpSession();
           //if (!session.isNew()){
         //	  session.setMaxInactiveInterval(50000*60);
          // }
          // else {
         //	  session.setMaxInactiveInterval(0);
         //  }
-    	  session.setAttribute("accountId", new Integer("1"));
+    	 //CHANGED session.setAttribute("accountId", new Integer("1"));
     }
 
 }

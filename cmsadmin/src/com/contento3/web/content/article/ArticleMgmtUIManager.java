@@ -2,40 +2,25 @@ package com.contento3.web.content.article;
 
 import java.util.Collection;
 
-import javax.management.Notification;
-import javax.servlet.http.HttpSession;
-import javax.swing.table.TableCellEditor;
-
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
-import com.google.gwt.layout.client.Layout;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Container.Filterable;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
-import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -93,35 +78,27 @@ public class ArticleMgmtUIManager implements UIManager {
 	 * @param helper
 	 * @param parentWindow
 	 */
-	public ArticleMgmtUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow) {
+	public ArticleMgmtUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper) {
 		this.contextHelper= helper;
-		this.parentWindow = parentWindow;
 		this.articleService = (ArticleService) this.contextHelper.getBean("articleService");
 		this.tabSheet = uiTabSheet;
-		//Get accountId from the session
-        WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-        HttpSession session = ctx.getHttpSession();
-        this.accountId =(Integer)session.getAttribute("accountId");
-        
+        this.accountId = (Integer)SessionHelper.loadAttribute("accountId");
 	}
 
-	
-    
 	@Override
 	public void render() {
-
-		
 	}
+
 	/**
 	 * Return tab sheet
 	 */
 	@Override
 	public Component render(String command) {
-		this.tabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		this.tabSheet.setHeight(100, Unit.PERCENTAGE);
 		final Tab articleTab = tabSheet.addTab(verticalLayout, "Article Management",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
 		renderArticleComponent();
 		return this.tabSheet;
 	}
@@ -164,16 +141,16 @@ public class ArticleMgmtUIManager implements UIManager {
 		/**
 		 * search button listener .. 		
 		 */
-		searchItem.addListener(new Button.ClickListener() {
+		searchItem.addClickListener(new Button.ClickListener() {
 			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
-				
-				String itemHeader = (String)searchHeader.getValue();
-				String itemCatagory = (String)searchCatagory.getValue();
+				final String itemHeader = (String)searchHeader.getValue();
+				final String itemCatagory = (String)searchCatagory.getValue();
 				
 				if(!itemHeader.isEmpty() || !itemCatagory.isEmpty()){
-				
 					renderArticTableBySearch(itemHeader,itemCatagory);
 				}
 			}
@@ -185,14 +162,11 @@ public class ArticleMgmtUIManager implements UIManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private void renderArticleTable() {
-
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
 		Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
 		tableBuilder.build((Collection)articles);
 		this.verticalLayout.addComponent(this.articleTable);
-		
 	}
-	
 	
 	/**
 	 * Render article table by using header name
@@ -220,7 +194,7 @@ public class ArticleMgmtUIManager implements UIManager {
 	 */
 	private void addArticleButton(){
 		Button addButton = new Button("Add Article");
-		addButton.addListener(new ArticleFormBuilderListner(this.contextHelper, this.parentWindow,this.tabSheet,this.articleTable));
+		addButton.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable));
 		this.verticalLayout.addComponent(addButton);
 	}
 

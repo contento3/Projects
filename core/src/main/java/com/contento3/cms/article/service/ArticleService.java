@@ -20,13 +20,6 @@ public interface ArticleService extends Service<ArticleDto>{
 	 * @return 	  
 	 */
 	
-	Collection<ArticleDto> findByHeaderName(String header);
-	/**
-	 * 
-	 * @param header
-	 * @return
-	 */
-	
 	Collection<ArticleDto> findBySearch(String header, String catagory);
 	/**
 	 * used to search article by header name or catagory

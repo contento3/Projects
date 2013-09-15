@@ -2,7 +2,6 @@ package com.contento3.cms.article.dao;
 
 import java.util.Collection;
 
-import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.model.Article;
 import com.contento3.common.dao.GenericDao;
 
@@ -21,9 +20,6 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	 * @param count 
 	 * @return 	  
 	 */
-
-//	ArticleDto findByHeaderName(String header);
-	
 	
 	Collection<Article> findLatestArticle(Integer count);
 	
@@ -60,7 +56,7 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	Article findArticleByIdAndSiteId(Integer articleId, Integer siteId);
 	
 	
-	Collection<Article> findByHeaderName(String header);
+	//Collection<Article> findByHeaderName(String header);
 		/**
 		 * Returns article based on header name
 		 * @param header
@@ -71,5 +67,10 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	/**
 	 * returns article based on header name and catagory assigned
 	 * param header and catagory
+
 	 */
+
+	
 }
+
+

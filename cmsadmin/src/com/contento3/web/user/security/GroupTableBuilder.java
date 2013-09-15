@@ -8,10 +8,9 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.GroupDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -27,11 +26,6 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 	 */
 	final SpringContextHelper contextHelper;
 	
-	 /**
-     * Represents the parent window of the template ui
-     */
-	final Window window;
-	
 	/**
 	 * Group service used for group related operations
 	 */
@@ -42,10 +36,9 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 	 * @param helper
 	 * @param table
 	 */
-	public GroupTableBuilder(final Window window,final SpringContextHelper helper,final Table table){
+	public GroupTableBuilder(final SpringContextHelper helper,final Table table){
 		super(table);
 		this.contextHelper = helper;
-		this.window = window;
 		this.groupService = (GroupService) contextHelper.getBean("groupService");
 	}
 	
@@ -61,7 +54,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		Item item = groupContainer.addItem(group.getGroupId());
 		item.getItemProperty("groups").setValue(group.getGroupName());
 		//adding edit button item into list
-		final Button editLink = new Button("Edit groups",new GroupPopup(window, contextHelper, groupTable), "openButtonClick");
+		final Button editLink = new Button("Edit groups",new GroupPopup(contextHelper, groupTable));
 		editLink.setCaption("Edit");
 		editLink.setData(group.getGroupId());
 		editLink.addStyleName("edit");
@@ -75,10 +68,10 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new GroupDeleteClickListener(group, groupService, window, deleteLink, groupTable));
+		deleteLink.addClickListener(new GroupDeleteClickListener(group, groupService, deleteLink, groupTable));
 		
 		//add view button item into list
-		final Button viewLink = new Button("View users",new AssociatedUserPopup(window, contextHelper, new Table()), "openButtonClick");
+		final Button viewLink = new Button("View users",new AssociatedUserPopup(contextHelper, new Table()));
 		viewLink.setCaption("View");
 		viewLink.setData(group.getGroupId());
 		viewLink.addStyleName("associated users");
@@ -99,7 +92,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		groupContainer.addContainerProperty("delete", Button.class, null);
 		groupContainer.addContainerProperty("associated users", Button.class, null);
 
-		groupTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		groupTable.setWidth(100, Unit.PERCENTAGE);
 		groupTable.setContainerDataSource(groupContainer);
 	}
 

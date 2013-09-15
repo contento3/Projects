@@ -2,7 +2,6 @@ package com.contento3.security.role.service;
 import java.util.Collection;
 
 import com.contento3.common.service.Service;
-import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.role.dto.RoleDto;
 public interface RoleService extends Service<RoleDto> {
 	/**

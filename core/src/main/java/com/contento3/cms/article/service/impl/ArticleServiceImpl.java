@@ -21,6 +21,7 @@ public class ArticleServiceImpl implements ArticleService {
 	private ArticleDao articleDao;
 	private ArticleImageAssembler articleImageAssembler;
 	
+	
 	public ArticleServiceImpl(final ArticleAssembler articleAssembler,final ArticleDao articleDao,final ArticleImageAssembler articleImageAssembler) {
 		this.articleAssembler = articleAssembler;
 		this.articleDao = articleDao;
@@ -30,12 +31,18 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(ArticleDto articleDto){
-		if(articleDto.getAssociateImagesDtos() == null)
-			articleDto.setAssociateImagesDtos(new ArrayList<ArticleImageDto>());
+	
+		
+			if(articleDto.getAssociateImagesDtos() == null)
+				articleDto.setAssociateImagesDtos(new ArrayList<ArticleImageDto>());
+		
 		Article article = articleAssembler.dtoToDomain(articleDto);
 		article.setAssociateImages(this.articleImageAssembler.dtosToDomains(articleDto.getAssociateImagesDtos()));
 		return articleDao.persist(article);
-	}
+		}
+		
+		
+		
 	
 	@Transactional(readOnly = false,propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -50,12 +57,6 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findByAccountId(accountId));
 	}
 	
-	
-	@Override
-	public Collection<ArticleDto> findByHeaderName(String header) {
-		
-		return articleAssembler.domainsToDtos(articleDao.findByHeaderName(header));
-	}
 
 	@Override
 	public Collection<ArticleDto> findBySearch(String header, String catagory) {
@@ -127,10 +128,6 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 		return articleDto;
 	}
-
-	
-	
-
 	
 	
 }

@@ -14,9 +14,8 @@ import javax.imageio.stream.ImageInputStream;
 
 import org.imgscalr.Scalr;
 
-import com.vaadin.Application;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.StreamResource;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Embedded;
 
 /**
@@ -35,7 +34,7 @@ public class ImageLoader {
 	    ExternalResource externalResource = new ExternalResource(path);
 		Embedded embedded = new Embedded("",externalResource);
 		embedded.setImmediate(true);
-		embedded.requestRepaint();
+		embedded.markAsDirty();
 		return embedded;
 	}
 	
@@ -47,8 +46,10 @@ public class ImageLoader {
 	 * @param height
 	 * @return
 	 */
-	public Embedded loadImage(final Application application,final byte[] imageBytes,final Integer width,final Integer height) {
+	public Embedded loadImage(final byte[] imageBytes,final Integer width,final Integer height) {
 		StreamResource.StreamSource imageSource = new StreamResource.StreamSource() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public InputStream getStream() {
 				final BufferedImage thumbnail;
@@ -77,11 +78,11 @@ public class ImageLoader {
 			}
 			};
 		
-		final StreamResource imageResource = new StreamResource(imageSource, "abc.png", application);
+		final StreamResource imageResource = new StreamResource(imageSource, "abc.png");
 		imageResource.setCacheTime(0);
 		final Embedded embeded = new Embedded("",imageResource);
 		embeded.setImmediate(true);
-		embeded.requestRepaint();
+		embeded.markAsDirty();
 		return embeded;
 	}
 

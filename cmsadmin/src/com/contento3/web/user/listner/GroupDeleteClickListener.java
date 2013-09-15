@@ -1,25 +1,20 @@
 package com.contento3.web.user.listner;
 
 import org.vaadin.dialogs.ConfirmDialog;
+
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.UI;
 
 public class GroupDeleteClickListener extends EntityDeleteClickListener<GroupDto>{
 
 	private static final long serialVersionUID = 3126526402867446357L;
 
-	/**
-     * Represents the parent window of the template ui
-     */
-	final Window window;
-
-	
 	/**
 	 * Constructor
 	 * @param groupDto
@@ -27,11 +22,8 @@ public class GroupDeleteClickListener extends EntityDeleteClickListener<GroupDto
 	 * @param deleteLink
 	 * @param table
 	 */
-	public GroupDeleteClickListener(final GroupDto groupDto,final GroupService groupService,final Window window,final Button deleteLink,final Table table){
-		
+	public GroupDeleteClickListener(final GroupDto groupDto,final GroupService groupService,final Button deleteLink,final Table table){
 		super(groupDto,groupService,deleteLink,table);
-		this.window=window;
-
 	}
 
 	/**
@@ -45,7 +37,7 @@ public class GroupDeleteClickListener extends EntityDeleteClickListener<GroupDto
 		final String name = (String) getTable().getContainerProperty(id,"groups").getValue();
 			if(getDtoToDelete().getGroupName().equals(name)){
 
-						ConfirmDialog.show(window, "Please Confirm:"," Are you really sure to delete?",
+						ConfirmDialog.show(UI.getCurrent(), "Please Confirm:"," Are you really sure to delete?",
 						        "Yes", "Cancel", new ConfirmDialog.Listener() {
 	
 						            public void onClose(ConfirmDialog dialog) {
@@ -75,10 +67,10 @@ public class GroupDeleteClickListener extends EntityDeleteClickListener<GroupDto
 			((GroupService) getService()).deleteWithException(dtoToDelete);
 			getTable().removeItem(id);
 			getTable().setPageLength(getTable().getPageLength()-1);
-			window.showNotification(getDtoToDelete().getGroupName()+" group deleted succesfully");
+			Notification.show(getDtoToDelete().getGroupName()+" group deleted succesfully");
 		} catch (Exception e) {
 			String description= "Group " + getDtoToDelete().getGroupName() + " cannot be deleted as users are associated with the group.";
-			window.showNotification("Delete Failed",description,Notification.TYPE_WARNING_MESSAGE);
+			Notification.show("Delete Failed",description,Notification.Type.WARNING_MESSAGE);
 			e.printStackTrace();
 		}
     	

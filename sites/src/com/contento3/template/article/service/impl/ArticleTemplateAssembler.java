@@ -3,11 +3,15 @@ package com.contento3.template.article.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.util.CollectionUtils;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.template.article.dto.ArticleTemplateDto;
 
 public class ArticleTemplateAssembler {
 
+	private ArticleImageTemplateAssembler articleImageAssembler;
+	
 	/**
 	 * Assemble a {@link ArticleDto} we get from core services 
 	 * into freemarker template dto {@link ArticleTemplateDto} for Article
@@ -23,6 +27,10 @@ public class ArticleTemplateAssembler {
 		dto.setHead(articleDto.getHead());
 		dto.setTeaser(articleDto.getTeaser());
 		dto.setExpiryDate(articleDto.getExpiryDate());
+		
+		if (!CollectionUtils.isEmpty(articleDto.getAssociateImagesDtos())){
+			articleImageAssembler.assemble(articleDto.getAssociateImagesDtos());
+		}
 		return dto;
 	}
 	

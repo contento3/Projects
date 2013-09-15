@@ -1,18 +1,10 @@
 package com.contento3.account.dto;
 
 import java.io.Serializable;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-
-import com.contento3.cms.site.structure.model.Site;
 
 public class AccountDto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Integer accountId;
 

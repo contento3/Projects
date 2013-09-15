@@ -5,13 +5,13 @@ public enum StorageTypeEnum {
 	DATABASE("DATABASE"),
 	AMAZON_S3("AMAZON S3");
 	
-	private String fileType;
+	private String type;
 	
-	private StorageTypeEnum(String fileType){
-		this.fileType = fileType;
+	private StorageTypeEnum(String type){
+		this.type = type;
 	}
 	
-	public String getFileType(){
-		return fileType;
+	public String getType(){
+		return type;
 	}
 }

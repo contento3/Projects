@@ -3,6 +3,7 @@ package com.contento3.web.user.listner;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
@@ -12,10 +13,10 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class DeleteAssociatedUsersListener extends EntityListener implements ClickListener  {
 
@@ -85,7 +86,7 @@ public class DeleteAssociatedUsersListener extends EntityListener implements Cli
 		Collection<Dto> dtos = (Collection) groupService.findById(groupId).getMembers();
 		if (dtos!=null) {
 			setCaption("Delete user");//extend class method
-			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,mainwindow,this,false);
+			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
 			userPicker.build();
 		}
 	}
@@ -103,8 +104,8 @@ public class DeleteAssociatedUsersListener extends EntityListener implements Cli
 			Collection<SaltedHibernateUserDto> itemsToDelete = new ArrayList<SaltedHibernateUserDto>();
 			SaltedHibernateUserService userService =(SaltedHibernateUserService) this.helper.getBean("saltedHibernateUserService");
 			GroupDto group = groupService.findById(groupId);
-			for(String name : selectedItems ){
-				 SaltedHibernateUserDto user = userService.findUserByName(name);
+			for(String id : selectedItems ){
+				 SaltedHibernateUserDto user = userService.findUserById(Integer.parseInt(id));
 		     	// validation
 	
 		     	 for(SaltedHibernateUserDto dto : group.getMembers()){

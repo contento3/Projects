@@ -35,8 +35,8 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.PageAssignCategoryListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -45,8 +45,9 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TabSheet.Tab;
@@ -54,7 +55,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 public class PageUIManager {
 
@@ -76,11 +76,6 @@ public class PageUIManager {
 	final SpringContextHelper contextHelper;
 	
 	/**
-	 * Application ui window that contains all the ui
-	 */
-	final Window parentWindow;
-	
-	/**
 	 * IndexedContainer used to contain data
 	 */
 	private final IndexedContainer container = new IndexedContainer();
@@ -93,10 +88,9 @@ public class PageUIManager {
 
 
 	
-	public PageUIManager (final SiteService siteService,final PageService pageService,final SpringContextHelper helper,final Window parentWindow){
+	public PageUIManager (final SiteService siteService,final PageService pageService,final SpringContextHelper helper){
 		this.siteService = siteService;
 		this.pageService = pageService;
-		this.parentWindow = parentWindow;
 		this.contextHelper = helper;
 		
 		setPageContainerProperty();
@@ -138,12 +132,12 @@ public class PageUIManager {
 		Tab tab = pagesTab.addTab(pageLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));
 		tab.setClosable(true);
 		pagesTab.setImmediate(true);
-		pagesTab.addListener(new SelectedTabChangeListener() {
+		pagesTab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 			private static final long serialVersionUID = 1L;
 
 			public void selectedTabChange(SelectedTabChangeEvent event) {
-				event.getTabSheet().getSelectedTab().requestRepaint();
-				table.requestRepaint();
+				event.getTabSheet().getSelectedTab().markAsDirty();
+				table.markAsDirty();
 			}
 		});
 		
@@ -152,7 +146,7 @@ public class PageUIManager {
 
 		if (!CollectionUtils.isEmpty(pageDtos)) {
 			
-			table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+			table.setWidth(100, Unit.PERCENTAGE);
 			table.setPageLength(5);
 			Button link = null;
 			for (PageDto page : pageDtos) {
@@ -203,17 +197,17 @@ public class PageUIManager {
 
 		newPageFormLayout.addComponent(titleTxt);
 		newPageFormLayout.addComponent(uriTxt);
-		newPageFormLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		newPageFormLayout.setWidth(100,Unit.PERCENTAGE);
 		newPageFormLayout.setSpacing(true);
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new PageAssignCategoryListener(parentWindow,contextHelper,pageId,(Integer)SessionHelper.loadAttribute(parentWindow, "accountId")));
+		listeners.add(new PageAssignCategoryListener(contextHelper,pageId,(Integer)SessionHelper.loadAttribute("accountId")));
 		
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
 		builder.build();
 
 		newPageRootlayout.addComponent(toolbarGridLayout);
-		newPageRootlayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		newPageRootlayout.setWidth(100,Unit.PERCENTAGE);
 		
 		newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
 		newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
@@ -261,10 +255,10 @@ public class PageUIManager {
 		Button newPageSubmitBtn = new Button(pageButtonTitle);
 		newPageFormLayout.addComponent(pageLayoutCombo);
 		newPageFormLayout.addComponent(newPageSubmitBtn);
-		pageLayoutCombo.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 
-		newPageSubmitBtn.addListener(new ClickListener() {
+		newPageSubmitBtn.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 
 			public void buttonClick(ClickEvent event) {
@@ -309,10 +303,10 @@ public class PageUIManager {
 							newPageDtoWithLayout.getTitle());
 				}
 
-				parentWindow.showNotification(notificationMsg);
+				Notification.show(notificationMsg);
 				}
 				catch(EntityAlreadyFoundException e){
-					parentWindow.showNotification("Page already exists with this title or uri",Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Page already exists with this title or uri",Notification.Type.ERROR_MESSAGE);
 				}
 
 			}
@@ -334,7 +328,9 @@ public class PageUIManager {
 		item.getItemProperty("Uri").setValue(page.getUri());
 		link = new Button();
 
-		link.addListener(new Button.ClickListener() {
+		link.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+
 			public void buttonClick(ClickEvent event) {
 				// Get the item identifier from the user-defined data.
 				// Integer pageId = (Integer)event.getButton().getData();
@@ -357,17 +353,17 @@ public class PageUIManager {
 	public TabSheet renderPageLayouts(PageDto pageDtoWithLayout) {
 		final PageLayoutDto layoutDto = pageDtoWithLayout.getPageLayoutDto();
 		pageLayoutsTab = new TabSheet();
-		pageLayoutsTab.setHeight(10,Sizeable.UNITS_PERCENTAGE);
-		pageLayoutsTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		pageLayoutsTab.setHeight(10,Unit.PERCENTAGE);
+		pageLayoutsTab.setWidth(100,Unit.PERCENTAGE);
 
 		PageTemplateDto pageTemplateDto = new PageTemplateDto();
 		//pageTemplateDto.setPageId(selectedPageId);
 		pageTemplateDto.setPageId(pageDtoWithLayout.getPageId());
-		parentWindow.setData(pageTemplateDto);
+		UI.getCurrent().setData(pageTemplateDto);
 
 		//creating associated template table
 		Table templateTable = new Table();
-		final AbstractTableBuilder templateTableBuilder = new PageTemplateTableBuilder(contextHelper, parentWindow, templateTable);
+		final AbstractTableBuilder templateTableBuilder = new PageTemplateTableBuilder(contextHelper, templateTable);
 		
 		
 		// If there are layout with page sections then add it
@@ -382,8 +378,8 @@ public class PageUIManager {
 			while (pageSectionIterator.hasNext()) {
 				final VerticalLayout pageSectionLayout = new VerticalLayout();
 				pageLayoutsTab.addComponent(pageSectionLayout);
-				pageLayoutsTab.setHeight(100,Sizeable.UNITS_PERCENTAGE);
-				pageLayoutsTab.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+				pageLayoutsTab.setHeight(100,Unit.PERCENTAGE);
+				pageLayoutsTab.setWidth(100,Unit.PERCENTAGE);
 
 				renderPageSection(pageLayoutsTab, pageSectionLayout,
 						pageSectionIterator.next(), pageTemplateDto,templateTableBuilder,templateTable);
@@ -393,12 +389,12 @@ public class PageUIManager {
 		// otherwise add a section to add layout based on a template.
 		else {
 			final VerticalLayout pageSectionLayout = new VerticalLayout();
-			pageSectionLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+			pageSectionLayout.setWidth(100,Unit.PERCENTAGE);
 			pageSectionLayout.setSpacing(true);
 			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", new ExternalResource("images/site.png"));
 			tab.setClosable(false);
 			
-			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
+			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", contextHelper,templateTableBuilder));
 			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM,templateTableBuilder,templateTable);
 			pageSectionLayout.addComponent(templateTable);
 		}
@@ -434,7 +430,7 @@ public class PageUIManager {
 		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
 		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findById(pageSectionDto.getSectionTypeDto().getId());
 
-		pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", parentWindow, contextHelper,templateTableBuilder));
+		pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", contextHelper,templateTableBuilder));
 		renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.valueOf(sectionTypeDto.getName()),templateTableBuilder,templateTable);
 	
 	}

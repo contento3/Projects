@@ -16,6 +16,7 @@ import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
+import com.contento3.site.registration.model.User;
 import com.contento3.site.template.model.TemplateModelMapImpl;
 import com.contento3.site.template.render.engine.RenderingEngine;
 import com.contento3.util.DomainUtil;
@@ -49,6 +50,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 	@Override
 	protected void renderMergedTemplateModel(Map<String,Object> model,HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
+		Map <String,Object> testmap = this.getAttributesMap();
 		String requestURI = request.getRequestURI();
 		String[] pageUri = requestURI.split("/page");
 		String pagePath = "";
@@ -64,7 +66,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 		SiteDto siteDto = siteService.findSiteByDomain(DomainUtil.fetchDomain(request));
 		PrintWriter writer = response.getWriter();
 
-		model.clear();
+		//model.clear();
 		try {		
 
 			if (logger.isDebugEnabled()) {
@@ -93,35 +95,35 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 	 */
 	private TemplateModelMapImpl buildModelMap(boolean isPageRequest,final Map<String,Object> model,final HttpServletRequest request, final HttpServletResponse response, final SiteDto siteDto,final String pagePath) throws Exception {
 		// Read the data file and process the template using FreeMarker
-			model.put(AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, new RequestContext(
-                    request,
-                    response,
-                    this.getServletContext(),
-                    model));
 			
 			setExposeRequestAttributes(true);
 			setExposeSessionAttributes(true);
 			setExposeSpringMacroHelpers(true);
 			exposeModelAsRequestAttributes(model, request);
 			setRequestContextAttribute("rc");
-			model.put(FreeMarkerView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, 
-					new RequestContext(request,response,this.getServletContext(),model));
+			//model.put(FreeMarkerView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, 
+			//		new RequestContext(request,response,this.getServletContext(),model));
 				
-	        for (Map.Entry<String, Object> entry : model.entrySet()) {
-	        	String modelName = entry.getKey();
-	            Object modelValue = entry.getValue();
-	            if (modelValue != null) {
-	            	request.setAttribute(modelName, modelValue);
-	            } 
-	            else {
-	                request.removeAttribute(modelName);
-	            }
-	        }    
-			request.setAttribute("id", "test");
+//	        for (Map.Entry<String, Object> entry : model.entrySet()) {
+//	        	String modelName = entry.getKey();
+//	            Object modelValue = entry.getValue();
+//	            if (modelValue != null) {
+//	            	request.setAttribute(modelName, modelValue);
+//	            	System.out.println("modelName="+modelName+","+"modelValue="+modelValue);
+//	            } 
+//	            else {
+//	                request.removeAttribute(modelName);
+//	            }
+//	        }    
 			request.setAttribute("requestURL",request.getRequestURL());
 			request.setAttribute("requestURI",request.getRequestURI());
 			request.setAttribute("contextPath",request.getContextPath());
 
+			// model.put( "command", model.get("command") );
+			//   ((RequestContext) model.get(AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE)).getModel().put("user", model.get("user"));
+			  // request.setAttribute("user", model.get("user"));
+//				
+			
 	        // Expose all standard FreeMarker hash models.
 		    model.put( FreemarkerServlet.KEY_JSP_TAGLIBS, this.taglibFactory );
 		    model.put( FreemarkerServlet.KEY_APPLICATION, this.servletContextHashModel );
@@ -129,15 +131,24 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 		    model.put( FreemarkerServlet.KEY_REQUEST, new HttpRequestHashModel(request, response, getObjectWrapper() ) );
 		    model.put( FreemarkerServlet.KEY_REQUEST_PARAMETERS,new HttpRequestParametersHashModel( request ) );
 		    model.put( FreemarkerServlet.KEY_INCLUDE, new IncludePage( request,response ) );
+		  // model.put(AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, new RequestContext(
+//                    request,
+//                    response,
+//                    this.getServletContext(),
+//                    model));
+
 		    if (isPageRequest){
 		    	final PageDto page = pageService.findByPathForSite(pagePath, siteDto.getSiteId());
 		    	model.put( "page", page );
 		    }
 
 		    model.put( "site", siteDto );
+		    //model.put( "user", model.get("user"));
 		    
 		    TemplateModelMapImpl modelMap = new TemplateModelMapImpl();
 		    modelMap.setMap(model);
+		    
+		    
 		    return modelMap;
 	}
 	

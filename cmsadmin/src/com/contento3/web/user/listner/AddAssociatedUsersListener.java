@@ -2,6 +2,7 @@ package com.contento3.web.user.listner;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
@@ -71,7 +72,7 @@ public class AddAssociatedUsersListener extends EntityListener implements ClickL
 	@Override
 	public void buttonClick(ClickEvent event) {
 		final SaltedHibernateUserService userService = (SaltedHibernateUserService) helper.getBean("saltedHibernateUserService");
-		Integer accountId = (Integer) SessionHelper.loadAttribute(mainwindow,"accountId");
+		Integer accountId = (Integer) SessionHelper.loadAttribute("accountId");
 		
 		Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("name");
@@ -79,10 +80,10 @@ public class AddAssociatedUsersListener extends EntityListener implements ClickL
 		this.vLayout = new VerticalLayout();
 		Collection<Dto> dtos = null;
 		
-		dtos = (Collection) userService.findUsersByAccountId(accountId);
+		dtos = (Collection ) userService.findUsersByAccountId(accountId);
 		if (dtos!=null) {
 			setCaption("Add user");//extend class method
-			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,mainwindow,this,false);
+			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
 			userPicker.build();
 			
 		}
@@ -102,7 +103,7 @@ public class AddAssociatedUsersListener extends EntityListener implements ClickL
 			GroupService groupService = (GroupService) this.helper.getBean("groupService");
 			GroupDto group = groupService.findById(groupId);
 			for(String name : selectedItems ){
-				 SaltedHibernateUserDto user = userService.findUserByName(name);
+				 SaltedHibernateUserDto user = userService.findUserById(Integer.parseInt(name));
 		     	// validation
 				 boolean isAddable = true;
 		     	 for(SaltedHibernateUserDto dto : group.getMembers()){

@@ -5,16 +5,15 @@ import java.util.Collection;
 
 import com.contento3.common.dto.Dto;
 import com.contento3.security.role.service.RoleService;
-import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class AddRoleListener extends EntityListener implements ClickListener{
 
@@ -68,7 +67,7 @@ public class AddRoleListener extends EntityListener implements ClickListener{
 	public void buttonClick(ClickEvent event) {
 		// TODO Auto-generated method stub
 		final RoleService roleService = (RoleService) helper.getBean("roleService");
-		Integer accountId = (Integer) SessionHelper.loadAttribute(mainwindow,"accountId");
+		Integer accountId = (Integer) SessionHelper.loadAttribute("accountId");
 		
 		Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("name");
@@ -79,7 +78,7 @@ public class AddRoleListener extends EntityListener implements ClickListener{
 		dtos = (Collection) roleService.findRolesByAccountId(accountId);
 		if (dtos!=null) {
 			setCaption("Add role");//extend class method
-			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,mainwindow,this,false);
+			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
 			userPicker.build();
 			
 		}

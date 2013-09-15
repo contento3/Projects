@@ -13,9 +13,9 @@ import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 public class ArticleAssignCategoryListener extends EntityListener implements ClickListener {
 
@@ -63,11 +63,11 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			Collection<Dto> dtos = null;
 			dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
 			setCaption("Add Category");
-			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,mainWindow,this,true);
+			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
 			categoryPicker.build();
 		}else{
 			//warning message
-			mainWindow.showNotification("Opening failed", "create article first", Notification.TYPE_WARNING_MESSAGE);
+			Notification.show("Opening failed", "create article first", Notification.Type.WARNING_MESSAGE);
 		}
 	}
 	
@@ -78,8 +78,10 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 	@Override
 	public void updateList() {
 		/* update article */
+		
 		Collection<String> selectedItems =(Collection<String>) this.mainLayout.getData();
 		if(selectedItems != null){
+			
 			ArticleService articleService = (ArticleService) helper.getBean("articleService");
 			ArticleDto article = articleService.findById(articleId);
 			for(String name : selectedItems ){
@@ -92,10 +94,14 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 				 }//end inner for
 				 if(isAddable){
 		     		article.getCategoryDtos().add(category);
+		     
 		     	 }//end if
 			}//end outer for
 			
 			articleService.update(article);
+			Notification.show("Assigned"," successfully assigned to "+article.getHead(),
+				Notification.Type.HUMANIZED_MESSAGE);
+			
 		}
 		
 	}

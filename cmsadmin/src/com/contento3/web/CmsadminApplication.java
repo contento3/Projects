@@ -1,17 +1,14 @@
 package com.contento3.web;
 
-import com.vaadin.Application;
-import com.vaadin.ui.*;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.UI;
 
-public class CmsadminApplication extends Application {
+public class CmsadminApplication extends UI {
+
+	private static final long serialVersionUID = 1L;
+
 	@Override
-
-	public void init() {
-		Window mainWindow = new Window("Cmsadmin Application");
-		
-		Label label = new Label("Hello Vaadin user");
-		mainWindow.addComponent(label);
-		setMainWindow(mainWindow);
+	protected void init(VaadinRequest request) {
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.contento3.web.common.helper;
 
 import java.util.Collection;
+
 import org.apache.log4j.Logger;
+
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
@@ -11,7 +13,6 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.template.helper.TemplateListingHelper;
 import com.vaadin.data.validator.RegexpValidator;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -19,25 +20,22 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.Notification;
 
 /** Component contains a button that allows opening a window. */
 public class PageTemplateAssignmentPopup extends CustomComponent
-                          implements Window.CloseListener {
+                          implements Window.CloseListener,Button.ClickListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = Logger.getLogger(PageTemplateAssignmentPopup.class);
 
-    Window mainwindow;  // Reference to main window
     Window mywindow;    // The window to be opened
     Button openbutton;  // Button for opening the window
     Button closebutton; // A button in the window
@@ -47,15 +45,14 @@ public class PageTemplateAssignmentPopup extends CustomComponent
     boolean isModalWindowClosable = true;
     SpringContextHelper helper;
 	final AbstractTableBuilder templateTableBuilder;
-    public PageTemplateAssignmentPopup(final String label,final Window main,final SpringContextHelper helper,final AbstractTableBuilder templateTableBuilder) {
-        mainwindow = main;
+    public PageTemplateAssignmentPopup(final String label,final SpringContextHelper helper,final AbstractTableBuilder templateTableBuilder) {
         this.helper = helper;
         this.templateTableBuilder = templateTableBuilder;
         // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
         
-        openbutton = new Button("Add template", this,
-                                "openButtonClick");
+        openbutton = new Button("Add template");
+        openbutton.addClickListener(this);
         layout.addComponent(openbutton);
         setCompositionRoot(layout);
     }
@@ -67,13 +64,13 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         mywindow.setPositionX(200);
         mywindow.setPositionY(100);
 
-        mywindow.setHeight(75,Sizeable.UNITS_PERCENTAGE);
-        mywindow.setWidth(50,Sizeable.UNITS_PERCENTAGE);
+        mywindow.setHeight(75,Unit.PERCENTAGE);
+        mywindow.setWidth(50,Unit.PERCENTAGE);
         /* Add the window inside the main window. */
-        mainwindow.addWindow(mywindow);
+        UI.getCurrent().addWindow(mywindow);
         
         /* Listen for close events for the window. */
-        mywindow.addListener(this);
+        mywindow.addCloseListener(this);
 
         // Create the Accordion.
 		Accordion accordion = new Accordion();
@@ -100,8 +97,11 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 
 		
         /* Add components in the window. */
-        mywindow.addComponent(accordion);
-        closebutton = new Button("Add template", this, "closeButtonClick");
+		VerticalLayout contentLayout = new VerticalLayout();
+		contentLayout.addComponent(accordion);
+        mywindow.setContent(contentLayout);
+        closebutton = new Button("Add template",this);
+        
         
         final TextField templateOrdrTxtFld = new TextField();
         templateOrdrTxtFld.setInputPrompt("Order");
@@ -117,14 +117,13 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         horizontal.setSpacing(true);
         horizontal.addComponent(templateOrdrTxtFld);
         horizontal.addComponent(closebutton);
+		contentLayout.addComponent(horizontal);
         
-        mywindow.addComponent(horizontal);
-        
-        closebutton.addListener(new ClickListener() {
+        closebutton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			public void buttonClick(ClickEvent event) {
-				PageTemplateDto dto = (PageTemplateDto)mainwindow.getData();
+				PageTemplateDto dto = (PageTemplateDto)UI.getCurrent().getData();
 				Integer templateId = templateListingHelper.getSelectedItemId();
 				
 				//If it is greater than zero then a template is selected '/
@@ -137,7 +136,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 					if (!order.toString().equals("")){
 						dto.setOrder(Integer.parseInt((String)order));
 					} else {
-						mainwindow.showNotification("Please enter an order value.",Notification.TYPE_WARNING_MESSAGE);
+						Notification.show("Please enter an order value.",Notification.Type.WARNING_MESSAGE);
 						return;
 					}
 					
@@ -145,16 +144,16 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 					try {
 						pageTemplateService.create(dto);
 						templateTableBuilder.rebuild((Collection)pageTemplateService.findByPageId(dto.getPageId()));
-						mainwindow.showNotification("Template associated to page successfully");
+						Notification.show("Template associated to page successfully");
 						isModalWindowClosable = true;
 					} catch (EntityAlreadyFoundException e) {
 						LOGGER.warn(String.format("PageTemplate with templateId [%d],pageId [%d], sectionTypeId[%d]",dto.getTemplateId(),dto.getPageId(),dto.getSectionTypeId()));
-						mainwindow.showNotification("Selected template is already associated to the page)",Notification.TYPE_WARNING_MESSAGE);
+						Notification.show("Selected template is already associated to the page)",Notification.TYPE_WARNING_MESSAGE);
 						isModalWindowClosable = false;
 					}
 				}	
 				else {
-					mainwindow.showNotification("No template selected",Notification.TYPE_WARNING_MESSAGE);
+					Notification.show("No template selected",Notification.Type.WARNING_MESSAGE);
 				}
 			}	
 		});
@@ -172,16 +171,15 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 
     	if (!isModalWindowClosable){
         /* Windows are managed by the application object. */
-        mainwindow.removeWindow(mywindow);
+        UI.getCurrent().removeWindow(mywindow);
 
         /* Return to initial state. */
         openbutton.setEnabled(true);
         
         if (null!=pageTemplateService){
-			PageTemplateDto dto = (PageTemplateDto)mainwindow.getData();
+			PageTemplateDto dto = (PageTemplateDto)UI.getCurrent().getData();
        		Collection<PageTemplateDto> newPageTemplates = pageTemplateService.findByPageAndPageSectionType(dto.getPageId(), dto.getSectionTypeId());
-       		//mainwindow.setData(newPageTemplates);
-       		
+       		UI.getCurrent().setData(newPageTemplates);
        	}
    	}
 }
@@ -191,6 +189,11 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         /* Return to initial state. */
         openbutton.setEnabled(true);
     }
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		this.openButtonClick(event);
+	}
     
 
 }

@@ -1,30 +1,21 @@
 package com.contento3.web;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.CredentialsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.Application;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.LoginForm;
-import com.vaadin.ui.LoginForm.LoginEvent;
+import com.vaadin.annotations.Theme;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * This is the initiating class for cms ui
  * @author HAMMAD
  *
  */
-public class CMSHome extends Application 
+@Theme("contento3")
+public class CMSHome extends UI 
 {
 	
 	private static final Logger LOGGER = Logger.getLogger(CMSHome.class);
@@ -37,21 +28,34 @@ public class CMSHome extends Application
 	 */
 	public WebApplicationContext appContext;
 
-	@Override
-	public void init() {
-		final SpringContextHelper helper = new SpringContextHelper(this);
-		final Button logoutButton = new Button("Log Out");
-		
-		//Sets the theme for the application.
-		setTheme("contento3");
-
-        final CMSMainWindow main = new CMSMainWindow(helper);
-        this.setMainWindow(main);
-	}
+//	@Override
+//	public void init() {
+//		final SpringContextHelper helper = new SpringContextHelper(this);
+//		final Button logoutButton = new Button("Log Out");
+//		
+//		//Sets the theme for the application.
+//		setTheme("contento3");
+//
+//        final CMSMainWindow main = new CMSMainWindow(helper);
+//        this.setMainWindow(main);
+//	}
 
 	public void setWebApplicationContext(WebApplicationContext appContext)
 	{
 		this.appContext = appContext;
+	}
+
+	@Override
+	protected void init(VaadinRequest request) {
+		final SpringContextHelper helper = new SpringContextHelper(this);
+	//	final Button logoutButton = new Button("Log Out");
+		
+        final CMSMainWindow main = new CMSMainWindow(helper);
+
+        VerticalLayout view = new VerticalLayout();
+        view.addComponent(main);
+        setContent(view);
+
 	}
 
 }

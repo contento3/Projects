@@ -1,17 +1,12 @@
 package com.contento3.web.account;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.CredentialsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 
 import com.contento3.account.service.AccountService;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
-import com.contento3.web.CMSMainWindow;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -27,7 +22,7 @@ implements Window.CloseListener,Button.ClickListener {
 	
 	private static final Logger LOGGER = Logger.getLogger(AccountSettingsUIManager.class);
 	
-    Window mainwindow;  // Reference to main window
+    VerticalLayout mainwindow;  // Reference to main window
     Window popupWindow;    // The window to be opened
     Button openbutton;  // Button for opening the window
     Button closebutton; // A button in the window
@@ -43,7 +38,6 @@ implements Window.CloseListener,Button.ClickListener {
     
     SpringContextHelper contextHelper;
     
-    private Integer categoryId;
 
     /**
      * Renders the tree with categories for Parent category selection.
@@ -52,7 +46,7 @@ implements Window.CloseListener,Button.ClickListener {
     
     Integer selectedParentCategory = -1;
     
-    public AccountSettingsUIManager(final Window main,final SpringContextHelper contextHelper) {
+    public AccountSettingsUIManager(final VerticalLayout main,final SpringContextHelper contextHelper) {
         mainwindow = main;
         this.contextHelper = contextHelper;
         this.accountService = (AccountService)contextHelper.getBean("accountService");
@@ -61,7 +55,10 @@ implements Window.CloseListener,Button.ClickListener {
         tree = new Tree();
         // The component contains a button that opens the window./////
         final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Add Category", this, "openButtonClick");
+       
+        //CHANGED openbutton = new Button("Add Category", this, "openButtonClick");
+        openbutton = new Button("Add Category");
+        openbutton.addClickListener(this);
         layout.addComponent(openbutton);
         
         accountForm = new AccountForm();
@@ -70,8 +67,7 @@ implements Window.CloseListener,Button.ClickListener {
     	accountForm.getEmail().setCaption("Email");
     	accountForm.getNewPassword().setCaption("New Password");
     	accountForm.getConfirmNewPassword().setCaption("Confirm Password");
-    	accountForm.getSubmitButton().addListener(new AccountSettingsUpdateListener(main, userService, accountService, accountForm, contextHelper));
-    	//accountForm.getSubmitButton().addListener(this);
+    	accountForm.getSubmitButton().addClickListener(new AccountSettingsUpdateListener(main, userService, accountService, accountForm, contextHelper));
     	
         setCompositionRoot(layout);
     }
@@ -79,14 +75,13 @@ implements Window.CloseListener,Button.ClickListener {
     /** Handle the clicks for the two buttons. */
     public void openButtonClick(Button.ClickEvent event) {
         /* Create a new window. */
-        final Button categoryButton = new Button();
 		popupWindow = new Window("Account Settings");
     	
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(56,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(30,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(56,Unit.PERCENTAGE);
+    	popupWindow.setWidth(30,Unit.PERCENTAGE);
         
     	VerticalLayout formLayout = new VerticalLayout();
     	formLayout.addComponent(accountForm.getFirstName());
@@ -100,18 +95,19 @@ implements Window.CloseListener,Button.ClickListener {
     	popupWindow.setContent(formLayout);
     	
     	/* Add the window inside the main window. */
-        mainwindow.addWindow(popupWindow);
+        mainwindow.addComponent(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
+        populateAccountForm();
     }
     
     /** Handle Close button click and close the window. */
     public void closeButtonClick(Button.ClickEvent event) {
     	if (!isModalWindowClosable){
         /* Windows are managed by the application object. */
-        mainwindow.removeWindow(popupWindow);
+        mainwindow.removeComponent(popupWindow);
         
         /* Return to initial state. */
         openbutton.setEnabled(true);
@@ -119,14 +115,23 @@ implements Window.CloseListener,Button.ClickListener {
     }
 
 	@Override
-	public void windowClose(CloseEvent e) {
+	public void windowClose(final CloseEvent e) {
         /* Return to initial state. */
         openbutton.setEnabled(true);
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
+	public void buttonClick(final ClickEvent event) {
 		openButtonClick(event);
+	}
+	
+	private void populateAccountForm(){
+		final SaltedHibernateUserDto user = userService.findUserByUsername((String)SessionHelper.loadAttribute("userName"));
+		accountForm.getFirstName().setValue(user.getFirstName());
+		accountForm.getLastName().setValue(user.getLastName());
+		
+		if (null!=user.getEmail())
+			accountForm.getEmail().setValue(user.getEmail());
 	}
 }
 

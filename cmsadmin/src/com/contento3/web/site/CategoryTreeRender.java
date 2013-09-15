@@ -1,34 +1,5 @@
 package com.contento3.web.site;
 
-import java.util.Collection;
-
-import com.contento3.cms.page.category.dto.CategoryDto;
-import com.contento3.cms.page.category.service.CategoryService;
-import com.contento3.cms.page.dto.PageDto;
-import com.contento3.cms.page.service.PageService;
-import com.contento3.common.exception.EntityAlreadyFoundException;
-import com.contento3.web.UIManager;
-import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.Action;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.Action.Handler;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Tree;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.TabSheet.Tab;
 
 public class CategoryTreeRender {
 //	

@@ -1,37 +1,29 @@
 package com.contento3.web.content.article.listener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 
-import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.ArticleForm;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
-import com.contento3.web.content.article.ArticleTableBuilder;
 import com.contento3.web.content.article.AssociatedImagesUIManager;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -107,21 +99,20 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 * @param tabSheet
 	 * @param articleTable
 	 */
-	public ArticleFormBuilderListner(final SpringContextHelper helper,final Window parentWindow,final TabSheet tabSheet,final Table articleTable) {
+	public ArticleFormBuilderListner(final SpringContextHelper helper,final TabSheet tabSheet,final Table articleTable) {
 		this.contextHelper= helper;
-		this.parentWindow = parentWindow;
 		this.tabSheet = tabSheet;
 		this.articleService = (ArticleService) this.contextHelper.getBean("articleService");
 		this.accountService = (AccountService) this.contextHelper.getBean("accountService");
 		this.articleTable = articleTable;
+		
 		//Get accountId from the session
-        final WebApplicationContext ctx = ((WebApplicationContext) parentWindow.getApplication().getContext());
-        final HttpSession session = ctx.getHttpSession();
-        this.accountId =(Integer)session.getAttribute("accountId");
+        this.accountId =(Integer)SessionHelper.loadAttribute("accountId");
         articleForm = new ArticleForm();
         articleForm.setContextHelper(helper);
         articleForm.setParentWindow(parentWindow);
         articleForm.setTabSheet(tabSheet);
+        
 	}
 	
 	
@@ -134,34 +125,6 @@ public class ArticleFormBuilderListner implements ClickListener{
 
 		articleForm.getPostedDatefield().setValue(new Date());
 
-        final Button saveButton = new Button("Save");
-        saveButton.addListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				final ArticleDto article = new ArticleDto();
-				article.setHead(articleForm.getArticleHeading().getValue().toString());
-				article.setTeaser(articleForm.getArticleTeaser().getValue().toString());
-				article.setBody(articleForm.getBodyTextField().getValue().toString());
-				articleForm.getPostedDatefield().getValue();
-				article.setDatePosted((Date)articleForm.getPostedDatefield().getValue());
-				
-				final Date createdDate= new Date();
-				article.setDateCreated(createdDate);
-				article.setLastUpdated(createdDate);
-				article.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
-				article.setIsVisible(1);
-				
-				final AccountDto account = accountService.findAccountById(accountId);
-				article.setAccount(account);
-				article.setSite(new ArrayList<SiteDto>());
-				articleService.create(article);
-				
-				final String notification ="Article added successfully"; 
-				parentWindow.showNotification(notification);
-				resetTable();
-				tabSheet.removeTab(articleTab);
-			}
-		});
       }
 	
 	/**
@@ -172,33 +135,13 @@ public class ArticleFormBuilderListner implements ClickListener{
 	public Component renderEditScreen(final Integer editId){
         buildArticleUI("Edit",editId);
 		
-        final ArticleDto article = this.articleService.findById(editId);
+      final ArticleDto article = this.articleService.findById(editId);
 		articleForm.getArticleHeading().setValue(article.getHead());
-		articleForm.getArticleTeaser().setValue(article.getTeaser());
+			articleForm.getArticleTeaser().setValue(article.getTeaser());
 		articleForm.getBodyTextField().setValue(article.getBody());
 		articleForm.getPostedDatefield().setValue(article.getDatePosted());
 		articleForm.getExpiryDatefield().setValue(article.getExpiryDate());
-		final Button editButton = new Button("Save");
-		editButton.addListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				article.setHead(articleForm.getArticleHeading().getValue().toString());
-				article.setTeaser(articleForm.getArticleTeaser().getValue().toString());
-				article.setBody(articleForm.getBodyTextField().getValue().toString());
-				Date date = (Date) articleForm.getPostedDatefield().getValue();
-				article.setDatePosted(date);
-				article.setLastUpdated(new Date());
-				article.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
-				article.setIsVisible(1);
-
-				articleService.update(article);
-				String notification =article.getHead()+" updated successfully"; 
-				parentWindow.showNotification(notification);
-				tabSheet.removeTab(articleTab);
-				resetTable();
-				tabSheet.removeTab(articleTab);
-			}
-		});
+		
 		return formLayout;
 	}
 	
@@ -216,10 +159,11 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 
-		GridLayout toolbarGridLayout = new GridLayout(1,5);
+		GridLayout toolbarGridLayout = new GridLayout(1,6);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
 		listeners.add(new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
+		listeners.add(new AssociatedCategoryClickListener(articleId,contextHelper));
 		listeners.add(new ArticleAttachContentListener());
 		listeners.add(new ArticleAssignImageListener(parentWindow, contextHelper, articleId, accountId));
 		listeners.add(new AssociatedImagesUIManager(parentWindow, contextHelper, articleId));
@@ -258,16 +202,16 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleForm.getConfig().setToolbarCanCollapse(false);
 		articleForm.getConfig().disableElementsPath();       
 		articleForm.getConfig().disableSpellChecker();
-		articleForm.getConfig().addCustomToolbarLine("['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']");
+		//articleForm.getConfig().addCustomToolbarLine("['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']");
 		articleForm.getConfig().setWidth("95%");
 		articleForm.getConfig().setHeight("95%");
         
         articleForm.getPostedDatefield().setInputPrompt("Insert Date");
         
         // Set the correct resolution only date
-        articleForm.getPostedDatefield().setResolution(PopupDateField.RESOLUTION_DAY);
+        articleForm.getPostedDatefield().setResolution(Resolution.DAY);
         articleForm.getExpiryDatefield().setInputPrompt("Insert Date");
-        articleForm.getExpiryDatefield().setResolution(PopupDateField.RESOLUTION_DAY);
+        articleForm.getExpiryDatefield().setResolution(Resolution.DAY);
         
         formLayout.setSpacing(true);
         formLayout.setMargin(true);
@@ -305,14 +249,4 @@ public class ArticleFormBuilderListner implements ClickListener{
 		}
 	}
 	
-	/**
-	 * Reset table
-	 */
-	 @SuppressWarnings({ "rawtypes", "unchecked" })
-	 private void resetTable(){
-		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
-		final Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
-		tableBuilder.rebuild((Collection)articles);
-	}
-
 }

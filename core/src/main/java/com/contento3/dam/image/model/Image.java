@@ -1,6 +1,7 @@
 package com.contento3.dam.image.model;
 
 import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

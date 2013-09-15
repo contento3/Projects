@@ -13,7 +13,7 @@ import com.contento3.web.content.article.listener.AssociatedCategoryClickListene
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -49,6 +49,11 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 	 * @param helper
 	 * @param table
 	 */
+	
+	
+
+	
+	
 	public ArticleTableBuilder(final Window window,final SpringContextHelper helper,final TabSheet tabSheet,final Table table) {
 		super(table);
 		this.contextHelper = helper;
@@ -57,6 +62,9 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		this.articleService = (ArticleService) contextHelper.getBean("articleService");
 	}
 
+	
+    
+     
 	/**
 	 * Assign data to table
 	 * @param dto
@@ -77,21 +85,13 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		if (null!=expiryDate){
 			item.getItemProperty("expiry date").setValue(sdf.format(expiryDate));
 		}
-		/* Associated category button*/
-		Button categoryLink = new Button();
-		categoryLink.setCaption("View");
-		categoryLink.setData(article.getId());
-		categoryLink.addStyleName("view");
-		categoryLink.setStyleName(BaseTheme.BUTTON_LINK);
-		categoryLink.addListener(new AssociatedCategoryClickListener(this.window,article));
-		item.getItemProperty("Associated Category").setValue(categoryLink);
 		
 		Button editLink = new Button();
 		editLink.setCaption("Edit");
 		editLink.setData(article.getId());
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
-		editLink.addListener(new ArticleFormBuilderListner(this.contextHelper, this.window,this.tabSheet,articleTable));
+		editLink.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,articleTable));
 		item.getItemProperty("edit").setValue(editLink);
 		
 		Button deleteLink = new Button();
@@ -100,7 +100,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addListener(new ArticleDeleteClickListner(article, window, articleService, deleteLink, articleTable));
+		deleteLink.addClickListener(new ArticleDeleteClickListner(article, articleService, deleteLink, articleTable));
 	}
 
 	/**
@@ -109,13 +109,13 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table articleTable,final Container articleContainer) {
 		articleContainer.addContainerProperty("articles", String.class, null);
+		articleTable.setColumnExpandRatio("articles", 30);
 		articleContainer.addContainerProperty("date created", String.class, null);
 		articleContainer.addContainerProperty("date posted", String.class, null);
 		articleContainer.addContainerProperty("expiry date", String.class, null);
-		articleContainer.addContainerProperty("Associated Category", Button.class, null);
 		articleContainer.addContainerProperty("edit", Button.class, null);
 		articleContainer.addContainerProperty("delete", Button.class, null);
-		articleTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		articleTable.setWidth(100, Unit.PERCENTAGE);
 		articleTable.setContainerDataSource(articleContainer);
 	}
 
