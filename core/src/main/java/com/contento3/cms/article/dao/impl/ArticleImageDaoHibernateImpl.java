@@ -2,6 +2,7 @@ package com.contento3.cms.article.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -18,7 +19,10 @@ public class ArticleImageDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<ArticleImage> findAsscArticleImageById(final Integer articleId,final Integer imageId) {
-		Criteria criteria = this.getSession()
+		Validate.notNull(articleId,"articleId cannot be null");
+		Validate.notNull(imageId,"imageId cannot be null");
+
+		final Criteria criteria = this.getSession()
 				.createCriteria(ArticleImage.class)
 				.add(Restrictions.eq("primaryKey.article.articleId", articleId))
 				.add(Restrictions.eq("primaryKey.image.imageId", imageId));
@@ -28,7 +32,9 @@ public class ArticleImageDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<ArticleImage> findAsscArticleImageByArticleId(final Integer articleId) {
-		Criteria criteria = this.getSession()
+		Validate.notNull(articleId,"articleId cannot be null");
+
+		final Criteria criteria = this.getSession()
 				.createCriteria(ArticleImage.class)
 				.add(Restrictions.eq("primaryKey.article.articleId", articleId));
 		return criteria.list();
@@ -37,7 +43,10 @@ public class ArticleImageDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@Override
 	public Collection<ArticleImage> findAsscArticleImageByArticleIdAndScopeId(
 			Integer articleId, Integer scopeId) {
-		Criteria criteria = this.getSession()
+		Validate.notNull(articleId,"articleId cannot be null");
+		Validate.notNull(scopeId,"scopeId cannot be null");
+
+		final Criteria criteria = this.getSession()
 				.createCriteria(ArticleImage.class)
 				.add(Restrictions.eq("primaryKey.contentScope.id", scopeId))
 				.add(Restrictions.eq("primaryKey.article.articleId", articleId));

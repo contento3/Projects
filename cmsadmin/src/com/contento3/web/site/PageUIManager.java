@@ -33,6 +33,7 @@ import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.PageAssignCategoryListener;
+import com.contento3.web.site.listener.PageViewCategoryListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
@@ -47,14 +48,13 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 public class PageUIManager {
 
@@ -199,10 +199,11 @@ public class PageUIManager {
 		newPageFormLayout.addComponent(uriTxt);
 		newPageFormLayout.setWidth(100,Unit.PERCENTAGE);
 		newPageFormLayout.setSpacing(true);
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		GridLayout toolbarGridLayout = new GridLayout(1,3);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new PageAssignCategoryListener(contextHelper,pageId,(Integer)SessionHelper.loadAttribute("accountId")));
-		
+		listeners.add(new PageViewCategoryListener(pageId,contextHelper));
+		listeners.add(new PageViewCategoryListener(pageId,contextHelper));
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
 		builder.build();
 

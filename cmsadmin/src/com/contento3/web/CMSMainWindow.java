@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.CredentialsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -14,6 +15,7 @@ import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
+import com.contento3.web.account.AccountSettingsUIManager;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TabSheetHelper;
 import com.contento3.web.content.SearchUI;
@@ -46,6 +48,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
@@ -95,7 +98,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     final TabSheet uiTabsheet = new TabSheet();
 
 	CMSMainWindow(final SpringContextHelper helper){ //change
-	//	super(TM.get("app.title"));
 		this.helper = helper;
 		this.logoutButton = new Button("Log Out");
 		logoutButton.addStyleName("link");
@@ -107,22 +109,27 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	public void buildLogin(){
 		final VerticalLayout appRootLayout = new VerticalLayout();
 		LoginForm login = new LoginForm();
-		appRootLayout.setStyleName("loginform");
+		login.setHeight(180,Unit.PIXELS);
+		login.setWidth(145,Unit.PIXELS);
+		
+		
 		
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-	    embedded.setHeight(55,Unit.PERCENTAGE);
-	    embedded.setWidth(30,Unit.PERCENTAGE);
+	    embedded.setHeight(75,Unit.PIXELS);
+	    embedded.setWidth(200,Unit.PIXELS);
 	    appRootLayout.addComponent(embedded);
-	    
+	    appRootLayout.setComponentAlignment(embedded,Alignment.BOTTOM_CENTER);
+
 	    appRootLayout.setSpacing(true);
 	    
 	    appRootLayout.addComponent(login);
-		appRootLayout.setComponentAlignment(login, Alignment.MIDDLE_CENTER);
-		
+	    appRootLayout.setComponentAlignment(login,Alignment.MIDDLE_CENTER);
+
+		appRootLayout.setSizeFull();
 		this.addComponent(appRootLayout);
+		this.setComponentAlignment(appRootLayout, Alignment.MIDDLE_CENTER);
 		
-		//this.setWindowMode(WindowMode.MAXIMIZED);
 		
 		login.addLoginListener(new LoginForm.LoginListener() {
             private static final long serialVersionUID = 1L;
@@ -144,12 +151,19 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 				}
 				catch(IncorrectCredentialsException ice){
 					LOGGER.error("Username or password for username ["+username+"] is not valid");
+					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
 				}
 				catch(CredentialsException ice){
-					LOGGER.error("Error occured while authentication user with username: "+username);
+					LOGGER.error("CredentialsException,Error occured while authentication user with username: "+username);
+					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+				}
+				catch(AuthenticationException ae){
+					LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
+					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
 				}
 				catch(Exception e){
 					LOGGER.error("Error occured while authenticating user",e);
+					Notification.show("Something wrong with the server while you tried login.",Type.ERROR_MESSAGE);
 				}
             }
         });
@@ -163,8 +177,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 					subject = SecurityUtils.getSubject();
 					subject.logout();
 
-					Page.getCurrent().getLocation().getHost()
-							.substring(0,Page.getCurrent().getLocation().getHost().length()-1);
+					Page.getCurrent().setLocation(Page.getCurrent().getLocation());
 				}
 			});
 
@@ -224,10 +237,13 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	    
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-		embedded.setHeight(100, Unit.PERCENTAGE);
+		embedded.setHeight(21, Unit.PIXELS);
+		embedded.setWidth(70, Unit.PIXELS);
+
 		horizTop.addComponent(embedded);
 	    horizTop.setComponentAlignment(embedded, Alignment.TOP_LEFT);
-	    horizTop.setSizeFull();
+	    horizTop.setHeight(94,Unit.PERCENTAGE);
+	    horizTop.setWidth(100,Unit.PERCENTAGE);
 	    
 
 	    vert.addComponent(horizTop);   
@@ -236,7 +252,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		horizTop.addComponent(buttonsLayout);
 		horizTop.setComponentAlignment(buttonsLayout, Alignment.TOP_RIGHT);
 		final Button accountButton = new Button ("Account Settings");
-	//	accountButton.addClickListener(new AccountSettingsUIManager(this,helper));
+		accountButton.addClickListener(new AccountSettingsUIManager(this,helper));
 		
 		final SaltedHibernateUserDto user = userService.findUserByUsername((String)SessionHelper.loadAttribute("userName"));
 		final String welcomeUsrMsg = "<b>Welcome "+ user.getFirstName() + "!</b>"; 
