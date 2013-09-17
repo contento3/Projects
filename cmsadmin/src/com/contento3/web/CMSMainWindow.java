@@ -435,7 +435,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	            			
 	            		for (SiteDto site: sites){
 	           				Item item = hwContainer.addItem(site.getSiteName());
-	           				if (null != item){
+	           				if (null != item){	
 	          					item.getItemProperty("name").setValue(site.getSiteName());
 	           					item.getItemProperty("id").setValue(site.getSiteId());
 	            				hwContainer.setParent(site.getSiteName(), "Sites");
