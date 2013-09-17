@@ -1,10 +1,11 @@
- package com.contento3.web.content.article.listener;
+package com.contento3.web.site.listener;
 
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import com.contento3.cms.article.service.ArticleService;
+import com.contento3.cms.page.exception.PageNotFoundException;
+import com.contento3.cms.page.service.PageService;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.EntityListener;
@@ -19,11 +20,15 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class AssociatedCategoryClickListener extends EntityListener implements Window.CloseListener, com.vaadin.event.MouseEvents.ClickListener {
+/*
+ * Listener used on the Page edit/add screen and 
+ * displays the associated categories to the page
+ */
+public class PageViewCategoryListener extends EntityListener implements Window.CloseListener, com.vaadin.event.MouseEvents.ClickListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger LOGGER = Logger.getLogger(AssociatedCategoryClickListener.class);
+	private static final Logger LOGGER = Logger.getLogger(PageViewCategoryListener.class);
 
 	/**
 	 * The window to be opened
@@ -41,9 +46,9 @@ public class AssociatedCategoryClickListener extends EntityListener implements W
 	Button closebutton; 
 	
 	/**
-	 * Article Dto 
+	 * Page Id 
 	 */
-	private Integer articleId;
+	private Integer pageId;
 	
 	/**
 	 * Vertical layout to add components
@@ -57,16 +62,16 @@ public class AssociatedCategoryClickListener extends EntityListener implements W
 	 */
 	private Table table;
 	
-	private ArticleService articleService;
+	private PageService pageService;
 	
 	/**
 	 * Constructor
 	 * @param parentWindow
 	 * @param article
 	 */
-	public AssociatedCategoryClickListener(final Integer articleId,final SpringContextHelper contextHelper) {
-		this.articleId = articleId;
-		articleService = (ArticleService)contextHelper.getBean("articleService");
+	public PageViewCategoryListener(final Integer pageId,final SpringContextHelper contextHelper) {
+		this.pageId = pageId;
+		pageService = (PageService)contextHelper.getBean("pageService");
 	}
 	
 	/**
@@ -130,9 +135,15 @@ public class AssociatedCategoryClickListener extends EntityListener implements W
 		this.vLayout = new VerticalLayout();
 		this.table = new Table();
 		AbstractTableBuilder categoryTable = new AssociatedCategoryTableBuilder(table);
-		categoryTable.build((Collection)articleService.findById(articleId).getCategoryDtos());
+		try {
+			categoryTable.build((Collection)pageService.findById(pageId).getCategories());
+		} catch (PageNotFoundException e) {
+			LOGGER.error("Something went wrong while we fetch categories for page with id"+pageId);
+		}
 		vLayout.addComponent(table);
 		renderPopUp();
 	}
 
+
 }
+

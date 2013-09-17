@@ -6,6 +6,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -48,14 +49,12 @@ public class CMSHome extends UI
 	@Override
 	protected void init(VaadinRequest request) {
 		final SpringContextHelper helper = new SpringContextHelper(this);
-	//	final Button logoutButton = new Button("Log Out");
 		
         final CMSMainWindow main = new CMSMainWindow(helper);
-
         VerticalLayout view = new VerticalLayout();
         view.addComponent(main);
-        setContent(view);
-
+        view.setComponentAlignment(main, Alignment.BOTTOM_CENTER);
+        setContent(view); 
 	}
 
 }

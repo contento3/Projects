@@ -27,11 +27,11 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 		Validate.notNull(accountId,"accountId cannot be null");
 		final Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
-								.createCriteria("account")
+								.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 								.setCacheable(true)
 								.setCacheRegion(CACHE_REGION)
 								.add(Restrictions
-								.eq("accountId", accountId));
+								.eq("account.accountId", accountId));
 		return criteria.list();
 	}
 
@@ -39,11 +39,11 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 	public Site findByDomain(final String domain){
 		Validate.notNull(domain,"domain cannot be null");
 
-		Criteria criteria = this.getSession()
+		final Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
-								.createCriteria("siteDomain")
-								.add(Restrictions
-								.eq("domainName", domain));
+							    .createAlias("siteDomain", "domain")
+		    					.add(Restrictions
+								.eq("domain.domainName", domain));
 		final List<Site> sites = criteria.list();
 		Site site = null;
 		

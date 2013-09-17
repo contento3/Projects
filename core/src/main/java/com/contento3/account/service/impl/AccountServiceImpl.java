@@ -1,5 +1,7 @@
 package com.contento3.account.service.impl;
 
+import org.apache.commons.lang.Validate;
+
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountAssembler;
@@ -25,6 +27,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountDto findAccountById(Integer accountId){
+		Validate.notNull(accountId,"accountId cannot be null");
 		return assembler.domainToDto(accountDao.findById(accountId));
 	}
 
