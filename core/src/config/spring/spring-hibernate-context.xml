@@ -12,6 +12,7 @@
 <property name="passwordEnvName" value="PEV" />
 </bean>
 
+
 <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
 <property name="config" ref="environmentConfig" />
 </bean>
