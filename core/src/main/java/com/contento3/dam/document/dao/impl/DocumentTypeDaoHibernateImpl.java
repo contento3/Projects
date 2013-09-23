@@ -2,6 +2,7 @@ package com.contento3.dam.document.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +27,7 @@ public class DocumentTypeDaoHibernateImpl
 	/* Finds the DocumentType of a Document by name */
 	@Override
 	public DocumentType findByName(final String typeName) {
+		Validate.notNull(typeName,"typeName cannot be null");
 		final Criteria criteria = this.getSession().createCriteria(DocumentType.class);
 		criteria.add(Restrictions.eq("name", typeName));
 		

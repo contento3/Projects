@@ -2,6 +2,7 @@ package com.contento3.cms.page.template.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -20,6 +21,8 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 
 	@Override
 	public Collection<Template> findTemplateByDirectoryName(final String name){
+		Validate.notNull(name,"name cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(Template.class)
 		.setCacheable(true)
@@ -34,6 +37,11 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 	@Override
 	public Collection<Template> findTemplateByPathAndAccount(final String templateName,final String parentDirectory,
 			final String templateType,final Integer accountId){
+		Validate.notNull(templateName,"templateName cannot be null");
+		Validate.notNull(parentDirectory,"parentDirectory cannot be null");
+		Validate.notNull(templateType,"templateType cannot be null");
+		Validate.notNull(accountId,"accountId cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(Template.class,"template")
 		.setCacheable(true)

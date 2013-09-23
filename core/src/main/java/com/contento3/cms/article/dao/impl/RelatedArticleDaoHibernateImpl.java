@@ -40,6 +40,9 @@ public class RelatedArticleDaoHibernateImpl extends GenericDaoSpringHibernateTem
 	@Override
 	public void deleteRelatedArticles(Integer articleId,
 			Collection<Integer> relatedArticleIds) {
+		Validate.notNull(articleId,"articleId cannot be null");
+		Validate.notNull(relatedArticleIds,"relatedArticleIds cannot be null");
+		
 		Criteria criteria =  this.getSession()
 				.createCriteria(RelatedArticle.class)
 				.createCriteria("article")

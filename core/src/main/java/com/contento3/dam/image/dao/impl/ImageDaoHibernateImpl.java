@@ -3,6 +3,7 @@ package com.contento3.dam.image.dao.impl;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -21,6 +22,8 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Image> findByAccountId(final Integer accountId){
+		Validate.notNull(accountId,"accountId cannot be null");
+		
 		Criteria criteria = this.getSession()
 								.createCriteria(Image.class)
 								.createCriteria("account")
@@ -32,6 +35,9 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 	@Override
 	@SuppressWarnings("unchecked")
 	public Image findByNameAndAccountId(final String name,final Integer accountId){
+		Validate.notNull(name,"name cannot be null");
+		Validate.notNull(accountId ,"accountId cannot be null");
+		
 		Criteria criteria = this.getSession()
 								.createCriteria(Image.class)
 								.add(Restrictions
@@ -54,6 +60,9 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 	@SuppressWarnings("unchecked")
 	public Collection<Image> findLatestImagesBySiteId(Integer siteId,
 			Integer count) {
+		Validate.notNull(siteId,"siteId cannot be null");
+		Validate.notNull(count ,"count cannot be null");
+		
 		Criteria criteria = this.getSession()
 				.createCriteria(Image.class)
 				.addOrder(Order.desc("imageId"))
@@ -67,6 +76,7 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Image> findImagesByLibrary(final Integer libraryId) {
+		Validate.notNull(libraryId,"libraryId cannot be null");
 		
 		Criteria criteria = this.getSession()
 								.createCriteria(Image.class)
@@ -77,6 +87,8 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 
 	@Override
 	public Image findByUuid(String uuid) {
+		Validate.notNull(uuid,"uuid cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(Image.class)
 		.add(Restrictions

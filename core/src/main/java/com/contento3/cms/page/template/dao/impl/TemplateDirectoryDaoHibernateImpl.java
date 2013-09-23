@@ -1,6 +1,7 @@
 package com.contento3.cms.page.template.dao.impl;
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -22,6 +23,8 @@ public class TemplateDirectoryDaoHibernateImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<TemplateDirectory> findRootDirectories(final boolean isGlobal){
+		Validate.notNull(isGlobal,"isGlobal cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(TemplateDirectory.class)
 		.setCacheable(true)
@@ -36,6 +39,9 @@ public class TemplateDirectoryDaoHibernateImpl
 
 	@Override
 	public TemplateDirectory findByName(final String name,final boolean isGlobal){
+		Validate.notNull(name,"name cannot be null");
+		Validate.notNull(isGlobal,"isGlobal cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(TemplateDirectory.class)
 		.setCacheable(true)
@@ -51,6 +57,8 @@ public class TemplateDirectoryDaoHibernateImpl
 
 	@Override
 	public Collection<TemplateDirectory> findChildDirectories(final Integer parentId){
+		Validate.notNull(parentId,"parentId cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(TemplateDirectory.class)
 		.setCacheable(true)

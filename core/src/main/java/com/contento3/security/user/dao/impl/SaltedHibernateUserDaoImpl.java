@@ -3,6 +3,7 @@ package com.contento3.security.user.dao.impl;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +27,8 @@ implements SaltedHibernateUserDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<SaltedHibernateUser> findUsersByAccountId(final Integer accountId) {
+		Validate.notNull(accountId,"accountId cannot be null");
+		
 		Criteria criteria = this.getSession()
 				.createCriteria(SaltedHibernateUser.class)
 				.add(Restrictions
@@ -36,6 +39,8 @@ implements SaltedHibernateUserDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public SaltedHibernateUser findByUsername(final String username) {
+		Validate.notNull(username,"username cannot be null");
+		
 		Criteria criteria = this.getSession()
 				.createCriteria(SaltedHibernateUser.class)
 				.add(Restrictions
@@ -53,6 +58,9 @@ implements SaltedHibernateUserDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public SaltedHibernateUser findUserByAccountId(final Integer accountId,final String username) {
+		Validate.notNull(accountId,"accountId cannot be null");
+		Validate.notNull(username,"username cannot be null");
+		
 		final Criteria criteria = this.getSession()
 				.createCriteria(SaltedHibernateUser.class)
 				.add(Restrictions.eq("account.accountId", accountId))

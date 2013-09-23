@@ -2,6 +2,7 @@ package com.contento3.cms.page.template.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -40,7 +41,16 @@ public class TemplateServiceImpl implements TemplateService {
 	TemplateServiceImpl(final TemplateAssembler assembler,
 						final AccountDao accountDao,
 						final TemplateDirectoryDao templateDirectoryDao,
-						final TemplateDao templateDao,final TemplateTypeDao templateTypeDao,final SiteDAO siteDao){
+						final TemplateDao templateDao,
+						final TemplateTypeDao templateTypeDao,
+						final SiteDAO siteDao){
+		Validate.notNull(assembler,"assembler cannot be null");
+		Validate.notNull(accountDao,"accountDao cannot be null");
+		Validate.notNull(templateDirectoryDao,"templateDirectoryDao cannot be null");
+		Validate.notNull(templateDao,"templateDao cannot be null");
+		Validate.notNull(templateTypeDao,"templateTypeDao cannot be null");
+		Validate.notNull(siteDao,"siteDao cannot be null");
+		
 		this.templateDao = templateDao;
 		this.templateAssembler = assembler;
 		this.templateTypeDao = templateTypeDao;
@@ -52,12 +62,14 @@ public class TemplateServiceImpl implements TemplateService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(final TemplateDto templateDto) {
+		Validate.notNull(templateDto,"templateDto cannot be null");
 		return templateDao.persist(buildTemplateInstance(templateDto));
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<TemplateDto> findTemplateByDirectoryName(final String directoryName) {
+		Validate.notNull(directoryName,"directoryName cannot be null");
 		Collection<Template> templateList = templateDao.findTemplateByDirectoryName(directoryName);
 		return templateAssembler.domainsToDtos(templateList);
 	}
@@ -65,6 +77,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public TemplateDto findTemplateById(final Integer templateId) {
+		Validate.notNull(templateId,"templateId cannot be null");
 		Template template = templateDao.findById(templateId);
 		return templateAssembler.domainToDto(template);
 	}
@@ -72,6 +85,8 @@ public class TemplateServiceImpl implements TemplateService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws ResourceNotFoundException {
+		Validate.notNull(templatePath,"templatePath cannot be null");
+		Validate.notNull(accountId,"accountId cannot be null");
 		split(templatePath);
 		Collection<Template> templateList = templateDao.findTemplateByPathAndAccount(templateName, parentDirectory, "text/freemarker", accountId);
 		
@@ -91,6 +106,8 @@ public class TemplateServiceImpl implements TemplateService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public TemplateDto findTemplateByPathAndSiteId(String templatePath,Integer siteId) throws ResourceNotFoundException {
+		Validate.notNull(siteId,"siteId cannot be null");
+		Validate.notNull(siteDao,"siteDao cannot be null");
 		Site site = siteDao.findById(siteId);
 		return findTemplateByPathAndAccount(templatePath,site.getAccount().getAccountId());
 	}
@@ -98,15 +115,19 @@ public class TemplateServiceImpl implements TemplateService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void updateTemplate(final TemplateDto templateDto) {
+		Validate.notNull(templateDto,"templateDto cannot be null");
 		templateDao.update(buildTemplateInstance(templateDto));
 	}
 
 	private String buildTemplatePath(final Template template){
+		Validate.notNull(template,"template cannot be null");
 		String templateName = template.getTemplateName();
 		return 	templateNameAppender(template.getDirectory(),templateName);
 	}
 	
 	private String templateNameAppender(final TemplateDirectory templateDirectory,String value){
+		Validate.notNull(templateDirectory,"templateDirectory cannot be null");
+		Validate.notNull(value,"value cannot be null");
 		value = String.format("%s/%s", templateDirectory.getDirectoryName(),value);
 		if (null!=templateDirectory.getParent()){
 			value = templateNameAppender(templateDirectory.getParent(),value);
@@ -120,6 +141,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @param templatePath
 	 */
 	private void split(final String templatePath){
+		Validate.notNull(templatePath,"templatePath cannot be null");
 		uriElement = templatePath.split("/");
 		
 		if (uriElement[1].equals("css")){
@@ -146,6 +168,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @return
 	 */
 	private Template buildTemplateInstance(final TemplateDto templateDto){
+		Validate.notNull(templateDto,"templateDto cannot be null");
 		TemplateType templateType = templateTypeDao.findByName(templateDto.getTemplateType().getTemplateTypeName());
 		Account account = accountDao.findById(templateDto.getAccountDto().getAccountId());
 		TemplateDirectory templateDirectory = templateDirectoryDao.findById(templateDto.getTemplateDirectoryDto().getId());
@@ -160,6 +183,7 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Override
 	public void delete(TemplateDto dtoToDelete) {
+		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		// TODO Auto-generated method stub
 		
 	}

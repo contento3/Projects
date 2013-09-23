@@ -1,5 +1,7 @@
 package com.contento3.dam.storagetype.service.impl;
 
+import org.apache.commons.lang.Validate;
+
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
@@ -15,6 +17,9 @@ public class StorageTypeServiceImpl implements StorageTypeService {
 	private StorageTypeDao storageTypeDao;
 	
 	public StorageTypeServiceImpl(final StorageTypeAssembler storageTypeAssembler, final StorageTypeDao storageTypeDao){
+		Validate.notNull(storageTypeAssembler,"storageTypeAssembler cannot be null");
+		Validate.notNull(storageTypeDao,"storageTypeDao cannot be null");
+		
 		this.storageTypeAssembler = storageTypeAssembler;
 		this.storageTypeDao = storageTypeDao;
 	}
@@ -22,6 +27,7 @@ public class StorageTypeServiceImpl implements StorageTypeService {
 	@Override
 	public Object create(final StorageTypeDto storageTypeDto)
 			throws EntityAlreadyFoundException, EntityNotCreatedException {
+		Validate.notNull(storageTypeDto,"storageTypeDto cannot be null");
 		Integer storageTypePk;
 		
 		if(storageTypeDao.findByName(storageTypeDto.getName()) == null)	
@@ -35,6 +41,7 @@ public class StorageTypeServiceImpl implements StorageTypeService {
 	@Override
 	public void delete(final StorageTypeDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
+		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		// TODO Auto-generated method stub
 		
 	}

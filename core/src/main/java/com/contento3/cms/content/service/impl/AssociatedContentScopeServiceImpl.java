@@ -2,6 +2,7 @@ package com.contento3.cms.content.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,8 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 	
 	public AssociatedContentScopeServiceImpl(final AssociatedContentScopeAssembler associatedContentScopeAssembler,
 			final AssociatedContentScopeDao associatedContentScopeDao) {
+		Validate.notNull(associatedContentScopeAssembler,"associatedContentScopeAssembler cannot be null");
+		Validate.notNull(associatedContentScopeDao,"associatedContentScopeDao cannot be null");
 		this.associatedContentScopeAssembler = associatedContentScopeAssembler;
 		this.associatedContentScopeDao = associatedContentScopeDao;
 	}
@@ -35,12 +38,14 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 	@Override
 	public Object create(final AssociatedContentScopeDto dto)
 			throws EntityAlreadyFoundException {
+		Validate.notNull(dto,"dto cannot be null");
 		return associatedContentScopeDao.persist(associatedContentScopeAssembler.dtoToDomain(dto));
 	}
 
 	@Override
 	public void delete(final AssociatedContentScopeDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
+		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		associatedContentScopeDao.delete(associatedContentScopeAssembler.dtoToDomain(dtoToDelete));
 
 	}
@@ -48,13 +53,14 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 	@Override
 	public 	Collection<AssociatedContentScopeDto> getContentScopeForType(final AssociatedContentScopeTypeEnum scopeType)
 	{
+		Validate.notNull(scopeType,"scopeType cannot be null");
 		return this.associatedContentScopeAssembler.domainsToDtos(this.associatedContentScopeDao.findAll());
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
 	@Override
 	public AssociatedContentScopeDto findById(Integer contentScopeId) {
-		
+		Validate.notNull(contentScopeId,"contentScopeId cannot be null");
 		return this.associatedContentScopeAssembler.domainToDto(this.associatedContentScopeDao.findById(contentScopeId));
 	}
 

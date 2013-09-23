@@ -21,6 +21,9 @@ public class AccountServiceImpl implements AccountService {
 	private AccountAssembler assembler;
 	
 	AccountServiceImpl(final AccountDao accountDao,final AccountAssembler assembler){
+		Validate.notNull(accountDao,"accountDao cannot be null");
+		Validate.notNull(assembler,"assembler cannot be null");
+		
 		this.accountDao = accountDao;
 		this.assembler = assembler;
 	}

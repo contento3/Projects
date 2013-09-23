@@ -1,5 +1,6 @@
 package com.contento3.cms.site.structure.domain.dao.impl;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -18,7 +19,8 @@ public class SiteDomainDaoHibernateImpl  extends
 
 	@Override
 	public SiteDomain findSiteDomainByName(String domainName) {
-	
+		Validate.notNull(domainName,"domainName cannot be null");
+		
 		Criteria criteria = this.getSession()
 				.createCriteria(SiteDomain.class)
 				.add(Restrictions.eq("domainName", domainName));
