@@ -2,7 +2,6 @@ package com.contento3.site.registration;
 
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -56,6 +55,7 @@ public class UserRegistrationController {
 		registrationService.create(userDto,DomainUtil.fetchDomain(request));
     	return "redirect:userSuccess.htm"; //TODO this needs to be dynamic so that we can redirect to appropriate page based on site.
     }
+    
 
     /**
      * Displays the user registration form
@@ -68,12 +68,11 @@ public class UserRegistrationController {
     public ModelAndView showRegistrationForm(@ModelAttribute("user") User user,BindingResult result) throws Exception {
     	LOGGER.info("User Registration");	
 
-
 		ModelAndView modelAndView = new ModelAndView();
 		user.setUsername("abc");
 		modelAndView.getModelMap().addAttribute("user", user);
-		modelAndView.addAllObjects(result.getModel());
 		modelAndView.setView(freemarkerView); 
+		modelAndView.addObject("user",user);
 		return modelAndView;
     }
 

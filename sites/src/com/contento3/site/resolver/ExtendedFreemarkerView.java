@@ -8,15 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.springframework.web.servlet.support.RequestContext;
-import org.springframework.web.servlet.view.AbstractTemplateView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
-import com.contento3.site.registration.model.User;
 import com.contento3.site.template.model.TemplateModelMapImpl;
 import com.contento3.site.template.render.engine.RenderingEngine;
 import com.contento3.util.DomainUtil;
@@ -28,6 +25,7 @@ import freemarker.ext.servlet.HttpRequestParametersHashModel;
 import freemarker.ext.servlet.HttpSessionHashModel;
 import freemarker.ext.servlet.IncludePage;
 import freemarker.ext.servlet.ServletContextHashModel;
+import freemarker.template.SimpleHash;
 
 public class ExtendedFreemarkerView extends FreeMarkerView {
 	private static final Logger LOGGER = Logger
@@ -96,11 +94,6 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 	private TemplateModelMapImpl buildModelMap(boolean isPageRequest,final Map<String,Object> model,final HttpServletRequest request, final HttpServletResponse response, final SiteDto siteDto,final String pagePath) throws Exception {
 		// Read the data file and process the template using FreeMarker
 			
-			setExposeRequestAttributes(true);
-			setExposeSessionAttributes(true);
-			setExposeSpringMacroHelpers(true);
-			exposeModelAsRequestAttributes(model, request);
-			setRequestContextAttribute("rc");
 			//model.put(FreeMarkerView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, 
 			//		new RequestContext(request,response,this.getServletContext(),model));
 				
@@ -122,25 +115,28 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 			// model.put( "command", model.get("command") );
 			//   ((RequestContext) model.get(AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE)).getModel().put("user", model.get("user"));
 			  // request.setAttribute("user", model.get("user"));
-//				
-			
-	        // Expose all standard FreeMarker hash models.
-		    model.put( FreemarkerServlet.KEY_JSP_TAGLIBS, this.taglibFactory );
-		    model.put( FreemarkerServlet.KEY_APPLICATION, this.servletContextHashModel );
-		    model.put( FreemarkerServlet.KEY_SESSION, buildSessionModel( request,response ) );
-		    model.put( FreemarkerServlet.KEY_REQUEST, new HttpRequestHashModel(request, response, getObjectWrapper() ) );
-		    model.put( FreemarkerServlet.KEY_REQUEST_PARAMETERS,new HttpRequestParametersHashModel( request ) );
+
+			SimpleHash modelSuper = super.buildTemplateModel(model, request, response);
+
+			// Expose all standard FreeMarker hash models.
+		    model.put( FreemarkerServlet.KEY_JSP_TAGLIBS, modelSuper.get(FreemarkerServlet.KEY_JSP_TAGLIBS));
+		    model.put( FreemarkerServlet.KEY_APPLICATION, modelSuper.get(FreemarkerServlet.KEY_APPLICATION));
+		    model.put( FreemarkerServlet.KEY_SESSION, modelSuper.get(FreemarkerServlet.KEY_SESSION) );
+		    model.put( FreemarkerServlet.KEY_REQUEST, modelSuper.get(FreemarkerServlet.KEY_REQUEST) );
+		    model.put( FreemarkerServlet.KEY_REQUEST_PARAMETERS, modelSuper.get(FreemarkerServlet.KEY_REQUEST_PARAMETERS));
+
 		    model.put( FreemarkerServlet.KEY_INCLUDE, new IncludePage( request,response ) );
-		  // model.put(AbstractTemplateView.SPRING_MACRO_REQUEST_CONTEXT_ATTRIBUTE, new RequestContext(
-//                    request,
-//                    response,
-//                    this.getServletContext(),
-//                    model));
 
 		    if (isPageRequest){
 		    	final PageDto page = pageService.findByPathForSite(pagePath, siteDto.getSiteId());
 		    	model.put( "page", page );
 		    }
+
+			setExposeRequestAttributes(true);
+			setExposeSessionAttributes(true);
+			setExposeSpringMacroHelpers(true);
+			exposeModelAsRequestAttributes(model, request);
+			setRequestContextAttribute("rc");
 
 		    model.put( "site", siteDto );
 		    //model.put( "user", model.get("user"));

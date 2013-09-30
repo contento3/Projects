@@ -207,11 +207,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
  
 	
 	private void buildUI(){
-//CHANGED
-		   // 	uri = Page.getCurrent().getUriFragment();
-       // uri.addListener(this);
-//        uri.setImmediate(true);
-
 		//Parent Layout that holds the ui of the application
         final VerticalLayout appRootLayout = new VerticalLayout();
         
@@ -322,16 +317,22 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         root = new Tree("",hwContainer);
         root.setStyleName(BaseTheme.TREE_CONNECTORS);
         root.addActionHandler(this);
-        Item item0 = hwContainer.addItem("Sites");
         
         root.addContainerProperty("icon", Resource.class, null);
         root.setItemIconPropertyId("icon");
-        root.setItemIcon(item0, new ExternalResource("images/site.png"));
 
+        
+        Item dashboard = hwContainer.addItem(NavigationConstant.DASHBOARD);
+        dashboard.getItemProperty("name").setValue(NavigationConstant.DASHBOARD);
+        root.setItemIcon(dashboard, new ExternalResource("images/home-icon.png"));
+        dashboard.getItemProperty("icon").setValue(new ExternalResource("images/home-icon.png"));
+
+        Item item0 = hwContainer.addItem("Sites");
+        root.setItemIcon(item0, new ExternalResource("images/site.png"));
         item0.getItemProperty("name").setValue("Sites");
         item0.getItemProperty("id").setValue(new Integer(-1));
         item0.getItemProperty("icon").setValue(new ExternalResource("images/site.png"));
-        
+
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
         root.setItemIcon(contentMgmt, new ExternalResource("images/content.png"));
@@ -379,6 +380,10 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     	root.setImmediate(true);
     	vert.addComponent(mainAndContentSplitter); 
 
+    	//After the login, dashboard must be displayed as a first screen
+		UIManager sitesDashboard = UIManagerCreator.createUIManager(uiTabsheet,Manager.Dashboard,helper);
+		horiz.setSecondComponent(sitesDashboard.render(null));
+
 	   //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
         root.addItemClickListener(new ItemClickListener() {
@@ -395,6 +400,10 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	                		UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper);
 	                		horiz.setSecondComponent(layoutUIMgr.render(null));
 	        		}
+	                else if (null!=itemSelected && itemSelected.equals(NavigationConstant.DASHBOARD)){
+	                		UIManager sitesDashboard = UIManagerCreator.createUIManager(uiTabsheet,Manager.Dashboard,helper);
+	                		horiz.setSecondComponent(sitesDashboard.render(null));
+	                }
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
 	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper);

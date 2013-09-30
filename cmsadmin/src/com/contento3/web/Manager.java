@@ -9,7 +9,8 @@ public enum Manager {
 	Template("template"),
 	User("user"),
 	Category("category"),
-	Article("article");
+	Article("article"),
+	Dashboard("dashboard");
 	
 	private String managerName;
 	

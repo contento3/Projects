@@ -99,7 +99,6 @@ public class FreemarkerRenderingEngine implements RenderingEngine {
 			env.importLib(tpl,"spring");
 			env.setGlobalVariable("page", fmModel.get("page"));
 			env.setGlobalVariable("site", fmModel.get("site"));
-			env.setGlobalVariable("request", fmModel.get(FreemarkerServlet.KEY_REQUEST));
 
 			env.process();
 			

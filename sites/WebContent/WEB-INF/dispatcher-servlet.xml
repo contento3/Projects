@@ -9,12 +9,19 @@
 
 
  <import resource="applicationContext-site-security.xml"/>
+
+   <bean id="viewResolver"
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            <property name="prefix" value="register" />
+            <property name="suffix" value=".jsp" />
+        </bean>
   
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<value>
 	  	 	/register/**/*=registrationController
-	 		/page/**/*=pageController  
+	  	 	/register/*=registrationController
+	  	 	/page/**/*=pageController  
 			/image/**/*=staticResourceController
 			/js/**/*=staticResourceController
 			/css/**/*=staticResourceController
@@ -22,6 +29,7 @@
 		</value>
 	</property>
 </bean>
+
 
 <bean id="pageController" class="com.contento3.site.controller.PageController">
 	<property name="freeMarkerView" ref="fmView" />
@@ -36,16 +44,6 @@
 <bean id="staticResourceController" class="com.contento3.site.controller.StaticResourceController">
 	<property name="staticResourceViewResolver" ref="staticResourceView" />
 </bean>
-
-<!-- 
-<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-  <property name="cache" value="true"/>
-  <property name="prefix" value="/"/>
-  <property name="suffix" value=""/>
-  
-  <property name="exposeSpringMacroHelpers" value="true"/>
-</bean>
- -->
 
 <bean id="fmView" class="com.contento3.site.resolver.ExtendedFreemarkerView">
 	<property name="freemarkerRenderingEngine" ref="fmRenderingEngine" />
@@ -75,7 +73,6 @@
 </bean>
 
 <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-  <property name="templateLoaderPath" value="/WEB-INF/"/>
   <property name="freemarkerVariables">
     <map>
       <entry key="xml_escape" value-ref="fmXmlEscape"/>
@@ -88,14 +85,7 @@
     </property>
 </bean>
 
-<!-- 
-<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-    <property name="cache" value="true"/>
-    <property name="prefix" value=""/>
-    <property name="suffix" value=".ftl"/>
-    <property name="exposeSpringMacroHelpers" value="true" />
-</bean>
--->
+
 <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>
 <bean id="htmlResolver" class="com.contento3.site.page.section.resolver.impl.YuiHtmlResolver">
 	<property name="templateService" ref="templateService" />
@@ -124,8 +114,5 @@
       </map>
   </property>
 </bean>
-
-<!-- <bean id="myTestService" class="com.contento3.site.template.test.service.TestServiceImpl"> -->
-<!-- </bean> -->
 
 </beans>

@@ -65,11 +65,10 @@ public class AddRoleListener extends EntityListener implements ClickListener{
 
 	@Override
 	public void buttonClick(ClickEvent event) {
-		// TODO Auto-generated method stub
 		final RoleService roleService = (RoleService) helper.getBean("roleService");
 		Integer accountId = (Integer) SessionHelper.loadAttribute("accountId");
 		
-		Collection<String> listOfColumns = new ArrayList<String>();
+		final Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("name");
 		GenricEntityPicker userPicker;
 		this.vLayout = new VerticalLayout();
