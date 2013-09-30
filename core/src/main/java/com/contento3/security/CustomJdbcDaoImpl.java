@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.authentication.dao.SaltSource;
@@ -29,6 +30,8 @@ public class CustomJdbcDaoImpl extends JdbcDaoImpl implements IChangePassword {
 	private SaltSource saltSource;
 
 	public void changePassword(final String username,final String password) {
+		Validate.notNull(username,"username cannot be null");
+		Validate.notNull(password,"password cannot be null");
 		final UserDetails user = loadUserByUsername(username);
 		final String encodedPassword = passwordEncoder.encodePassword(password, saltSource.getSalt(user));
 		getJdbcTemplate().update("UPDATE USERS SET PASSWORD = ? WHERE USERNAME = ?",
@@ -39,6 +42,10 @@ public class CustomJdbcDaoImpl extends JdbcDaoImpl implements IChangePassword {
 	protected UserDetails createUserDetails(final String username,
 			final UserDetails userFromUserQuery,
 			final List<GrantedAuthority> combinedAuthorities) {
+		Validate.notNull(username,"username cannot be null");
+		Validate.notNull(userFromUserQuery,"userFromUserQuery cannot be null");
+		Validate.notNull(combinedAuthorities,"combinedAuthorities cannot be null");
+		
         String returnUsername = userFromUserQuery.getUsername();
 
         if (!isUsernameBasedPrimaryKey()) {
@@ -51,6 +58,8 @@ public class CustomJdbcDaoImpl extends JdbcDaoImpl implements IChangePassword {
 
 	@Override
 	protected List<UserDetails> loadUsersByUsername(String username) {
+		Validate.notNull(username,"username cannot be null");
+		
        return getJdbcTemplate().query(getUsersByUsernameQuery(), new String[] {username}, new RowMapper<UserDetails>() {
             public UserDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String username = rs.getString(1);

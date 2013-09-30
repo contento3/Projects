@@ -2,6 +2,7 @@ package com.contento3.security.role.dao.impl;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +22,7 @@ implements RoleDao{
 	@SuppressWarnings("unchecked")
 	public Collection<Role> findRolesByAccountId(Integer accountId) {
 		// TODO Auto-generated method stub
+		Validate.notNull(accountId,"accountId cannot be null");
 		Criteria criteria = this.getSession().createCriteria(Role.class).add(Restrictions.eq("account.accountId", accountId));
 		return criteria.list();
 	}
@@ -28,7 +30,9 @@ implements RoleDao{
 	@Override
 	public Role findRoleByAccountId(Integer accountId, String rolename) {
 		// TODO Auto-generated method stub
-	
+		Validate.notNull(accountId,"accountId cannot be null");
+		Validate.notNull(rolename ,"rolename cannot be null");
+		
 		final Criteria criteria = this.getSession()
 				.createCriteria(Role.class)
 				.add(Restrictions.eq("account.accountId", accountId))
@@ -47,6 +51,7 @@ implements RoleDao{
 	@Override
 	public Role findByRolename(String rolename) {
 		// TODO Auto-generated method stub
+		Validate.notNull(rolename,"rolename cannot be null");
 		
 		Criteria criteria = this.getSession()
 				.createCriteria(Role.class)
@@ -66,6 +71,7 @@ implements RoleDao{
 
 	public Role findById(int id) {
 		// TODO Auto-generated method stub
+		Validate.notNull(id,"id cannot be null");
 		
 		Criteria criteria = this.getSession()
 				.createCriteria(Role.class)

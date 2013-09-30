@@ -3,6 +3,7 @@ package com.contento3.cms.page.layout.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -19,6 +20,7 @@ public class PageLayoutTypeDAOHibernateImpl extends GenericDaoSpringHibernateTem
 
 	@SuppressWarnings("unchecked")
 	public PageLayoutType findByName(final String name){
+		Validate.notNull(name,"name cannot be null");
 		PageLayoutType layoutType;
 		Criteria criteria = this.getSession()
 		.createCriteria(PageLayoutType.class)

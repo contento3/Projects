@@ -2,6 +2,7 @@ package com.contento3.dam.document.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +27,9 @@ public class DocumentDaoHibernateImpl
 	/* Finds a document by using it's unique uid */
 	@Override
 	public Document findByUuid(final Integer accountId, final String uuid) {
+		Validate.notNull(accountId,"accoundId cannot be null");
+		Validate.notNull(uuid,"uuid cannot be null");
+		
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		
 		criteria.add(Restrictions.eq("documentUuid", uuid))
@@ -42,6 +46,8 @@ public class DocumentDaoHibernateImpl
 	/* Finds document based on their types */
 	@Override
 	public Collection<Document> findByType(final Integer accountId, final String type) {
+		Validate.notNull(type,"type cannot be null");
+		Validate.notNull(accountId,"accountId cannot be null");
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		criteria.add(Restrictions.eq("account.accountId", accountId))
 				.createCriteria("documentType")
@@ -53,6 +59,8 @@ public class DocumentDaoHibernateImpl
 	/* Finds the document associated with an account */
 	@Override
 	public Collection<Document> findByAccountId(final Integer accountId) {
+		Validate.notNull(accountId,"accountId cannot be null");
+		
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		criteria.add(Restrictions.eq("account.accountId", accountId));
 		
@@ -61,6 +69,8 @@ public class DocumentDaoHibernateImpl
 
 	@Override
 	public Document findByTitle(final String title) {
+		Validate.notNull(title,"title cannot be null");
+		
 		Criteria criteria = this.getSession().createCriteria(Document.class);
 		criteria.add(Restrictions.eq("documentTitle", title));
 		

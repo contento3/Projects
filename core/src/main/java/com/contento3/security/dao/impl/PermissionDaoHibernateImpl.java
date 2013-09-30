@@ -2,6 +2,8 @@ package com.contento3.security.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
+
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.security.dao.PermissionDao;
 import com.contento3.security.model.Permission;
@@ -22,6 +24,9 @@ public class PermissionDaoHibernateImpl extends GenericDaoSpringHibernateTemplat
 
 	@Override
 	public Collection <Permission> findByRole(final Integer accountId,final Integer role){
+		Validate.notNull(accountId,"accountId cannot be null");
+		Validate.notNull(role,"role cannot be null");
+		
 //		Criteria criteria = this.getSession()
 //		.createCriteria(Permission.class)
 //		.setCacheable(true)

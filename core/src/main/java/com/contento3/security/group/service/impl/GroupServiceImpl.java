@@ -2,6 +2,7 @@ package com.contento3.security.group.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,8 @@ public class GroupServiceImpl implements GroupService {
 	private GroupDao groupDao;
 	
 	public GroupServiceImpl(final GroupDao groupDao,final GroupAssembler groupAssembler){
+		Validate.notNull(groupDao,"groupDao cannot be null");
+		Validate.notNull(groupAssembler,"groupAssembler cannot be null");
 		
 		/* Data access class to access the data objects for groups */
 		this.groupDao = groupDao;
@@ -30,6 +33,7 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public GroupDto findByGroupName(String groupName){
+		Validate.notNull(groupName,"groupName cannot be null");
 		return groupAssembler.domainToDto(groupDao.findByGroupName(groupName));
 	}
 	
@@ -38,23 +42,27 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<GroupDto> findAllGroups(){
+		//Validate.notNull(groupDao,"dto cannot be null");
 		return groupAssembler.domainsToDtos(groupDao.findAll());
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(final GroupDto groupDto) {
+		Validate.notNull(groupDto,"groupDto cannot be null");
 		return groupDao.persist(groupAssembler.dtoToDomain(groupDto));
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public GroupDto findById(Integer id) {
+		Validate.notNull(id,"id cannot be null");
 		return groupAssembler.domainToDto(groupDao.findById(id));
 	}
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(GroupDto groupDto) {
+		Validate.notNull(groupDto,"groupDto cannot be null");
 		groupDao.update(groupAssembler.dtoToDomain(groupDto));
 		
 	}
@@ -62,7 +70,7 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(GroupDto group) {
-		
+		Validate.notNull(group,"group cannot be null");
 		Collection<SaltedHibernateUserDto> members;
 		members=group.getMembers();
 		
@@ -74,7 +82,7 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void deleteWithException(GroupDto group) throws Exception {
-		
+		Validate.notNull(group,"group cannot be null");
 		Collection<SaltedHibernateUserDto> members;
 		members=group.getMembers();
 		

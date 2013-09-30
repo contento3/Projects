@@ -2,6 +2,7 @@ package com.contento3.dam.document.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,8 @@ public class DocumentServiceImpl implements DocumentService {
 	private DocumentDao documentDao;
 	
 	public DocumentServiceImpl(final DocumentAssembler documentAssembler, final DocumentDao documentDao){
+		Validate.notNull(documentAssembler,"documentAssembler cannot be null");
+		Validate.notNull(documentDao,"documentDao cannot be null");
 		this.documentAssembler = documentAssembler;
 		this.documentDao = documentDao;
 	}
@@ -27,6 +30,7 @@ public class DocumentServiceImpl implements DocumentService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(DocumentDto documentDto) throws EntityAlreadyFoundException {
+		Validate.notNull(documentDto,"documentDto cannot be null");
 		Integer documentPk;
 		
 		if(documentDao.findByTitle(documentDto.getDocumentTitle()) != null)
@@ -40,6 +44,7 @@ public class DocumentServiceImpl implements DocumentService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(DocumentDto documentDto) throws EntityAlreadyFoundException {
+		Validate.notNull(documentDto,"documentDto cannot be null");
 		Document document = documentDao.findByTitle(documentDto.getDocumentTitle());
 		
 		/**
@@ -55,6 +60,7 @@ public class DocumentServiceImpl implements DocumentService {
 	@Override
 	public void delete(DocumentDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
+		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		documentDao.delete(documentAssembler.dtoToDomain(dtoToDelete));
 	}
 	
@@ -62,24 +68,30 @@ public class DocumentServiceImpl implements DocumentService {
 	@Transactional(readOnly = true)
 	@Override
 	public DocumentDto findByUuid(Integer accountId, String uuid) {
+		Validate.notNull(accountId,"accountId cannot be null");
+		Validate.notNull(uuid,"uuid cannot be null");
 		return documentAssembler.domainToDto(documentDao.findByUuid(accountId, uuid));
 	}
 	
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<DocumentDto> findByType(Integer accountId, String type) {
+		Validate.notNull(accountId,"accountId cannot be null");
+		Validate.notNull(type,"type cannot be null");
 		return documentAssembler.domainsToDtos(documentDao.findByType(accountId, type));
 	}
 	
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<DocumentDto> findByAccountId(Integer accountId) {
+		Validate.notNull(accountId,"accountId cannot be null");
 		return documentAssembler.domainsToDtos(documentDao.findByAccountId(accountId));
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public DocumentDto findById(Integer documentId) {
+		Validate.notNull(documentId,"documentId cannot be null");
 		return documentAssembler.domainToDto(documentDao.findById(documentId));
 	}
 }

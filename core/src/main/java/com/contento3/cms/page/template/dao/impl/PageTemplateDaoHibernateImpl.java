@@ -2,6 +2,7 @@ package com.contento3.cms.page.template.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -21,6 +22,9 @@ public class PageTemplateDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<PageTemplate> findByPageAndPageSectionType(final Integer pageId,final Integer pageSectionTypeId) {
+		Validate.notNull(pageId,"pageId cannot be null");
+		Validate.notNull(pageSectionTypeId,"pageSectionTypeId cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(PageTemplate.class)
 		.add(Restrictions
@@ -33,6 +37,9 @@ public class PageTemplateDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<PageTemplate> findByPageAndPageSectionType(final Integer pageId,final PageSectionTypeEnum pageSectionType) {
+		Validate.notNull(pageId,"pageId cannot be null");
+		Validate.notNull(pageSectionType,"pageSectionType cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(PageTemplate.class);
 		
@@ -47,6 +54,8 @@ public class PageTemplateDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<PageTemplate> findByPageId(final Integer pageId) {
+		Validate.notNull(pageId,"pageId cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(PageTemplate.class)
 		.add(Restrictions

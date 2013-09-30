@@ -1,4 +1,6 @@
 package com.contento3.cms.page.template.service.impl;
+import org.apache.commons.lang.Validate;
+
 import com.contento3.cms.page.template.dao.TemplateTypeDao;
 import com.contento3.cms.page.template.dto.TemplateTypeDto;
 import com.contento3.cms.page.template.model.TemplateType;
@@ -18,17 +20,22 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	private TemplateTypeAssembler templateTypeAssembler;
 
 	public TemplateTypeServiceImpl(final TemplateTypeAssembler templateTypeAssembler,final TemplateTypeDao templateTypeDao){
+		Validate.notNull(templateTypeAssembler,"templateTypeAssembler cannot be null");
+		Validate.notNull(templateTypeDao,"templateTypeDao cannot be null");
+		
 		this.templateTypeDao = templateTypeDao;
 		this.templateTypeAssembler = templateTypeAssembler;
 	}
 	
 	@Override
 	public Integer create(TemplateTypeDto type) {
+		Validate.notNull(type,"type cannot be null");
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public TemplateTypeDto findById(Integer templateTypeId){
+		Validate.notNull(templateTypeId,"templateTypeId cannot be null");
 		TemplateType templateType = templateTypeDao.findById(templateTypeId);
 		return templateTypeAssembler.domainToDto(templateType);
 	}
@@ -36,7 +43,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	@Override
 	public void delete(TemplateTypeDto dtoToDelete) {
 		// TODO Auto-generated method stub
-		
+		Validate.notNull(dtoToDelete ,"dtoToDelete cannot be null");
 	}
 
 	

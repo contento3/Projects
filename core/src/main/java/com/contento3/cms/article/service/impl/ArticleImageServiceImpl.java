@@ -21,6 +21,9 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 	private ArticleImageDao articleImageDao;
 	
 	public ArticleImageServiceImpl(final ArticleImageAssembler articleImageAssembler,final ArticleImageDao articleImageDao) {
+		Validate.notNull(articleImageAssembler,"articleImageAssembler cannot be null");
+		Validate.notNull(articleImageDao,"articleImageDao cannot be null");
+		
 		this.articleImageAssembler = articleImageAssembler;
 		this.articleImageDao = articleImageDao;
 	}
@@ -28,14 +31,14 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 	@Override
 	public Object create(final ArticleImageDto dto)
 			throws EntityAlreadyFoundException {
-	
+		Validate.notNull(dto,"dto cannot be null");
 		return null;
 	}
 
 	@Override
 	public void delete(final ArticleImageDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
-		Validate.notNull(dtoToDelete,"articleImageDto to delete is not null");
+		Validate.notNull(dtoToDelete,"dtoToDelete to delete is not null");
 		this.articleImageDao.delete(articleImageAssembler.dtoToDomain(dtoToDelete));
 	}
 
@@ -43,7 +46,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 	@Override
 	public Collection<ArticleImageDto> findAsscArticleImageById(final Integer articleId,final Integer imageId) {
 		Validate.notNull(articleId,"articleId cannot null");
-		Validate.notNull(imageId,"articleId cannot null");
+		Validate.notNull(imageId,"imageId cannot null");
 		return this.articleImageAssembler.domainsToDtos(this.articleImageDao.findAsscArticleImageById(articleId, imageId));
 	}
 
@@ -56,7 +59,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 
 	@Override
 	public void deleteAll(final Collection<ArticleImageDto> articleImageDtos) throws EntityCannotBeDeletedException {
-		Validate.notNull(articleImageDtos,"articleId cannot null");
+		Validate.notNull(articleImageDtos,"articleImageDtos cannot null");
 		Iterator<ArticleImageDto> it = articleImageDtos.iterator();
 		while (it.hasNext()){
 			delete ((ArticleImageDto)it.next());
@@ -67,7 +70,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 	public Collection<ArticleImageDto> findAsscArticleImageByArticleIdAndScopeId(
 			final Integer articleId,final Integer scopeId) {
 		Validate.notNull(articleId,"articleId cannot null");
-		Validate.notNull(articleId,"scopeId cannot null");
+		Validate.notNull(scopeId,"scopeId cannot null");
 		return this.articleImageAssembler.domainsToDtos(this.articleImageDao.findAsscArticleImageByArticleIdAndScopeId(articleId,scopeId));
 	}
 

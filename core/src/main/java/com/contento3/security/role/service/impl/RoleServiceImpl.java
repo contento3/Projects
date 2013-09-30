@@ -2,6 +2,8 @@ package com.contento3.security.role.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
+
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
@@ -17,12 +19,15 @@ public class RoleServiceImpl implements RoleService{
 	private RoleAssembler roleAssembler;
 	RoleServiceImpl(final RoleDao roleDao,final RoleAssembler roleAssembler)
 	{
+		Validate.notNull(roleDao,"roleDao cannot be null");
+		Validate.notNull(roleAssembler,"roleAssembler cannot be null");
 		this.roleDao = roleDao;
 		this.roleAssembler = roleAssembler;
 	}
 	@Override
 	public Integer create(RoleDto dto) throws EntityAlreadyFoundException,
 			EntityNotCreatedException {
+		Validate.notNull(dto,"dto cannot be null");
 		// TODO Auto-generated method stub
 		final Role role = roleAssembler.dtoToDomain(dto);
 	//	final RandomNumberGenerator saltGenerator = new SecureRandomNumberGenerator();
@@ -50,12 +55,14 @@ public class RoleServiceImpl implements RoleService{
 	public void delete(RoleDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
 		// TODO Auto-generated method stub
+		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		roleDao.delete(roleAssembler.dtoToDomain(dtoToDelete));
 	}
 
 	@Override
 	public Collection<RoleDto> findRolesByAccountId(Integer accountId) {
 		// TODO Auto-generated method stub
+		Validate.notNull(accountId,"accountId cannot be null");
 		return roleAssembler.domainsToDtos(roleDao.findRolesByAccountId(accountId));
 		
 	}
@@ -63,6 +70,7 @@ public class RoleServiceImpl implements RoleService{
 	@Override
 	public RoleDto findRoleByName(String name) {
 		// TODO Auto-generated method stub
+		Validate.notNull(name,"name cannot be null");
 		return roleAssembler.domainToDto(roleDao.findByRolename(name));
 		
 		
@@ -79,16 +87,19 @@ public class RoleServiceImpl implements RoleService{
 	@Override
 	public void update(RoleDto dtoToUpdate) {
 		// TODO Auto-generated method stub
+		Validate.notNull(dtoToUpdate,"dtoToUpdate cannot be null");
 		roleDao.update( roleAssembler.dtoToDomain(dtoToUpdate) );
 	}
 	@Override
 	public Collection<RoleDto> findAllRoles() {
 		// TODO Auto-generated method stub
+		//Validate.notNull(dto,"dto cannot be null");
 		return null;
 	}
 	@Override
 	public RoleDto findById(Integer id) {
 		// TODO Auto-generated method stub
+		Validate.notNull(id,"id cannot be null");
 		return roleAssembler.domainToDto(roleDao.findById(id));
 	}
 	

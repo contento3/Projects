@@ -2,6 +2,7 @@ package com.contento3.cms.page.layout.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -19,6 +20,8 @@ public class PageLayoutDaoHibernateImpl extends GenericDaoSpringHibernateTemplat
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection <PageLayout> findPageLayoutByAccount(final Integer accountId){
+		Validate.notNull(accountId ,"accountId cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(PageLayout.class)
 		.add(Restrictions
@@ -29,6 +32,9 @@ public class PageLayoutDaoHibernateImpl extends GenericDaoSpringHibernateTemplat
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection <PageLayout> findPageLayoutByAccountAndLayoutType(final Integer accountId,final Integer pageLayoutTypeId){
+		Validate.notNull(accountId ,"accountId cannot be null");
+		Validate.notNull(pageLayoutTypeId,"pageLayoutTypeId cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(PageLayout.class)
 		.add(Restrictions

@@ -2,6 +2,7 @@ package com.contento3.dam.image.library.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -18,6 +19,7 @@ public class ImageLibraryDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@Override
 	public Collection<ImageLibrary> findImageLibraryByAccountId(
 			Integer accountId) {
+		Validate.notNull(accountId ,"accountId cannot be null");
 		Criteria criteria = this.getSession()
 				.createCriteria(ImageLibrary.class)
 				.add(Restrictions.eq("account.accountId", accountId));
