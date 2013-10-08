@@ -34,12 +34,34 @@
     timeToLiveSeconds="600"
   	overflowToDisk="true"/>
 
+  <cache name="com.contento3.cms.article.model.Article"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="600"
+  	overflowToDisk="true"/>
+
+  <cache name="com.contento3.dam.image.model.Image"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="600"
+  	overflowToDisk="true"/>
+
+  <cache name="com.contento3.dam.document.model.Document"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="600"
+  	overflowToDisk="true"/>
+
   <cache name="com.contento3.cms.page.template.model.Template"
     maxElementsInMemory="10000"
     eternal="false"
     timeToIdleSeconds="300"
     timeToLiveSeconds="60"
 	overflowToDisk="true"/>
+	
 	
 	<cache name="com.contento3.cms.page.template.model.TemplateDirectory"
     maxElementsInMemory="10000"

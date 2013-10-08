@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.contento3.account.model.Account;
@@ -22,6 +24,7 @@ import com.contento3.cms.site.structure.model.Site;
 import com.contento3.dam.image.library.model.ImageLibrary;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "IMAGE")
 public class Image {
 

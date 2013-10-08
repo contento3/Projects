@@ -2,6 +2,7 @@ package com.contento3.security.group.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +22,7 @@ implements GroupDao {
 	@Override
 	public Group findByGroupName(final String groupName)
 	{
+		Validate.notNull(groupName,"groupName cannot be null");
 		final Criteria criteria = this.getSession()
 		.createCriteria(Group.class)
 		.add(Restrictions
@@ -37,6 +39,7 @@ implements GroupDao {
 
 	@Override
 	public Collection<Group> findByUserId(final Integer userid) {
+		Validate.notNull(userid,"userid cannot be null");
 		final Criteria criteria = this.getSession()
 		.createCriteria(Group.class)
 		.createAlias("members", "member")

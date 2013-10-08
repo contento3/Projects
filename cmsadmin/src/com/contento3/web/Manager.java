@@ -8,7 +8,8 @@ public enum Manager {
 	Global("global"),
 	Template("template"),
 	User("user"),
-	Category("category");
+	Category("category"),
+	Article("article");
 	
 	private String managerName;
 	

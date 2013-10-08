@@ -21,9 +21,6 @@ import com.vaadin.ui.Window.CloseEvent;
 
 public class ArticleAsscContentScopeListener extends CustomComponent implements Window.CloseListener,Button.ClickListener{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	/**

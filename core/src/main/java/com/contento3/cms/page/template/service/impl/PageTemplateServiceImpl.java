@@ -2,6 +2,7 @@ package com.contento3.cms.page.template.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,12 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 	
 	PageTemplateServiceImpl(final PageTemplateDao dao,final TemplateDao templateDao,final PageSectionTypeDao sectionTypeDao,
 			final PageDao pageDao,final PageTemplateAssembler assembler){
+		Validate.notNull(dao,"dao cannot be null");
+		Validate.notNull(templateDao,"templateDao cannot be null");
+		Validate.notNull(sectionTypeDao,"sectionTypeDao cannot be null");
+		Validate.notNull(pageDao,"pageDao cannot be null");
+		Validate.notNull(assembler,"assembler cannot be null");
+		
 		this.dao = dao;
 		this.assembler = assembler;
 		this.templateDao = templateDao;
@@ -43,6 +50,8 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 	
 	@Override
 	public PageTemplatePK create(PageTemplateDto dto) throws EntityAlreadyFoundException {
+		Validate.notNull(dto,"dto cannot be null");
+		
 		PageTemplate pageTemplate = assembler.dtoToDomain(dto);
 		PageSectionType pageSectionType;
 		
@@ -74,23 +83,29 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 	
 	@Override
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(final Integer pageId,final Integer pageSectionTypeId) {
+		Validate.notNull(pageId,"pageId cannot be null");
+		Validate.notNull(pageSectionTypeId,"pageSectionTypeId cannot be null");
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionTypeId));
 	}
 
 	@Override
 	public Collection<PageTemplateDto> findByPageId(Integer pageId) {
+		Validate.notNull(pageId,"pageId cannot be null");
 		return assembler.domainsToDtos(dao.findByPageId(pageId));
 	}
 
 	@Override
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(
 			Integer pageId, PageSectionTypeEnum pageSectionType) {
+		Validate.notNull(pageId,"pageId cannot be null");
+		Validate.notNull(pageSectionType,"pageSectionType cannot be null");
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionType));
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(final PageTemplateDto dto) {
+		Validate.notNull(dto,"dto cannot be null");
 		PageSectionType pageSectionType;
 		
 		if (null==dto.getSectionTypeId()){

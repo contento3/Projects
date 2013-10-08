@@ -12,6 +12,7 @@
 <property name="passwordEnvName" value="PEV" />
 </bean>
 
+
 <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
 <property name="config" ref="environmentConfig" />
 </bean>
@@ -79,6 +80,14 @@
 				<prop key="hibernate.generate_statistics">true</prop>
 				<prop key="hibernate.cache.use_structured_entries">true</prop>
 				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
+				
+				 <prop key="hibernate.c3p0.min_size">2 </prop>
+	            <prop key="hibernate.c3p0.max_size" >5</prop>
+	            <prop key="hibernate.c3p0.timeout">600</prop>
+	            <prop key="hibernate.c3p0.max_statements">0</prop>
+	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
+	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
+	            
 			</props>
 		</property>	</bean>
 

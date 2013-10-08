@@ -3,6 +3,7 @@ package com.contento3.cms.article.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -14,11 +15,12 @@ public class RelatedArticleDaoHibernateImpl extends GenericDaoSpringHibernateTem
 
 	public RelatedArticleDaoHibernateImpl() {
 		super(RelatedArticle.class);
-		
 	}
 	
-	public Collection<RelatedArticle> findRelatedArticles(Integer articleId){
-		Criteria criteria = this.getSession()
+	public Collection<RelatedArticle> findRelatedArticles(final Integer articleId){
+		Validate.notNull(articleId,"articleId cannot be null");
+
+		final Criteria criteria = this.getSession()
 				.createCriteria(RelatedArticle.class)
 				.createCriteria("article")
 				.add(Restrictions.eq("articleId", articleId));
@@ -26,8 +28,9 @@ public class RelatedArticleDaoHibernateImpl extends GenericDaoSpringHibernateTem
 	}
 
 	public void deleteRelatedArticle(Integer articleId){
-	
-		Criteria criteria =  this.getSession()
+		Validate.notNull(articleId,"articleId cannot be null");
+
+		final Criteria criteria =  this.getSession()
 				.createCriteria(RelatedArticle.class)
 				.createCriteria("article")
 				.add(Restrictions.eq("articleId", articleId));
@@ -37,6 +40,9 @@ public class RelatedArticleDaoHibernateImpl extends GenericDaoSpringHibernateTem
 	@Override
 	public void deleteRelatedArticles(Integer articleId,
 			Collection<Integer> relatedArticleIds) {
+		Validate.notNull(articleId,"articleId cannot be null");
+		Validate.notNull(relatedArticleIds,"relatedArticleIds cannot be null");
+		
 		Criteria criteria =  this.getSession()
 				.createCriteria(RelatedArticle.class)
 				.createCriteria("article")

@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.contento3.account.model.Account;
 import com.contento3.dam.storagetype.model.StorageType;
 
@@ -19,6 +22,7 @@ import com.contento3.dam.storagetype.model.StorageType;
  *
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "DOCUMENT", schema = "CMS")
 public class Document implements Serializable{
 	

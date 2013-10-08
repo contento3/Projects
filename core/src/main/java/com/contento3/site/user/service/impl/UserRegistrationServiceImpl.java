@@ -1,5 +1,6 @@
 package com.contento3.site.user.service.impl;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -21,6 +22,8 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	
 	@Override
 	public Integer create(UserDto dto) throws EntityAlreadyFoundException {
+		Validate.notNull(dto,"dto cannot be null");
+		
 		String password = dto.getPassword();
 		passwordEncoder = new BCryptPasswordEncoder();
 		String hashedPassword = passwordEncoder.encode(password);
@@ -35,6 +38,9 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	}
 	
 	public void create(final UserDto userDto,final String domain){
+		Validate.notNull(userDto,"articleImageDao cannot be null");
+		Validate.notNull(domain,"articleImageDao cannot be null");
+		
 		final Site site = siteDao.findByDomain(domain);
 		
 		String password = userDto.getPassword();
@@ -51,19 +57,23 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	}
 
 	public void setUserDao(final UserDao userDao){
+		Validate.notNull(userDao,"articleImageDao cannot be null");
 		this.userDao = userDao;
 	} 
 	
 	public void setPasswordEncoder(final PasswordEncoder passwordEncoder){
+		Validate.notNull(passwordEncoder,"passwordEncoder cannot be null");
 		this.passwordEncoder = passwordEncoder;
 	}
 	
 	public void setSiteDao(final SiteDAO siteDao){
+		Validate.notNull(siteDao,"articleImageDao cannot be null");
 		this.siteDao = siteDao;
 	}
 
 	@Override
 	public void delete(UserDto dtoToDelete) {
+		Validate.notNull(dtoToDelete ,"dtoToDelete cannot be null");
 		// TODO Auto-generated method stub
 		
 	}

@@ -12,7 +12,6 @@ import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.UI;
 
 
 /**
@@ -31,6 +30,8 @@ public class ContentUIManager implements UIManager{
 	 * Main tabsheet that hold all the content.
 	 */
 	private TabSheet elementTab;
+	
+	ArticleMgmtUIManager articleManager;
 	
 	/**
 	 * Represents the navigation items in the Content Manager section.
@@ -136,7 +137,7 @@ public class ContentUIManager implements UIManager{
 
 		
 		if(element.equals("Article")){
-			ArticleMgmtUIManager articleManager = new ArticleMgmtUIManager(elementTab,helper);
+			articleManager = new ArticleMgmtUIManager(elementTab,helper);
 			elementTab = (TabSheet) articleManager.render(null);
 		}
 		else if(element.equals("Image")){

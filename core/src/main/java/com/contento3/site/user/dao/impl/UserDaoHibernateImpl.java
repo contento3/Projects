@@ -1,5 +1,6 @@
 package com.contento3.site.user.dao.impl;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +19,8 @@ implements UserDao {
 
 	@Override
 	public User findByUsernameAndSiteId(String username, Integer siteId) {
+		Validate.notNull(siteId,"siteId cannot be null");
+		
 		Criteria criteria = this.getSession()
 		.createCriteria(Page.class)
 		.add(Restrictions
