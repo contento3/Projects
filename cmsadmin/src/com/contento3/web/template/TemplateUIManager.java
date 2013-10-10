@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.contento3.account.dto.AccountDto;
@@ -24,6 +25,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -37,9 +40,6 @@ import com.vaadin.ui.Accordion;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
-
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -156,7 +156,7 @@ public class TemplateUIManager implements UIManager{
 
 		// Have it take all space available in the layout.
 		accordion.setWidth(80, Unit.PERCENTAGE);
-		accordion.setHeight(80, Unit.PERCENTAGE);
+		accordion.setHeight(100, Unit.PERCENTAGE);
 
 		populateAccordion(accordion);
 
@@ -166,20 +166,13 @@ public class TemplateUIManager implements UIManager{
 		panel.setHeight(100, Unit.PERCENTAGE);
 
 	    final Embedded iconTemplate = imageLoader.loadEmbeddedImageByPath("images/add.png");
-	    iconTemplate.setDescription("Add directory");
+	    iconTemplate.setDescription("Add template");
 	    iconTemplate.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void click(ClickEvent event) {
-				try {
-				renderFolderTab(selectedDirectoryId);
+				renderTemplate(null);
 				}
-				catch(Exception e){
-					
-					if(root.getItemIds().isEmpty()){
-						renderTemplate(null);
-					}
-				}
-			}
+
 		});
 
 	    final Embedded iconDirectory = imageLoader.loadEmbeddedImageByPath("images/folder-add.png");
@@ -219,9 +212,12 @@ public class TemplateUIManager implements UIManager{
 		buttonLayout.setSpacing(true);
 		
 		VerticalLayout panelContent = new VerticalLayout();
-		panelContent.setSizeFull();
+		panelContent.setHeight(700,Unit.PIXELS);
+		
 		panelContent.addComponent(accordion);
 		panelContent.addComponent(buttonLayout);
+		panelContent.setExpandRatio(accordion, 90);
+		panelContent.setExpandRatio(buttonLayout, 1);
 		
 		//Add the accordion
 		vLayout.addComponent(panel);
@@ -251,6 +247,7 @@ public class TemplateUIManager implements UIManager{
 		//Add the tree to the vertical layout for template list.
 		templateListLayout.addComponent(populateTemplateList(templateDirectoryList,templateDirectoryService, false));
 	}
+	
 	public Tree populateTemplateList(final Collection<TemplateDirectoryDto> directoryDtos,final TemplateDirectoryService templateDirectoryService, final boolean isGlobalDir){
 
 		final HierarchicalContainer templateContainer;
@@ -538,54 +535,64 @@ public class TemplateUIManager implements UIManager{
 			isGlobalOptionsGroup.setEnabled(false);
 		}
 			
-			final ImageLoader imageLoader = new ImageLoader();
-			final Embedded icon = imageLoader.loadEmbeddedImageByPath("images/add.png");
-
-//			Button addButton = new Button();
-//			addButton.setCaption("Add Folder");
-			icon.addClickListener(new ClickListener() {
+			final Button addButton = new Button();
+			addButton.setCaption("Add Folder");
+			addButton.addClickListener(new com.vaadin.ui.Button.ClickListener() {
 				@Override
-				public void click(ClickEvent event) {
-					AccountService accountService = (AccountService) helper.getBean("accountService");
-	    			AccountDto account = accountService.findAccountById(accountId);
+				public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+					final AccountService accountService = (AccountService) helper.getBean("accountService");
+	    			final AccountDto account = accountService.findAccountById(accountId);
 	    			
 	    			TemplateDirectoryDto directoryDto = new TemplateDirectoryDto();
-	    			directoryDto.setDirectoryName(name.getValue().toString());
+	    			String dirToAdd = name.getValue().toString();
+	    			directoryDto.setDirectoryName(dirToAdd);
+	    			
 	    			directoryDto.setGlobal(selectedTemplateDirScope);
 	    			directoryDto.setAccount(account);
 	    			
+	    			boolean isSiblingWithSameName = false;
 	    			if (null!=selectedDirectoryId){
 	    				TemplateDirectoryDto parentDirectory = templateDirectoryService.findById(selectedDirectoryId);
 	    				directoryDto.setParent(parentDirectory);
+	    				final Collection<TemplateDirectoryDto> childDirectories = templateDirectoryService.findChildDirectories(parentDirectory.getId());
+	    				isSiblingWithSameName = isChildWithSameNameExist(childDirectories,dirToAdd);
 	    			}
 	    			
-	    			final Integer newDirectory = templateDirectoryService.create(directoryDto);
-	    			if(folderId == null){ // works when no items in tree
-		    			directoryDto = templateDirectoryService.findById(newDirectory);
+	    			Integer newDirectory = null;
+	    			if (StringUtils.isEmpty(dirToAdd)) {
+	    				Notification.show("Directory name cannot be empty");
+	    			}
+	    			else if (isSiblingWithSameName && StringUtils.isNotEmpty(dirToAdd)) {
+	    				Notification.show("Directory name already exist,please choose something different");
+	    			}
+	    			else {
+	    				newDirectory = templateDirectoryService.create(directoryDto);
+	    				if(folderId == null){ // works when no items in tree
+	    					directoryDto = templateDirectoryService.findById(newDirectory);
 		    			
-
-		    			HierarchicalContainer templateContainer;
+	    					HierarchicalContainer templateContainer;
 		    			
-		    			if(directoryDto.isGlobal())
-		    				templateContainer = globalTemplateDirContainer;
-		    			else
-		    				templateContainer = localTemplateDirContainer;
+	    					if(directoryDto.isGlobal())
+	    						templateContainer = globalTemplateDirContainer;
+	    					else
+	    						templateContainer = localTemplateDirContainer;
 		    			
-		    			Item item = templateContainer.addItem(directoryDto.getId());
-		            	item.getItemProperty("id").setValue(directoryDto.getId());
-		            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
-		            	templateContainer.setChildrenAllowed(directoryDto.getId(), true);
-	            	}
+			    			Item item = templateContainer.addItem(directoryDto.getId());
+			            	item.getItemProperty("id").setValue(directoryDto.getId());
+			            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
+			            	templateContainer.setChildrenAllowed(directoryDto.getId(), true);
+	    				}
 	    			
-	    			if (newDirectory!=null){
-	    				if(createDirTab != null) //sanity check
-	    					templateTab.removeTab(createDirTab);
+	    				if (newDirectory!=null){
+	    					if(createDirTab != null) //sanity check
+	    						templateTab.removeTab(createDirTab);
 	    				
-	    				Notification.show(name.getValue()+" folder added successfully");
+	    					Notification.show(name.getValue()+" folder added successfully");
+	    				}
 	    			}
 				}
 			});
-			formLayout.addComponent(icon);
+			formLayout.addComponent(addButton);
 	   			
 			createNewFolder.setWidth(100,Unit.PERCENTAGE);
 			createNewFolder.setHeight(100,Unit.PERCENTAGE);
@@ -597,6 +604,15 @@ public class TemplateUIManager implements UIManager{
 			this.templateTab.setSelectedTab(createNewFolder);
 	}
 
+	private boolean isChildWithSameNameExist(final Collection<TemplateDirectoryDto> childDirectories,final String directoryNameToAdd){
+		for (TemplateDirectoryDto dto: childDirectories){
+			if (dto.getDirectoryName().equals(directoryNameToAdd)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private String buildPath(Integer id,String path){
 		if (null!=root.getParent(id)){
 		Integer itemId = (Integer) root.getParent(id);
