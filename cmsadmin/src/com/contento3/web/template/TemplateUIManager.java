@@ -7,6 +7,12 @@ import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.vaadin.peter.contextmenu.ContextMenu;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuOpenedListener;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuOpenedOnTreeItemEvent;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -14,6 +20,7 @@ import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.SessionHelper;
@@ -56,6 +63,12 @@ import com.vaadin.ui.VerticalLayout;
 
 public class TemplateUIManager implements UIManager{
 
+	private static final String CONTEXT_ITEM_RENAME = "Rename";
+	
+	private static final String CONTEXT_ITEM_CREATE = "Create";
+	
+	private static final String CONTEXT_ITEM_OPEN = "Open";
+	
 	/**
 	 * Logger for Template
 	 */
@@ -108,6 +121,7 @@ public class TemplateUIManager implements UIManager{
 	
 	private ImageLoader imageLoader;
 	
+	String itemId;
 	/**
 	 * Constructor 
 	 * @param helper
@@ -261,6 +275,42 @@ public class TemplateUIManager implements UIManager{
         root.setImmediate(true);
     	root.setItemCaptionPropertyId("name");
     	
+    	ContextMenuOpenedListener.TreeListener treeItemListener = new ContextMenuOpenedListener.TreeListener() {
+    	    public void onContextMenuOpenFromTreeItem(final ContextMenuOpenedOnTreeItemEvent event) {
+    	    	itemId = (String) event.getItemId();
+    	    }
+    	};
+
+    	ContextMenuItemClickListener itemClickListener = new ContextMenu.ContextMenuItemClickListener() {
+			public void contextMenuItemClicked(final ContextMenuItemClickEvent event) {
+				ContextMenuItem source = (ContextMenuItem)event.getSource();
+				String itemName = (String)source.getData();
+			
+				//Open the template
+				if (itemName.equals(CONTEXT_ITEM_OPEN)){
+					renderTemplate(new Integer(itemId.substring(5)));
+					itemId = null;
+				}
+				
+				if (itemName.equals(CONTEXT_ITEM_RENAME)){
+					renderTemplate(new Integer(itemId.substring(5)));
+					itemId = null;
+				}
+
+				
+			}
+    	};
+
+    	final ContextMenu contextMenu = new ContextMenu();
+    	contextMenu.setAsContextMenuOf(root);
+    	contextMenu.addContextMenuTreeListener(treeItemListener);
+    	contextMenu.addItemClickListener(itemClickListener); 
+    	
+    	contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(CONTEXT_ITEM_RENAME);
+    	contextMenu.addItem(CONTEXT_ITEM_OPEN).setData(CONTEXT_ITEM_OPEN);
+    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
+    	
+    	
     	/**
     	 * Move template code
     	 * */
@@ -333,7 +383,11 @@ public class TemplateUIManager implements UIManager{
 		        // Modify parent inside the template
 		        TemplateDto templateDto = templateService.findTemplateById( Integer.parseInt(sourceItemId.toString().substring(5)) );
 		        templateDto.setTemplateDirectoryDto(templateDirectoryService.findById((Integer) targetItemId));
-		        templateService.updateTemplate(templateDto);
+		        try {
+					templateService.updateTemplate(templateDto);
+				} catch (EntityAlreadyFoundException e) {
+					LOGGER.info("Unable to update templateDto with id:"+templateDto.getTemplateId());
+				}
 			}
 		});
     	
@@ -366,7 +420,7 @@ public class TemplateUIManager implements UIManager{
         			addChildrenToSelectedDirectory(parentItem,templateDirectoryService,templateContainer);
         		}
         		else {
-        			renderTemplate(new Integer(itemId.substring(5)));
+        			//renderTemplate(new Integer(itemId.substring(5)));
         		}
         	}	
         });

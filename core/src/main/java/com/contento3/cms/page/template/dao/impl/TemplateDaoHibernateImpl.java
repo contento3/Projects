@@ -33,6 +33,22 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 
 		return criteria.list();
 	}
+	
+	@Override
+	public Collection<Template> findTemplateByDirectoryId(final Integer id){
+		Validate.notNull(id,"name cannot be null");
+		
+		Criteria criteria = this.getSession()
+		.createCriteria(Template.class)
+		.setCacheable(true)
+		.setCacheRegion(CACHE_REGION)
+		.createCriteria("directory")
+		.add(Restrictions
+		.eq("id", id));
+
+		return criteria.list();
+	}
+
 
 	@Override
 	public Collection<Template> findTemplateByPathAndAccount(final String templateName,final String parentDirectory,
@@ -49,7 +65,6 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 		.add(Restrictions
 		.eq("template.templateName", templateName));
 		
-		
 		Criteria directoryCriteria = criteria.createCriteria("directory").add(Restrictions
 				.eq("directoryName", parentDirectory));
 		
@@ -60,13 +75,6 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 		Criteria accountCriteria = criteria
 		.createCriteria("account").add(Restrictions
 				.eq("accountId", accountId));
-				
-		
-//				Restrictions
-//		.eq("template.directory.directoryName", parentDirectory)).add(Restrictions
-//		.eq("template.templateType.contentType", templateType)).add(Restrictions
-//		.eq("template.account.accountId", accountId));
-
 		return criteria.list();
 	}
 
