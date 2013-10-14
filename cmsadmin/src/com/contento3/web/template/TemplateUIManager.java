@@ -59,13 +59,14 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.Tree.TreeTargetDetails;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class TemplateUIManager implements UIManager{
 
 	private static final String CONTEXT_ITEM_RENAME = "Rename";
 	
-	private static final String CONTEXT_ITEM_CREATE = "Create";
+	private static final String CONTEXT_ITEM_CREATE = "Create new";
 	
 	private static final String CONTEXT_ITEM_OPEN = "Open";
 	
@@ -185,8 +186,7 @@ public class TemplateUIManager implements UIManager{
 			private static final long serialVersionUID = 1L;
 			public void click(ClickEvent event) {
 				renderTemplate(null);
-				}
-
+			}
 		});
 
 	    final Embedded iconDirectory = imageLoader.loadEmbeddedImageByPath("images/folder-add.png");
@@ -277,7 +277,18 @@ public class TemplateUIManager implements UIManager{
     	
     	ContextMenuOpenedListener.TreeListener treeItemListener = new ContextMenuOpenedListener.TreeListener() {
     	    public void onContextMenuOpenFromTreeItem(final ContextMenuOpenedOnTreeItemEvent event) {
-    	    	itemId = (String) event.getItemId();
+    	    	itemId = event.getItemId().toString();
+
+    	    	ContextMenu contextMenu = event.getContextMenu();
+    	    	contextMenu.removeAllItems();
+    	    	if (itemId.startsWith("file:")){
+	    	    	contextMenu.addItem(CONTEXT_ITEM_OPEN).setData(CONTEXT_ITEM_OPEN);
+	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
+    	    	}
+    	    	else {
+   	    	    	contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(CONTEXT_ITEM_RENAME);
+   	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
+    	    	}
     	    }
     	};
 
@@ -285,19 +296,29 @@ public class TemplateUIManager implements UIManager{
 			public void contextMenuItemClicked(final ContextMenuItemClickEvent event) {
 				ContextMenuItem source = (ContextMenuItem)event.getSource();
 				String itemName = (String)source.getData();
-			
+				
 				//Open the template
-				if (itemName.equals(CONTEXT_ITEM_OPEN)){
-					renderTemplate(new Integer(itemId.substring(5)));
-					itemId = null;
-				}
+				if (itemId.startsWith("file:")){
+					if (itemName.equals(CONTEXT_ITEM_OPEN)){
+						renderTemplate(new Integer(itemId.substring(5)));
+						itemId = null;
+					}
 				
-				if (itemName.equals(CONTEXT_ITEM_RENAME)){
-					renderTemplate(new Integer(itemId.substring(5)));
-					itemId = null;
+					else if (itemName.equals(CONTEXT_ITEM_CREATE)){
+						renderTemplate(null);
+						itemId = null;
+					}
 				}
-
-				
+				else {
+					if (itemName.equals(CONTEXT_ITEM_RENAME)){
+						final TemplateDirectoryDto dto = templateDirectoryService.findById(Integer.parseInt(itemId));
+						renameDirectory(dto);
+						itemId = null;
+					}
+					else if (itemName.equals(CONTEXT_ITEM_CREATE)){
+						renderFolderTab(null);
+					}
+				}
 			}
     	};
 
@@ -306,9 +327,6 @@ public class TemplateUIManager implements UIManager{
     	contextMenu.addContextMenuTreeListener(treeItemListener);
     	contextMenu.addItemClickListener(itemClickListener); 
     	
-    	contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(CONTEXT_ITEM_RENAME);
-    	contextMenu.addItem(CONTEXT_ITEM_OPEN).setData(CONTEXT_ITEM_OPEN);
-    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
     	
     	
     	/**
@@ -426,6 +444,11 @@ public class TemplateUIManager implements UIManager{
         });
         return root;
 	}
+	
+	private void renameDirectory(final TemplateDirectoryDto dtoToUpdate){
+		UI.getCurrent().addWindow(new RenameDirectoryPopup(helper,dtoToUpdate));
+	}
+	
 	
 	private void addChildrenToSelectedDirectory(final Item parentItem,
 												final TemplateDirectoryService templateDirectoryService,

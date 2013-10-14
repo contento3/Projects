@@ -17,4 +17,6 @@ public interface TemplateDirectoryService extends Service <TemplateDirectoryDto>
 
 	Collection<TemplateDirectoryDto> findChildDirectories(Integer parentId);
 
+	void update(TemplateDirectoryDto templateDirectoryDto);
+
 }
