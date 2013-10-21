@@ -2,6 +2,7 @@ package com.contento3.web.site;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -14,14 +15,21 @@ import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.AddPageButtonClickListener;
+import com.contento3.web.site.listener.AddSiteDomainClickListener;
+import com.contento3.web.site.listener.AddSiteLanguageClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
@@ -81,26 +89,34 @@ public class SiteConfigUIManager {
 			siteConfigParentLayout = new VerticalLayout();
 			siteConfigParentLayout.setSpacing(true);
 			siteConfigParentLayout.setMargin(true);
-			
+
 			renderSiteDomains(siteDto,siteTabSheet,pageId);
 			renderLayoutAndLanguage(siteDto);
 	}// end renderSiteConfig()
+	
+	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId){
+		VerticalLayout verticl = new VerticalLayout();
+		HorizontalLayout horizontl = new HorizontalLayout();
+		verticl.setSpacing(true);
+		//verticl.setMargin(true);
+		horizontl.addComponent(verticl);
 		final ScreenHeader screenHeader = new ScreenHeader(siteConfigParentLayout,"Site Configuration");
 		final Label siteDomainLbl = new Label("Domains"); 
 		siteDomainLbl.setStyleName("screenSubHeading");
-		siteConfigParentLayout.addComponent(siteDomainLbl);
-
+		verticl.addComponent(siteDomainLbl);
+		verticl.setSpacing(true);
+		verticl.setMargin(true);
 		if (null==siteDomainTable){
 			siteDomainTable = new Table();
 			final AbstractTableBuilder tableBuilder = new SiteDomainTableBuilder(contextHelper,siteDomainTable);
 			tableBuilder.build((Collection)siteDto.getSiteDomainDto());
 		}
 
-		siteConfigParentLayout.addComponent(siteDomainTable);
-		siteConfigParentLayout.setWidth(100, Unit.PERCENTAGE);
+		verticl.addComponent(siteDomainTable);
+		verticl.setWidth(100, Unit.PERCENTAGE);
 
 		final Tab siteConfigTab = siteTabSheet.addTab(siteConfigParentLayout,"",new ExternalResource("images/configuration.png"));
 		siteConfigTab.setCaption("Site configuration for :"+siteDto.getSiteName());
@@ -108,15 +124,36 @@ public class SiteConfigUIManager {
 		
 		siteTabSheet.setSelectedTab(siteConfigParentLayout);
 		
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddSiteDomainClickListener(contextHelper,siteDto.getSiteId(),siteDomainTable));
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+		
+		horizontl.setWidth(100, Unit.PERCENTAGE);
+		horizontl.addComponent(toolbarGridLayout);
+		horizontl.setExpandRatio(verticl, 8);
+		horizontl.setExpandRatio(toolbarGridLayout, 1);
 		//Pop-up that adds a new domain
-		final Button button = new Button("Add domain", new SiteDomainPopup(contextHelper,siteDto.getSiteId(),siteDomainTable));
-		siteConfigParentLayout.addComponent(button);
-        siteConfigParentLayout.addComponent(new HorizontalRuler());
+		//final Button button = new Button("Add domain", new SiteDomainPopup(contextHelper,siteDto.getSiteId(),siteDomainTable));
+		//verticl.addComponent(button);
+		siteConfigParentLayout.addComponent(horizontl);
+		siteConfigParentLayout.addComponent(new HorizontalRuler());
+		
+        
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void renderLayoutAndLanguage(final SiteDto siteDto){
 		// List box to select Page layouts
+		VerticalLayout verticl = new VerticalLayout();
+		HorizontalLayout horizontl = new HorizontalLayout();
+		horizontl.addComponent(verticl);
+		verticl.setSpacing(true);
+		verticl.setMargin(true);
+		
+		
+		
 		final Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 		final ComboBox pageLayoutCombo = new ComboBox("Default Page Layout",comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
@@ -124,10 +161,11 @@ public class SiteConfigUIManager {
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 		pageLayoutCombo.setValue(siteDto.getDefaultLayoutId());
 		
-		final VerticalLayout siteDefaultLayoutLanguageLayout = new VerticalLayout();
-		siteDefaultLayoutLanguageLayout.addComponent(pageLayoutCombo);
-		siteConfigParentLayout.addComponent(siteDefaultLayoutLanguageLayout);
-		
+		//final VerticalLayout siteDefaultLayoutLanguageLayout = new VerticalLayout();
+		verticl.addComponent(pageLayoutCombo);
+		//verticl.addComponent(siteDefaultLayoutLanguageLayout);
+		verticl.setSpacing(true);
+		verticl.setMargin(true);
 		/* Reading CachedTypedProperties file :"language.propeties" */
 		final Collection<String> languages = new ArrayList<String>();
 		String presetLanguage = "";
@@ -145,15 +183,19 @@ public class SiteConfigUIManager {
 			LOGGER.error("Unable to read languages.properties,Reason:"+e);
 		}
 
-		final ComboBox languageCombo = new ComboBox("Select Language",
-				languages);
+		final ComboBox languageCombo = new ComboBox("Select Language",languages);
 
 		languageCombo.setValue(presetLanguage);
-		siteConfigParentLayout.addComponent(languageCombo);
-
+		verticl.addComponent(languageCombo);
+		verticl.setSpacing(true);
+		verticl.setMargin(true);
+		Label emptyLabel2 = new Label("");
+		emptyLabel2.setHeight("1em");
+		verticl.addComponent(emptyLabel2);
 		final Button siteSaveButton = new Button("Save");
-		siteConfigParentLayout.addComponent(siteSaveButton);
-
+		verticl.addComponent(siteSaveButton);
+		verticl.setSpacing(true);
+		verticl.setMargin(true);
 		siteSaveButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -161,6 +203,20 @@ public class SiteConfigUIManager {
 				Notification.show(String.format("SiteConfig for %s saved successfullly",siteDto.getSiteName()));
 			}// end buttonClick
 		});// end siteSaveButton listener
+		
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddSiteLanguageClickListener(siteDto,  pageLayoutCombo,languageCombo,this));
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+		
+		horizontl.setWidth(100, Unit.PERCENTAGE);
+		horizontl.addComponent(toolbarGridLayout);
+		horizontl.setExpandRatio(verticl, 8);
+		horizontl.setExpandRatio(toolbarGridLayout, 1);
+		
+		siteConfigParentLayout.addComponent(horizontl);
+		
 	}
 	
 	/**
@@ -170,7 +226,7 @@ public class SiteConfigUIManager {
 	 * @param pageLayoutCombo
 	 * @param languageCombo
 	 */
-	private void saveSite(final SiteDto siteDto,final ComboBox pageLayoutCombo,final ComboBox languageCombo) {
+	public void saveSite(final SiteDto siteDto,final ComboBox pageLayoutCombo,final ComboBox languageCombo) {
 		
 		
 		if(languageCombo.getValue()!=null){

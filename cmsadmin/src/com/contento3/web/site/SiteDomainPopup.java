@@ -56,7 +56,7 @@ implements Window.CloseListener, Button.ClickListener{
     }
 
     /** Handle the clicks for the two buttons. */
-    public void openButtonClick(Button.ClickEvent event) {
+    public void openButtonClick(ClickEvent event) {
         /* Create a new window. */
         final Button siteDomainButton = new Button();
 		popupWindow = new Window();
@@ -128,6 +128,80 @@ implements Window.CloseListener, Button.ClickListener{
 			});
     	}
     }
+
+    public void openButtonClick() {
+        /* Create a new window. */
+        final Button siteDomainButton = new Button();
+		popupWindow = new Window();
+    	
+		popupWindow.setPositionX(200);
+    	popupWindow.setPositionY(100);
+
+    	popupWindow.setHeight(25,Unit.PERCENTAGE);
+    	popupWindow.setWidth(21,Unit.PERCENTAGE);
+       
+    	/* Add the window inside the main window. */
+        UI.getCurrent().addWindow(popupWindow);
+        
+        /* Listen for close events for the window. */
+        popupWindow.addCloseListener(this);
+        popupWindow.setModal(true);
+        
+        final VerticalLayout popupMainLayout = new VerticalLayout();
+        final Label label = new Label("Domain Name");
+        final HorizontalLayout inputDataLayout = new HorizontalLayout();
+        final TextField textField = new TextField("");
+        textField.setInputPrompt("Enter domain name");
+        
+        inputDataLayout.setSpacing(true);
+        inputDataLayout.addComponent(label);
+        inputDataLayout.setComponentAlignment(label, Alignment.BOTTOM_RIGHT);
+        inputDataLayout.addComponent(textField);
+        
+        popupMainLayout.addComponent(inputDataLayout);
+        popupMainLayout.setSpacing(true);
+        
+        final HorizontalLayout addButtonLayout = new HorizontalLayout();
+        popupMainLayout.addComponent(addButtonLayout);
+
+        addButtonLayout.addComponent(siteDomainButton);
+        addButtonLayout.setComponentAlignment(siteDomainButton, Alignment.BOTTOM_RIGHT);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
+        
+        popupWindow.setContent(popupMainLayout);
+        popupWindow.setResizable(false);
+        /* Allow opening only one window at a time. */
+        openbutton.setEnabled(false);
+
+        final Integer domainId;
+		final SiteDto updatedSiteDto = siteService.findSiteById(siteId);
+
+    	if (false){//event.getButton().getCaption().equals("Edit")){
+	        siteDomainButton.setCaption("Save");
+	        popupWindow.setCaption("Edit domain");
+	        //domainId = (Integer)event.getButton().getData();
+	        final SiteDomainDto siteDomainDto = siteDomainService.findById(domainId);
+	        textField.setValue(siteDomainDto.getDomainName());
+	        siteDomainButton.addClickListener(new ClickListener() {
+				private static final long serialVersionUID = 1L;
+				public void buttonClick(ClickEvent event) {
+					handleEditDomain(textField,domainId,siteDomainDto);
+				}	
+			});
+    	}
+    	else
+    	{
+	        siteDomainButton.setCaption("Add");
+	        popupWindow.setCaption("Add new domain");
+	        siteDomainButton.addClickListener(new ClickListener() {
+				private static final long serialVersionUID = 1L;
+				public void buttonClick(ClickEvent event) {
+					handleNewDomain(textField,updatedSiteDto);
+				}	
+			});
+    	}
+    }
+
 
     /**
      * Handles adding new SiteDomain

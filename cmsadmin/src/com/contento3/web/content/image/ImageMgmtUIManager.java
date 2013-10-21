@@ -26,7 +26,11 @@ import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.document.listener.DocumentSaveListener;
+import com.contento3.web.content.image.listener.AddImageButtonListener;
+import com.contento3.web.content.image.listener.AddLibraryButtonListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
@@ -40,6 +44,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -188,14 +193,22 @@ public class ImageMgmtUIManager extends CustomComponent
 		mainLayout.addComponent(imageHeading);
 		mainLayout.addComponent(new HorizontalRuler());
 		mainLayout.setMargin(true);
-		
+		HorizontalLayout horizon2 = new HorizontalLayout();
 		/* Button to add new images */
 		Button addImageButton = new Button();
-		mainLayout.addComponent(addImageButton);
+		horizon2.addComponent(addImageButton);
 		HorizontalLayout horizLayout = new HorizontalLayout();
 		horizLayout.setSpacing(true);
 	
 		addImageButton.setCaption("Add image");
+		GridLayout toolbarGridLayout = new GridLayout(1,2);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddImageButtonListener(tabSheet, this));
+		listeners.add(new AddLibraryButtonListener(helper));
+		//listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId));
+		
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+		builder.build();
 		
 		/*Add Image button listener*/
 		addImageButton.addClickListener(new ClickListener(){
@@ -213,11 +226,14 @@ public class ImageMgmtUIManager extends CustomComponent
 				//newArticleLayout.setHeight("100%");
 			}
 		});
-		horizLayout.addComponent(addImageButton);
+		horizon2.addComponent(addImageButton);
+		horizLayout.addComponent(horizon2);
+		horizLayout.setWidth(100,Unit.PERCENTAGE);
 		
 		/* Button to add library */
+		
 		Button addLibraryButton = new Button("Add Library",new ImageLibraryPopup(helper));
-		horizLayout.addComponent(addLibraryButton);
+		horizon2.addComponent(addLibraryButton);
 		mainLayout.addComponent(horizLayout);
 		mainLayout.addComponent(new HorizontalRuler());
 		
@@ -266,6 +282,9 @@ public class ImageMgmtUIManager extends CustomComponent
 	    horiz.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
 	    mainLayout.addComponent(horiz);
 	    mainLayout.addComponent(imagePanlelayout);
+	    horizLayout.addComponent(toolbarGridLayout);
+	    horizLayout.setExpandRatio(toolbarGridLayout, 1);
+	    horizLayout.setExpandRatio(horizon2, 8);
 	}
 	
 	/**
@@ -384,7 +403,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	 * @return
 	 */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	private Component renderAddEditScreen(final String command,final ImageDto dto){
+	public Component renderAddEditScreen(final String command,final ImageDto dto){
 		root = new Panel("Upload image");
 		rootContentLayout = new VerticalLayout();
 		root.setContent(rootContentLayout);

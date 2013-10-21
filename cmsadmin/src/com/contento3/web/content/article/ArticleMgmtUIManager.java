@@ -1,24 +1,34 @@
 package com.contento3.web.content.article;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.article.listener.AddArticleButtonListener;
+import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
+import com.contento3.web.content.image.listener.AddImageButtonListener;
+import com.contento3.web.content.image.listener.AddLibraryButtonListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -109,7 +119,6 @@ public class ArticleMgmtUIManager implements UIManager {
 
 	@Override
 	public Component render(String command, Integer entityFilterId) {
-	
 		return null;
 	}
 	@Override
@@ -127,16 +136,34 @@ public class ArticleMgmtUIManager implements UIManager {
 		this.verticalLayout.addComponent(new HorizontalRuler());
 		this.verticalLayout.setMargin(true);
 		
-		addArticleButton();
+//		addArticleButton();
+		
+		GridLayout toolbarGridLayout = new GridLayout(1,2);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddArticleButtonListener(this.contextHelper,this.tabSheet,this.articleTable));
+		//listeners.add(new AddLibraryButtonListener(helper));
+		//listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId));
+		//ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable)
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+		builder.build();
+		HorizontalLayout horizon = new HorizontalLayout();
+		VerticalLayout verticl = new VerticalLayout();
+		horizon.addComponent(verticl);
+		this.verticalLayout.addComponent(horizon);
+		horizon.addComponent(toolbarGridLayout);
+		horizon.setWidth(100,Unit.PERCENTAGE);
+		horizon.setExpandRatio(toolbarGridLayout, 1);
+		horizon.setExpandRatio(verticl, 9);
+		horizon.setComponentAlignment(toolbarGridLayout, Alignment.TOP_CENTER);	
 		
 		final TextField searchHeader = new TextField("header name");
 		searchHeader.setInputPrompt("Article Header name");
 		final TextField searchCatagory = new TextField("catagory name");
 		searchCatagory.setInputPrompt("Article Category");
 		Button searchItem = new Button("search");
-		this.verticalLayout.addComponent(searchHeader);
-		this.verticalLayout.addComponent(searchCatagory);
-		this.verticalLayout.addComponent(searchItem);
+		verticl.addComponent(searchHeader);
+		verticl.addComponent(searchCatagory);
+		verticl.addComponent(searchItem);
 		
 		this.verticalLayout.addComponent(new HorizontalRuler());
 		

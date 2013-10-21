@@ -161,7 +161,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 
 		
 
-    	if (event.getButton().getCaption().equals("Edit")){
+    	if (event != null && event.getButton().getCaption().equals("Edit")){
 			groupButton.setCaption("Save");
 			popupWindow.setCaption("Edit group");
 			final Integer Id = (Integer) event.getButton().getData();

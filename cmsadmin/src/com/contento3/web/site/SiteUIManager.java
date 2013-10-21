@@ -152,18 +152,27 @@ public class SiteUIManager implements UIManager {
 		
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
 		final VerticalLayout veticalLayout = new VerticalLayout();
+		final VerticalLayout veticalLayout2 = new VerticalLayout();
 		//final TabSheet pagesTab = new TabSheet();
 		final Label heading = new Label("Site dashboard");
 		heading.setStyleName("screenHeading");
-		veticalLayout.addComponent(heading);
-		
-		veticalLayout.addComponent(grid);
-		
-		veticalLayout.addComponent(new HorizontalRuler());
+		veticalLayout2.addComponent(heading);
+				
+		veticalLayout2.addComponent(new HorizontalRuler());
+		veticalLayout2.addComponent(horizontalLayout);
 		veticalLayout.setMargin(true);
 		
-		Component component = pageUIManager.renderPageListing(siteId,uiTabSheet,horizontalLayout,veticalLayout);
-		renderButtons(horizontalLayout,siteId,uiTabSheet);
+		uiTabSheet.setHeight(100,Unit.PERCENTAGE);
+		uiTabSheet.setWidth(100,Unit.PERCENTAGE);
+
+		horizontalLayout.addComponent(veticalLayout);
+		horizontalLayout.addComponent(grid);
+		horizontalLayout.setWidth(100,Unit.PERCENTAGE);
+		horizontalLayout.setExpandRatio(veticalLayout, 10);
+		horizontalLayout.setExpandRatio(grid, 1);
+		
+		Component component = pageUIManager.renderPageListing(siteId,uiTabSheet,veticalLayout2,veticalLayout);
+		//renderButtons(horizontalLayout,siteId,uiTabSheet);
 		
 		return component;
 	}
@@ -176,8 +185,8 @@ public class SiteUIManager implements UIManager {
 	 * @param pagesTab
 	 */
 	public void renderButtons(final HorizontalLayout horizontalLayout,final Integer siteId,final TabSheet pagesTab){
-		pagesTab.setHeight(100,Unit.PERCENTAGE);
-		pagesTab.setWidth(100,Unit.PERCENTAGE);
+//		pagesTab.setHeight(100,Unit.PERCENTAGE);
+//		pagesTab.setWidth(100,Unit.PERCENTAGE);
 
 		// Button that when clicked rendered a new page tab.
 		final Button newPageButton = new Button("Create page");

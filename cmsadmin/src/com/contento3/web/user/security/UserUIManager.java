@@ -1,18 +1,25 @@
 package com.contento3.web.user.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.user.listner.AddRoleClickListener;
+import com.contento3.web.user.listner.AddUserClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
@@ -97,28 +104,45 @@ public class UserUIManager implements UIManager {
 	private void renderUserListing() {
 		Label groupHeading = new Label("User Manager");
 		groupHeading.setStyleName("screenHeading");
-		this.verticalLayout.addComponent(groupHeading);
-		this.verticalLayout.addComponent(new HorizontalRuler());
-		this.verticalLayout.setMargin(true);
-		addUserButton();
-		renderUserTable();
+		HorizontalLayout horizon = new HorizontalLayout();
+		VerticalLayout verticl = new VerticalLayout();
+		this.verticalLayout.addComponent(horizon);
+		horizon.addComponent(verticl);
+		verticl.addComponent(groupHeading);
+		verticl.addComponent(new HorizontalRuler());
+		verticl.setMargin(true);
+		horizon.setWidth(100, Unit.PERCENTAGE);
+		addUserButton(horizon);
+		renderUserTable(verticl);
+		
+		horizon.setExpandRatio(verticl, 9);
 	}
 
 	/**
 	 * display "Add User" button on the top of tab sheet
 	 */
-	private void addUserButton(){
-		final Button addButton = new Button("Add User", new UserPopup(contextHelper,userTable));
-		this.verticalLayout.addComponent(addButton);
+	private void addUserButton(HorizontalLayout horizontl){
+		//final Button addButton = new Button("Add User", new UserPopup(contextHelper,userTable));
+		//this.verticalLayout.addComponent(addButton);
+		
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddUserClickListener(contextHelper, userTable ));
+		
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+		horizontl.addComponent(toolbarGridLayout);
+		horizontl.setExpandRatio(toolbarGridLayout, 1);
 	}
 
 	/**
 	 * Render group table to screen
+	 * @param verticl 
 	 */
-	private void renderUserTable() {
+	private void renderUserTable(VerticalLayout verticl) {
 		final AbstractTableBuilder tableBuilder = new UserTableBuilder(contextHelper,userTable);
 		tableBuilder.build((Collection)userService.findUsersByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
-		this.verticalLayout.addComponent(userTable);
+		verticl.addComponent(userTable);
 	}
 
 }

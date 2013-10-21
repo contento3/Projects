@@ -156,7 +156,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
 
-        if(event.getButton().getCaption().equals("Edit"))
+        if(event != null && event.getButton().getCaption().equals("Edit"))
         {
         	roleButton.setCaption("Edit");
         	popupWindow.setCaption("Edit Role");
