@@ -120,7 +120,6 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 			contentScopeCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 			contentScopeCombo.setItemCaptionPropertyId("name");
 			contentScopeCombo.setImmediate(true);
-			
 			Collection<String> listOfColumns = new ArrayList<String>();
 			listOfColumns.add("Images");
 			setCaption("Add images");

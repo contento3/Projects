@@ -1,21 +1,16 @@
 <beans 
   xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:mvc="http://www.springframework.org/schema/mvc"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+  http://www.springframework.org/schema/mvc
+  http://www.springframework.org/schema/mvc/spring-mvc.xsd
   ">
-
 
  <import resource="applicationContext-site-security.xml"/>
 
-   <bean id="viewResolver"
-            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-            <property name="prefix" value="register" />
-            <property name="suffix" value=".jsp" />
-        </bean>
-  
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<value>
@@ -25,11 +20,18 @@
 			/image/**/*=staticResourceController
 			/js/**/*=staticResourceController
 			/css/**/*=staticResourceController
-	 	 	/*=pageController
+	  	 	/*=pageController  
 		</value>
 	</property>
 </bean>
 
+<mvc:interceptors>
+	<mvc:interceptor>
+		<mvc:mapping path="/**/*"/>
+        <mvc:mapping path="/register/**/*"/>	<!-- At the moment, thymeleaf is only used for user registration controller not for page controller -->
+        <bean class="com.contento3.site.filter.SiteInterceptor" />
+    </mvc:interceptor>
+</mvc:interceptors> 
 
 <bean id="pageController" class="com.contento3.site.controller.PageController">
 	<property name="freeMarkerView" ref="fmView" />
@@ -115,4 +117,39 @@
   </property>
 </bean>
 
+
+    
+  <!-- **************************************************************** -->
+  <!--  THYMELEAF-SPECIFIC ARTIFACTS                                    -->
+  <!--  TemplateResolver <- TemplateEngine <- ViewResolver              -->
+  <!-- **************************************************************** -->
+
+
+  <bean id="tempLoader"
+        class="com.contento3.site.template.loader.impl.TemplateLoaderImpl">
+            <constructor-arg ref="pageAssemb" />        
+  </bean>
+
+  <bean id="dbResourceResolver"
+        class="com.contento3.thymeleaf.resolver.DBResourceResolver">
+            <property name="templateLoader" ref="tempLoader" />        
+  </bean>
+  
+
+
+  <bean id="templateResolver"
+        class="com.contento3.thymeleaf.resolver.C3TemplateResolver">
+	<constructor-arg ref="dbResourceResolver" />
+    <property name="templateMode" value="HTML5" />
+  </bean>
+  
+    
+  <bean id="templateEngine"
+        class="org.thymeleaf.spring3.SpringTemplateEngine">
+    <property name="templateResolver" ref="templateResolver" />
+  </bean>
+   
+  <bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
+    <property name="templateEngine" ref="templateEngine" />
+  </bean>  
 </beans>

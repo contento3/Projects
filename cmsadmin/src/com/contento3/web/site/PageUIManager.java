@@ -204,14 +204,14 @@ public class PageUIManager {
 		listeners.add(new PageAssignCategoryListener(contextHelper,pageId,(Integer)SessionHelper.loadAttribute("accountId")));
 		listeners.add(new PageViewCategoryListener(pageId,contextHelper));
 		listeners.add(new PageViewCategoryListener(pageId,contextHelper));
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
-		builder.build();
+	//	ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+	//	builder.build();
 
-		newPageRootlayout.addComponent(toolbarGridLayout);
+	//	newPageRootlayout.addComponent(toolbarGridLayout);
 		newPageRootlayout.setWidth(100,Unit.PERCENTAGE);
 		
-		newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
-		newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
+	//	newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
+	//	newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
 
 		// TODO get it from a property file
 		String pageTabTitle = "Untitled page";

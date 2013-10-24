@@ -136,7 +136,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 			setExposeSessionAttributes(true);
 			setExposeSpringMacroHelpers(true);
 			exposeModelAsRequestAttributes(model, request);
-			setRequestContextAttribute("rc");
+			//setRequestContextAttribute("rc");
 
 		    model.put( "site", siteDto );
 		    //model.put( "user", model.get("user"));

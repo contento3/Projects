@@ -30,15 +30,15 @@ public class PageController extends AbstractController {
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-    	LOGGER.info("Page Controller for request uri: "+request.getRequestURI());	
+    	LOGGER.info("Page Controller for request uri: "+request.getRequestURI());
 
 		ModelAndView modelAndView = null;
 		String requestURI = request.getRequestURI();
 		if (!requestURI.equals("/favicon.ico")){
 			modelAndView = new ModelAndView();
-			modelAndView.setView(freemarkerView); 
+			//modelAndView.setView(freemarkerView); 
 		}
-
+		modelAndView.getModel().put("siteId", request.getAttribute("siteId"));
 		return modelAndView;
 	}
 

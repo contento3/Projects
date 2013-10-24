@@ -59,8 +59,7 @@
 			     <value>com.contento3.dam.document.model.DocumentType</value>
 			     <value>com.contento3.dam.storagetype.model.StorageType</value>
 			     <value>com.contento3.cms.article.model.ArticleImage</value>
-			  <!--   <value>com.contento3.site.user.model.User</value> -->
-			    
+			     <value>com.contento3.site.user.model.User</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
