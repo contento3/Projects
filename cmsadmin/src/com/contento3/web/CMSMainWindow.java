@@ -331,7 +331,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         item0.getItemProperty("name").setValue("Sites");
         item0.getItemProperty("id").setValue(new Integer(-1));
         item0.getItemProperty("icon").setValue(new ExternalResource("images/site.png"));
-        
+
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
         root.setItemIcon(contentMgmt, new ExternalResource("images/content.png"));
@@ -351,7 +351,8 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
         root.setItemIcon(template, new ExternalResource("images/template.png"));
         template.getItemProperty("icon").setValue(new ExternalResource("images/template.png"));
-
+        
+        
         Item modules = hwContainer.addItem("Modules");
         modules.getItemProperty("name").setValue(NavigationConstant.MODULES);
         root.setItemIcon(modules, new ExternalResource("images/module-icon.png"));

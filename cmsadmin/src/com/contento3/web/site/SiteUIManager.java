@@ -99,7 +99,6 @@ public class SiteUIManager implements UIManager {
 		Component componentToReturn = null;
 		uiTabSheet.setHeight(100,Unit.PERCENTAGE);
 		uiTabSheet.setWidth(100,Unit.PERCENTAGE);
-
 		if(command == null){
 				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper);
 				componentToReturn = sitesDashBoard.render(null);

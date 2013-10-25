@@ -188,7 +188,7 @@ implements Window.CloseListener, Button.ClickListener{
 					handleEditDomain(textField,domainId,siteDomainDto);
 				}	
 			});
-    	}
+    	}	
     	else
     	{
 	        siteDomainButton.setCaption("Add");

@@ -207,6 +207,7 @@ public class TemplateUIManager implements UIManager{
 		
 		//Add the accordion
 		vLayout.addComponent(panel);
+		panel.setWidth(100,Unit.PERCENTAGE);
 		vLayout.setHeight(100,Unit.PERCENTAGE);
 		panel.setContent(panelContent);
 		

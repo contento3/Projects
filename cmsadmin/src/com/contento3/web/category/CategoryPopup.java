@@ -230,6 +230,7 @@ implements Window.CloseListener,Button.ClickListener {
 		} catch (EntityAlreadyFoundException e) {
 			Notification.show("Category already found.");
 		}
+		UI.getCurrent().removeWindow(popupWindow);
     }
 
     /**

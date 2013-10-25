@@ -311,7 +311,7 @@ public class ImageMgmtUIManager extends CustomComponent
 			
 			 // Visual controls (First, Previous, 1 2 ..., Next, Last)
 	        // We use here a LazyPagingComponentListener to fetch the list of items to display from the DB
-	        final PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage, images, new LazyPagingComponentListener<ImageDto>(itemsArea) {
+	        final PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage,4, images, new LazyPagingComponentListener<ImageDto>(itemsArea) {
 
 				/**
 				 * 

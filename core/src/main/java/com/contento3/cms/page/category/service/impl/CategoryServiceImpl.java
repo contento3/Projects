@@ -95,14 +95,15 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void update(final CategoryDto categoryDto,final Integer parentCategoryId){
 		Validate.notNull(categoryDto,"categoryDto cannot be null");
-		Validate.notNull(parentCategoryId,"parentCategoryId cannot be null");
+		//Validate.notNull(parentCategoryId,"parentCategoryId cannot be null");
 		 final Category category = categoryAssembler.dtoToDomain(categoryDto);
 		 if (null!=parentCategoryId){
 			 final Category parent = categoryDao.findById(parentCategoryId);
 			 category.setParent(parent);
-			 category.setAccount(accountDao.findById(categoryDto.getAccountId()));
+			 
 			 parent.getChild().add(category);
 		 }
+		 category.setAccount(accountDao.findById(categoryDto.getAccountId()));
 		 categoryDao.update(category);
 	}
 
