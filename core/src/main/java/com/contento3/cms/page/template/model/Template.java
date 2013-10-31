@@ -44,11 +44,15 @@ public class Template {
 	@JoinColumn(name = "ACCOUNT_ID")
 	private Account account;
 
+	@OneToOne
+	@JoinColumn(name = "TEMPLATE_CATEGORY_ID")
+	private TemplateCategory templateCategory;
+
 	public Integer getTemplateId() {
 		return templateId;
 	}
 
-	public void setTemplateId(Integer templateId) {
+	public void setTemplateId(final Integer templateId) {
 		this.templateId = templateId;
 	}
 
@@ -56,7 +60,15 @@ public class Template {
 		return templateType;
 	}
 
-	public void setTemplateType(TemplateType templateType) {
+	public TemplateCategory getTemplateCategory() {
+		return templateCategory;
+	}
+
+	public void setTemplateCategory(final TemplateCategory templateCategory) {
+		this.templateCategory = templateCategory;
+	}
+
+	public void setTemplateType(final TemplateType templateType) {
 		this.templateType = templateType;
 	}
 
@@ -64,7 +76,7 @@ public class Template {
 		return isGlobal;
 	}
 
-	public void setGlobal(boolean isGlobal) {
+	public void setGlobal(final boolean isGlobal) {
 		this.isGlobal = isGlobal;
 	}
 
@@ -72,7 +84,7 @@ public class Template {
 		return templateName;
 	}
 
-	public void setTemplateName(String templateName) {
+	public void setTemplateName(final String templateName) {
 		this.templateName = templateName;
 	}
 
@@ -80,11 +92,11 @@ public class Template {
 		return templateText;
 	}
 
-	public void setTemplateText(String templateText) {
+	public void setTemplateText(final String templateText) {
 		this.templateText = templateText;
 	}
 
-	public void setDirectory(TemplateDirectory directory) {
+	public void setDirectory(final TemplateDirectory directory) {
 		this.directory = directory;
 	}
 
@@ -92,7 +104,7 @@ public class Template {
 		return directory;
 	}
 
-	public void setAccount(Account account) {
+	public void setAccount(final Account account) {
 		this.account = account;
 	}
 

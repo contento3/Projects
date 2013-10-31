@@ -40,6 +40,7 @@
 <bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
 	<property name="freeMarkerView" ref="fmView" />
 	<property name="registrationService" ref="userRegistrationService" />
+	<property name="templateService" ref="templateService" />
 </bean>
 
 <!-- This is used to return the javascript,css and images that are stored in the database and potentially stored on amazon s3  -->
@@ -127,7 +128,9 @@
 
   <bean id="tempLoader"
         class="com.contento3.site.template.loader.impl.TemplateLoaderImpl">
-            <constructor-arg ref="pageAssemb" />        
+            <constructor-arg ref="pageAssemb" />
+            <constructor-arg ref="siteService" />
+            <constructor-arg ref="templateService" />        
   </bean>
 
   <bean id="dbResourceResolver"

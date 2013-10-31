@@ -1,6 +1,7 @@
 package com.contento3.site.user.service.impl;
 
 import org.apache.commons.lang.Validate;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
