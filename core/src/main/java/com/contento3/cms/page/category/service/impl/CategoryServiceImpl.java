@@ -45,12 +45,18 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Integer create(final CategoryDto categoryDto)  {
+	public Integer create(final CategoryDto categoryDto,final Integer parentId)  {
 		Validate.notNull(categoryDto,"categoryDto cannot be null");
 		final Account account = accountDao.findById(categoryDto.getAccountId());
 		final Category category = categoryAssembler.dtoToDomain(categoryDto);
 		final Account parentAccountId;
-
+		if (null!= parentId){
+			 final Category parent = categoryDao.findById(parentId);
+			 category.setParent(parent);
+			 
+			 parent.getChild().add(category);
+		 }
+		
 		if(categoryDto.getParent() != null){
 			parentAccountId = accountDao.findById(categoryDto.getParent().getAccountId());
 			category.getParent().setAccount(parentAccountId);
@@ -60,6 +66,11 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryDao.persist(category);
 	}//end create()
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Integer create(final CategoryDto categoryDto)  {
+		throw new IllegalArgumentException("This method is not implemented");
+	}//end create()
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override

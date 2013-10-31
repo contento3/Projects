@@ -180,7 +180,6 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	        popupMainLayout.addComponent(vLayout);
 	        popupWindow.setContent(popupMainLayout);
 	        popupWindow.setResizable(false);
-
 	    }
 
 	/**

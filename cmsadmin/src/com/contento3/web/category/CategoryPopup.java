@@ -218,14 +218,14 @@ implements Window.CloseListener,Button.ClickListener {
 		final CategoryDto categoryDto = new CategoryDto();
 		categoryDto.setName(textField.getValue().toString());
 		categoryDto.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
-		
-		if (selectedParentCategory>0){
-			final CategoryDto parentCategory = categoryService.findById(selectedParentCategory);
-			categoryDto.setParent(parentCategory);
-		}
-		
 		try {
-			categoryService.create(categoryDto);
+		if (selectedParentCategory>0){
+//			final CategoryDto parentCategory = categoryService.findById(selectedParentCategory);
+//			categoryDto.setParent(parentCategory);
+			categoryService.create(categoryDto, selectedParentCategory);
+		}else{
+			categoryService.create(categoryDto, null);
+		}
 			resetTable();
 		} catch (EntityAlreadyFoundException e) {
 			Notification.show("Category already found.");
@@ -248,6 +248,7 @@ implements Window.CloseListener,Button.ClickListener {
 			categoryService.update(updatedCategoryDto,null);
 		}
 		resetTable();
+		UI.getCurrent().removeWindow(popupWindow);
     }
 
     @SuppressWarnings("rawtypes")
@@ -261,13 +262,14 @@ implements Window.CloseListener,Button.ClickListener {
     
     /** Handle Close button click and close the window. */
     public void closeButtonClick(Button.ClickEvent event) {
-    	if (!isModalWindowClosable){
+    	//if (!isModalWindowClosable){
         /* Windows are managed by the application object. */
         parentLayout.removeComponent(popupWindow);
+        UI.getCurrent().removeWindow(popupWindow);
         
         /* Return to initial state. */
         openbutton.setEnabled(true);
-    	}
+    	//}
     }
 
     /** In case the window is closed otherwise. */

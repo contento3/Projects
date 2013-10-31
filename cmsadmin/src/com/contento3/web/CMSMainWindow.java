@@ -50,6 +50,8 @@ import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.CloseHandler;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
@@ -229,6 +231,16 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
 	    uiTabsheet.setWidth(100,Unit.PERCENTAGE);
 	    uiTabsheet.setHeight(100,Unit.PERCENTAGE);
+	    uiTabsheet.setCloseHandler(new CloseHandler() {
+			
+			@Override
+			public void onTabClose(TabSheet tabsheet, Component tabContent) {
+				Tab currentTab= uiTabsheet.getTab(tabContent);
+				int currentPosition = uiTabsheet.getTabPosition(currentTab);
+				if(currentPosition > 0) uiTabsheet.setSelectedTab(currentPosition-1);
+				uiTabsheet.removeTab(currentTab);
+			}
+		} );
 	    
 	    HorizontalLayout horizTop = new HorizontalLayout();
 	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);

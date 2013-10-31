@@ -309,28 +309,10 @@ public class ImageMgmtUIManager extends CustomComponent
 			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("paging.properties");
 			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
 			
-			 // Visual controls (First, Previous, 1 2 ..., Next, Last)
-	        // We use here a LazyPagingComponentListener to fetch the list of items to display from the DB
-	        final PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage,4, images, new LazyPagingComponentListener<ImageDto>(itemsArea) {
-
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected Collection<ImageDto> getItemsList(int startIndex, int endIndex) {
-					return list.subList(startIndex, endIndex);
-				}
-
-				@Override
-				protected Component displayItem(int index, ImageDto item) {
-					return addImagesToPanel(item);
-				}
-
-	        });
+			for(ImageDto dto: images){
+				itemsArea.addComponent(addImagesToPanel(dto));
+			}
 	        imagePanlelayout.addComponent(itemsArea);
-	        imagePanlelayout.addComponent(pagingComponent);
 		} catch (ClassNotFoundException e) {
 			
 			e.printStackTrace();

@@ -5,7 +5,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.vaadin.peter.contextmenu.ContextMenu;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuOpenedListener;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuOpenedOnTreeItemEvent;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -13,9 +20,11 @@ import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -23,6 +32,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -35,9 +46,8 @@ import com.vaadin.shared.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -49,10 +59,17 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.Tree.TreeTargetDetails;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class TemplateUIManager implements UIManager{
 
+	private static final String CONTEXT_ITEM_RENAME = "Rename";
+	
+	private static final String CONTEXT_ITEM_CREATE = "Create new";
+	
+	private static final String CONTEXT_ITEM_OPEN = "Open";
+	
 	/**
 	 * Logger for Template
 	 */
@@ -103,6 +120,9 @@ public class TemplateUIManager implements UIManager{
 	 */
 	final HierarchicalContainer localTemplateDirContainer;
 	
+	private ImageLoader imageLoader;
+	
+	String itemId;
 	/**
 	 * Constructor 
 	 * @param helper
@@ -118,6 +138,7 @@ public class TemplateUIManager implements UIManager{
         this.globalTemplateDirContainer = new HierarchicalContainer();
         this.localTemplateDirContainer = new HierarchicalContainer();
         this.templateTab = uiTabSheet;
+        this.imageLoader = new ImageLoader();
 	}
 	
 
@@ -150,7 +171,7 @@ public class TemplateUIManager implements UIManager{
 
 		// Have it take all space available in the layout.
 		accordion.setWidth(80, Unit.PERCENTAGE);
-		accordion.setHeight(80, Unit.PERCENTAGE);
+		accordion.setHeight(100, Unit.PERCENTAGE);
 
 		populateAccordion(accordion);
 
@@ -159,20 +180,22 @@ public class TemplateUIManager implements UIManager{
 		panel.setWidth(20, Unit.PERCENTAGE);
 		panel.setHeight(100, Unit.PERCENTAGE);
 
-		final Button newTemplate = new Button();
-		newTemplate.setCaption("Create template");
-		newTemplate.addClickListener(new ClickListener() {
+	    final Embedded iconTemplate = imageLoader.loadEmbeddedImageByPath("images/add.png");
+	    iconTemplate.setDescription("Add template");
+	    iconTemplate.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
+			public void click(ClickEvent event) {
 				renderTemplate(null);
 			}
 		});
 
-		final Button newDirectory = new Button();
-		newDirectory.setCaption("Create folder");
-		newDirectory.addClickListener(new ClickListener() {
+	    final Embedded iconDirectory = imageLoader.loadEmbeddedImageByPath("images/folder-add.png");
+	    iconDirectory.setDescription("Add directory");
+//		Button newDirectory = new Button();
+//		newDirectory.setCaption("Create folder");
+		iconDirectory.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
+			public void click(ClickEvent event) {
 				try {
 				renderFolderTab(selectedDirectoryId);
 				}
@@ -185,32 +208,36 @@ public class TemplateUIManager implements UIManager{
 			}
 		});
 
-		final Button deleteTemplateBtn = new Button();
-		deleteTemplateBtn.setCaption("Delete button");
-		deleteTemplateBtn.addClickListener(new ClickListener() {
+	    final Embedded deleteIcon = imageLoader.loadEmbeddedImageByPath("images/delete.png");
+	    deleteIcon.setDescription("Delete template");
+
+		deleteIcon.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
+			public void click(ClickEvent event) {
 			}
 		});
 		
 		HorizontalLayout buttonLayout = new HorizontalLayout();
-		buttonLayout.addComponent(newTemplate);
-		buttonLayout.addComponent(newDirectory);
-		buttonLayout.addComponent(deleteTemplateBtn);
+		buttonLayout.addComponent(iconTemplate);
+		buttonLayout.addComponent(deleteIcon);
+		buttonLayout.addComponent(iconDirectory);
 
+		buttonLayout.setHeight(100,Unit.PERCENTAGE);
 		buttonLayout.setSpacing(true);
 		
 		VerticalLayout panelContent = new VerticalLayout();
-		panelContent.setSizeFull();
+		panelContent.setHeight(700,Unit.PIXELS);
+		
 		panelContent.addComponent(accordion);
 		panelContent.addComponent(buttonLayout);
+		panelContent.setExpandRatio(accordion, 90);
+		panelContent.setExpandRatio(buttonLayout, 1);
 		
 		//Add the accordion
 		vLayout.addComponent(panel);
 		panel.setWidth(100,Unit.PERCENTAGE);
 		vLayout.setHeight(100,Unit.PERCENTAGE);
 		panel.setContent(panelContent);
-		
 	}
 
 	
@@ -235,6 +262,7 @@ public class TemplateUIManager implements UIManager{
 		//Add the tree to the vertical layout for template list.
 		templateListLayout.addComponent(populateTemplateList(templateDirectoryList,templateDirectoryService, false));
 	}
+	
 	public Tree populateTemplateList(final Collection<TemplateDirectoryDto> directoryDtos,final TemplateDirectoryService templateDirectoryService, final boolean isGlobalDir){
 
 		final HierarchicalContainer templateContainer;
@@ -247,6 +275,60 @@ public class TemplateUIManager implements UIManager{
         root = new Tree("",templateContainer);
         root.setImmediate(true);
     	root.setItemCaptionPropertyId("name");
+    	
+    	ContextMenuOpenedListener.TreeListener treeItemListener = new ContextMenuOpenedListener.TreeListener() {
+    	    public void onContextMenuOpenFromTreeItem(final ContextMenuOpenedOnTreeItemEvent event) {
+    	    	itemId = event.getItemId().toString();
+
+    	    	ContextMenu contextMenu = event.getContextMenu();
+    	    	contextMenu.removeAllItems();
+    	    	if (itemId.startsWith("file:")){
+	    	    	contextMenu.addItem(CONTEXT_ITEM_OPEN).setData(CONTEXT_ITEM_OPEN);
+	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
+    	    	}
+    	    	else {
+   	    	    	contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(CONTEXT_ITEM_RENAME);
+   	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
+    	    	}
+    	    }
+    	};
+
+    	ContextMenuItemClickListener itemClickListener = new ContextMenu.ContextMenuItemClickListener() {
+			public void contextMenuItemClicked(final ContextMenuItemClickEvent event) {
+				ContextMenuItem source = (ContextMenuItem)event.getSource();
+				String itemName = (String)source.getData();
+				
+				//Open the template
+				if (itemId.startsWith("file:")){
+					if (itemName.equals(CONTEXT_ITEM_OPEN)){
+						renderTemplate(new Integer(itemId.substring(5)));
+						itemId = null;
+					}
+				
+					else if (itemName.equals(CONTEXT_ITEM_CREATE)){
+						renderTemplate(null);
+						itemId = null;
+					}
+				}
+				else {
+					if (itemName.equals(CONTEXT_ITEM_RENAME)){
+						final TemplateDirectoryDto dto = templateDirectoryService.findById(Integer.parseInt(itemId));
+						renameDirectory(dto);
+						itemId = null;
+					}
+					else if (itemName.equals(CONTEXT_ITEM_CREATE)){
+						renderFolderTab(null);
+					}
+				}
+			}
+    	};
+
+    	final ContextMenu contextMenu = new ContextMenu();
+    	contextMenu.setAsContextMenuOf(root);
+    	contextMenu.addContextMenuTreeListener(treeItemListener);
+    	contextMenu.addItemClickListener(itemClickListener); 
+    	
+    	
     	
     	/**
     	 * Move template code
@@ -320,7 +402,11 @@ public class TemplateUIManager implements UIManager{
 		        // Modify parent inside the template
 		        TemplateDto templateDto = templateService.findTemplateById( Integer.parseInt(sourceItemId.toString().substring(5)) );
 		        templateDto.setTemplateDirectoryDto(templateDirectoryService.findById((Integer) targetItemId));
-		        templateService.updateTemplate(templateDto);
+		        try {
+					templateService.updateTemplate(templateDto);
+				} catch (EntityAlreadyFoundException e) {
+					LOGGER.info("Unable to update templateDto with id:"+templateDto.getTemplateId());
+				}
 			}
 		});
     	
@@ -353,12 +439,17 @@ public class TemplateUIManager implements UIManager{
         			addChildrenToSelectedDirectory(parentItem,templateDirectoryService,templateContainer);
         		}
         		else {
-        			renderTemplate(new Integer(itemId.substring(5)));
+        			//renderTemplate(new Integer(itemId.substring(5)));
         		}
         	}	
         });
         return root;
 	}
+	
+	private void renameDirectory(final TemplateDirectoryDto dtoToUpdate){
+		UI.getCurrent().addWindow(new RenameDirectoryPopup(helper,dtoToUpdate));
+	}
+	
 	
 	private void addChildrenToSelectedDirectory(final Item parentItem,
 												final TemplateDirectoryService templateDirectoryService,
@@ -522,49 +613,60 @@ public class TemplateUIManager implements UIManager{
 			isGlobalOptionsGroup.setEnabled(false);
 		}
 			
-			Button addButton = new Button();
+			final Button addButton = new Button();
 			addButton.setCaption("Add Folder");
-			addButton.addClickListener(new ClickListener() {
-				private static final long serialVersionUID = 1L;
-
+			addButton.addClickListener(new com.vaadin.ui.Button.ClickListener() {
 				@Override
-				public void buttonClick(ClickEvent event) {
-					AccountService accountService = (AccountService) helper.getBean("accountService");
-	    			AccountDto account = accountService.findAccountById(accountId);
+				public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+					final AccountService accountService = (AccountService) helper.getBean("accountService");
+	    			final AccountDto account = accountService.findAccountById(accountId);
 	    			
 	    			TemplateDirectoryDto directoryDto = new TemplateDirectoryDto();
-	    			directoryDto.setDirectoryName(name.getValue().toString());
+	    			String dirToAdd = name.getValue().toString();
+	    			directoryDto.setDirectoryName(dirToAdd);
+	    			
 	    			directoryDto.setGlobal(selectedTemplateDirScope);
 	    			directoryDto.setAccount(account);
 	    			
+	    			boolean isSiblingWithSameName = false;
 	    			if (null!=selectedDirectoryId){
 	    				TemplateDirectoryDto parentDirectory = templateDirectoryService.findById(selectedDirectoryId);
 	    				directoryDto.setParent(parentDirectory);
+	    				final Collection<TemplateDirectoryDto> childDirectories = templateDirectoryService.findChildDirectories(parentDirectory.getId());
+	    				isSiblingWithSameName = isChildWithSameNameExist(childDirectories,dirToAdd);
 	    			}
 	    			
-	    			final Integer newDirectory = templateDirectoryService.create(directoryDto);
-	    			if(folderId == null){ // works when no items in tree
-		    			directoryDto = templateDirectoryService.findById(newDirectory);
+	    			Integer newDirectory = null;
+	    			if (StringUtils.isEmpty(dirToAdd)) {
+	    				Notification.show("Directory name cannot be empty");
+	    			}
+	    			else if (isSiblingWithSameName && StringUtils.isNotEmpty(dirToAdd)) {
+	    				Notification.show("Directory name already exist,please choose something different");
+	    			}
+	    			else {
+	    				newDirectory = templateDirectoryService.create(directoryDto);
+	    				if(folderId == null){ // works when no items in tree
+	    					directoryDto = templateDirectoryService.findById(newDirectory);
 		    			
-
-		    			HierarchicalContainer templateContainer;
+	    					HierarchicalContainer templateContainer;
 		    			
-		    			if(directoryDto.isGlobal())
-		    				templateContainer = globalTemplateDirContainer;
-		    			else
-		    				templateContainer = localTemplateDirContainer;
+	    					if(directoryDto.isGlobal())
+	    						templateContainer = globalTemplateDirContainer;
+	    					else
+	    						templateContainer = localTemplateDirContainer;
 		    			
-		    			Item item = templateContainer.addItem(directoryDto.getId());
-		            	item.getItemProperty("id").setValue(directoryDto.getId());
-		            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
-		            	templateContainer.setChildrenAllowed(directoryDto.getId(), true);
-	            	}
+			    			Item item = templateContainer.addItem(directoryDto.getId());
+			            	item.getItemProperty("id").setValue(directoryDto.getId());
+			            	item.getItemProperty("name").setValue(directoryDto.getDirectoryName());
+			            	templateContainer.setChildrenAllowed(directoryDto.getId(), true);
+	    				}
 	    			
-	    			if (newDirectory!=null){
-	    				if(createDirTab != null) //sanity check
-	    					templateTab.removeTab(createDirTab);
+	    				if (newDirectory!=null){
+	    					if(createDirTab != null) //sanity check
+	    						templateTab.removeTab(createDirTab);
 	    				
-	    				Notification.show(name.getValue()+" folder added successfully");
+	    					Notification.show(name.getValue()+" folder added successfully");
+	    				}
 	    			}
 				}
 			});
@@ -580,6 +682,15 @@ public class TemplateUIManager implements UIManager{
 			this.templateTab.setSelectedTab(createNewFolder);
 	}
 
+	private boolean isChildWithSameNameExist(final Collection<TemplateDirectoryDto> childDirectories,final String directoryNameToAdd){
+		for (TemplateDirectoryDto dto: childDirectories){
+			if (dto.getDirectoryName().equals(directoryNameToAdd)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private String buildPath(Integer id,String path){
 		if (null!=root.getParent(id)){
 		Integer itemId = (Integer) root.getParent(id);

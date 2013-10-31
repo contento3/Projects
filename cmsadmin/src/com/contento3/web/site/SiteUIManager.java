@@ -115,7 +115,8 @@ public class SiteUIManager implements UIManager {
 
 	/**
 	 * Renders the screen based on command passed.
-	 */
+	 **/
+	
 	public Component render(final String command,final Integer id) {
 		Component componentToReturn = null;
 		if (command.equals(SITEDASHBOARD)) {

@@ -106,7 +106,7 @@ public class ArticleServiceImpl implements ArticleService {
 	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId,Integer count) {
 		// TODO Auto-generated method stub
 		Validate.notNull(siteId,"siteId cannot be null");
-		Validate.notNull(count,"count cannot be null");
+		//Validate.notNull(count,"count cannot be null");
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count));
 	}
 

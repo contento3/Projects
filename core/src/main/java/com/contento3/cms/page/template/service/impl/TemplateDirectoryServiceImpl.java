@@ -3,11 +3,15 @@ package com.contento3.cms.page.template.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.cms.page.template.dao.TemplateDirectoryDao;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
+import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryAssembler;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 
 public class TemplateDirectoryServiceImpl 
 			implements TemplateDirectoryService {
@@ -51,6 +55,13 @@ public class TemplateDirectoryServiceImpl
 	public Collection<TemplateDirectoryDto> findChildDirectories(final Integer parentId){
 		Validate.notNull(parentId,"parentId cannot be null");
 		return assembler.domainsToDtos(directoryDao.findChildDirectories(parentId));
+	}
+
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void update(final TemplateDirectoryDto templateDirectoryDto) {
+		Validate.notNull(templateDirectoryDto,"templateDto cannot be null");
+		directoryDao.update(assembler.dtoToDomain(templateDirectoryDto));
 	}
 
 	@Override
