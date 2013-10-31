@@ -24,6 +24,9 @@ public class TemplateAjaxController {
 
 	private final TemplateService templateService;
 	
+	private static final String TEMPLATE_DUPLICATE = "TEMPLATE_DUPLICATE";
+	private static final String TEMPLATE_CREATED = "TEMPLATE_CREATED";
+	
 	@Autowired
     public TemplateAjaxController(TemplateService templateService) {
         this.templateService = templateService;
@@ -47,7 +50,7 @@ public class TemplateAjaxController {
 
     	TemplateTypeDto templateTypeDto = new TemplateTypeDto();
     	templateTypeDto.setTemplateTypeId(templateTypeId);
-    	templateTypeDto.setTemplateTypeName("TEXT_FREEMARKER"); //hard coded - to be adjusted
+    	templateTypeDto.setTemplateTypeName("TEXT_FREEMARKER"); //TODO hard coded - to be adjusted
     	templateDto.setTemplateType(templateTypeDto);
 
     	TemplateDirectoryDto templateDirectoryDto = new TemplateDirectoryDto();
@@ -57,22 +60,25 @@ public class TemplateAjaxController {
 		AccountDto accountDto = new AccountDto();
 		accountDto.setAccountId(accountId);
 		templateDto.setAccountDto(accountDto);
-		
-    	if (null != templateId){
-    		templateDto.setTemplateId(templateId);
-        	templateService.updateTemplate(templateDto);
-    	}
-    	else {
-        	try {
+
+    	try {
+    		if (null != templateId){
+    			templateDto.setTemplateId(templateId);
+    			templateService.updateTemplate(templateDto);
+    		}
+    		else {
 				templateService.create(templateDto);
-			} catch (EntityAlreadyFoundException e) {
-				LOGGER.error(String.format("Error occured. Template with name [%s] cannot be created ", templateDto.getTemplateName()),e);
-			}
-			catch (EntityNotCreatedException e) {
-				e.printStackTrace();
 			}
     	}
-	    return "TEMPLATE_CREATED";
+    	catch (EntityAlreadyFoundException e) {
+			LOGGER.error(String.format("Error occured. Template with name [%s] cannot be created because the template with the same name is already present", templateDto.getTemplateName()),e);
+			return TEMPLATE_DUPLICATE;
+		}
+		catch (EntityNotCreatedException e) {
+			LOGGER.error(String.format("Error occured. Template with name [%s] cannot be created ", templateDto.getTemplateName()),e);
+			return TEMPLATE_DUPLICATE;
+		}
+	    return TEMPLATE_CREATED;
     }
 
 

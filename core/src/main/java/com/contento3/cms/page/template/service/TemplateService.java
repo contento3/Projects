@@ -1,9 +1,11 @@
 package com.contento3.cms.page.template.service;
 
+
 import java.util.Collection;
 
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.service.Service;
 
@@ -28,7 +30,7 @@ public interface TemplateService extends Service<TemplateDto>{
 	 */
 	TemplateDto findTemplateById(Integer templateId);
 
-	void updateTemplate(TemplateDto templateDto);
+	void updateTemplate(TemplateDto templateDto) throws EntityAlreadyFoundException;
 
 	TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws Exception;
 

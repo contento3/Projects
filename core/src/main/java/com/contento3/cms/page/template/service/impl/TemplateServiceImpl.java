@@ -22,6 +22,7 @@ import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.site.structure.dao.SiteDAO;
 import com.contento3.cms.site.structure.model.Site;
 import com.contento3.common.exception.EntityNotFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.ResourceNotFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -63,7 +64,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Integer create(final TemplateDto templateDto) {
+	public Integer create(final TemplateDto templateDto) throws EntityAlreadyFoundException {
 		Validate.notNull(templateDto,"templateDto cannot be null");
 		return templateDao.persist(buildTemplateInstance(templateDto));
 	}
@@ -116,7 +117,7 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void updateTemplate(final TemplateDto templateDto) {
+	public void updateTemplate(final TemplateDto templateDto) throws EntityAlreadyFoundException {
 		Validate.notNull(templateDto,"templateDto cannot be null");
 		templateDao.update(buildTemplateInstance(templateDto));
 	}
@@ -190,12 +191,20 @@ public class TemplateServiceImpl implements TemplateService {
 	 * that Template can be added or updated.
 	 * @param templateDto
 	 * @return
+	 * @throws EntityAlreadyFoundException 
 	 */
-	private Template buildTemplateInstance(final TemplateDto templateDto){
+	private Template buildTemplateInstance(final TemplateDto templateDto) throws EntityAlreadyFoundException{
 		Validate.notNull(templateDto,"templateDto cannot be null");
 		TemplateType templateType = templateTypeDao.findByName(templateDto.getTemplateType().getTemplateTypeName());
 		Account account = accountDao.findById(templateDto.getAccountDto().getAccountId());
 		TemplateDirectory templateDirectory = templateDirectoryDao.findById(templateDto.getTemplateDirectoryDto().getId());
+		
+		Collection<Template> siblingTemplates = templateDao.findTemplateByDirectoryId(templateDirectory.getId());
+		for (Template siblingTemplate : siblingTemplates)
+		if (siblingTemplate.getTemplateName().equals(templateDto.getTemplateName()) && !siblingTemplate.getTemplateId().equals(templateDto.getTemplateId()))
+		{
+			throw new EntityAlreadyFoundException();
+		}
 		
 		templateDirectory.setAccount(account);
 		Template template = templateAssembler.dtoToDomain(templateDto);
