@@ -1,11 +1,11 @@
 package com.contento3.site.user.dto;
 
-public class UserDto {
 
+public class UserDto {
 	/**
 	 * Id that identifies a site
 	 */
-	private String siteId;
+	private Integer siteId;
 	
 	/**
 	 * username of a user
@@ -46,11 +46,11 @@ public class UserDto {
 		this.passwordReminder = passwordReminder;
 	}
 
-	public void setSiteId(final String siteId) {
+	public void setSiteId(final Integer siteId) {
 		this.siteId = siteId;
 	}
 
-	public String getSiteId() {
+	public Integer getSiteId() {
 		return siteId;
 	}
 	

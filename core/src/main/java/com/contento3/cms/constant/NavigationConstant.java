@@ -21,4 +21,6 @@ public class NavigationConstant {
 	public static final String DOCUMENT_MGMT = "Document";
 	public static final String CATEGORY_MGMT = "Categories";            
 
+	public static final String DASHBOARD = "Dashboard"; 
+
 }

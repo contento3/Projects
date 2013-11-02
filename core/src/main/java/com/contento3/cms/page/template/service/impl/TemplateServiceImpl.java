@@ -13,6 +13,7 @@ import com.contento3.cms.page.template.dao.TemplateDao;
 import com.contento3.cms.page.template.dao.TemplateDirectoryDao;
 import com.contento3.cms.page.template.dao.TemplateTypeDao;
 import com.contento3.cms.page.template.dto.TemplateDto;
+import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
 import com.contento3.cms.page.template.model.Template;
 import com.contento3.cms.page.template.model.TemplateDirectory;
 import com.contento3.cms.page.template.model.TemplateType;
@@ -20,6 +21,7 @@ import com.contento3.cms.page.template.service.TemplateAssembler;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.site.structure.dao.SiteDAO;
 import com.contento3.cms.site.structure.model.Site;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.ResourceNotFoundException;
 
@@ -39,7 +41,7 @@ public class TemplateServiceImpl implements TemplateService {
 	private AccountDao accountDao;
 	private SiteDAO siteDao;
 	
-	TemplateServiceImpl(final TemplateAssembler assembler,
+	public TemplateServiceImpl(final TemplateAssembler assembler,
 						final AccountDao accountDao,
 						final TemplateDirectoryDao templateDirectoryDao,
 						final TemplateDao templateDao,
@@ -120,6 +122,28 @@ public class TemplateServiceImpl implements TemplateService {
 		templateDao.update(buildTemplateInstance(templateDto));
 	}
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public TemplateDto findSystemTemplateForAccount(final SystemTemplateNameEnum templateCategory,final Integer accountId) throws EntityNotFoundException {
+		Validate.notNull(templateCategory,"template category cannot be null");
+		Validate.notNull(accountId,"accountId cannot be null");
+		
+		String category = templateCategory.toString();
+		Template template = templateDao.findSystemTemplateForAccount(category,accountId,true);
+		
+		
+		//If there is no template defined for this account and category, the template object will be 
+		//null. In that case we should find the global system template for the given category.
+		if (null==template){
+			template = templateDao.findGlobalSystemTemplate(category);
+		}
+		
+		if (null==template)
+			throw new EntityNotFoundException("No system template either for account or global found for category: "+category);
+		
+		return templateAssembler.domainToDto(template);
+	}
+
 	private String buildTemplatePath(final Template template){
 		Validate.notNull(template,"template cannot be null");
 		String templateName = template.getTemplateName();
@@ -191,7 +215,7 @@ public class TemplateServiceImpl implements TemplateService {
 	}
 
 	@Override
-	public void delete(TemplateDto dtoToDelete) {
+	public void delete(final TemplateDto dtoToDelete) {
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		// TODO Auto-generated method stub
 		

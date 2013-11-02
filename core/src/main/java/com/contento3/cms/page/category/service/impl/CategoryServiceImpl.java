@@ -122,7 +122,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public Collection<CategoryDto> findByAccountId(final Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
-		 return categoryAssembler.domainsToDtos(categoryDao.findAll()); //MARK BROKEN FUNCTIONALITY
+		return categoryAssembler.domainsToDtos(categoryDao.findAll()); //MARK BROKEN FUNCTIONALITY
 	}
 
 	@Override

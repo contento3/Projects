@@ -12,25 +12,30 @@ import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.SiteCreateListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
@@ -95,7 +100,6 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		siteDashboardTab = uiTabSheet; 
 		//Get accountId from the session
         accountId = (Integer)SessionHelper.loadAttribute("accountId");
-        //RelatedArticleService relatedArticleService = (RelatedArticleService) contextHelper.getBean("relatedArticleService");
 	}
 	
 	@Override
@@ -106,21 +110,30 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	
 	@Override
 	public Component render(String command) {
-		// TODO Auto-generated method stub
-	//	if (null==siteDashboardTab){ 
-			siteDashboardTab.setHeight(100,Unit.PERCENTAGE);
-			siteDashboardTab.setWidth(100,Unit.PERCENTAGE);
-			//Icon icon=new ImageIcon(getClass().getResource("/images/site.png"));
-		//	siteDashboardTab.setIcon((Resource) icon);
-			verticalLayout.setSpacing(true);
-			verticalLayout.setWidth(100,Unit.PERCENTAGE);
-			renderSiteContent();
-			Tab tab2 =  siteDashboardTab.addTab(verticalLayout,"Site Dashboard",null);
-			tab2.setClosable(true);
-			siteDashboardTab.setSelectedTab(verticalLayout);
-	//	}
 	
-		return siteDashboardTab;
+		final Panel panel = new Panel("<h3>Welcome to CONTENTO3!!</h3>");
+		panel.setSizeUndefined(); // Shrink to fit content
+		verticalLayout.addComponent(panel);
+		verticalLayout.setMargin(true);
+		
+		// Create the content
+		final HorizontalLayout content = new HorizontalLayout();
+		final Label item = new Label("Start creating websites right here.You can create multiple websites under one account.",ContentMode.HTML);
+		final Button commandLabel = new Button("Create site");
+		commandLabel.addStyleName("link");
+		commandLabel.addClickListener(new SiteCreateListener(helper,siteDashboardTab,verticalLayout));
+		final VerticalLayout labelLayout = new VerticalLayout();
+		labelLayout.addComponent(item);
+		labelLayout.addComponent(commandLabel);
+		labelLayout.setWidth(150, Unit.PIXELS);
+		labelLayout.setComponentAlignment(item, Alignment.MIDDLE_CENTER);
+
+		final ImageLoader imageLoader = new ImageLoader();
+		content.addComponent(labelLayout);
+		content.addComponent(imageLoader.loadEmbeddedImageByPath("images/sites-96.png"));
+		content.setMargin(true);
+		panel.setContent(content);	        
+		return verticalLayout;
 	}
 
 	@Override
