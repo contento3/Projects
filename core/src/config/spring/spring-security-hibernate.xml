@@ -13,7 +13,6 @@
 		<property name="annotatedClasses">
 			<list>
 			    <value>com.contento3.security.group.model.Group</value>
-			    <value>com.contento3.security.group.model.GroupAuthority</value>
 			    <value>com.contento3.security.role.model.Role</value> 
 			    <value>com.contento3.security.permission.model.Permission</value> 
 			    <value>com.contento3.security.user.model.SaltedHibernateUser</value>

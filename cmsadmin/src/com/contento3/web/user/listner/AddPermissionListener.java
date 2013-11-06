@@ -66,7 +66,7 @@ public class AddPermissionListener extends EntityListener implements ClickListen
 	public void buttonClick(ClickEvent event) {
 		// TODO Auto-generated method stub
 		final PermissionService permissionService = (PermissionService) helper.getBean("permissionService");
-		Integer permissionId = (Integer) SessionHelper.loadAttribute(mainwindow,"permissionId");
+		Integer permissionId = (Integer) SessionHelper.loadAttribute("permissionId");
 		
 		Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("name");
@@ -77,7 +77,7 @@ public class AddPermissionListener extends EntityListener implements ClickListen
 		dtos = (Collection) permissionService.findById(permissionId);
 		if (dtos!=null) {
 			setCaption("Add Permission");//extend class method
-			permissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,mainwindow,this,false);
+			permissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
 			permissionPicker.build();
 			
 		}

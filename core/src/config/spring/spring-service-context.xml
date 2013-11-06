@@ -223,6 +223,7 @@
 		<bean id="roleAssembler"
 		class="com.contento3.security.role.service.impl.RoleAssemblerImpl">
 		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="permissionAssembler" />
 	</bean>
 
 	<bean id="roleService"

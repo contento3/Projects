@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
 
+import com.contento3.cms.page.category.model.Category;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.security.entityoperation.model.EntityOperation;
 import com.contento3.security.permission.dao.PermissionDao;
@@ -20,7 +21,8 @@ implements PermissionDao{
 		super(Permission.class);
 		// TODO Auto-generated constructor stub
 	}
-	public Permission findById(int id) {
+	@Override
+	public Permission findById(Integer id) {
 		// TODO Auto-generated method stub
 		
 		Criteria criteria = this.getSession()
@@ -43,6 +45,27 @@ implements PermissionDao{
 			    .createCriteria(Permission.class);
 			return criteria.list();
 		
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<Permission> findNullParentIdPermission(Integer roleId) {
+		// TODO Auto-generated method stub
+		Criteria criteria = this.getSession()
+				.createCriteria(Permission.class)
+				.add(Restrictions.isNull("parent"))
+				.add(Restrictions.eq("role.roleid", roleId));
+
+		return criteria.list();
+	}
+	@Override
+	public Collection<Permission> findPermissionsByRoleId(Integer RoleId) {
+		// TODO Auto-generated method stub
+		Criteria criteria = this.getSession()
+				.createCriteria(Permission.class)
+				      .createAlias("roles", "role")
+				      .add(Restrictions.eq("role.roleid", RoleId));
+				  Collection<Permission> permissions = criteria.list();
+				  return permissions;
 	}
 
 }

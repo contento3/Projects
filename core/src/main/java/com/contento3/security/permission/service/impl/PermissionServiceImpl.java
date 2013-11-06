@@ -2,6 +2,8 @@ package com.contento3.security.permission.service.impl;
 
 import java.util.Collection;
 
+import com.contento3.cms.page.category.dto.CategoryDto;
+import com.contento3.cms.page.category.model.Category;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
@@ -59,6 +61,22 @@ public class PermissionServiceImpl implements PermissionService{
 	public Collection<PermissionDto> findAllPermissions() {
 		// TODO Auto-generated method stub
 		return permissionAssembler.domainsToDtos(permissionDao.findAllPermissions());
+	}
+
+	@Override
+	public Collection<PermissionDto> findNullParentIdPermission(Integer roleId) {
+		// TODO Auto-generated method stub
+		Collection<Permission> permissions = permissionDao.findNullParentIdPermission(roleId);
+		Collection<PermissionDto> permissionDtos = permissionAssembler.domainsToDtos(permissions);
+		return permissionDtos;
+	}
+
+	@Override
+	public Collection<PermissionDto> findPermissionByRoleId(Integer roleId) {
+		// TODO Auto-generated method stub
+		Collection<Permission> permissions = permissionDao.findPermissionsByRoleId(roleId);
+		Collection<PermissionDto> permissionDtos = permissionAssembler.domainsToDtos(permissions);
+		return permissionDtos;
 	}
 
 }

@@ -10,10 +10,20 @@ public class PermissionDto extends Dto{
 	private Integer permissionId;
 	private EntityDto entity;
 	private EntityOperationDto entityOperation;
-	
-	public Integer getPermissionId()
+	/*public Integer getPermissionId()
 	{
 		return permissionId;
+	}*/
+	
+	@Override
+	public Integer getId()
+	{
+		return permissionId;
+	}
+	@Override
+	public String getName()
+	{
+		return (entityOperation.getName()+"\t"+entity.getName());
 	}
 	public EntityDto getEntity()
 	{

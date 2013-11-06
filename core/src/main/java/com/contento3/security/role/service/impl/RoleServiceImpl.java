@@ -2,6 +2,9 @@ package com.contento3.security.role.service.impl;
 
 import java.util.Collection;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
@@ -10,7 +13,7 @@ import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.role.service.RoleAssembler;
 import com.contento3.security.role.service.RoleService;
-
+@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 public class RoleServiceImpl implements RoleService{
 
 	private  RoleDao roleDao;
@@ -20,6 +23,7 @@ public class RoleServiceImpl implements RoleService{
 		this.roleDao = roleDao;
 		this.roleAssembler = roleAssembler;
 	}
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(RoleDto dto) throws EntityAlreadyFoundException,
 			EntityNotCreatedException {
@@ -45,21 +49,21 @@ public class RoleServiceImpl implements RoleService{
 		//}
 		return roleName;
 	}
-
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(RoleDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
 		// TODO Auto-generated method stub
 		roleDao.delete(roleAssembler.dtoToDomain(dtoToDelete));
 	}
-
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<RoleDto> findRolesByAccountId(Integer accountId) {
 		// TODO Auto-generated method stub
 		return roleAssembler.domainsToDtos(roleDao.findRolesByAccountId(accountId));
 		
 	}
-
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public RoleDto findRoleByName(String name) {
 		// TODO Auto-generated method stub
@@ -76,6 +80,7 @@ public class RoleServiceImpl implements RoleService{
 		return RoleAssembler.domainsToDtos(RoleDao.findAll());
 	}
 	*/
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(RoleDto dtoToUpdate) {
 		// TODO Auto-generated method stub
@@ -86,10 +91,16 @@ public class RoleServiceImpl implements RoleService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public RoleDto findById(Integer id) {
 		// TODO Auto-generated method stub
 		return roleAssembler.domainToDto(roleDao.findById(id));
+	}
+	@Override
+	public Collection<RoleDto> findRolesByGroupId(Integer Id) {
+		// TODO Auto-generated method stub
+		return roleAssembler.domainsToDtos(roleDao.findRolesByGroupId(Id));
 	}
 	
 }

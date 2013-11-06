@@ -27,7 +27,7 @@ public class RoleDeleteClickListener extends EntityDeleteClickListener<RoleDto>{
 		
 		final Object id = getDeleteLink().getData();
 		final String name = (String) getTable().getContainerProperty(id,"role").getValue();
-			if(getDtoToDelete().getRoleName().equals(name)){
+			if(getDtoToDelete().getName().equals(name)){
 
 						ConfirmDialog.show(UI.getCurrent(), "Please Confirm:"," Are you really sure to delete?",
 						        "Yes", "Cancel", new ConfirmDialog.Listener() {

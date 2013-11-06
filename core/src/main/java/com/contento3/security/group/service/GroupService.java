@@ -43,6 +43,7 @@ public interface GroupService extends Service<GroupDto> {
 	 * Update group item 
 	 * @param groupDto
 	 */
+	Collection<GroupDto> findByUserId(Integer id);
 	void update(final GroupDto groupDto);
 	/**
 	 * Delete group 

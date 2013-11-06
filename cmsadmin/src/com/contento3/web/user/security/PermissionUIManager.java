@@ -1,7 +1,6 @@
 package com.contento3.web.user.security;
 
 import java.util.Collection;
-
 import com.contento3.security.permission.service.PermissionService;
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.UIManager;
@@ -10,8 +9,10 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -30,7 +31,7 @@ public class PermissionUIManager implements UIManager{
     /**
      * Represents the parent window of the template ui
      */
-	private Window parentWindow;
+	//private Window parentWindow;
 	
 	/**
 	 * layout for group manager screen
@@ -51,10 +52,9 @@ public class PermissionUIManager implements UIManager{
 	 * PermissionService
 	 */
 	PermissionService permissionService;
-	PermissionUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper,final Window parentWindow)
+	PermissionUIManager(final TabSheet uiTabSheet,final SpringContextHelper helper)
 	{
 		this.contextHelper = helper;
-		this.parentWindow = parentWindow;
 		this.uiTabSheet = uiTabSheet;
 		this.permissionService = (PermissionService) this.contextHelper.getBean("permissionService");
 	}
@@ -67,11 +67,11 @@ public class PermissionUIManager implements UIManager{
 	@Override
 	public Component render(String command) {
 		// TODO Auto-generated method stub
-		this.uiTabSheet.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		this.uiTabSheet.setHeight(100, Unit.PERCENTAGE);
 		Tab userTab = uiTabSheet.addTab(verticalLayout, "Permission Management",new ExternalResource("images/security.png"));
 		userTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
 
 		renderPermissionContent();
 		return this.uiTabSheet;
@@ -100,11 +100,11 @@ public class PermissionUIManager implements UIManager{
 		renderPermissionTable();
 	}
 	private void addPermissionButton(){
-		Button addButton = new Button("Add Permission", new PermissionPopup(parentWindow, contextHelper,permissionTable), "openButtonClick");
+		Button addButton = new Button("Add Permission", new PermissionPopup(contextHelper,permissionTable));
 		this.verticalLayout.addComponent(addButton);
 	}
 	private void renderPermissionTable() {
-		final AbstractTableBuilder tableBuilder = new PermissionTableBuilder(parentWindow,contextHelper,permissionTable);
+		final AbstractTableBuilder tableBuilder = new PermissionTableBuilder(contextHelper,permissionTable);
 		//tableBuilder.build((Collection)roleService.findAllRoles());
 		tableBuilder.build((Collection)permissionService.findAllPermissions());
         

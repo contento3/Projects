@@ -23,7 +23,7 @@ public class PermissionAssemblerImpl implements PermissionAssembler{
 	public Permission dtoToDomain(PermissionDto dto) {
 		// TODO Auto-generated method stub
 		Permission domain = new Permission();
-		domain.SetPermissionId(dto.getPermissionId());
+		domain.SetPermissionId(dto.getId());
 		domain.SetEntity(entityAssembler.dtoToDomain(dto.getEntity()));
 		domain.SetEntityOperation(entityOperationAssembler.dtoToDomain(dto.getEntityOperation()));
 		return domain;
@@ -41,7 +41,7 @@ public class PermissionAssemblerImpl implements PermissionAssembler{
 
 	@Override
 	public Collection<PermissionDto> domainsToDtos(
-			Collection<Permission> domains) {
+			final Collection<Permission> domains) {
 		// TODO Auto-generated method stub
 		Collection<PermissionDto> dtos = new ArrayList<PermissionDto>();
 		for(Permission domain:domains){
@@ -51,7 +51,7 @@ public class PermissionAssemblerImpl implements PermissionAssembler{
 	}
 
 	@Override
-	public Collection<Permission> dtosToDomains(Collection<PermissionDto> dtos) {
+	public Collection<Permission> dtosToDomains(final Collection<PermissionDto> dtos) {
 		// TODO Auto-generated method stub
 		Collection<Permission> domains = new ArrayList<Permission>();
 		for(PermissionDto dto:dtos){

@@ -90,12 +90,14 @@ public class RoleUIManager implements UIManager {
 		addRoleButton();
 		renderRoleTable();
 	}
+	
 	@Override
 	public Component render(String command,
 			HierarchicalContainer treeItemContainer) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	private void addRoleButton(){
 		Button addButton = new Button("Add Role", new RolePopup(contextHelper,roleTable));
 		this.verticalLayout.addComponent(addButton);

@@ -13,7 +13,7 @@ import com.contento3.web.user.listner.PermissionDeleteClickListener;
 import com.contento3.web.user.listner.RoleDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -21,14 +21,13 @@ import com.vaadin.ui.themes.BaseTheme;
 
 public class PermissionTableBuilder extends AbstractTableBuilder {
 	final SpringContextHelper contextHelper;
-	final Window window;
+//	final Window window;
 	final PermissionService permissionService;
 
-	public PermissionTableBuilder(final Window window,final SpringContextHelper helper,final Table table)
+	public PermissionTableBuilder(final SpringContextHelper helper,final Table table)
 	{
 		super(table);
 		this.contextHelper = helper;
-		this.window = window;
 		this.permissionService = (PermissionService) contextHelper.getBean("permissionService");
 		//this.permissionService = null;
 	}
@@ -36,8 +35,8 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 	public void assignDataToTable(Dto dto, Table permissiontable, Container permissioncontainer) {
 		// TODO Auto-generated method stub
 		PermissionDto permission = (PermissionDto) dto;
-		Item item = permissioncontainer.addItem(permission.getPermissionId());
-		item.getItemProperty("permission").setValue(permission.getPermissionId());
+		Item item = permissioncontainer.addItem(permission.getId());
+		item.getItemProperty("permission").setValue(permission.getId());
 		EntityDto entityDto = permission.getEntity();
 		//Item item2 = permissioncontainer.addItem(entityDto.getId());
 		item.getItemProperty("entity").setValue(entityDto.getName());
@@ -45,9 +44,9 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 		//Item item3 = permissioncontainer.addItem(entityOperationDto.getId());
 		item.getItemProperty("entityoperation").setValue(entityOperationDto.getName());
 		//adding edit button item into list
-	    final Button editLink = new Button("Edit permission",new PermissionPopup(window, contextHelper, permissiontable), "openButtonClick");
+	    final Button editLink = new Button("Edit permission",new PermissionPopup(contextHelper, permissiontable));
 		editLink.setCaption("Edit");
-		editLink.setData(permission.getPermissionId());
+		editLink.setData(permission.getId());
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("edit").setValue(editLink);
@@ -55,11 +54,11 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 		//adding delete button item  into list
 				final Button deleteLink = new Button();
 				deleteLink.setCaption("Delete");
-				deleteLink.setData((permission.getPermissionId()));
+				deleteLink.setData((permission.getId()));
 				deleteLink.addStyleName("delete");
 				deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 				item.getItemProperty("delete").setValue(deleteLink);
-				deleteLink.addListener(new PermissionDeleteClickListener(permission, permissionService, window, deleteLink, permissiontable));
+				deleteLink.addListener(new PermissionDeleteClickListener(permission, permissionService, deleteLink, permissiontable));
 
 	}
 

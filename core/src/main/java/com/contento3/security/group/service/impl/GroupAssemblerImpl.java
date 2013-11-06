@@ -32,7 +32,7 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		group.setGroupId(dto.getGroupId());
 		group.setGroupName(dto.getGroupName());
 		group.setDescription(dto.getDescription());
-		group.setAuthorities(dto.getAuthorities());
+		group.setRoles(dto.getRoles());
 		group.setMembers(saltedHibernateUserAssembler.dtosToDomains(dto.getMembers()));
 		group.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		return group;
@@ -42,7 +42,7 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		domain.setGroupId(dto.getGroupId());
 		domain.setGroupName(dto.getGroupName());
 		domain.setDescription(dto.getDescription());
-		domain.setAuthorities(dto.getAuthorities());
+		domain.setRoles(dto.getRoles());
 		domain.setMembers(saltedHibernateUserAssembler.dtosToDomains(dto.getMembers()));
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		return domain;
@@ -53,7 +53,7 @@ public class GroupAssemblerImpl implements GroupAssembler {
 		dto.setGroupId(domain.getGroupId());
 		dto.setGroupName(domain.getGroupName());
 		dto.setDescription(domain.getDescription());
-		dto.setAuthorities(domain.getAuthorities());
+		dto.setRoles(domain.getRoles());
 		dto.setMembers(saltedHibernateUserAssembler.domainsToDtos(domain.getMembers()));
 		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
 

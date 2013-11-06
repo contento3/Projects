@@ -101,7 +101,8 @@ public class SecurityUIManager implements UIManager {
 			elementTab = (TabSheet) roleManager.render(null);
 		}
 		else if(element.equals("Permission")){
-			PermissionUIManager permissionManager = new PermissionUIManager(uiTabSheet,helper, parentWindow);
+			//resee it
+			PermissionUIManager permissionManager = new PermissionUIManager(uiTabSheet,helper);
 			elementTab = (TabSheet) permissionManager.render(null);
 		}
 		return elementTab;

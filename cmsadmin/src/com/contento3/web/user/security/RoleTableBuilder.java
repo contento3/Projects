@@ -27,17 +27,18 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 		this.roleService = (RoleService) contextHelper.getBean("roleService");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void assignDataToTable(final Dto dto,final Table roletable,final Container rolecontainer) {
 		// TODO Auto-generated method stub
 		RoleDto role = (RoleDto) dto;
-		Item item = rolecontainer.addItem(role.getName());
+		Item item = rolecontainer.addItem(role.getId());
 		item.getItemProperty("role").setValue(role.getName());
-	
+	    System.out.println(role.getName()+"umair");
 		//adding edit button item into list
 	    final Button editLink = new Button("Edit roles",new RolePopup(contextHelper, roletable));
 		editLink.setCaption("Edit");
-		editLink.setData(role.getRoleid());
+		editLink.setData(role.getId());
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("edit").setValue(editLink);
@@ -53,7 +54,13 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("delete").setValue(deleteLink);
 		deleteLink.addClickListener(new RoleDeleteClickListener(role, roleService, deleteLink, roletable));
 		
-		
+		//add view button item into list
+				final Button viewLink = new Button("permissions",new AssociatedPermissionPopup(contextHelper, new Table()));
+				viewLink.setCaption("View");
+				viewLink.setData(role.getId());
+				viewLink.addStyleName("permissions");
+				viewLink.setStyleName(BaseTheme.BUTTON_LINK);
+				item.getItemProperty("permissions").setValue(viewLink);
 	}
 
 	@Override
@@ -62,6 +69,7 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 		rolecontainer.addContainerProperty("role", String.class, null);
 		rolecontainer.addContainerProperty("edit", Button.class, null);
 		rolecontainer.addContainerProperty("delete", Button.class, null);
+		rolecontainer.addContainerProperty("permissions", Button.class, null);
 
 		roletable.setWidth(100, Unit.PERCENTAGE);
 		roletable.setContainerDataSource(rolecontainer);

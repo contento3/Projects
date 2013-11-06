@@ -10,20 +10,21 @@ import com.contento3.security.permission.service.PermissionAssembler;
 
 public class RoleAssemblerImpl implements RoleAssembler{
 	private AccountAssembler accountAssembler;
-	//private PermissionAssembler permissionAssembler;
-	RoleAssemblerImpl(final AccountAssembler accountAssembler)
+	private PermissionAssembler permissionAssembler;
+	RoleAssemblerImpl(final AccountAssembler accountAssembler, final PermissionAssembler permissionAssembler)
  {
 	 this.accountAssembler = accountAssembler;
-//	 this.permissionAssembler=permissionAssembler;
+	 this.permissionAssembler=permissionAssembler;
  }
 	@Override
 	public Role dtoToDomain(RoleDto dto) {
 		// TODO Auto-generated method stub
 		Role domain = new Role();
-		domain.setRoleId(dto.getRoleid());
-		domain.setRoleName(dto.getRoleName());
+		domain.setRoleId(dto.getId());
+		domain.setRoleName(dto.getName());
 		domain.setDescription(dto.getRoleDesc());
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
+		domain.setPermissions(permissionAssembler.dtosToDomains(dto.getPermissions()));
 		return domain;
 		
 	}
@@ -32,11 +33,11 @@ public class RoleAssemblerImpl implements RoleAssembler{
 	public RoleDto domainToDto(Role domain) {
 		// TODO Auto-generated method stub
 		RoleDto dto = new RoleDto();
-		dto.setRoleid(domain.getRoleId());
+		dto.setRoleId(domain.getRoleId());
 		dto.setRoleDesc(domain.getDescription());
 		dto.setRoleName(domain.getRoleName());
 		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
-		
+		dto.setPermissions(permissionAssembler.domainsToDtos(domain.getPermissions()));
 		return dto;
 	}
 
@@ -65,4 +66,14 @@ public class RoleAssemblerImpl implements RoleAssembler{
 		// TODO Auto-generated method stub
 		return null;
 	}*/
+	@Override
+	public Role dtoToDomain(RoleDto dto, Role domain) {
+		// TODO Auto-generated method stub
+		domain.setRoleId(dto.getId());
+		domain.setRoleName(dto.getName());
+		domain.setDescription(dto.getRoleDesc());
+		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
+		domain.setPermissions(permissionAssembler.dtosToDomains(dto.getPermissions()));
+		return domain;
+	}
 }

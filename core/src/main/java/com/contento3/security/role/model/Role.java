@@ -12,13 +12,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import com.contento3.security.permission.model.Permission;
 import org.hibernate.annotations.Cascade;
 
 import com.contento3.account.model.Account;
-import com.contento3.security.group.model.GroupAuthority;
-import com.contento3.security.model.Permission;
-import com.contento3.security.user.model.SaltedHibernateUser;
 @Entity
 @Table( name="ROLE" , schema ="PLATFORM_USERS" )
 
@@ -36,23 +33,23 @@ public class Role {
 	/**
 	 * Permissions associated to role
 	 */
-/*	@OneToMany(fetch = FetchType.LAZY,mappedBy="primaryKey.group")
-	@Cascade({ org.hibernate.annotations.CascadeType.DELETE,
-		org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	private Collection<RolePermission> permissions;
-	*/
-/*
-	/**
-	 * Members associated to role
-	 */
-/*	@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	@JoinTable(name= "role_permission",
+	@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@JoinTable(name= "ROLE_PERMISSION",
 	joinColumns={
-			@JoinColumn(name="PERMISSION_ID",unique= true)},
+			@JoinColumn(name="ROLE_ID",unique= true)},
 	inverseJoinColumns={
-			@JoinColumn(name="ENTITY_ID",unique= true)})
+			@JoinColumn(name="PERMISSION_ID",unique= true)})
 	private Collection<Permission> permissions;
-*/
+	
+	public Collection<Permission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Collection<Permission> permissions) {
+		this.permissions = permissions;
+	}
+	
+	
 	/**
 	 * 
 	 * @param rolename

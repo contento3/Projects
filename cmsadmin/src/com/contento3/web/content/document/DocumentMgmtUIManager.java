@@ -3,9 +3,16 @@ package com.contento3.web.content.document;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
+import com.contento3.security.model.Permission;
+import com.contento3.security.permission.dao.PermissionDao;
+import com.contento3.security.permission.service.PermissionAssembler;
+import com.contento3.security.user.dao.SaltedHibernateUserDao;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
@@ -31,6 +38,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	 * Used to get service beans from spring context.
 	 */
 	private final SpringContextHelper contextHelper;
+	private transient PermissionDao permissionDao;
 	
 	/**
 	 * TabSheet serves as the parent container for the document manager
@@ -130,10 +138,17 @@ public class DocumentMgmtUIManager implements UIManager {
 	/**
 	 * Display "Add Document" button on the top of tab 
 	 */
+	
 	private void addDocumentButton(){
+		com.contento3.security.permission.model.Permission permission =  permissionDao.findById(17);
+		Subject currentUser = SecurityUtils.getSubject();
+		if (currentUser.isPermitted(permission))
+		{
 		final Button addButton = new Button("Add Document");
 		addButton.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,this.documentTable));
 		this.verticalLayout.addComponent(addButton);
+		}
+		
 	}
 	
 }

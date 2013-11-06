@@ -20,7 +20,7 @@ import com.contento3.security.permission.service.PermissionService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -29,14 +29,15 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Notification;
 
-public class PermissionPopup extends CustomComponent implements Window.CloseListener{
+public class PermissionPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener{
 
 	private static final long serialVersionUID = 1L;
 
@@ -78,9 +79,8 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
     final Table permissionTable;
     boolean isModalWindowClosable = true;
     
-    public PermissionPopup(final Window main,final SpringContextHelper helper,final Table table)
+    public PermissionPopup(final SpringContextHelper helper,final Table table)
     {
-    	this.mainwindow = main;
 		this.helper = helper;
 		this.permissionTable = table;
 		this.permissionService = (PermissionService) this.helper.getBean("permissionService");
@@ -88,7 +88,8 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 		this.entityOperationService = (EntityOperationService) this.helper.getBean("entityOperationService");
 		// The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
-		openbutton = new Button("Add Permission", this, "openButtonClick");
+		openbutton = new Button("Add Permission");
+		openbutton.addClickListener((ClickListener) this);
 	    layout.addComponent(openbutton);
 	    setCompositionRoot(layout);
     }
@@ -106,7 +107,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
     	popupWindow.setWidth(40,Sizeable.UNITS_PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        mainwindow.addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
         popupWindow.addListener(this);
@@ -174,7 +175,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
         addButtonLayout.setComponentAlignment(permissionButton, Alignment.BOTTOM_RIGHT);
         addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         
-        popupWindow.addComponent(popupMainLayout);
+        popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
@@ -185,7 +186,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 			final int permissionId =  (Integer) event.getButton().getData();
 			PermissionDto permissionDto = permissionService.findById(permissionId);
 			//roleNameTxtFld.setValue(roleDto.getName());
-			permissionIdTxtFld.setValue(permissionDto.getPermissionId());
+			permissionIdTxtFld.setValue(Integer.toString(permissionDto.getId()));
         	permissionButton.addListener(new ClickListener(){
     			private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
@@ -226,12 +227,12 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 			permissionDto.setEntityOperation(entityOperationDto);
 			permissionService.create(permissionDto);
 		} catch (EntityAlreadyFoundException e) {
-			mainwindow.showNotification("Permission already exists", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("Permission already exists", Notification.TYPE_ERROR_MESSAGE);
 		}
 		catch (EntityNotCreatedException e) {
-			mainwindow.showNotification("Permission not created", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("Permission not created", Notification.TYPE_ERROR_MESSAGE);
 		}
-		mainwindow.showNotification(permissionDto.getPermissionId() +" permission created succesfully");
+		Notification.show(permissionDto.getId() +" permission created succesfully");
 		resetTable();
     }
 	private void handleEditPermission(final ComboBox entityIdCmboBox,final ComboBox entityOperationIdCmboBox,final Integer editId){
@@ -247,7 +248,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 		permissionDto.setEntity(entityDto);
 		permissionDto.setEntityOperation(entityOperationDto);
 		permissionService.update(permissionDto);
-		mainwindow.showNotification(permissionDto.getPermissionId()+" permission edit succesfully");
+		Notification.show(permissionDto.getId()+" permission edit succesfully");
 		resetTable();
     }
 	@Override
@@ -258,20 +259,27 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 
 	@SuppressWarnings("rawtypes")
 	private void resetTable(){
-		final AbstractTableBuilder tableBuilder = new PermissionTableBuilder(mainwindow,helper,permissionTable);
+		final AbstractTableBuilder tableBuilder = new PermissionTableBuilder(helper,permissionTable);
 		//final Collection<RoleDto> roleDto = roleService.findAllRoles();
 		final Collection<PermissionDto> permissionDto = permissionService.findAllPermissions();
 		tableBuilder.rebuild((Collection)permissionDto);
-		mainwindow.removeWindow(popupWindow);
+		UI.getCurrent().removeWindow(popupWindow);
         openbutton.setEnabled(true);
     }
 	 public void closeButtonClick(Button.ClickEvent event) {
 	    	if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */
-	        mainwindow.removeWindow(popupWindow);
+	        UI.getCurrent().removeWindow(popupWindow);
 	        
 	        /* Return to initial state. */
 	        openbutton.setEnabled(true);
 	    	}
 	    }
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		// TODO Auto-generated method stub
+		this.openButtonClick(event);
+		
+	}
 }
