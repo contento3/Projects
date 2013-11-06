@@ -3,6 +3,8 @@ package com.contento3.account.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.model.Account;
 import com.contento3.account.service.AccountAssembler;
@@ -12,6 +14,8 @@ public class AccountAssemblerImpl implements AccountAssembler {
 
 	@Override
 	public Account dtoToDomain(final AccountDto dto){
+		Validate.notNull(dto,"account dto cannot be null");
+
 		Account account = new Account();
 		account.setAccountId(dto.getAccountId());
 		account.setName(dto.getName());

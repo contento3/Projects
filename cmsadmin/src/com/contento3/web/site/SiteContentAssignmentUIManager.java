@@ -2,6 +2,9 @@ package com.contento3.web.site;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import java_cup.version;
 
 import org.apache.log4j.Logger;
 
@@ -14,14 +17,23 @@ import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.ContentAssignerEventListener;
+import com.contento3.web.site.listener.CreatePageEventListener;
+import com.contento3.web.site.listener.SiteConfigurationEventListener;
+import com.contento3.web.site.listener.SiteContentAssignerClickEvent;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
@@ -48,6 +60,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	 * main layout for content assignment screen
 	 */
 	private VerticalLayout verticalLayout = new VerticalLayout();
+	
+	private VerticalLayout verticalLayoutForPopup = new VerticalLayout();
 
 	private SiteService siteService;
 	
@@ -75,7 +89,7 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		tab.setCaption("Site Content Assigner");
 		tab.setClosable(true);
 		tabSheet.setSelectedTab(verticalLayout);
-
+		HorizontalLayout horizontal = new HorizontalLayout();
 		//Pop-up that adds a new domain
 		final FormLayout formLayout = new FormLayout();
 		final Collection<String> contentTypeValue = new ArrayList<String>();
@@ -89,9 +103,27 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		formLayout.addComponent(contentTypeComboBox);
 		
 		final Button button = new Button("Assign Content");
-		formLayout.addComponent(button);
+//		formLayout.addComponent(button);
 		button.addClickListener(this);
-		verticalLayout.addComponent(formLayout);
+		
+		GridLayout grid = new GridLayout(1, 1);
+		grid.addStyleName("bordertest");
+		
+		
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new SiteContentAssignerClickEvent(this));
+		
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(grid,"contentAsign",listeners);
+		builder.build();
+		VerticalLayout vertical = new VerticalLayout();
+		vertical.addComponent(formLayout);
+		horizontal.addComponent(vertical);
+		horizontal.addComponent(grid);
+		horizontal.setWidth(100,Unit.PERCENTAGE);
+		
+		horizontal.setExpandRatio(vertical, 8);
+		horizontal.setExpandRatio(grid, 1);
+		verticalLayout.addComponent(horizontal);
 		verticalLayout.addComponent(new HorizontalRuler());
 		return tabSheet;
 	}
@@ -103,13 +135,14 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		GenricEntityPicker contentPicker;
 		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
 		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null));
-		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayout,this,false);
+		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);
 		contentPicker.setCaption("Assign Content to Site");
 		contentPicker.build();
 	}
 	
+	@Override
 	public void updateList(){
-		Collection<String> selectedItems =(Collection<String>) this.verticalLayout.getData();
+		Collection<String> selectedItems =(Collection<String>) this.verticalLayoutForPopup.getData();
 		if(selectedItems != null){
 			ArticleDto articleDto = null;
 			try {

@@ -21,9 +21,6 @@ import com.vaadin.ui.Window.CloseEvent;
 
 public class AssociatedCategoryClickListener extends EntityListener implements Window.CloseListener, com.vaadin.event.MouseEvents.ClickListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private static final Logger LOGGER = Logger.getLogger(AssociatedCategoryClickListener.class);

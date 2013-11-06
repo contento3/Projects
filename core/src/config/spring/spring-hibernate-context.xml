@@ -12,6 +12,7 @@
 <property name="passwordEnvName" value="PEV" />
 </bean>
 
+
 <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
 <property name="config" ref="environmentConfig" />
 </bean>
@@ -40,6 +41,7 @@
 				 <value>com.contento3.cms.page.section.model.PageSection</value>
 				 <value>com.contento3.cms.page.section.model.PageSectionType</value>
 				 <value>com.contento3.cms.page.template.model.Template</value>
+				 <value>com.contento3.cms.page.template.model.TemplateCategory</value>
 				 <value>com.contento3.cms.page.model.Page</value>
 				 <value>com.contento3.cms.site.structure.model.Site</value>
 				 <value>com.contento3.account.model.Account</value>
@@ -58,8 +60,7 @@
 			     <value>com.contento3.dam.document.model.DocumentType</value>
 			     <value>com.contento3.dam.storagetype.model.StorageType</value>
 			     <value>com.contento3.cms.article.model.ArticleImage</value>
-			  <!--   <value>com.contento3.site.user.model.User</value> -->
-			    
+			     <value>com.contento3.site.user.model.User</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -79,6 +80,14 @@
 				<prop key="hibernate.generate_statistics">true</prop>
 				<prop key="hibernate.cache.use_structured_entries">true</prop>
 				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
+				
+				<prop key="hibernate.c3p0.min_size">2 </prop>
+	            <prop key="hibernate.c3p0.max_size" >5</prop>
+	            <prop key="hibernate.c3p0.timeout">600</prop>
+	            <prop key="hibernate.c3p0.max_statements">0</prop>
+	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
+	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
+	            
 			</props>
 		</property>	</bean>
 

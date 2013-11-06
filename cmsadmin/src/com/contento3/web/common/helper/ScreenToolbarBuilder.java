@@ -79,7 +79,7 @@ public class ScreenToolbarBuilder {
 
 		while (count<totalRows && count<listeners.size()){
 			ClickListener listener = listeners.get(count);
-			buildCell("images/"+imagePaths.get(count),tooltips.get(count),listener);
+			buildCell(imagePaths,tooltips,count,listener);
 			count++;
 		}
 	}
@@ -92,8 +92,11 @@ public class ScreenToolbarBuilder {
 	 * @param tooltip Tooltip text for this command
 	 * @param listener Listener that handles the action when the image is clicked
 	 */
-	private void buildCell(final String path,final String tooltip,final ClickListener listener){
+	private void buildCell(final List<String> imagePaths,final List<String> tooltips,final Integer count,final ClickListener listener){
 		final ImageLoader imageLoader = new ImageLoader();
+		final String path = "images/"+imagePaths.get(count);
+		final String tooltip = imagePaths.get(count);
+		
 	    final Embedded icon = imageLoader.loadEmbeddedImageByPath(path);
 	    
 	    if (null!=listener){
@@ -101,8 +104,10 @@ public class ScreenToolbarBuilder {
 	    }
 	    
 	    icon.setDescription(tooltip);
-	    icon.addStyleName("subComponent");
-		gridLayout.addComponent(icon);
+	    if (count!=imagePaths.size()-1)
+	    	icon.addStyleName("subComponent");
+		
+	    gridLayout.addComponent(icon);
 		gridLayout.setComponentAlignment(icon, Alignment.TOP_CENTER);
 	}
 }

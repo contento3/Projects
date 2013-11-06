@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.CredentialsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -14,6 +15,7 @@ import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
+import com.contento3.web.account.AccountSettingsUIManager;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TabSheetHelper;
 import com.contento3.web.content.SearchUI;
@@ -46,7 +48,10 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.CloseHandler;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
@@ -95,7 +100,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     final TabSheet uiTabsheet = new TabSheet();
 
 	CMSMainWindow(final SpringContextHelper helper){ //change
-	//	super(TM.get("app.title"));
 		this.helper = helper;
 		this.logoutButton = new Button("Log Out");
 		logoutButton.addStyleName("link");
@@ -107,22 +111,27 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	public void buildLogin(){
 		final VerticalLayout appRootLayout = new VerticalLayout();
 		LoginForm login = new LoginForm();
-		appRootLayout.setStyleName("loginform");
+		login.setHeight(180,Unit.PIXELS);
+		login.setWidth(145,Unit.PIXELS);
+		
+		
 		
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-	    embedded.setHeight(55,Unit.PERCENTAGE);
-	    embedded.setWidth(30,Unit.PERCENTAGE);
+	    embedded.setHeight(75,Unit.PIXELS);
+	    embedded.setWidth(200,Unit.PIXELS);
 	    appRootLayout.addComponent(embedded);
-	    
+	    appRootLayout.setComponentAlignment(embedded,Alignment.BOTTOM_CENTER);
+
 	    appRootLayout.setSpacing(true);
 	    
 	    appRootLayout.addComponent(login);
-		appRootLayout.setComponentAlignment(login, Alignment.MIDDLE_CENTER);
-		
+	    appRootLayout.setComponentAlignment(login,Alignment.MIDDLE_CENTER);
+
+		appRootLayout.setSizeFull();
 		this.addComponent(appRootLayout);
+		this.setComponentAlignment(appRootLayout, Alignment.MIDDLE_CENTER);
 		
-		//this.setWindowMode(WindowMode.MAXIMIZED);
 		
 		login.addLoginListener(new LoginForm.LoginListener() {
             private static final long serialVersionUID = 1L;
@@ -144,12 +153,19 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 				}
 				catch(IncorrectCredentialsException ice){
 					LOGGER.error("Username or password for username ["+username+"] is not valid");
+					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
 				}
 				catch(CredentialsException ice){
-					LOGGER.error("Error occured while authentication user with username: "+username);
+					LOGGER.error("CredentialsException,Error occured while authentication user with username: "+username);
+					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+				}
+				catch(AuthenticationException ae){
+					LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
+					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
 				}
 				catch(Exception e){
 					LOGGER.error("Error occured while authenticating user",e);
+					Notification.show("Something wrong with the server while you tried login.",Type.ERROR_MESSAGE);
 				}
             }
         });
@@ -163,8 +179,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 					subject = SecurityUtils.getSubject();
 					subject.logout();
 
-					Page.getCurrent().getLocation().getHost()
-							.substring(0,Page.getCurrent().getLocation().getHost().length()-1);
+					Page.getCurrent().setLocation(Page.getCurrent().getLocation());
 				}
 			});
 
@@ -194,11 +209,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
  
 	
 	private void buildUI(){
-//CHANGED
-		   // 	uri = Page.getCurrent().getUriFragment();
-       // uri.addListener(this);
-//        uri.setImmediate(true);
-
 		//Parent Layout that holds the ui of the application
         final VerticalLayout appRootLayout = new VerticalLayout();
         
@@ -216,6 +226,16 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
 	    uiTabsheet.setWidth(100,Unit.PERCENTAGE);
 	    uiTabsheet.setHeight(100,Unit.PERCENTAGE);
+	    uiTabsheet.setCloseHandler(new CloseHandler() {
+			
+			@Override
+			public void onTabClose(TabSheet tabsheet, Component tabContent) {
+				Tab currentTab= uiTabsheet.getTab(tabContent);
+				int currentPosition = uiTabsheet.getTabPosition(currentTab);
+				if(currentPosition > 0) uiTabsheet.setSelectedTab(currentPosition-1);
+				uiTabsheet.removeTab(currentTab);
+			}
+		} );
 	    
 	    HorizontalLayout horizTop = new HorizontalLayout();
 	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);
@@ -224,10 +244,13 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	    
 	    ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-		embedded.setHeight(100, Unit.PERCENTAGE);
+		embedded.setHeight(21, Unit.PIXELS);
+		embedded.setWidth(70, Unit.PIXELS);
+
 		horizTop.addComponent(embedded);
 	    horizTop.setComponentAlignment(embedded, Alignment.TOP_LEFT);
-	    horizTop.setSizeFull();
+	    horizTop.setHeight(94,Unit.PERCENTAGE);
+	    horizTop.setWidth(100,Unit.PERCENTAGE);
 	    
 
 	    vert.addComponent(horizTop);   
@@ -236,7 +259,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		horizTop.addComponent(buttonsLayout);
 		horizTop.setComponentAlignment(buttonsLayout, Alignment.TOP_RIGHT);
 		final Button accountButton = new Button ("Account Settings");
-	//	accountButton.addClickListener(new AccountSettingsUIManager(this,helper));
+		accountButton.addClickListener(new AccountSettingsUIManager(this,helper));
 		
 		final SaltedHibernateUserDto user = userService.findUserByUsername((String)SessionHelper.loadAttribute("userName"));
 		final String welcomeUsrMsg = "<b>Welcome "+ user.getFirstName() + "!</b>"; 
@@ -306,16 +329,22 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         root = new Tree("",hwContainer);
         root.setStyleName(BaseTheme.TREE_CONNECTORS);
         root.addActionHandler(this);
-        Item item0 = hwContainer.addItem("Sites");
         
         root.addContainerProperty("icon", Resource.class, null);
         root.setItemIconPropertyId("icon");
-        root.setItemIcon(item0, new ExternalResource("images/site.png"));
 
+        
+        Item dashboard = hwContainer.addItem(NavigationConstant.DASHBOARD);
+        dashboard.getItemProperty("name").setValue(NavigationConstant.DASHBOARD);
+        root.setItemIcon(dashboard, new ExternalResource("images/home-icon.png"));
+        dashboard.getItemProperty("icon").setValue(new ExternalResource("images/home-icon.png"));
+
+        Item item0 = hwContainer.addItem("Sites");
+        root.setItemIcon(item0, new ExternalResource("images/site.png"));
         item0.getItemProperty("name").setValue("Sites");
         item0.getItemProperty("id").setValue(new Integer(-1));
         item0.getItemProperty("icon").setValue(new ExternalResource("images/site.png"));
-        
+
         Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
         contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
         root.setItemIcon(contentMgmt, new ExternalResource("images/content.png"));
@@ -335,7 +364,8 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
         root.setItemIcon(template, new ExternalResource("images/template.png"));
         template.getItemProperty("icon").setValue(new ExternalResource("images/template.png"));
-
+        
+        
         Item modules = hwContainer.addItem("Modules");
         modules.getItemProperty("name").setValue(NavigationConstant.MODULES);
         root.setItemIcon(modules, new ExternalResource("images/module-icon.png"));
@@ -363,6 +393,10 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     	root.setImmediate(true);
     	vert.addComponent(mainAndContentSplitter); 
 
+    	//After the login, dashboard must be displayed as a first screen
+		UIManager sitesDashboard = UIManagerCreator.createUIManager(uiTabsheet,Manager.Dashboard,helper);
+		horiz.setSecondComponent(sitesDashboard.render(null));
+
 	   //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
         root.addItemClickListener(new ItemClickListener() {
@@ -379,6 +413,10 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	                		UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper);
 	                		horiz.setSecondComponent(layoutUIMgr.render(null));
 	        		}
+	                else if (null!=itemSelected && itemSelected.equals(NavigationConstant.DASHBOARD)){
+	                		UIManager sitesDashboard = UIManagerCreator.createUIManager(uiTabsheet,Manager.Dashboard,helper);
+	                		horiz.setSecondComponent(sitesDashboard.render(null));
+	                }
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
 	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper);
@@ -419,7 +457,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	            			
 	            		for (SiteDto site: sites){
 	           				Item item = hwContainer.addItem(site.getSiteName());
-	           				if (null != item){
+	           				if (null != item){	
 	          					item.getItemProperty("name").setValue(site.getSiteName());
 	           					item.getItemProperty("id").setValue(site.getSiteId());
 	            				hwContainer.setParent(site.getSiteName(), "Sites");

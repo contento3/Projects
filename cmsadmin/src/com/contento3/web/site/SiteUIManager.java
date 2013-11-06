@@ -13,9 +13,14 @@ import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
+import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.ContentAssignerEventListener;
+import com.contento3.web.site.listener.CreatePageEventListener;
+import com.contento3.web.site.listener.SiteConfigurationEventListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
@@ -23,6 +28,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
@@ -95,7 +101,6 @@ public class SiteUIManager implements UIManager {
 		Component componentToReturn = null;
 		uiTabSheet.setHeight(100,Unit.PERCENTAGE);
 		uiTabSheet.setWidth(100,Unit.PERCENTAGE);
-
 		if(command == null){
 				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper);
 				componentToReturn = sitesDashBoard.render(null);
@@ -112,7 +117,8 @@ public class SiteUIManager implements UIManager {
 
 	/**
 	 * Renders the screen based on command passed.
-	 */
+	 **/
+	
 	public Component render(final String command,final Integer id) {
 		Component componentToReturn = null;
 		if (command.equals(SITEDASHBOARD)) {
@@ -128,17 +134,48 @@ public class SiteUIManager implements UIManager {
 	 * @return Component
 	 */
 	public Component renderSiteDashboard(final Integer siteId){
+		
+		pageUIManager = new PageUIManager(siteService,pageService,contextHelper);
+		SiteContentAssignmentUIManager siteContentUIManager = new SiteContentAssignmentUIManager(uiTabSheet,contextHelper);
+
+		GridLayout grid = new GridLayout(1, 3);
+		grid.addStyleName("bordertest");
+		
+		
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		siteConfigUIManager = new SiteConfigUIManager(siteService,contextHelper);
+		listeners.add(new CreatePageEventListener(pageUIManager,uiTabSheet,siteId));
+		listeners.add(new SiteConfigurationEventListener(siteConfigUIManager, uiTabSheet, siteId));
+		listeners.add(new ContentAssignerEventListener(siteContentUIManager, siteId));
+		
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(grid,"site",listeners);
+		builder.build();
+
+		
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
 		final VerticalLayout veticalLayout = new VerticalLayout();
+		final VerticalLayout veticalLayout2 = new VerticalLayout();
 		//final TabSheet pagesTab = new TabSheet();
 		final Label heading = new Label("Site dashboard");
 		heading.setStyleName("screenHeading");
-		veticalLayout.addComponent(heading);
-		veticalLayout.addComponent(new HorizontalRuler());
+		veticalLayout2.addComponent(heading);
+				
+		veticalLayout2.addComponent(new HorizontalRuler());
+		veticalLayout2.addComponent(horizontalLayout);
 		veticalLayout.setMargin(true);
-		pageUIManager = new PageUIManager(siteService,pageService,contextHelper);
-		Component component = pageUIManager.renderPageListing(siteId,uiTabSheet,horizontalLayout,veticalLayout);
-		renderButtons(horizontalLayout,siteId,uiTabSheet);
+		
+		uiTabSheet.setHeight(100,Unit.PERCENTAGE);
+		uiTabSheet.setWidth(100,Unit.PERCENTAGE);
+
+		horizontalLayout.addComponent(veticalLayout);
+		horizontalLayout.addComponent(grid);
+		horizontalLayout.setWidth(100,Unit.PERCENTAGE);
+		horizontalLayout.setExpandRatio(veticalLayout, 10);
+		horizontalLayout.setExpandRatio(grid, 1);
+		
+		Component component = pageUIManager.renderPageListing(siteId,uiTabSheet,veticalLayout2,veticalLayout);
+		//renderButtons(horizontalLayout,siteId,uiTabSheet);
+		
 		return component;
 	}
 
@@ -150,8 +187,8 @@ public class SiteUIManager implements UIManager {
 	 * @param pagesTab
 	 */
 	public void renderButtons(final HorizontalLayout horizontalLayout,final Integer siteId,final TabSheet pagesTab){
-		pagesTab.setHeight(100,Unit.PERCENTAGE);
-		pagesTab.setWidth(100,Unit.PERCENTAGE);
+//		pagesTab.setHeight(100,Unit.PERCENTAGE);
+//		pagesTab.setWidth(100,Unit.PERCENTAGE);
 
 		// Button that when clicked rendered a new page tab.
 		final Button newPageButton = new Button("Create page");

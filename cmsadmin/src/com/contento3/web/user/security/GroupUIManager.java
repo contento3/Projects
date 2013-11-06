@@ -1,17 +1,24 @@
 package com.contento3.web.user.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
+import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.user.listner.AddGroupClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
@@ -102,31 +109,45 @@ public class GroupUIManager implements UIManager {
 	private void renderGroupContent() {
 		Label groupHeading = new Label("Group Manager");
 		groupHeading.setStyleName("screenHeading");
-		this.verticalLayout.addComponent(groupHeading);
-		this.verticalLayout.addComponent(new HorizontalRuler());
-		this.verticalLayout.setMargin(true);
+		HorizontalLayout horizon = new HorizontalLayout();
+		VerticalLayout verticl = new VerticalLayout();
+		horizon.addComponent(verticl);
+		this.verticalLayout.addComponent(horizon);
+		verticl.addComponent(groupHeading);
+		verticl.addComponent(new HorizontalRuler());
+		verticl.setMargin(true);
 		addGroupButton();
-		renderGroupTable();
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddGroupClickListener(contextHelper, groupTable));
+		
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+		renderGroupTable(verticl);
+		horizon.addComponent(toolbarGridLayout);
+		horizon.setWidth(100,Unit.PERCENTAGE);	
+		horizon.setExpandRatio(toolbarGridLayout, 1);
+		horizon.setExpandRatio(verticl, 9);
 	}
 	
 	/**
 	 * display "Add Group" button on the top of tab sheet
 	 */
 	private void addGroupButton(){
-		Button addButton = new Button("Add Group", new GroupPopup(contextHelper,groupTable));
-		this.verticalLayout.addComponent(addButton);
+//		Button addButton = new Button("Add Group", new GroupPopup(contextHelper,groupTable));
+//		this.verticalLayout.addComponent(addButton);
 	}
 
 	/**
 	 * Render group table to screen
 	 */
-	private void renderGroupTable() {
+	private void renderGroupTable(VerticalLayout verticl) {
 		
 		final AbstractTableBuilder tableBuilder = new GroupTableBuilder(contextHelper,groupTable);
 		
 		tableBuilder.build((Collection)groupService.findAllGroups());
 		
-		this.verticalLayout.addComponent(groupTable);
+		verticl.addComponent(groupTable);
 	}
 	
 

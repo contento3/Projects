@@ -11,6 +11,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -95,7 +96,7 @@ implements Window.CloseListener,Button.ClickListener {
     	popupWindow.setContent(formLayout);
     	
     	/* Add the window inside the main window. */
-        mainwindow.addComponent(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
         popupWindow.addCloseListener(this);

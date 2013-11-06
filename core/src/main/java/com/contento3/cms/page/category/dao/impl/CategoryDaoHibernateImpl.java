@@ -2,6 +2,7 @@ package com.contento3.cms.page.category.dao.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
@@ -20,7 +21,8 @@ public class CategoryDaoHibernateImpl extends
 
 	@Override
 	public Category findCategoryByName(final String categoryName,final Integer accountId) {
-
+		Validate.notNull(accountId,"accountId cannot be null");
+		Validate.notNull(categoryName,"categoryName cannot be null");
 		Criteria criteria = this.getSession()
 				.createCriteria(Category.class)
 				.add(Restrictions.eq("categoryName", categoryName))
@@ -38,7 +40,7 @@ public class CategoryDaoHibernateImpl extends
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Category> findNullParentIdCategory(final Integer accountId){
-
+		Validate.notNull(accountId,"accountId cannot be null");
 		Criteria criteria = this.getSession()
 				.createCriteria(Category.class)
 				.add(Restrictions.isNull("parent"))
@@ -50,6 +52,8 @@ public class CategoryDaoHibernateImpl extends
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Category> findChildCategories(final Integer parentId,final Integer accountId){
+		Validate.notNull(accountId,"accountId cannot be null");
+		Validate.notNull(parentId,"parentId cannot be null");
 		Criteria criteria = this.getSession()
 				.createCriteria(Category.class)
 				.add(Restrictions.eq("parent.categoryId", parentId))

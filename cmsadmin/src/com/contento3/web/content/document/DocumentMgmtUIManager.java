@@ -1,6 +1,8 @@
 package com.contento3.web.content.document;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -16,13 +18,20 @@ import com.contento3.security.user.dao.SaltedHibernateUserDao;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
+import com.contento3.web.content.article.listener.ArticleAttachContentListener;
+import com.contento3.web.content.document.listener.AddDocumentButtonListener;
 import com.contento3.web.content.document.listener.DocumentFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.AddPageButtonClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
@@ -115,12 +124,28 @@ public class DocumentMgmtUIManager implements UIManager {
 	private void renderDocumentComponent(){
 		final Label documentHeading = new Label("Document Manager");
 		documentHeading.setStyleName("screenHeading");
-		this.verticalLayout.addComponent(documentHeading);
-		this.verticalLayout.addComponent(new HorizontalRuler());
-		this.verticalLayout.setMargin(true);
-		addDocumentButton();
-		this.verticalLayout.addComponent(new HorizontalRuler());
-		renderDocumentTable();
+		HorizontalLayout horizontal = new HorizontalLayout();
+		VerticalLayout verticaal = new VerticalLayout();
+		horizontal.addComponent(verticaal);
+		this.verticalLayout.addComponent(horizontal);
+		verticaal.addComponent(documentHeading);
+	//	verticaal.addComponent(new HorizontalRuler());
+		verticaal.setMargin(true);
+		
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddDocumentButtonListener(this.contextHelper,this.tabSheet,this.documentTable));
+		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
+		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"site",listeners);
+		builder.build();
+		horizontal.addComponent(toolbarGridLayout);
+		horizontal.setWidth(100,Unit.PERCENTAGE);
+		horizontal.setExpandRatio(verticaal, 8);
+		horizontal.setExpandRatio(toolbarGridLayout, 1);
+		verticaal.addComponent(new HorizontalRuler());
+		//addDocumentButton();
+		//renderDocumentTable();
 	}
 	
 	/**

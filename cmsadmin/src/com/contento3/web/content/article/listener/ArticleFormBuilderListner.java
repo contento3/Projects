@@ -161,7 +161,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));
 		articleTab.setClosable(true);
 
-		GridLayout toolbarGridLayout = new GridLayout(1,6);
+		final GridLayout toolbarGridLayout = new GridLayout(1,6);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
 		listeners.add(new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
@@ -197,19 +197,26 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleForm.getArticleTeaser().setColumns(65);
 		articleForm.getArticleTeaser().setRows(3);
 		
-		articleForm.getConfig().useCompactTags();
 		articleForm.getConfig().disableElementsPath();
 		articleForm.getConfig().setResizeDir(CKEditorConfig.RESIZE_DIR.HORIZONTAL);
-		articleForm.getConfig().disableSpellChecker();
 		articleForm.getConfig().setToolbarCanCollapse(false);
-		articleForm.getConfig().disableElementsPath();       
-		articleForm.getConfig().disableSpellChecker();
-		//articleForm.getConfig().addCustomToolbarLine("['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']");
+ 
+		final String toolbarConfig =
+				"{ name: 'document',groups: [ 'mode', 'document', 'doctools' ], items : [ 'Source','-','Preview','Print','-','Templates' ] }," +
+			    "{ name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },"+
+          	    "{ name: 'editing',     items : [ 'Find','Replace','-','SelectAll','-','SpellChecker' ] },"+
+                "{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },"+
+ 		        "{ name: 'links',       items : [ 'Link','Unlink' ] },"+
+     	        "{ name: 'insert',      items : [ 'Table','HorizontalRule','Smiley','SpecialChar'] },"+
+		        "{ name: 'styles',      items : [ 'Styles','Format','Font','FontSize' ] },"+
+		        "{ name: 'colors',      items : [ 'TextColor','BGColor' ] }";
+
+		articleForm.getConfig().addCustomToolbarLine(toolbarConfig);
+		articleForm.getConfig().setToolbarStartupExpanded(true);
+
 		articleForm.getConfig().setWidth("95%");
 		articleForm.getConfig().setHeight("95%");
-        
-        articleForm.getPostedDatefield().setInputPrompt("Insert Date");
-        
+
         // Set the correct resolution only date
         articleForm.getPostedDatefield().setResolution(Resolution.DAY);
         articleForm.getExpiryDatefield().setInputPrompt("Insert Date");

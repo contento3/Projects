@@ -3,6 +3,8 @@ package com.contento3.cms.article.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
+
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.model.ArticleImage;
@@ -38,8 +40,10 @@ public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 	 */
 	@Override
 	public ArticleImage dtoToDomain(final ArticleImageDto dto) {
-		ArticleImage domain = new ArticleImage();
-		ArticleImageLinkPK pk = new ArticleImageLinkPK();
+		Validate.notNull(dto,"article dto cannot be null");
+
+		final ArticleImage domain = new ArticleImage();
+		final ArticleImageLinkPK pk = new ArticleImageLinkPK();
 		pk.setArticle(this.articleAssembler.dtoToDomain(dto.getArticle()));
 		pk.setImage(this.imageAssembler.dtoToDomain(dto.getImage()));
 		pk.setContentScope(this.contentScopeAssembler.dtoToDomain(dto.getContentScope()));
@@ -53,7 +57,9 @@ public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 	 */
 	@Override
 	public ArticleImageDto domainToDto(final ArticleImage domain) {
-		ArticleImageDto dto = new ArticleImageDto();
+		Validate.notNull(domain,"article domain cannot be null");
+
+		final ArticleImageDto dto = new ArticleImageDto();
 		dto.setArticle(this.articleAssembler.domainToDto(domain.getPrimaryKey().getArticle()));
 		dto.setImage(this.imageAssembler.domainToDto(domain.getPrimaryKey().getImage()));
 		dto.setContentScope(this.contentScopeAssembler.domainToDto(domain.getPrimaryKey().getContentScope()));
@@ -66,7 +72,9 @@ public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 	 */
 	@Override
 	public Collection<ArticleImageDto> domainsToDtos(final Collection<ArticleImage> domains) {
-		Collection<ArticleImageDto> dtos = new ArrayList<ArticleImageDto>();
+		Validate.notNull(domains,"article domains cannot be null");
+
+		final Collection<ArticleImageDto> dtos = new ArrayList<ArticleImageDto>();
 		for(ArticleImage domain : domains){
 			dtos.add(domainToDto(domain));
 		}
@@ -78,7 +86,9 @@ public class ArticleImageAssemblerImpl implements ArticleImageAssembler {
 	 */
 	@Override
 	public Collection<ArticleImage> dtosToDomains(final Collection<ArticleImageDto> dtos) {
-		Collection<ArticleImage> domains = new ArrayList<ArticleImage>();
+		Validate.notNull(dtos,"article dtos collection cannot be null");
+
+		final Collection<ArticleImage> domains = new ArrayList<ArticleImage>();
 		for(ArticleImageDto dto: dtos){
 			domains.add(dtoToDomain(dto));
 		}

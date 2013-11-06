@@ -216,7 +216,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
 
 		
 		if (pwdTxtFld.getValue().equals(confirmPwdTxtFld.getValue())){
-			if (event.getButton().getCaption().equals("Edit")){
+			if (event != null && event.getButton().getCaption().equals("Edit")){
 				userButton.setCaption("Save");
 				popupWindow.setCaption("Edit user");
 				final String username = (String) event.getButton().getData();

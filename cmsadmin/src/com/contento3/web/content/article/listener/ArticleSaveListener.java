@@ -106,16 +106,16 @@ public class ArticleSaveListener implements ClickListener{
 			articleDto.setAccount(accountService.findAccountById(accountId));
 			articleService.create(articleDto);
 			Notification.show(saveNotification);
-			tabSheet.removeTab(articleTab);
+			//tabSheet.removeTab(articleTab);
 			resetTable();
-			tabSheet.removeTab(articleTab);
+			//tabSheet.removeTab(articleTab);
 		}
 		else{
 			articleService.update(articleDto);
 			Notification.show(updateNotification);
-			tabSheet.removeTab(articleTab);
+			//tabSheet.removeTab(articleTab);
 			resetTable();
-			tabSheet.removeTab(articleTab);
+			//tabSheet.removeTab(articleTab);
 		}
 		   
 	  }

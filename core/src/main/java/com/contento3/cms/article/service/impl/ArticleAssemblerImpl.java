@@ -3,6 +3,8 @@ package com.contento3.cms.article.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
+
 import com.contento3.account.service.AccountAssembler;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.model.Article;
@@ -30,6 +32,8 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 
 	@Override
 	public Article dtoToDomain(final ArticleDto dto) {
+		Validate.notNull(dto,"article dto cannot be null");
+
 		final Article domain = new Article();
 		domain.setArticleId(dto.getId());
 		domain.setHead(dto.getHead());
@@ -48,6 +52,8 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 
 	@Override
 	public ArticleDto domainToDto(final Article domain) {
+		Validate.notNull(domain,"article domain cannot be null");
+
 		ArticleDto dto = new ArticleDto();
 		dto.setId(domain.getArticleId());
 		dto.setUuid(domain.getUuid());
@@ -67,7 +73,9 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 
 	@Override
 	public Collection<ArticleDto> domainsToDtos(final Collection<Article> domains) {
-		Collection<ArticleDto> dtos = new ArrayList<ArticleDto>();
+		Validate.notNull(domains,"article domains list cannot be null");
+
+		final Collection<ArticleDto> dtos = new ArrayList<ArticleDto>();
 		for (Article domain : domains){
 			dtos.add(domainToDto(domain));
 		}

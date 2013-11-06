@@ -33,7 +33,7 @@ public interface CategoryService extends Service<CategoryDto>{
      * @param categoryDto
      * @return
      */
-	Integer create(CategoryDto categoryDto) throws EntityAlreadyFoundException;
+	Integer create(CategoryDto categoryDto,Integer parentId) throws EntityAlreadyFoundException;
 
 	/**
 	 * Finds all the category for a given account

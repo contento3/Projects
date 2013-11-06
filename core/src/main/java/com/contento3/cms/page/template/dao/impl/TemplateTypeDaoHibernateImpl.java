@@ -3,6 +3,7 @@ package com.contento3.cms.page.template.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -24,6 +25,8 @@ public class TemplateTypeDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 	@SuppressWarnings("unchecked")
 	@Override
 	public TemplateType findByName(String name) {
+		Validate.notNull(name,"name cannot be null");
+		
 		TemplateType templateType = null;
 		Criteria criteria = this.getSession()
 			.createCriteria(TemplateType.class)

@@ -1,18 +1,25 @@
 package com.contento3.web.user.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.user.listner.AddGroupClickListener;
+import com.contento3.web.user.listner.AddRoleClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
@@ -84,11 +91,18 @@ public class RoleUIManager implements UIManager {
 	private void renderRoleContent() {
 		Label roleHeading = new Label("Role Manager");
 		roleHeading.setStyleName("screenHeading");
-		this.verticalLayout.addComponent(roleHeading);
-		this.verticalLayout.addComponent(new HorizontalRuler());
-		this.verticalLayout.setMargin(true);
-		addRoleButton();
-		renderRoleTable();
+		HorizontalLayout horizon = new HorizontalLayout();
+		VerticalLayout verticl = new VerticalLayout();
+		this.verticalLayout.addComponent(horizon);
+		horizon.addComponent(verticl);
+		verticl.addComponent(roleHeading);
+		verticl.addComponent(new HorizontalRuler());
+		verticl.setMargin(true);
+		horizon.setWidth(100, Unit.PERCENTAGE);
+		
+		addRoleButton(horizon);
+		renderRoleTable(verticl);
+		horizon.setExpandRatio(verticl, 9);
 	}
 	
 	@Override
@@ -97,18 +111,25 @@ public class RoleUIManager implements UIManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	private void addRoleButton(){
-		Button addButton = new Button("Add Role", new RolePopup(contextHelper,roleTable));
-		this.verticalLayout.addComponent(addButton);
+	private void addRoleButton(HorizontalLayout horizontl){
+//		Button addButton = new Button("Add Role", new RolePopup(contextHelper,roleTable));
+//		this.verticalLayout.addComponent(addButton);
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddRoleClickListener(contextHelper, roleTable ));
+		
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+		horizontl.addComponent(toolbarGridLayout);
+		horizontl.setExpandRatio(toolbarGridLayout, 1);
 	}
 
-	private void renderRoleTable() {
+	private void renderRoleTable(VerticalLayout verticl) {
 		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(contextHelper,roleTable);
 		//tableBuilder.build((Collection)roleService.findAllRoles());
 		tableBuilder.build((Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
         
-		this.verticalLayout.addComponent(roleTable);
+		verticl.addComponent(roleTable);
 		
 	}
 }

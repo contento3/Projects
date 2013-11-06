@@ -2,6 +2,7 @@ package com.contento3.cms.site.structure.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,10 @@ public class SiteServiceImpl implements SiteService {
 	private PageLayoutDao pageLayoutDao;
 	
 	public SiteServiceImpl(final SiteAssembler siteAssembler,final SiteDAO siteDao,final PageLayoutDao pageLayoutDao){
+		Validate.notNull(siteAssembler,"siteAssembler cannot be null");
+		Validate.notNull(siteDao,"siteAssembler cannot be null");
+		Validate.notNull(pageLayoutDao,"siteAssembler cannot be null");
+		
 		this.siteDao = siteDao;
 		this.siteAssembler = siteAssembler;
 		this.pageLayoutDao = pageLayoutDao;
@@ -40,6 +45,8 @@ public class SiteServiceImpl implements SiteService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(SiteDto siteDto) {
+		Validate.notNull(siteDto,"siteDto cannot be null");
+		
 		Collection <PageLayout> defaultPageLayout = pageLayoutDao.findPageLayoutByAccountAndLayoutType(siteDto.getAccountDto().getAccountId(), 2);
 		PageLayout pageLayout = defaultPageLayout.iterator().next();
 		siteDto.setDefaultLayoutId(pageLayout.getId());
@@ -50,6 +57,7 @@ public class SiteServiceImpl implements SiteService {
 	@Transactional(readOnly = false)
 	@Override
 	public SiteDto update(SiteDto siteDto){
+		Validate.notNull(siteDto,"siteDto cannot be null");
 		Site site = siteAssembler.dtoToDomain(siteDto);
 		siteDao.update(site);
 		return siteAssembler.domainToDto(site);
@@ -59,6 +67,7 @@ public class SiteServiceImpl implements SiteService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public SiteDto findSiteById(Integer siteId){
+		Validate.notNull(siteId,"siteId cannot be null");
 		return siteAssembler.domainToDto(siteDao.findById(siteId));
 	}
 
@@ -66,19 +75,21 @@ public class SiteServiceImpl implements SiteService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public SiteDto findSiteByDomain(String domain){
+		Validate.notNull(domain,"domain cannot be null");
 		return siteAssembler.domainToDto(siteDao.findByDomain(domain));
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<SiteDto> findSitesByAccountId(Integer accountId) {
+		Validate.notNull(accountId,"accountId cannot be null");
 		return siteAssembler.domainsToDtos(siteDao.findByAccount(accountId));
 	}
 
 	@Override
 	public void delete(SiteDto dtoToDelete) {
 		// TODO Auto-generated method stub
-		
+		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 	}
 
 }

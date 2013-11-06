@@ -1,5 +1,6 @@
 package com.contento3.security;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.memory.InMemoryDaoImpl;
 
@@ -15,6 +16,9 @@ public class InMemoryChangePasswordDaoImpl extends InMemoryDaoImpl implements IC
 	@Override
 	public void changePassword(String username, String password) {
 		// get the UserDetails
+		Validate.notNull(username,"username cannot be null");
+		Validate.notNull(password,"password cannot be null");
+		
 		User userDetails = (User) getUserMap().getUser(username);
 		// create a new UserDetails with the new password
 		User newUserDetails = new User(userDetails.getUsername(),password,

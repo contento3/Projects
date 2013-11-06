@@ -19,12 +19,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.contento3.account.model.Account;
 import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.site.structure.model.Site;
 
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "ARTICLE")
 public class Article implements Serializable  {
 

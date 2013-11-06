@@ -32,7 +32,9 @@ import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.AddPageButtonClickListener;
 import com.contento3.web.site.listener.PageAssignCategoryListener;
+import com.contento3.web.site.listener.PageViewCategoryListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
@@ -47,14 +49,13 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 public class PageUIManager {
 
@@ -64,7 +65,7 @@ public class PageUIManager {
 	 * Site Service to find site related information
 	 */
 	private SiteService siteService;
-
+	
 	/**
 	 * Service layer class for page entity
 	 */
@@ -85,8 +86,9 @@ public class PageUIManager {
 	private int selectedPageId;
 
 	TabSheet pageLayoutsTab;
-
-
+	ComboBox pageLayoutCombo ;
+	SiteDto siteDto ;
+	PageLayoutService pageLayoutService;
 	
 	public PageUIManager (final SiteService siteService,final PageService pageService,final SpringContextHelper helper){
 		this.siteService = siteService;
@@ -107,8 +109,8 @@ public class PageUIManager {
 		container.addContainerProperty("Edit", Button.class, null);
 	}
 
-	public TabSheet renderPageListing(final Integer siteId,final TabSheet pagesTab,final HorizontalLayout horizontalLayout,final VerticalLayout pageLayout) {
-		pageLayout.addComponent(horizontalLayout);
+	public TabSheet renderPageListing(final Integer siteId,final TabSheet pagesTab,final VerticalLayout horizontalLayout,final VerticalLayout pageLayout) {
+		//pageLayout.addComponent(horizontalLayout);
 
 		final Label subHeadingLbl = new Label("Site pages");
 		subHeadingLbl.setStyleName("screenSubHeading");
@@ -124,12 +126,20 @@ public class PageUIManager {
 		// main component for the new site tab
 		horizontalLayout.setSpacing(true);
 
-		pagesTab.addComponent(pageLayout);
+//		GridLayout toolbarGridLayout = new GridLayout(1,6);
+//		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+//
+//		
+//		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+//		builder.build();
+
+		
+		pagesTab.addComponent(horizontalLayout);
 		pagesTab.setHeight("675");
 		pagesTab.setWidth("775");
 
-		SiteDto siteDto = siteService.findSiteById(siteId);
-		Tab tab = pagesTab.addTab(pageLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));
+		siteDto = siteService.findSiteById(siteId);
+		Tab tab = pagesTab.addTab(horizontalLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));
 		tab.setClosable(true);
 		pagesTab.setImmediate(true);
 		pagesTab.addSelectedTabChangeListener(new SelectedTabChangeListener() {
@@ -194,25 +204,14 @@ public class PageUIManager {
 
 		final TextField uriTxt = new TextField();
 		uriTxt.setCaption("Uri");
-
+		siteDto = siteService.findSiteById(siteId);
+		
 		newPageFormLayout.addComponent(titleTxt);
 		newPageFormLayout.addComponent(uriTxt);
 		newPageFormLayout.setWidth(100,Unit.PERCENTAGE);
 		newPageFormLayout.setSpacing(true);
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new PageAssignCategoryListener(contextHelper,pageId,(Integer)SessionHelper.loadAttribute("accountId")));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
-		builder.build();
 
-		newPageRootlayout.addComponent(toolbarGridLayout);
-		newPageRootlayout.setWidth(100,Unit.PERCENTAGE);
-		
-		newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
-		newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
-
-		// TODO get it from a property file
 		String pageTabTitle = "Untitled page";
 		String pageButtonTitle = "Add page";
 		PageDto pageDto = null;
@@ -243,20 +242,32 @@ public class PageUIManager {
 
 		// List box to select Page layouts
 
-		final PageLayoutService pageLayoutService = (PageLayoutService) contextHelper
+		pageLayoutService = (PageLayoutService) contextHelper
 				.getBean("pageLayoutService");
-		final SiteDto siteDto = siteService.findSiteById(siteId);
+		siteDto = siteService.findSiteById(siteId);
 
 		Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
-		final ComboBox pageLayoutCombo = new ComboBox("Select Page Layouts",
+		pageLayoutCombo = new ComboBox("Select Page Layouts",
 				comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
 
 		Button newPageSubmitBtn = new Button(pageButtonTitle);
 		newPageFormLayout.addComponent(pageLayoutCombo);
-		newPageFormLayout.addComponent(newPageSubmitBtn);
+		//newPageFormLayout.addComponent(newPageSubmitBtn);
 		pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
+
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddPageButtonClickListener(contextHelper,titleTxt,uriTxt,siteDto,pageLayoutCombo,pageLayoutService, pageId,newPageDtoWithLayout,pagesTab,newPageParentlayout,this));
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+
+		newPageRootlayout.addComponent(toolbarGridLayout);
+		newPageRootlayout.setWidth(100,Unit.PERCENTAGE);
+		
+		newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
+		newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
 
 		newPageSubmitBtn.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -320,7 +331,7 @@ public class PageUIManager {
 		}
 	}
 
-	private void addPageToPageListTable(final PageDto page,
+	public void addPageToPageListTable(final PageDto page,
 			final Integer siteId, final TabSheet pagesTab, Button link) {
 
 		Item item = container.addItem(page.getPageId());
