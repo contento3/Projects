@@ -19,6 +19,10 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.SimpleByteSource;
 
+import com.contento3.security.entity.dao.EntityDao;
+import com.contento3.security.entity.model.PermissionEntity;
+import com.contento3.security.entityoperation.dao.EntityOperationDao;
+import com.contento3.security.entityoperation.model.EntityOperation;
 import com.contento3.security.group.dao.GroupDao;
 import com.contento3.security.group.model.Group;
 import com.contento3.security.role.model.Role;
@@ -80,7 +84,7 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 		     //   Collection<GroupRole> groupRoles = group.getRoles();
 		        
 		           // info.addRoles(fetchRoles(groups));
-		            info.addObjectPermissions( fetchPermissions(groups));
+		            info.addStringPermissions( fetchPermissions(groups));
 		        
 		        return info;
 		    }
@@ -116,9 +120,13 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 		
 		return RoleNames;
 	}
-	public Collection<Permission> fetchPermissions(Collection<Group> groups)
+	public Collection<String> fetchPermissions(Collection<Group> groups)
 	{
-		Collection<Permission> permissions = new ArrayList();
+		Collection<String> permissions = new ArrayList();
+		PermissionEntity entity;
+		//EntityDao entityDao;
+		//EntityOperationDao entityOperationDao;
+		EntityOperation entityOperation;
 		for(Group group: groups)
 		{
 		      Collection<Role> groupRoles = group.getRoles();	
@@ -127,7 +135,9 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 					Collection<com.contento3.security.permission.model.Permission> tempPermissions = role.getPermissions();
 					for(com.contento3.security.permission.model.Permission permission: tempPermissions)
 					{
-						permissions.add((Permission) permission);
+						entity= permission.getEntity();
+						entityOperation = permission.getEntityOperation();
+						permissions.add(entity.getEntityName()+":"+entityOperation.getEntityOperationName());
 					}
 				}
 		}

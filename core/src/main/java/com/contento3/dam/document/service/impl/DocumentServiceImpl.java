@@ -3,6 +3,7 @@ package com.contento3.dam.document.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class DocumentServiceImpl implements DocumentService {
 		this.documentAssembler = documentAssembler;
 		this.documentDao = documentDao;
 	}
-
+	@RequiresPermissions("document:add")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(DocumentDto documentDto) throws EntityAlreadyFoundException {
