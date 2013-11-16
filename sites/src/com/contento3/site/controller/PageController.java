@@ -8,6 +8,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 
+import com.contento3.account.dto.AccountDto;
+import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.site.registration.UserRegistrationController;
 
 //import com.contento3.site.registration.model.User;
@@ -38,7 +40,10 @@ public class PageController extends AbstractController {
 			modelAndView = new ModelAndView();
 			//modelAndView.setView(freemarkerView); 
 		}
-		modelAndView.getModel().put("siteId", request.getAttribute("siteId"));
+		
+		final SiteDto site = (SiteDto) request.getAttribute("site");
+    	final AccountDto account = site.getAccountDto();	
+		modelAndView.getModel().put("siteId", site.getSiteId());
 		return modelAndView;
 	}
 

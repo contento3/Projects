@@ -144,6 +144,7 @@
         class="com.contento3.thymeleaf.resolver.C3TemplateResolver">
 	<constructor-arg ref="dbResourceResolver" />
     <property name="templateMode" value="HTML5" />
+    
   </bean>
   
     

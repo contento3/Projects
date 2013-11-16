@@ -193,14 +193,14 @@ public class ImageMgmtUIManager extends CustomComponent
 		mainLayout.addComponent(imageHeading);
 		mainLayout.addComponent(new HorizontalRuler());
 		mainLayout.setMargin(true);
-		HorizontalLayout horizon2 = new HorizontalLayout();
+		VerticalLayout verticall= new VerticalLayout();
 		/* Button to add new images */
-		Button addImageButton = new Button();
-		horizon2.addComponent(addImageButton);
+//		Button addImageButton = new Button();
+//		horizon2.addComponent(addImageButton);
 		HorizontalLayout horizLayout = new HorizontalLayout();
 		horizLayout.setSpacing(true);
 	
-		addImageButton.setCaption("Add image");
+//		addImageButton.setCaption("Add image");
 		GridLayout toolbarGridLayout = new GridLayout(1,2);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddImageButtonListener(tabSheet, this));
@@ -211,31 +211,31 @@ public class ImageMgmtUIManager extends CustomComponent
 		builder.build();
 		
 		/*Add Image button listener*/
-		addImageButton.addClickListener(new ClickListener(){
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public void buttonClick(ClickEvent event){
-				VerticalLayout newArticleLayout = new VerticalLayout();
-				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"),new ExternalResource("images/content-mgmt.png"));
-				createNew.setClosable(true);
-				tabSheet.setSelectedTab(newArticleLayout);
-				newArticleLayout.addComponent(renderAddEditScreen("Add",null));
-				//newArticleLayout.setHeight("100%");
-			}
-		});
-		horizon2.addComponent(addImageButton);
-		horizLayout.addComponent(horizon2);
+//		addImageButton.addClickListener(new ClickListener(){
+//			/**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 1L;
+//
+//			public void buttonClick(ClickEvent event){
+//				VerticalLayout newArticleLayout = new VerticalLayout();
+//				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"),new ExternalResource("images/content-mgmt.png"));
+//				createNew.setClosable(true);
+//				tabSheet.setSelectedTab(newArticleLayout);
+//				newArticleLayout.addComponent(renderAddEditScreen("Add",null));
+//				//newArticleLayout.setHeight("100%");
+//			}
+//		});
+//		horizon2.addComponent(addImageButton);
+		horizLayout.addComponent(verticall);
 		horizLayout.setWidth(100,Unit.PERCENTAGE);
 		
 		/* Button to add library */
 		
-		Button addLibraryButton = new Button("Add Library",new ImageLibraryPopup(helper));
-		horizon2.addComponent(addLibraryButton);
+//		Button addLibraryButton = new Button("Add Library",new ImageLibraryPopup(helper));
+//		horizon2.addComponent(addLibraryButton);
 		mainLayout.addComponent(horizLayout);
-		mainLayout.addComponent(new HorizontalRuler());
+//		mainLayout.addComponent(new HorizontalRuler());
 		
 		/* image library combo*/
 		//Get accountId from the session
@@ -280,11 +280,11 @@ public class ImageMgmtUIManager extends CustomComponent
 	    
 	    horiz.addComponent(searchButton);
 	    horiz.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
-	    mainLayout.addComponent(horiz);
-	    mainLayout.addComponent(imagePanlelayout);
+	    verticall.addComponent(horiz);
+	    verticall.addComponent(imagePanlelayout);
 	    horizLayout.addComponent(toolbarGridLayout);
 	    horizLayout.setExpandRatio(toolbarGridLayout, 1);
-	    horizLayout.setExpandRatio(horizon2, 8);
+	    horizLayout.setExpandRatio(verticall, 8);
 	}
 	
 	/**
@@ -301,8 +301,8 @@ public class ImageMgmtUIManager extends CustomComponent
 		}
 		
         // Layout where we will display items (changing when we click next page).
-        final CssLayout itemsArea = new CssLayout();
-        itemsArea.setSizeUndefined();
+//        final CssLayout itemsArea = new CssLayout();
+		imagePanlelayout.setSizeUndefined();
         
         try {
 
@@ -310,9 +310,9 @@ public class ImageMgmtUIManager extends CustomComponent
 			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
 			
 			for(ImageDto dto: images){
-				itemsArea.addComponent(addImagesToPanel(dto));
+				imagePanlelayout.addComponent(addImagesToPanel(dto));
 			}
-	        imagePanlelayout.addComponent(itemsArea);
+//	        imagePanlelayout.addComponent(itemsArea);
 		} catch (ClassNotFoundException e) {
 			
 			e.printStackTrace();

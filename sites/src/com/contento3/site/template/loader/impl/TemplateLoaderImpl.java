@@ -143,7 +143,7 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		final TemplateContentDto dto = new TemplateContentDto();
 		
 		if(null==dto.getContent()){
-			dto.setContent("Error occured while trying to accessing the page");
+			dto.setContent("Error occured while trying to accessing the page1");
 		}
 		
 		return dto;
