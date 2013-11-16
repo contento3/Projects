@@ -1,12 +1,15 @@
 package com.contento3.web.user.security;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
+import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
@@ -163,7 +166,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 			final int rolename =  (Integer) event.getButton().getData();
 			RoleDto roleDto = roleService.findById(rolename);
 			//roleNameTxtFld.setValue(roleDto.getName());
-			roleidTxtFld.setValue(roleDto.getRoleid().toString());
+			roleidTxtFld.setValue(roleDto.getId().toString());
         	roleButton.addClickListener(new ClickListener() {
     			private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
@@ -195,9 +198,10 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		try {
 			String tempstr=roleidTxtFld.getValue().toString();
 			int tempint= Integer.parseInt(tempstr);
-			roleDto.setRoleid(tempint);
+			roleDto.setRoleId(tempint);
 			roleDto.setRoleName(rolename.getValue().toString());
 			roleDto.setRoleDesc(roledesc.getValue().toString());
+			roleDto.setPermissions(new ArrayList<PermissionDto>());
 			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute("accountId"));
 			roleDto.setAccount(accountDto);
 			roleService.create(roleDto);

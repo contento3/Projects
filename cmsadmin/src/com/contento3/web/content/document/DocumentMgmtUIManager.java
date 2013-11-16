@@ -5,9 +5,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
+import com.contento3.security.model.Permission;
+import com.contento3.security.permission.dao.PermissionDao;
+import com.contento3.security.permission.service.PermissionAssembler;
+import com.contento3.security.user.dao.SaltedHibernateUserDao;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
@@ -40,6 +47,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	 * Used to get service beans from spring context.
 	 */
 	private final SpringContextHelper contextHelper;
+	private transient PermissionDao permissionDao;
 	
 	/**
 	 * TabSheet serves as the parent container for the document manager
@@ -112,7 +120,6 @@ public class DocumentMgmtUIManager implements UIManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 	private void renderDocumentComponent(){
 		final Label documentHeading = new Label("Document Manager");
 		documentHeading.setStyleName("screenHeading");
@@ -126,7 +133,13 @@ public class DocumentMgmtUIManager implements UIManager {
 		
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddDocumentButtonListener(this.contextHelper,this.tabSheet,this.documentTable));
+		//com.contento3.security.permission.model.Permission permission =  permissionDao.findById(17);
+		Subject currentUser = SecurityUtils.getSubject();
+		if (currentUser.isPermitted("document:add"))
+		{
+			listeners.add(new AddDocumentButtonListener(this.contextHelper,this.tabSheet,this.documentTable));
+			
+		}
 		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
 		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"site",listeners);
@@ -155,10 +168,17 @@ public class DocumentMgmtUIManager implements UIManager {
 	/**
 	 * Display "Add Document" button on the top of tab 
 	 */
+	
 	private void addDocumentButton(){
+		com.contento3.security.permission.model.Permission permission =  permissionDao.findById(17);
+		Subject currentUser = SecurityUtils.getSubject();
+		if (currentUser.isPermitted("document:add"))
+		{
 		final Button addButton = new Button("Add Document");
 		addButton.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,this.documentTable));
 		this.verticalLayout.addComponent(addButton);
+		}
+		
 	}
 	
 }

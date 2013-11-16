@@ -12,6 +12,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -104,8 +105,8 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	    	popupWindow.setWidth(37,Unit.PERCENTAGE);
 	       
 	    	/* Add the window inside the main window. */
-	        layout.addComponent(popupWindow);
-	        
+	     //   layout.addComponent(popupWindow);
+	    	UI.getCurrent().addWindow(popupWindow);
 	        /* Listen for close events for the window. */
 	        popupWindow.addCloseListener(this);
 	        popupWindow.setModal(true);
@@ -161,7 +162,7 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		}
 
 		@Override
-		public void buttonClick(final ClickEvent event) {
+		public void buttonClick(final Button.ClickEvent event) {
 			this.openButtonClick(event);
 		}
 

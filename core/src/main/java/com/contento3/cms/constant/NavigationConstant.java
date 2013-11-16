@@ -14,6 +14,7 @@ public class NavigationConstant {
 	public static final String USER_MANAGER = "User Manager"; 
 	public static final String USER_GRP_MGMT = "Group Manager";
 	public static final String USR_ROLE_MGMT = "Role Manager";
+	public static final String USR_PRMSN_MGMT = "Permission Manager";
 	public static final String GLOBAL_CONFIG = "Global Config";
 	
 	public static final String SECURITY = "Security";

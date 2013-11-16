@@ -223,12 +223,45 @@
 		<bean id="roleAssembler"
 		class="com.contento3.security.role.service.impl.RoleAssemblerImpl">
 		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="permissionAssembler" />
 	</bean>
 
 	<bean id="roleService"
 		class="com.contento3.security.role.service.impl.RoleServiceImpl">
 		<constructor-arg ref="roleDao" />
 		<constructor-arg ref="roleAssembler" />
+	</bean>
+		<bean id="entityAssembler"
+		class="com.contento3.security.entity.service.impl.EntityAssemblerImpl">
+	</bean>
+
+	<bean id="entityService"
+		class="com.contento3.security.entity.service.impl.EntityServiceImpl">
+		<constructor-arg ref="entityDao" />
+		<constructor-arg ref="entityAssembler" />
+	</bean>
+
+		<bean id="entityOperationAssembler"
+		class="com.contento3.security.entityoperation.service.impl.EntityOperationAssemblerImpl">
+	</bean>
+
+	<bean id="entityOperationService"
+		class="com.contento3.security.entityoperation.service.impl.EntityOperationServiceImpl">
+		<constructor-arg ref="entityOperationDao" />
+		<constructor-arg ref="entityOperationAssembler" />
+	</bean>		
+	
+	
+	<bean id="permissionAssembler"
+		class="com.contento3.security.permission.service.impl.PermissionAssemblerImpl">
+		<constructor-arg ref="entityAssembler" />
+		<constructor-arg ref="entityOperationAssembler" />
+	</bean>
+
+	<bean id="permissionService"
+		class="com.contento3.security.permission.service.impl.PermissionServiceImpl">
+		<constructor-arg ref="permissionDao" />
+		<constructor-arg ref="permissionAssembler" />
 	</bean>
 
 	<bean id="associatedContentScopeAssembler"

@@ -3,6 +3,7 @@ package com.contento3.cms.site.structure.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +42,6 @@ public class SiteServiceImpl implements SiteService {
 		this.siteAssembler = siteAssembler;
 		this.pageLayoutDao = pageLayoutDao;
 	}
-	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(SiteDto siteDto) {

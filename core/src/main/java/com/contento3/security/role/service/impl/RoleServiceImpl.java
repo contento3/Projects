@@ -2,7 +2,8 @@ package com.contento3.security.role.service.impl;
 
 import java.util.Collection;
 
-import org.apache.commons.lang.Validate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
@@ -12,22 +13,20 @@ import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.role.service.RoleAssembler;
 import com.contento3.security.role.service.RoleService;
-
+@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 public class RoleServiceImpl implements RoleService{
 
 	private  RoleDao roleDao;
 	private RoleAssembler roleAssembler;
 	RoleServiceImpl(final RoleDao roleDao,final RoleAssembler roleAssembler)
 	{
-		Validate.notNull(roleDao,"roleDao cannot be null");
-		Validate.notNull(roleAssembler,"roleAssembler cannot be null");
 		this.roleDao = roleDao;
 		this.roleAssembler = roleAssembler;
 	}
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(RoleDto dto) throws EntityAlreadyFoundException,
 			EntityNotCreatedException {
-		Validate.notNull(dto,"dto cannot be null");
 		// TODO Auto-generated method stub
 		final Role role = roleAssembler.dtoToDomain(dto);
 	//	final RandomNumberGenerator saltGenerator = new SecureRandomNumberGenerator();
@@ -50,27 +49,24 @@ public class RoleServiceImpl implements RoleService{
 		//}
 		return roleName;
 	}
-
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(RoleDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
 		// TODO Auto-generated method stub
-		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		roleDao.delete(roleAssembler.dtoToDomain(dtoToDelete));
 	}
-
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<RoleDto> findRolesByAccountId(Integer accountId) {
 		// TODO Auto-generated method stub
-		Validate.notNull(accountId,"accountId cannot be null");
 		return roleAssembler.domainsToDtos(roleDao.findRolesByAccountId(accountId));
 		
 	}
-
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public RoleDto findRoleByName(String name) {
 		// TODO Auto-generated method stub
-		Validate.notNull(name,"name cannot be null");
 		return roleAssembler.domainToDto(roleDao.findByRolename(name));
 		
 		
@@ -84,23 +80,27 @@ public class RoleServiceImpl implements RoleService{
 		return RoleAssembler.domainsToDtos(RoleDao.findAll());
 	}
 	*/
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(RoleDto dtoToUpdate) {
 		// TODO Auto-generated method stub
-		Validate.notNull(dtoToUpdate,"dtoToUpdate cannot be null");
 		roleDao.update( roleAssembler.dtoToDomain(dtoToUpdate) );
 	}
 	@Override
 	public Collection<RoleDto> findAllRoles() {
 		// TODO Auto-generated method stub
-		//Validate.notNull(dto,"dto cannot be null");
 		return null;
 	}
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public RoleDto findById(Integer id) {
 		// TODO Auto-generated method stub
-		Validate.notNull(id,"id cannot be null");
 		return roleAssembler.domainToDto(roleDao.findById(id));
+	}
+	@Override
+	public Collection<RoleDto> findRolesByGroupId(Integer Id) {
+		// TODO Auto-generated method stub
+		return roleAssembler.domainsToDtos(roleDao.findRolesByGroupId(Id));
 	}
 	
 }

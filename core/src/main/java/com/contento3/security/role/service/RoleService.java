@@ -3,6 +3,7 @@ import java.util.Collection;
 
 import com.contento3.common.service.Service;
 import com.contento3.security.role.dto.RoleDto;
+import com.contento3.security.role.model.Role;
 public interface RoleService extends Service<RoleDto> {
 	/**
 	 * Find user by account id
@@ -10,7 +11,7 @@ public interface RoleService extends Service<RoleDto> {
 	 * @return
 	 */
 	Collection<RoleDto> findRolesByAccountId(final Integer accountId);
-	
+	public Collection<RoleDto> findRolesByGroupId(Integer Id);
 	/**
 	 * Find user by name
 	 * @param name
