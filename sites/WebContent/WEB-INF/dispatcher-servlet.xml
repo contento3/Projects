@@ -34,7 +34,6 @@
 </mvc:interceptors> 
 
 <bean id="pageController" class="com.contento3.site.controller.PageController">
-	<property name="freeMarkerView" ref="fmView" />
 </bean>
  
 <bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
@@ -145,11 +144,22 @@
 	<constructor-arg ref="dbResourceResolver" />
     <property name="templateMode" value="HTML5" />
   </bean>
-  
+
+  <bean id="articleDialect" class="com.contento3.thymeleaf.dialect.article.ArticleDialect">
+      <property name="articleProcessor" ref="articleProcessor" />
+  </bean>  
     
-  <bean id="templateEngine"
-        class="org.thymeleaf.spring3.SpringTemplateEngine">
+  	<bean id="articleProcessor" class="com.contento3.thymeleaf.dialect.article.ArticleProcessor">
+	      <property name="articleService" ref="articleService" />
+	</bean>  
+
+  <bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
     <property name="templateResolver" ref="templateResolver" />
+    <property name="additionalDialects">
+    	<set>
+      		<ref local="articleDialect" />
+    	</set>
+  	</property>
   </bean>
    
   <bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">

@@ -22,6 +22,9 @@
      <div>
      Template Path : <input type="text" id="directoryPath" readonly="readonly" name="templatePath">
      </div>
+     
+	isGlobal : <input type="text" id="isGlobal" readonly="readonly" name="isGlobal">
+     
      <textarea id="code" name="code">
 	 </textarea><input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
 
@@ -30,7 +33,7 @@
     	var text = editor.getValue();
     	var templateName = $('#templateName').val();
     	alert(directoryId);
-		$.post( '/cms/jsp/addTemplate.ajax', { text: text,templateName : templateName,templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId, accountId : accountId },
+		$.post( '/cms/jsp/addTemplate.ajax', { text: text,templateName : templateName, templatePath:directoryPath,isGlobal:isGlobal, templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId, accountId : accountId },
 		      function( data ) {
 				alert("template saved.");
 				}
@@ -75,6 +78,7 @@
 	var templateTypeId;
 	var accountId;
 	var directoryPath;
+	var isGlobal;
 	
 	$(document).ready(function() {
 		var urlVars = $.getUrlVars();
@@ -84,6 +88,7 @@
 		accountId = urlVars['accountId'];
 		directoryPath = urlVars['directoryPath'];
 		var templateName= urlVars['templateName'];
+		isGlobal= urlVars['isGlobal'];
 
 		
 		addTemplateName(decodeURI(templateName),directoryPath);

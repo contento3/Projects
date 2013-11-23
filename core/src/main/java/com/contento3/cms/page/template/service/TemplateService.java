@@ -7,6 +7,7 @@ import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
+import com.contento3.common.exception.ResourceNotFoundException;
 import com.contento3.common.service.Service;
 
 /**
@@ -34,7 +35,7 @@ public interface TemplateService extends Service<TemplateDto>{
 
 	TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws Exception;
 
-	TemplateDto findTemplateByPathAndSiteId(String templatePath,Integer siteId) throws Exception;
+	TemplateDto findTemplateByNameAndSiteId(String templateName,Integer siteId) throws Exception;
 
 	/**
 	 * Finds the SYSTEM template for the account. Each account can have separate template for each category of SYSTEM template.
@@ -45,5 +46,8 @@ public interface TemplateService extends Service<TemplateDto>{
 	 * @throws EntityNotFoundException 
 	 */
 	TemplateDto findSystemTemplateForAccount(SystemTemplateNameEnum templateCategory, final Integer accountId) throws EntityNotFoundException;
+
+	TemplateDto findTemplateByNameAndAccount(String templateName,
+			Integer accountId) throws ResourceNotFoundException;
 
 }

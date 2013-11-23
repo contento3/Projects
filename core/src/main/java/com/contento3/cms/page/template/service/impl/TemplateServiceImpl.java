@@ -82,16 +82,16 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateDto findTemplateById(final Integer templateId) {
 		Validate.notNull(templateId,"templateId cannot be null");
 		Template template = templateDao.findById(templateId);
-		return templateAssembler.domainToDto(template);
+		return templateAssembler.domainToDto(template,new TemplateDto());
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws ResourceNotFoundException {
+	public TemplateDto findTemplateByNameAndAccount(String templatePath,Integer accountId) throws ResourceNotFoundException {
 		Validate.notNull(templatePath,"templatePath cannot be null");
 		Validate.notNull(accountId,"accountId cannot be null");
 		split(templatePath);
-		Collection<Template> templateList = templateDao.findTemplateByPathAndAccount(templateName, parentDirectory, "text/freemarker", accountId);
+		Collection<Template> templateList = templateDao.findTemplateByNameAndAccount(templateName, parentDirectory, "text/freemarker", accountId);
 		
 		if (CollectionUtils.isEmpty(templateList)){
 			throw new ResourceNotFoundException();
@@ -103,16 +103,16 @@ public class TemplateServiceImpl implements TemplateService {
 			originalTemplate = template;
 		}
 		
-		return templateAssembler.domainToDto(originalTemplate);
+		return templateAssembler.domainToDto(originalTemplate,new TemplateDto());
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public TemplateDto findTemplateByPathAndSiteId(String templatePath,Integer siteId) throws ResourceNotFoundException {
+	public TemplateDto findTemplateByNameAndSiteId(String templatePath,Integer siteId) throws ResourceNotFoundException {
 		Validate.notNull(siteId,"siteId cannot be null");
 		Validate.notNull(siteDao,"siteDao cannot be null");
 		Site site = siteDao.findById(siteId);
-		return findTemplateByPathAndAccount(templatePath,site.getAccount().getAccountId());
+		return findTemplateByNameAndAccount(templatePath,site.getAccount().getAccountId());
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -130,8 +130,7 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		String category = templateCategory.toString();
 		Template template = templateDao.findSystemTemplateForAccount(category,accountId,true);
-		
-		
+				
 		//If there is no template defined for this account and category, the template object will be 
 		//null. In that case we should find the global system template for the given category.
 		if (null==template){
@@ -141,7 +140,7 @@ public class TemplateServiceImpl implements TemplateService {
 		if (null==template)
 			throw new EntityNotFoundException("No system template either for account or global found for category: "+category);
 		
-		return templateAssembler.domainToDto(template);
+		return templateAssembler.domainToDto(template,new TemplateDto());
 	}
 
 	private String buildTemplatePath(final Template template){
@@ -207,7 +206,12 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		
 		templateDirectory.setAccount(account);
-		Template template = templateAssembler.dtoToDomain(templateDto);
+		
+		Template template = null;
+		if (null!=templateDto.getTemplateId())
+			template = templateDao.findById(templateDto.getTemplateId());
+		
+		template = templateAssembler.dtoToDomain(templateDto,template);
 		template.setDirectory(templateDirectory);
 		template.setTemplateType(templateType);
 		template.setAccount(account);
@@ -219,5 +223,21 @@ public class TemplateServiceImpl implements TemplateService {
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public TemplateDto findTemplateByPathAndAccount(final String path,
+			final Integer accountId) throws Exception {
+		Validate.notNull(path,"template path cannot be null");
+		Validate.notNull(accountId,"template path cannot be null");
+
+		String [] templateParts = path.split("/");
+		String dirPath = "";
+		for (int i=0;i<templateParts.length-1;i++)
+		{
+			dirPath = dirPath + "/" + templateParts[i];
+		}	
+		return templateAssembler.domainToDto(templateDao.findTemplateByPathAndAccount(dirPath, templateParts[templateParts.length-1], accountId),new TemplateDto());
+
 	}
 }

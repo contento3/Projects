@@ -67,7 +67,7 @@ public interface ArticleService extends Service<ArticleDto>{
 	 * @param siteId
 	 * @return
 	 */
-	Collection<ArticleDto> findLatestArticleByCategory(Integer categoryId,Integer numberOfArticles,Integer siteId);
+	Collection<ArticleDto> findLatestArticleByCategory(Collection<Integer> categoryIds,Integer numberOfArticles,Integer siteId);
 
 	/**
 	 * Add associated images to article

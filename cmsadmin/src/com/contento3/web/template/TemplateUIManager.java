@@ -508,6 +508,8 @@ public class TemplateUIManager implements UIManager{
   			          .append(templateDto.getTemplateDirectoryDto().getId())
         			  .append("&templateTypeId=")
 		              .append(templateDto.getTemplateType().getTemplateTypeId())
+           			  .append("&isGlobal=")
+		              .append(templateDto.isGlobal())
 		        	  .append("&accountId=")
 				      .append(accountId)
 				      .append("")

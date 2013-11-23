@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
+import com.contento3.cms.page.template.model.Template;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
@@ -36,6 +37,7 @@ public class TemplateLoaderImpl implements TemplateLoader {
 	private static final String BLOG = "blog";
 	private static final String STORY = "story";
 	private static final String UNKNOWN = "unknown";
+	private static final String TEMPLATE = "template";
 
 	public TemplateLoaderImpl(final Assembler assembler,final SiteService siteService,final TemplateService templateService){
 		this.assembler = assembler;
@@ -59,11 +61,20 @@ public class TemplateLoaderImpl implements TemplateLoader {
 
 				 dto = findTemplate(pagePath,siteId);
 			}
+			else if (resourceType.equals(TEMPLATE)) {
+				 dto = findDirectTemplate(resourceName,siteId);
+			}
+			else if (resourceType.equals(ARTICLE)) {
+				 dto = findArticleDetailTemplate(siteId);
+			}
 			else {
 				dto = findSystemTemplate(SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS,siteId);
 			}
-		} catch (IOException e1) {
-			LOGGER.info("Unable to find a page with resource name");
+		} catch (final IOException e1) {
+			LOGGER.info("Unable to find resource name");
+		}
+		catch (final Exception e1) {
+			LOGGER.info(String.format("Unable to find resource name %s for site with siteId [%d].If the resource uses a System Template, please check if system template is required or not.",resourceName,siteId));
 		}
 		return dto;
 	}
@@ -78,6 +89,9 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		}
 		else if (resourceName.equals(SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS.getValue())) {
 			return SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS.toString();
+		}
+		else if (resourceName.startsWith("/template") || resourceName.startsWith("template")) {
+			return TEMPLATE;
 		}
 		else return PAGE;
 	}
@@ -103,7 +117,17 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		}
 		return dto;
 	}
-	
+
+	private TemplateContentDto findDirectTemplate(String templatePath,Integer siteId) throws Exception  {
+		TemplateContentDto dto=null;
+		final String[] templateName = templatePath.split("template/");
+		final SiteDto site = siteService.findSiteById(siteId);
+		final TemplateDto template = templateService.findTemplateByPathAndAccount(templateName[1], site.getAccountDto().getAccountId());
+		dto = new TemplateContentDto();
+		dto.setContent(template.getTemplateText());
+		return dto;
+	}
+
 	private TemplateContentDto findTemplate(String path,Integer siteId) throws IOException {
 		TemplateContentDto dto=null;
 
@@ -136,6 +160,22 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		return dto;
 	}
 
+	/**
+	 * 
+	 * @param articleDetail
+	 * @param siteId
+	 * @return
+	 * @throws EntityNotFoundException 
+	 */
+	private TemplateContentDto findArticleDetailTemplate(final Integer siteId) throws EntityNotFoundException{
+		final SiteDto site = siteService.findSiteById(siteId);
+		final TemplateDto template = templateService.findSystemTemplateForAccount(SystemTemplateNameEnum.SYSTEM_ARTICLE, site.getAccountDto().getAccountId());
+		final TemplateContentDto dto = new TemplateContentDto();
+		dto.setContent(template.getTemplateText());
+		return dto;
+	}
+	
+	
 	@Override
 	public TemplateContentDto loadErrorTemplate(final String errorType,final Integer siteId) {
 		// TODO Get error template for a site and for a type
@@ -143,7 +183,7 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		final TemplateContentDto dto = new TemplateContentDto();
 		
 		if(null==dto.getContent()){
-			dto.setContent("Error occured while trying to accessing the page");
+			dto.setContent("Error occured while trying to access the page");
 		}
 		
 		return dto;

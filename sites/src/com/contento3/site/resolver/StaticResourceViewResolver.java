@@ -64,7 +64,7 @@ public class StaticResourceViewResolver extends AbstractView {
 					 }
 				}
 				else {
-						final TemplateDto templateDto = templateService.findTemplateByPathAndAccount(request.getRequestURI(),accountDto.getAccountId());
+						final TemplateDto templateDto = templateService.findTemplateByNameAndAccount(request.getRequestURI(),accountDto.getAccountId());
 						response.getWriter().print(templateDto.getTemplateText());
 						response.getWriter().close();
 				}
