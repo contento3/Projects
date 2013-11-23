@@ -3,6 +3,8 @@ package com.contento3.web.content.article.listener;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
@@ -48,6 +50,7 @@ public class ArticleSaveListener implements ClickListener{
 
 	final Tab articleTab;
 
+	
 	public ArticleSaveListener(final Tab articleTab, final ArticleForm articleForm,final Table articleTable, 
 			final Integer articleId,final Integer accountId){
 		this.accountId = accountId;
@@ -62,6 +65,7 @@ public class ArticleSaveListener implements ClickListener{
 		this.articleService = (ArticleService)helper.getBean("articleService");
 	}
 
+	 
 	@Override
 	public void click(ClickEvent event) {
 		ArticleDto articleDto = new ArticleDto();

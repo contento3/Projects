@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 
 import com.contento3.account.service.AccountService;
@@ -120,6 +121,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 * render screen for adding article
 	 * @return
 	 */
+	@RequiresPermissions("article:add")
 	public void renderAddScreen(){
         buildArticleUI("Add",null);
 
@@ -244,6 +246,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 	/**
 	 * Handle edit and add article operations
 	 */
+	@RequiresPermissions("article:add")
 	@Override
 	public void buttonClick(ClickEvent event) {
 		String buttonCaption = event.getButton().getCaption();

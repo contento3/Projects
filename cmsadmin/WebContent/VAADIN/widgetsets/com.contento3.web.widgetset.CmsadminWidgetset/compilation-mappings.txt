@@ -16,4 +16,7 @@ user.agent ie10
 FDF92E81D4E605CB0EFC131027905DEA.cache.js
 user.agent opera
 
+BB5F1207C2DABD4EF2413AB71CE2EA2D.cache.js
+user.agent ie10
+
 Devmode:devmode.js

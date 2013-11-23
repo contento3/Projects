@@ -6,8 +6,8 @@ import java.util.Collection;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.security.group.dto.GroupDto;
-import com.contento3.security.group.model.GroupAuthority;
 import com.contento3.security.group.service.GroupService;
+import com.contento3.security.role.model.Role;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
@@ -203,7 +203,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 		groupDto.setGroupName(textField.getValue().toString());
 		groupDto.setDescription(descriptionArea.getValue().toString());
 		groupDto.setMembers(new ArrayList<SaltedHibernateUserDto>());
-		groupDto.setAuthorities(new ArrayList<GroupAuthority>());
+		groupDto.setRoles(new ArrayList<Role>());
 		
 		final AccountDto accountDto = accountService.findAccountById(((Integer)SessionHelper.loadAttribute("accountId")));
 		groupDto.setAccountDto(accountDto);

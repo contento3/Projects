@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.web.UIManager;
@@ -223,6 +226,7 @@ public class ArticleMgmtUIManager implements UIManager {
 	/**
 	 * Display "Add Article" button on the top of tab 
 	 */
+	@RequiresPermissions("article:add")
 	private void addArticleButton(){
 		Button addButton = new Button("Add Article");
 		addButton.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable));

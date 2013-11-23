@@ -4,5 +4,5 @@ import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 
 public interface RoleAssembler extends Assembler<RoleDto, Role>{
-	//Role dtoToDomain(RoleDto dto,Role domain);
+	Role dtoToDomain(RoleDto dto,Role domain);
 }

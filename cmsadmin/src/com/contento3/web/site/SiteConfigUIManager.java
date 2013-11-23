@@ -90,20 +90,32 @@ public class SiteConfigUIManager {
 			siteConfigParentLayout.setSpacing(true);
 			siteConfigParentLayout.setMargin(true);
 
-			renderSiteDomains(siteDto,siteTabSheet,pageId);
-			renderLayoutAndLanguage(siteDto);
+			final ScreenHeader screenHeader = new ScreenHeader(siteConfigParentLayout,"Site Configuration");
+			VerticalLayout verticl = new VerticalLayout();
+			HorizontalLayout horizontl = new HorizontalLayout();
+			verticl.setSpacing(true);
+			//verticl.setMargin(true);
+			horizontl.addComponent(verticl);
+			siteConfigParentLayout.addComponent(horizontl);
+			GridLayout toolbarGridLayout = new GridLayout(1,2);
+			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+			horizontl.setWidth(100, Unit.PERCENTAGE);
+			horizontl.addComponent(toolbarGridLayout);
+			horizontl.setExpandRatio(verticl, 8);
+			horizontl.setExpandRatio(toolbarGridLayout, 1);
+
+			renderSiteDomains(siteDto,siteTabSheet,pageId,horizontl,verticl,listeners);
+			renderLayoutAndLanguage(siteDto,horizontl,verticl,listeners);
+			
+			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"siteConfig",listeners);
+			builder.build();
 	}// end renderSiteConfig()
 	
 	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId){
-		VerticalLayout verticl = new VerticalLayout();
-		HorizontalLayout horizontl = new HorizontalLayout();
-		verticl.setSpacing(true);
-		//verticl.setMargin(true);
-		horizontl.addComponent(verticl);
-		final ScreenHeader screenHeader = new ScreenHeader(siteConfigParentLayout,"Site Configuration");
+	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId, HorizontalLayout horizontl, VerticalLayout verticl, List<com.vaadin.event.MouseEvents.ClickListener> listeners){
+		
 		final Label siteDomainLbl = new Label("Domains"); 
 		siteDomainLbl.setStyleName("screenSubHeading");
 		verticl.addComponent(siteDomainLbl);
@@ -124,33 +136,27 @@ public class SiteConfigUIManager {
 		
 		siteTabSheet.setSelectedTab(siteConfigParentLayout);
 		
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddSiteDomainClickListener(contextHelper,siteDto.getSiteId(),siteDomainTable));
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
-		builder.build();
+//		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+//		builder.build();
 		
-		horizontl.setWidth(100, Unit.PERCENTAGE);
-		horizontl.addComponent(toolbarGridLayout);
-		horizontl.setExpandRatio(verticl, 8);
-		horizontl.setExpandRatio(toolbarGridLayout, 1);
 		//Pop-up that adds a new domain
 		//final Button button = new Button("Add domain", new SiteDomainPopup(contextHelper,siteDto.getSiteId(),siteDomainTable));
 		//verticl.addComponent(button);
-		siteConfigParentLayout.addComponent(horizontl);
-		siteConfigParentLayout.addComponent(new HorizontalRuler());
+		
+		verticl.addComponent(new HorizontalRuler());
 		
         
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void renderLayoutAndLanguage(final SiteDto siteDto){
+	public void renderLayoutAndLanguage(final SiteDto siteDto, HorizontalLayout horizontl, VerticalLayout verticl, List<com.vaadin.event.MouseEvents.ClickListener> listeners){
 		// List box to select Page layouts
-		VerticalLayout verticl = new VerticalLayout();
-		HorizontalLayout horizontl = new HorizontalLayout();
-		horizontl.addComponent(verticl);
-		verticl.setSpacing(true);
-		verticl.setMargin(true);
+//		VerticalLayout verticl = new VerticalLayout();
+//		HorizontalLayout horizontl = new HorizontalLayout();
+//		horizontl.addComponent(verticl);
+//		verticl.setSpacing(true);
+//		verticl.setMargin(true);
 		
 		
 		
@@ -193,7 +199,7 @@ public class SiteConfigUIManager {
 		emptyLabel2.setHeight("1em");
 		verticl.addComponent(emptyLabel2);
 		final Button siteSaveButton = new Button("Save");
-		verticl.addComponent(siteSaveButton);
+//		verticl.addComponent(siteSaveButton);
 		verticl.setSpacing(true);
 		verticl.setMargin(true);
 		siteSaveButton.addClickListener(new ClickListener() {
@@ -204,18 +210,17 @@ public class SiteConfigUIManager {
 			}// end buttonClick
 		});// end siteSaveButton listener
 		
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		//GridLayout toolbarGridLayout = new GridLayout(1,1);
+//		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddSiteLanguageClickListener(siteDto,  pageLayoutCombo,languageCombo,this));
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
-		builder.build();
 		
-		horizontl.setWidth(100, Unit.PERCENTAGE);
-		horizontl.addComponent(toolbarGridLayout);
-		horizontl.setExpandRatio(verticl, 8);
-		horizontl.setExpandRatio(toolbarGridLayout, 1);
 		
-		siteConfigParentLayout.addComponent(horizontl);
+//		horizontl.setWidth(100, Unit.PERCENTAGE);
+//		horizontl.addComponent(toolbarGridLayout);
+//		horizontl.setExpandRatio(verticl, 8);
+//		horizontl.setExpandRatio(toolbarGridLayout, 1);
+		
+//		siteConfigParentLayout.addComponent(horizontl);
 		
 	}
 	

@@ -2,12 +2,13 @@ package com.contento3.security.role.dao.impl;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
+import com.contento3.security.group.model.Group;
+import com.contento3.security.model.Permission;
 import com.contento3.security.role.dao.RoleDao;
 import com.contento3.security.role.model.Role;
 public class RoleDaoImpl extends GenericDaoSpringHibernateTemplate <Role,Integer>
@@ -21,18 +22,16 @@ implements RoleDao{
 	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<Role> findRolesByAccountId(Integer accountId) {
-		// TODO Auto-generated method stub
-		Validate.notNull(accountId,"accountId cannot be null");
-		Criteria criteria = this.getSession().createCriteria(Role.class).add(Restrictions.eq("account.accountId", accountId));
+		Criteria criteria = this.getSession().createCriteria(Role.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+				.add(Restrictions.eq("account.accountId", accountId));
 		return criteria.list();
 	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Role findRoleByAccountId(Integer accountId, String rolename) {
 		// TODO Auto-generated method stub
-		Validate.notNull(accountId,"accountId cannot be null");
-		Validate.notNull(rolename ,"rolename cannot be null");
-		
+	
 		final Criteria criteria = this.getSession()
 				.createCriteria(Role.class)
 				.add(Restrictions.eq("account.accountId", accountId))
@@ -51,7 +50,6 @@ implements RoleDao{
 	@Override
 	public Role findByRolename(String rolename) {
 		// TODO Auto-generated method stub
-		Validate.notNull(rolename,"rolename cannot be null");
 		
 		Criteria criteria = this.getSession()
 				.createCriteria(Role.class)
@@ -71,7 +69,6 @@ implements RoleDao{
 
 	public Role findById(int id) {
 		// TODO Auto-generated method stub
-		Validate.notNull(id,"id cannot be null");
 		
 		Criteria criteria = this.getSession()
 				.createCriteria(Role.class)
@@ -85,5 +82,27 @@ implements RoleDao{
 		}
 		
 		return role;
+	}
+
+	@Override
+	public Collection<Permission> findByPermissionId(Integer permissionId) {
+		// TODO Auto-generated method stub
+		final Criteria criteria = this.getSession()
+				.createCriteria(Role.class)
+				.createAlias("permissions", "permission")
+				.add(Restrictions.eq("permission.permissionId", permissionId));
+				
+				return criteria.list();
+	}
+
+	@Override
+	public Collection<Role> findRolesByGroupId(Integer Id) {
+		// TODO Auto-generated method stub
+		final Criteria criteria = this.getSession()
+				.createCriteria(Role.class)
+				.createAlias("roles", "role")
+				.add(Restrictions.eq("role.roleId", Id));
+				
+				return criteria.list();
 	}
 }

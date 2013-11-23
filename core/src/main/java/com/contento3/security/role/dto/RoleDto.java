@@ -1,14 +1,37 @@
 package com.contento3.security.role.dto;
+import java.util.Collection;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
+import com.contento3.security.model.Permission;
+import com.contento3.security.permission.dto.*;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
 public class RoleDto extends Dto{
 	
-	private String rolename;
+	private String roleName;
 	
 
 	private String roledesc;
-	private Integer roleid;
+	private Integer roleId;
+
+	/**
+	 * Permissions associated to roles
+	 */
+	private Collection<PermissionDto> permissions;
+	
+	public Collection<PermissionDto> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Collection<PermissionDto> permissions) {
+		this.permissions = permissions;
+	}
+
+
+
+	
+
 	
 	/**
 	 * Account associated to user
@@ -17,18 +40,23 @@ public class RoleDto extends Dto{
 	
 	@Override
 	public String getName() {
-		return rolename;
+		return roleName;
+	}
+	@Override
+	public Integer getId() {
+		return roleId;
 	}
 
 	public void setRoleName(final String roleName) {
-		this.rolename = roleName;
+		this.roleName = roleName;
 	}
-	public void setRoleid(final int roleId) {
-		this.roleid = roleId;
+	public void setRoleId(final int roleId) {
+		this.roleId = roleId;
 	}
-	public Integer getRoleid() {
-		return roleid;
+	public Integer getRoleId() {
+		return roleId;
 	}
+	
 
 	public final AccountDto getAccount() {
 		return account;
@@ -43,8 +71,9 @@ public class RoleDto extends Dto{
 
 
 	public String getRoleName() {
-		return rolename;
+		return roleName;
 	}
+	
 	
 	public String getRoleDesc() {
 		return roledesc;

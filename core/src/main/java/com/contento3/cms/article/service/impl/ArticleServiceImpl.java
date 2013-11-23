@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,7 @@ public class ArticleServiceImpl implements ArticleService {
 		this.articleDao = articleDao;
 		this.articleImageAssembler = articleImageAssembler;
 	}
-	
+	@RequiresPermissions("article:add")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(ArticleDto articleDto){

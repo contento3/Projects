@@ -92,6 +92,12 @@ public class GroupServiceImpl implements GroupService {
 			throw new Exception("can`t delete user associated to group");		
 	}
 
+	@Override
+	public Collection<GroupDto> findByUserId(Integer id) {
+		// TODO Auto-generated method stub
+		return groupAssembler.domainsToDtos(groupDao.findByUserId(id));
+	}
+
 	
 	
 	

@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cascade;
 
 import com.contento3.account.model.Account;
+import com.contento3.cms.page.category.model.Category;
+import com.contento3.security.role.model.Role;
 import com.contento3.security.user.model.SaltedHibernateUser;
 
 /**
@@ -27,7 +29,7 @@ import com.contento3.security.user.model.SaltedHibernateUser;
  * 
  */
 @Entity
-@Table( name="GROUP" , schema ="PLATFORM_USERS" )
+@Table( name="GROUP" , schema ="PLATFORM_USERS")
 public class Group {
 	/**
 	 * Primary key id for group
@@ -50,13 +52,18 @@ public class Group {
 	
 	
 	/**
-	 * Authorities associated to group
+	 * Roles associated to group
 	 */
-	@OneToMany(fetch = FetchType.LAZY,mappedBy="primaryKey.group")
+	/*@ManyToMany(fetch = FetchType.EAGER,mappedBy="")
 	@Cascade({ org.hibernate.annotations.CascadeType.DELETE,
 		org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	private Collection<GroupAuthority> authorities;
-	
+	private Collection<GroupRole> roles;
+	*/
+	@ManyToMany
+	@JoinTable(name="GROUP_ROLE",
+		joinColumns={@JoinColumn(name="GROUP_ID",unique=true)},
+		inverseJoinColumns={@JoinColumn(name="ROLE_ID",unique=true)})
+	private Collection<Role> roles;
 	/**
 	 * Members associated to group
 	 */
@@ -96,16 +103,16 @@ public class Group {
 	 * Return Group authorities
 	 * @return
 	 */
-	public Collection<GroupAuthority> getAuthorities() {
-		return authorities;
+	public Collection<Role> getRoles() {
+		return roles;
 	}
 
 	/**
 	 * set group authorities
 	 * @param authorities
 	 */
-	public void setAuthorities(final Collection<GroupAuthority> authorities) {
-		this.authorities = authorities;
+	public void setRoles(final Collection<Role> roles) {
+		this.roles = roles;
 	}
 
 	/**

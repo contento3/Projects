@@ -1,10 +1,19 @@
 package com.contento3.security.role.model;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import com.contento3.security.permission.model.Permission;
+import org.hibernate.annotations.Cascade;
 
 import com.contento3.account.model.Account;
 @Entity
@@ -21,6 +30,26 @@ public class Role {
 	@Column(name="DESCRIPTION")
 	private String description;
 
+	/**
+	 * Permissions associated to role
+	 */
+	@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@JoinTable(name= "ROLE_PERMISSION",
+	joinColumns={
+			@JoinColumn(name="ROLE_ID",unique= true)},
+	inverseJoinColumns={
+			@JoinColumn(name="PERMISSION_ID",unique= true)})
+	private Collection<Permission> permissions;
+	
+	public Collection<Permission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Collection<Permission> permissions) {
+		this.permissions = permissions;
+	}
+	
+	
 	/**
 	 * 
 	 * @param rolename
@@ -87,5 +116,24 @@ public class Role {
 		this.account = account;
 	}
 	
+
+
+
+	/**
+	 * Return Role Permissions
+	 * @return
+	 */
+/*	public Collection<Permission> getPermissions() {
+		return permissions;
+	}
+
+	/**
+	 * set group authorities
+	 * @param authorities
+	 */
+//	public void setPermissions(final Collection<Permission> permissions) {
+	//	this.permissions = permissions;
+	//}
+
 
 }

@@ -3,6 +3,8 @@ package com.contento3.web.site;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.service.PageService;
@@ -238,6 +240,7 @@ public class SiteUIManager implements UIManager {
 	/**
 	 * Used to render a screen (tab) for creating a new site
 	 */
+	
 	public VerticalLayout renderNewSite() {
 		// Create a new layout and add as a the main component for the new site
 		// tab
@@ -248,6 +251,7 @@ public class SiteUIManager implements UIManager {
 		txtHelper.addTextInputs(newSiteInputLayout, "Site Name", "Site Domain");
 		txtHelper.addSubmitButton(newSiteInputLayout, "Add Site");
 
+		
 		((Button) newSiteInputLayout.getComponent(2)).addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {

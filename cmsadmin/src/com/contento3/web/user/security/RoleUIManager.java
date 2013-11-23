@@ -104,6 +104,7 @@ public class RoleUIManager implements UIManager {
 		renderRoleTable(verticl);
 		horizon.setExpandRatio(verticl, 9);
 	}
+	
 	@Override
 	public Component render(String command,
 			HierarchicalContainer treeItemContainer) {

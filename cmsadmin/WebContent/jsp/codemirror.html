@@ -5,33 +5,133 @@
     <title>CodeMirror 2: Active Line Demo</title>
     <link rel="stylesheet" href="../css/codemirror/codemirror.css">
     <script src="../js/codemirror/codemirror.js"></script>
-    <link rel="stylesheet" href="../css/codemirror/theme/default.css">
+    
+    <link rel="stylesheet" href="../css/codemirror/theme/3024-day.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/3024-night.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/ambiance.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/base16-dark.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/base16-light.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/cobalt.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/eclipse.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/elegant.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/erlang-dark.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/lesser-dark.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/midnight.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/monokai.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/night.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/rubyblue.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/solarized.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/tomorrow-night-eighties.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/twilight.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/vibrant-ink.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/xq-dark.css">
+    <link rel="stylesheet" href="../css/codemirror/theme/xq-light.css">
+    <script src="../js/codemirror/keymap/extra.js"></script>
+    
     <script src="../js/codemirror/mode/xml/xml.js"></script>
-    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="../js/codemirror/addon/dialog/dialog.js"></script>
+	<link rel="stylesheet" href="../js/codemirror/addon/dialog/dialog.css"></link>
+	<script src="../js/codemirror/addon/search/searchcursor.js"></script>
+	<script src="../js/codemirror/addon/search/search.js"></script>
     <link rel="stylesheet" href="../css/codemirror/docs.css">
+ 	<script src="../js/codemirror/addon/selection/active-line.js"></script>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.js"></script>
+	
+	<script src="../js/codemirror/addon/edit/closetag.js"></script>
+    <script src="../js/codemirror/mode/xml/xml.js"></script>
+    <script src="../js/codemirror/mode/javascript/javascript.js"></script>
+    <script src="../js/codemirror/mode/css/css.js"></script>
+    <script src="../js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.js"></script>
+<script>
+ $(function(){
+ $("#templateForm").validate();
+ });
+</script>
 
     <style type="text/css">
       .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
-      .activeline {background: #f0fcff !important;}
+      .CodeMirror-activeline-background {background: #e8f2ff !important;}
+      
+      .CodeMirror-fullscreen {
+        display: block;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        z-index: 9999;
+      }
+      
+      #templateForm{
+	margin:0 auto;
+	width:600px;
+	padding:14px;
+}
+      
     </style>
   </head>
   <body>
      <div>
-     Template Name : <input type="text" id="templateName" name="templateName">
+     <form id="templateForm" method="" action="">
+     
+     Template Name : <input type="text" id="templateName" name="templateName" class="required" minlength="6">
      </div>
      <div>
      Template Path : <input type="text" id="directoryPath" readonly="readonly" name="templatePath">
      </div>
+<<<<<<< HEAD
      
 	isGlobal : <input type="text" id="isGlobal" readonly="readonly" name="isGlobal">
      
-     <textarea id="code" name="code">
-	 </textarea><input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
+     <textarea id="code" name="code"></textarea>
+     <input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
 
+  <p>Select a theme: <select onchange="selectTheme()" id=select>
+    <option selected>default</option>
+    <option>3024-day</option>
+    <option>3024-night</option>
+    <option>ambiance</option>
+    <option>base16-dark</option>
+    <option>base16-light</option>
+    <option>blackboard</option>
+    <option>cobalt</option>
+    <option>eclipse</option>
+    <option>elegant</option>
+    <option>erlang-dark</option>
+    <option>lesser-dark</option>
+    <option>midnight</option>
+    <option>monokai</option>
+    <option>neat</option>
+    <option>night</option>
+    <option>paraiso-dark</option>
+    <option>paraiso-light</option>
+    <option>rubyblue</option>
+    <option>solarized dark</option>
+    <option>solarized light</option>
+    <option>tomorrow-night-eighties</option>
+    <option>twilight</option>
+    <option>vibrant-ink</option>
+    <option>xq-dark</option>
+    <option>xq-light</option>
+</select>
+</p>
+     
+     <input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
+     </form>
+     
+     
     <script>
     function saveTemplate() {
     	var text = editor.getValue();
     	var templateName = $('#templateName').val();
+    	
+    	$("#templateForm").validate();
+    	
     	alert(directoryId);
 		$.post( '/cms/jsp/addTemplate.ajax', { text: text,templateName : templateName, templatePath:directoryPath,isGlobal:isGlobal, templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId, accountId : accountId },
 		      function( data ) {
@@ -95,18 +195,96 @@
 		adjustButtonText(templateId);   
 		loadTemplateText(templateId);
 
-	});
+		 // 1. prepare the validation rules and messages.
+        var rules = {
+            templateName: {
+                required: true,
+                minlength: 2
+            },
+        };
+
+		 var messages = {
+            templateName: {
+                required: "textbox1 is required",
+                minlength: "textbox1 needs to be at least length 2"
+            },
+          
+        };
+ 
+        // 2. Initiate the validator
+        var validator
+            = new jQueryValidatorWrapper("templateForm",
+                rules, messages);
+ 
+        // 3. Set the click event to do the validation
+        $("#addEditButton").click(function () {
+            if (!validator.validate())
+                return;
+ 
+            alert("Validation Success!");
+        });
+    });
+    	
+
 
 	</script>
 	<script>
+	 function isFullScreen(cm) {
+	      return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
+	    }
+	    function winHeight() {
+	      return window.innerHeight || (document.documentElement || document.body).clientHeight;
+	    }
+	    function setFullScreen(cm, full) {
+	      var wrap = cm.getWrapperElement();
+	      if (full) {
+	        wrap.className += " CodeMirror-fullscreen";
+	        wrap.style.height = winHeight() + "px";
+	        document.documentElement.style.overflow = "hidden";
+	      } else {
+	        wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
+	        wrap.style.height = "";
+	        document.documentElement.style.overflow = "";
+	      }
+	      cm.refresh();
+	    }
+	    CodeMirror.on(window, "resize", function() {
+	      var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+	      if (!showing) return;
+	      showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+	    });
+	
+	
 	    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-  		mode: "application/xml",
+  		mode: "text/html",
   		lineNumbers: true,
-  		onCursorActivity: function() {
-    	editor.setLineClass(hlLine, null);
-    	hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
-  	}
+     	lineWrapping: true,
+    	styleActiveLine: true,
+    	autoCloseTags: true,
+    	value: "",
+    	extraKeys: {
+            "F11": function(cm) {
+              setFullScreen(cm, !isFullScreen(cm));
+            },
+            "Esc": function(cm) {
+              if (isFullScreen(cm)) setFullScreen(cm, false);
+            }
+          }
 	});
+	    
+	    
+	    var input = document.getElementById("select");
+	    function selectTheme() {
+	      var theme = input.options[input.selectedIndex].innerHTML;
+	      editor.setOption("theme", theme);
+	    }
+	    var choice = document.location.search &&
+	                 decodeURIComponent(document.location.search.slice(1));
+	    if (choice) {
+	      input.value = choice;
+	      editor.setOption("theme", choice);
+	    }
+    
 	var hlLine = editor.setLineClass(0, "activeline");
  </script>
 

@@ -39,7 +39,6 @@ public class PageController extends AbstractController {
 			//modelAndView.setView(freemarkerView); 
 		
     	final SiteDto site = (SiteDto) request.getAttribute("site");
-    	
 		modelAndView.getModel().put("siteId", site.getSiteId());
 		}
 		
