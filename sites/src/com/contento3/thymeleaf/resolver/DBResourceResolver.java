@@ -45,7 +45,7 @@ public InputStream getResourceAsStream(final TemplateProcessingParameters templa
     final RequestContext requestContext = (RequestContext)templateProcessingParameters.getContext().getVariables().get("springRequestContext");
 	final Map<String,Object> map = requestContext.getModel();
 	final Integer siteId = (Integer)map.get("siteId");
-	Validate.notNull(siteId, "siteId name cannot be null");
+	Validate.notNull(siteId, "siteId cannot be null");
 	 
 	dto = templateLoader.load(resourceName, siteId);
 	

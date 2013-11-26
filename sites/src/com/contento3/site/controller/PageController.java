@@ -42,7 +42,8 @@ public class PageController extends AbstractController {
 		}
 		
 		final SiteDto site = (SiteDto) request.getAttribute("site");
-    	final AccountDto account = site.getAccountDto();	
+    	
+		final AccountDto account = site.getAccountDto();	
 		modelAndView.getModel().put("siteId", site.getSiteId());
 		return modelAndView;
 	}

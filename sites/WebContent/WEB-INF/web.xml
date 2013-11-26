@@ -14,19 +14,18 @@
   </context-param>
 
 
-<!-- 
+
   <filter>
   	<filter-name>SimplePageCachingFilter</filter-name>
   	<filter-class>com.contento3.caching.filter.CachingFilter</filter-class>
   </filter>
-   -->
 
-<!--  
+ 
   <filter-mapping>
   		<filter-name>SimplePageCachingFilter</filter-name>
  		<url-pattern>/page/*</url-pattern>
   </filter-mapping>
-  -->
+
 
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

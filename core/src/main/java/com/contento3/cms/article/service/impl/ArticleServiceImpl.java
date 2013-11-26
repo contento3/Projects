@@ -33,7 +33,7 @@ public class ArticleServiceImpl implements ArticleService {
 		this.articleDao = articleDao;
 		this.articleImageAssembler = articleImageAssembler;
 	}
-	@RequiresPermissions("article:add")
+	//@RequiresPermissions("article:add")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(ArticleDto articleDto){

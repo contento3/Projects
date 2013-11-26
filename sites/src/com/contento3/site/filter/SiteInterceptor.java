@@ -33,7 +33,15 @@ public class SiteInterceptor extends HandlerInterceptorAdapter {
     final SiteService siteService = (SiteService)context.getBean("siteService");
     
     
-    SiteDto site = siteService.findSiteByDomain(DomainUtil.fetchDomain(request));
+    SiteDto site =null;//= siteService.findSiteByDomain(DomainUtil.fetchDomain(request));
+    String domainName = DomainUtil.fetchDomain(request);
+    if( !domainName.equals("localhost") )
+		site = siteService.findSiteByDomain(
+			domainName
+			);
+	else if(request.getParameter("siteId")!= null)	    		
+		site = siteService.findSiteById( Integer.parseInt(request.getParameter("siteId"))
+    			);
     request.setAttribute("site", site);
 	return super.preHandle(request, response, handler);
 	}

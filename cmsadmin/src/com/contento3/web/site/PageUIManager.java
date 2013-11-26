@@ -252,7 +252,7 @@ public class PageUIManager {
 				comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
 
 		Button newPageSubmitBtn = new Button(pageButtonTitle);
-		newPageFormLayout.addComponent(pageLayoutCombo);
+		//newPageFormLayout.addComponent(pageLayoutCombo);
 		//newPageFormLayout.addComponent(newPageSubmitBtn);
 		pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
