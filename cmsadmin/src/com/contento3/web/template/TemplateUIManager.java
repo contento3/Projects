@@ -235,7 +235,6 @@ public class TemplateUIManager implements UIManager{
 		
 		//Add the accordion
 		vLayout.addComponent(panel);
-		panel.setWidth(100,Unit.PERCENTAGE);
 		vLayout.setHeight(100,Unit.PERCENTAGE);
 		panel.setContent(panelContent);
 	}
@@ -508,10 +507,10 @@ public class TemplateUIManager implements UIManager{
   			          .append(templateDto.getTemplateDirectoryDto().getId())
         			  .append("&templateTypeId=")
 		              .append(templateDto.getTemplateType().getTemplateTypeId())
-           			  .append("&isGlobal=")
-		              .append(templateDto.isGlobal())
 		        	  .append("&accountId=")
 				      .append(accountId)
+   		        	  .append("&isGlobal=")
+				      .append(templateDto.isGlobal())
 				      .append("")
         			  .append("&directoryPath=")
   			          .append(String.format("/%s",buildPath(selectedDirectoryId,templateDto.getTemplateDirectoryDto().getDirectoryName())));

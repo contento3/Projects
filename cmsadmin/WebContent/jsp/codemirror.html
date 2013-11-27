@@ -76,17 +76,18 @@
     </style>
   </head>
   <body>
-     <div>
      <form id="templateForm" method="" action="">
+     <div>
      
      Template Name : <input type="text" id="templateName" name="templateName" class="required" minlength="6">
      </div>
      <div>
      Template Path : <input type="text" id="directoryPath" readonly="readonly" name="templatePath">
      </div>
-<<<<<<< HEAD
      
-	isGlobal : <input type="text" id="isGlobal" readonly="readonly" name="isGlobal">
+     <div>
+	isGlobal : <input type="text" id="isGlobal" readonly="readonly" name="isGlobal" hidden="true">
+     </div>
      
      <textarea id="code" name="code"></textarea>
      <input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
@@ -121,7 +122,6 @@
 </select>
 </p>
      
-     <input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
      </form>
      
      
