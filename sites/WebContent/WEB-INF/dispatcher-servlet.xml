@@ -29,7 +29,10 @@
 	<mvc:interceptor>
 		<mvc:mapping path="/**/*"/>
         <mvc:mapping path="/register/**/*"/>	<!-- At the moment, thymeleaf is only used for user registration controller not for page controller -->
-        <bean class="com.contento3.site.filter.SiteInterceptor" />
+        <bean class="com.contento3.site.filter.SiteInterceptor" >
+        	<property name="templateResolver" ref="templateResolver" />
+        	<property name="templateEngine" ref="templateEngine" />
+        </bean>
     </mvc:interceptor>
 </mvc:interceptors> 
 
@@ -144,13 +147,17 @@
         class="com.contento3.thymeleaf.resolver.C3TemplateResolver">
 	<constructor-arg ref="dbResourceResolver" />
     <property name="templateMode" value="HTML5" />
-    
+    <property name="cacheable" value="true"/>
+    <property name="cacheTTLMs" value="3600000"/>
   </bean>
+  
+  
+  
   
     
   <bean id="templateEngine"
         class="org.thymeleaf.spring3.SpringTemplateEngine">
-    <property name="templateResolver" ref="templateResolver" />
+    <property name="templateResolver" ref="templateResolver" /> 
   </bean>
    
   <bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">

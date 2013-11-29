@@ -51,7 +51,17 @@ implements PageDao {
 		Page page=null;
 		if (!CollectionUtils.isEmpty(criteria.list())){
 			page = (Page)criteria.list().get(0);
-		}	
+		}else{
+			String path1 = path.substring(0,path.indexOf(".uncached"));
+			criteria = this.getSession()
+			.createCriteria(Page.class)
+			.add(Restrictions
+			.eq("site.siteId", siteId)).add(Restrictions
+			.eq("uri", path1));
+			if (!CollectionUtils.isEmpty(criteria.list())){
+				page = (Page)criteria.list().get(0);
+			}
+		}
 		
 		return page;
 	}
