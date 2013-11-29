@@ -52,7 +52,7 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 
 
 	@Override
-	public Collection<Template> findTemplateByPathAndAccount(final String templateName,final String parentDirectory,
+	public Collection<Template> findTemplateByNameAndAccount(final String templateName,final String parentDirectory,
 			final String templateType,final Integer accountId){
 		Validate.notNull(templateName,"templateName cannot be null");
 		Validate.notNull(parentDirectory,"parentDirectory cannot be null");
@@ -97,9 +97,9 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 		.add(Restrictions
 		.eq("templateCategory.name", templateCategory));
 
-		criteria.createAlias("account","account")
-		.add(Restrictions
-		.eq("account.accountId", accountId));
+//		criteria.createAlias("account","account")
+//		.add(Restrictions
+//		.eq("account.accountId", accountId));
 		
 		Template template = null;
 		if (!CollectionUtils.isEmpty(criteria.list())){
@@ -123,6 +123,30 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 		criteria.createAlias("templateCategory","templateCategory")
 		.add(Restrictions
 		.eq("templateCategory.name", templateCategory));
+
+		Template template = null;
+		if (!CollectionUtils.isEmpty(criteria.list())){
+			template = (Template)criteria.list().get(0);
+		}	
+		
+		return template;
+	}
+
+	@Override
+	public Template findTemplateByPathAndAccount(
+			String path, String templateName, Integer accountId) {
+		final Criteria criteria = this.getSession()
+		.createCriteria(Template.class)
+		.setCacheable(true)
+		.setCacheRegion(CACHE_REGION)
+		.add(Restrictions
+		.eq("templateName", templateName))
+		.add(Restrictions
+		.eq("templatePath", path));
+		
+		criteria.createAlias("account","account")
+		.add(Restrictions
+		.eq("account.accountId", accountId));
 
 		Template template = null;
 		if (!CollectionUtils.isEmpty(criteria.list())){

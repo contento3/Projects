@@ -65,7 +65,7 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(Table permissiontable, Container permissioncontainer) {
 		// TODO Auto-generated method stub
-		permissioncontainer.addContainerProperty("permission", Integer.class, null);
+		permissioncontainer.addContainerProperty("permission", String.class, null);
 		permissioncontainer.addContainerProperty("entity", String.class, null);
 		permissioncontainer.addContainerProperty("entityoperation", String.class, null);
 		permissioncontainer.addContainerProperty("edit", Button.class, null);

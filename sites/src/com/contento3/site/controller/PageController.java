@@ -24,8 +24,6 @@ import com.contento3.site.registration.UserRegistrationController;
  */
 public class PageController extends AbstractController {
 
-	private AbstractTemplateView freemarkerView;
-	
 	private static final Logger LOGGER = Logger.getLogger(PageController.class);
 
 	@Override
@@ -39,8 +37,9 @@ public class PageController extends AbstractController {
 		if (!requestURI.equals("/favicon.ico")){
 			modelAndView = new ModelAndView();
 			//modelAndView.setView(freemarkerView); 
+	
+    	
 		}
-		
 		final SiteDto site = (SiteDto) request.getAttribute("site");
     	
 		final AccountDto account = site.getAccountDto();	
@@ -49,7 +48,4 @@ public class PageController extends AbstractController {
 		return modelAndView;
 	}
 
-	public void setFreeMarkerView(final AbstractTemplateView freemarkerView){
-		this.freemarkerView = freemarkerView;
-	} 
 }

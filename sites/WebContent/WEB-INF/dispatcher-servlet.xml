@@ -29,6 +29,7 @@
 	<mvc:interceptor>
 		<mvc:mapping path="/**/*"/>
         <mvc:mapping path="/register/**/*"/>	<!-- At the moment, thymeleaf is only used for user registration controller not for page controller -->
+     
         <bean class="com.contento3.site.filter.SiteInterceptor" >
         	<property name="templateResolver" ref="templateResolver" />
         	<property name="templateEngine" ref="templateEngine" />
@@ -37,7 +38,6 @@
 </mvc:interceptors> 
 
 <bean id="pageController" class="com.contento3.site.controller.PageController">
-	<property name="freeMarkerView" ref="fmView" />
 </bean>
  
 <bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
@@ -150,14 +150,25 @@
     <property name="cacheable" value="true"/>
     <property name="cacheTTLMs" value="3600000"/>
   </bean>
-  
+
+  <bean id="articleDialect" class="com.contento3.thymeleaf.dialect.article.ArticleDialect">
+      <property name="articleProcessor" ref="articleProcessor" />
+  </bean>  
   
   
   
     
-  <bean id="templateEngine"
-        class="org.thymeleaf.spring3.SpringTemplateEngine">
+  	<bean id="articleProcessor" class="com.contento3.thymeleaf.dialect.article.ArticleProcessor">
+	      <property name="articleService" ref="articleService" />
+	</bean>  
+
+  <bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
     <property name="templateResolver" ref="templateResolver" /> 
+    <property name="additionalDialects">
+    	<set>
+      		<ref local="articleDialect" />
+    	</set>
+  	</property>
   </bean>
    
   <bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">

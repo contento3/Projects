@@ -38,6 +38,8 @@ public class TemplateAjaxController {
     @RequestMapping(value = "/jsp/addTemplate.ajax", method = RequestMethod.POST)
     public @ResponseBody String addTemplate(@RequestParam (value="text",required=true) String text,
     		@RequestParam (value="templateName",required=true) String templateName,
+    		@RequestParam (value="templatePath",required=true) String templatePath,
+    		@RequestParam (value="isGlobal",required=true) String isGlobal,
     		@RequestParam (value="templateId",required=false) Integer templateId,
     		@RequestParam (value="directoryId",required=true) Integer directoryId,
     		@RequestParam (value="templateTypeId",required=false) Integer templateTypeId,
@@ -47,7 +49,9 @@ public class TemplateAjaxController {
     	TemplateDto templateDto = new TemplateDto();
     	templateDto.setTemplateName(templateName);
     	templateDto.setTemplateText(text);
-
+    	templateDto.setTemplatePath(templatePath);
+    	templateDto.setGlobal(Boolean.parseBoolean(isGlobal));
+    	
     	TemplateTypeDto templateTypeDto = new TemplateTypeDto();
     	templateTypeDto.setTemplateTypeId(templateTypeId);
     	templateTypeDto.setTemplateTypeName("TEXT_FREEMARKER"); //TODO hard coded - to be adjusted

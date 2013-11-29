@@ -2,17 +2,12 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
-import com.contento3.security.group.service.GroupService;
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.AddAssociatedPermissionsListener;
-import com.contento3.web.user.listner.AddAssociatedUsersListener;
 import com.contento3.web.user.listner.DeleteAssociatedPermissionListener;
-import com.contento3.web.user.listner.DeleteAssociatedUsersListener;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;

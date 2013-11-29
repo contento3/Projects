@@ -129,12 +129,12 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticleByCategory(
-		final Integer categoryId, final Integer numberOfArticles, final Integer siteId) {
-		Validate.notNull(categoryId,"categoryId cannot be null");
+		final Collection<Integer> categoryIds, final Integer numberOfArticles, final Integer siteId) {
+		Validate.notNull(categoryIds,"categoryIds collection cannot be null");
 		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
 		Validate.notNull(siteId,"siteId cannot be null");
 		
-		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryId, numberOfArticles, siteId));
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryIds, numberOfArticles, siteId));
 	}
 
 	@Override

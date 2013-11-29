@@ -41,7 +41,7 @@ public String getName() {
 public InputStream getResourceAsStream(final TemplateProcessingParameters templateProcessingParameters, final String resourceName) {
     Validate.notNull(resourceName, "Resource name cannot be null");
     TemplateContentDto dto = null;
-
+    
     final RequestContext requestContext = (RequestContext)templateProcessingParameters.getContext().getVariables().get("springRequestContext");
 	final Map<String,Object> map = requestContext.getModel();
 	final Integer siteId = (Integer)map.get("siteId");

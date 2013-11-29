@@ -465,10 +465,10 @@ public class PageUIManager {
 		// This will be used to be passed to the template assignment sub window
 		selectedPageId = pageDto.getPageId();
 
-		if (null != pageDto.getPageLayoutDto()) {
-			((ComboBox) newPageFormLayout.getComponent(2)).select(pageDto
-					.getPageLayoutDto().getId());
-		}
+//		if (null != pageDto.getPageLayoutDto()) {
+//			((ComboBox) newPageFormLayout.getComponent(2)).select(pageDto
+//					.getPageLayoutDto().getId());
+//		}
 		return renderPageLayouts(pageDto);
 	}
 
