@@ -210,6 +210,9 @@ public class TemplateServiceImpl implements TemplateService {
 		Template template = null;
 		if (null!=templateDto.getTemplateId())
 			template = templateDao.findById(templateDto.getTemplateId());
+		else {
+			template = new Template();
+		}
 		
 		template = templateAssembler.dtoToDomain(templateDto,template);
 		template.setDirectory(templateDirectory);

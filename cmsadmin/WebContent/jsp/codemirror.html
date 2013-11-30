@@ -79,18 +79,13 @@
      <form id="templateForm" method="" action="">
      <div>
      
-     Template Name : <input type="text" id="templateName" name="templateName" class="required" minlength="6">
-     </div>
-     <div>
+     Template Name : <input type="text" id="templateName" name="templateName" class="required" minlength="6"> 
      Template Path : <input type="text" id="directoryPath" readonly="readonly" name="templatePath">
      </div>
      
      <div>
-	isGlobal : <input type="text" id="isGlobal" readonly="readonly" name="isGlobal" hidden="true">
+	 <input type="text" id="isGlobal" readonly="readonly" name="isGlobal" hidden="false">
      </div>
-     
-     <textarea id="code" name="code"></textarea>
-     <input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
 
   <p>Select a theme: <select onchange="selectTheme()" id=select>
     <option selected>default</option>
@@ -121,6 +116,9 @@
     <option>xq-light</option>
 </select>
 </p>
+
+     <textarea id="code" name="code"></textarea>
+     <input type="button" id="addEditButton"  value="Add template" onclick="javascript:saveTemplate();">
      
      </form>
      
@@ -129,10 +127,11 @@
     function saveTemplate() {
     	var text = editor.getValue();
     	var templateName = $('#templateName').val();
-    	
+    	var isGlobal = $('#isGlobal').val();
     	$("#templateForm").validate();
     	
     	alert(directoryId);
+    	alert(isGlobal);
 		$.post( '/cms/jsp/addTemplate.ajax', { text: text,templateName : templateName, templatePath:directoryPath,isGlobal:isGlobal, templateId:templateId,directoryId : directoryId,templateTypeId : templateTypeId, accountId : accountId },
 		      function( data ) {
 				alert("template saved.");
@@ -168,9 +167,10 @@
     	$('#addEditButton').val('Save template');
     }
 
-	function addTemplateName(templateName,directoryPath){
+	function addTemplateName(templateName,directoryPath,isGlobal){
 		$('#templateName').val(templateName);
 		$('#directoryPath').val(directoryPath);
+		$('#isGlobal').val(isGlobal);
 	}
 
 	var templateId;
@@ -190,8 +190,7 @@
 		var templateName= urlVars['templateName'];
 		isGlobal= urlVars['isGlobal'];
 
-		
-		addTemplateName(decodeURI(templateName),directoryPath);
+		addTemplateName(decodeURI(templateName),directoryPath,isGlobal);
 		adjustButtonText(templateId);   
 		loadTemplateText(templateId);
 
