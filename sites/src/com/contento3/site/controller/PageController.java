@@ -37,11 +37,14 @@ public class PageController extends AbstractController {
 		if (!requestURI.equals("/favicon.ico")){
 			modelAndView = new ModelAndView();
 			//modelAndView.setView(freemarkerView); 
-		
-    	final SiteDto site = (SiteDto) request.getAttribute("site");
-		modelAndView.getModel().put("siteId", site.getSiteId());
+	
+    	
 		}
-		
+		final SiteDto site = (SiteDto) request.getAttribute("site");
+    	
+		final AccountDto account = site.getAccountDto();	
+		modelAndView.getModel().put("siteId", site.getSiteId());
+//		modelAndView.setViewName("/page/aboutus.uncached");
 		return modelAndView;
 	}
 
