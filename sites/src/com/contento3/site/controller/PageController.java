@@ -27,24 +27,20 @@ public class PageController extends AbstractController {
 	private static final Logger LOGGER = Logger.getLogger(PageController.class);
 
 	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	protected ModelAndView handleRequestInternal(final HttpServletRequest request,
+			final HttpServletResponse response) throws Exception {
 
-    	LOGGER.info("Page Controller for request uri: "+request.getRequestURI());
+		String requestURI = request.getRequestURI();
+    	LOGGER.debug("Page Controller for request uri: "+request.getRequestURI());
 
 		ModelAndView modelAndView = null;
-		String requestURI = request.getRequestURI();
 		if (!requestURI.equals("/favicon.ico")){
 			modelAndView = new ModelAndView();
-			//modelAndView.setView(freemarkerView); 
-	
-    	
 		}
+	
 		final SiteDto site = (SiteDto) request.getAttribute("site");
-    	
-		final AccountDto account = site.getAccountDto();	
 		modelAndView.getModel().put("siteId", site.getSiteId());
-//		modelAndView.setViewName("/page/aboutus.uncached");
+		modelAndView.setViewName(requestURI);
 		return modelAndView;
 	}
 

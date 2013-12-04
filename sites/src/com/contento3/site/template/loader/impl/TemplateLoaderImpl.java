@@ -149,7 +149,8 @@ public class TemplateLoaderImpl implements TemplateLoader {
 			//2. siteid
 	
 				try {
-					dto = assembler.assemble(siteId,String.format("/%s",path));
+					path = path.startsWith("/")?path : String.format("/%s",path);
+					dto = assembler.assemble(siteId,path);
 				} catch (PageNotFoundException e) {
 					throw new IOException("Requested page not found",e);
 				}

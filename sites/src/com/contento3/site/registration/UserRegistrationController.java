@@ -30,11 +30,6 @@ public class UserRegistrationController {
 	private static final Logger LOGGER = Logger.getLogger(UserRegistrationController.class);
 
 	/**
-	 * Handles all the rendering to handle freemarker template
-	 */
-	private AbstractTemplateView freemarkerView;
-
-	/**
 	 * Used to create new user for a site.
 	 */
 	private UserRegistrationService registrationService;
@@ -107,14 +102,6 @@ public class UserRegistrationController {
 		model.addAttribute("user",new User());
 		return "user";
     }
-
-    /**
-     * Sets the FreeMarkerView object.
-     * @param freemarkerView
-     */
-	public void setFreeMarkerView(final AbstractTemplateView freemarkerView){
-		this.freemarkerView = freemarkerView;
-	} 
 
 	/**
 	 * Sets the UserRegistrationService object

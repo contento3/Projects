@@ -421,10 +421,10 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
 	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper);
 	    	    		
-	    	    		Component tabSheet = contentUIMgr.render(itemSelected,hwContainer);
-	    	    		if (null!=tabSheet){
-	    	    			horiz.setSecondComponent(tabSheet);
-	    	    		}
+	    	    	//	Component tabSheet = contentUIMgr.render(itemSelected,hwContainer);
+	    	    	//	if (null!=tabSheet){
+	    	    			horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
+	    	    	//	}
 	        		}
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.SECURITY) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SECURITY)))){

@@ -79,7 +79,7 @@ public class PageAssembler implements Assembler {
 	public TemplateContentDto assembleInclude(final Integer siteId,final String path) throws PageNotFoundException {
 		final TemplateContentDto dto = new TemplateContentDto();
 		try {
-			dto.setContent(templateService.findTemplateByPathAndSiteId(path,siteId).getTemplateText());
+			dto.setContent(templateService.findTemplateByNameAndSiteId(path,siteId).getTemplateText());
 		} catch (Exception e) {
 			throw new PageNotFoundException();
 		}

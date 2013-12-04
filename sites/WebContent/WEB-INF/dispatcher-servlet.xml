@@ -29,10 +29,7 @@
 	<mvc:interceptor>
 		<mvc:mapping path="/**/*"/>
         <mvc:mapping path="/register/**/*"/>	<!-- At the moment, thymeleaf is only used for user registration controller not for page controller -->
-     
         <bean class="com.contento3.site.filter.SiteInterceptor" >
-        	<property name="templateResolver" ref="templateResolver" />
-        	<property name="templateEngine" ref="templateEngine" />
         </bean>
     </mvc:interceptor>
 </mvc:interceptors> 
@@ -41,7 +38,6 @@
 </bean>
  
 <bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
-	<property name="freeMarkerView" ref="fmView" />
 	<property name="registrationService" ref="userRegistrationService" />
 	<property name="templateService" ref="templateService" />
 </bean>
@@ -51,18 +47,12 @@
 	<property name="staticResourceViewResolver" ref="staticResourceView" />
 </bean>
 
+<!-- 
 <bean id="fmView" class="com.contento3.site.resolver.ExtendedFreemarkerView">
 	<property name="freemarkerRenderingEngine" ref="fmRenderingEngine" />
 	<property name="siteService" ref="siteService" />
 	<property name="pageService" ref="pageService" />
 	<property name="url" value="" />
-</bean>
-
-
-<bean id="staticResourceView" class="com.contento3.site.resolver.StaticResourceViewResolver">
-	<property name="templateService" ref="templateService" />
-	<property name="imageService" ref="imageService" />
-	<property name="siteService" ref="siteService" />
 </bean>
 
 <bean id="fmRenderingEngine" class="com.contento3.site.template.render.engine.impl.FreemarkerRenderingEngine">
@@ -71,6 +61,16 @@
 	<property name="modelContext" ref="modelContext" />
 </bean>
 
+
+ -->
+ 
+<bean id="staticResourceView" class="com.contento3.site.resolver.StaticResourceViewResolver">
+	<property name="templateService" ref="templateService" />
+	<property name="imageService" ref="imageService" />
+	<property name="siteService" ref="siteService" />
+</bean>
+
+
 <bean id="pageAssemb" class="com.contento3.site.template.assembler.PageAssembler">
 		<property name="pageService" ref="pageService" />
 		<property name="pageTemplateService" ref="pageTemplateService" />
@@ -78,6 +78,11 @@
 		<property name="htmlResolver" ref="htmlResolver" />
 </bean>
 
+<bean id="htmlResolver" class="com.contento3.site.page.section.resolver.impl.YuiHtmlResolver">
+	<property name="templateService" ref="templateService" />
+</bean>
+
+<!-- 
 <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
   <property name="freemarkerVariables">
     <map>
@@ -93,9 +98,6 @@
 
 
 <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>
-<bean id="htmlResolver" class="com.contento3.site.page.section.resolver.impl.YuiHtmlResolver">
-	<property name="templateService" ref="templateService" />
-</bean>
 
 <bean id="fmTemplateLoader" class="com.contento3.site.template.loader.FreemarkerTemplateLoader">
 	<property name="pageAssembler" ref="pageAssemb" />
@@ -121,7 +123,7 @@
   </property>
 </bean>
 
-
+ -->
     
   <!-- **************************************************************** -->
   <!--  THYMELEAF-SPECIFIC ARTIFACTS                                    -->
@@ -149,6 +151,11 @@
     <property name="templateMode" value="HTML5" />
     <property name="cacheable" value="true"/>
     <property name="cacheTTLMs" value="3600000"/>
+    <property name="nonCacheablePatterns">
+    	<set>
+    	<value>*.uncached</value>
+    	</set>
+    </property>
   </bean>
 
   <bean id="articleDialect" class="com.contento3.thymeleaf.dialect.article.ArticleDialect">

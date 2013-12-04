@@ -20,9 +20,9 @@
 
 	<beans:bean id="crmDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
            <beans:property name="driverClassName" value="${driver}"/>
-           <beans:property name="url" value="${dburlCrm}"/>
-           <beans:property name="username" value="${dbuserCrm}"/>
-           <beans:property name="password" value="${dbpasswordCrm}"/>
+           <beans:property name="url" value="${dburlCrmUser}"/>
+           <beans:property name="username" value="${dbuserCrmUser}"/>
+           <beans:property name="password" value="${dbpasswordCrmUser}"/>
 	</beans:bean> 
  
 	<beans:bean id="userRegistrationService" class="com.contento3.site.user.service.impl.UserRegistrationServiceImpl">

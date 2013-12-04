@@ -11,6 +11,10 @@
 		<fileset dir="../build-core">
 			<include name="*.jar"/>
 		</fileset>
+		<fileset dir="C:/Users/hamakhaa/.ivy2/cache/com.vaadin/vaadin-server/jars">
+			<include name="*.jar"/>
+		</fileset>
+		
 	</path>
 
 	<target name="build-jar">
