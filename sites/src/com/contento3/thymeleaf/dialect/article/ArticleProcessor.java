@@ -38,6 +38,7 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 	 * 	<article:simple id="" siteId="" type="HEAD" />
 	 * 	<article:simple id="" siteId="" type="TEASER" />
 	 * 	<article:simple id="" siteId="" type="BODY" />
+	 *  <article:simple id="" siteId="" type="BODY" pTags="off" />
 	 * 
 	 * 
 	 * 	List
@@ -97,7 +98,11 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 		final String seoKeyword = element.getAttributeValue("seoKeyword");
 
 		final Integer siteId = parseInteger(arguments,element,"siteId");
-
+		
+		String pTags = parseString(arguments,element,"pTags");
+		if(pTags == null){
+			pTags = "on";
+		}
 		if ((null==id && null==uuid && null==seoKeyword) && null==siteId){
 			LOGGER.info(String.format("<article:simple> tag must atleast have id or siteId to display the article content.Currently,id is %s and siteId is %s on line number %d",id,siteId,element.getLineNumber()));
 		}
@@ -147,8 +152,9 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 						articleList.add(articleDto);
 					}
 				}
+				
 
-				container = buildDOMForArticles(articleList,includeImage,type,isLinked);
+				container = buildDOMForArticles(articleList,includeImage,type,isLinked,pTags);
 				nodes.add(container);
 			}
 			catch(Exception e){
@@ -185,15 +191,15 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 		return expression; 
 	}
 
-	private Element buildDOMForArticles(final Collection <ArticleDto> articleList,final Boolean includeImage,final String type,final Boolean isLinked){
+	private Element buildDOMForArticles(final Collection <ArticleDto> articleList,final Boolean includeImage,final String type,final Boolean isLinked, String pTags){
 		Element parentElement = new Element("div");
 		for (ArticleDto article : articleList){
-			parentElement.addChild(buildDOMForSingleArticle(article,includeImage,type,isLinked));
+			parentElement.addChild(buildDOMForSingleArticle(article,includeImage,type,isLinked,pTags));
 		}
 		return parentElement;
 	}
 
-	private Element buildDOMForSingleArticle(final ArticleDto article,final Boolean includeImage,final String type,final Boolean isLinked){
+	private Element buildDOMForSingleArticle(final ArticleDto article,final Boolean includeImage,final String type,final Boolean isLinked,final String pTags){
 		/*
 	     * Create the DOM structure that will be substituting our custom tag.
 	     * The headline will be shown inside a '<div>' tag, and so this must
@@ -201,29 +207,34 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 	     */
 		Element articleContainer = new Element("div");
 		articleContainer.setAttribute("class", "articleConainter");
-
+		String containerElementName = "";
+		if(pTags.equals("off")){
+			containerElementName = "span";
+		}else{
+			containerElementName = "p";
+		}
 		if (type.equalsIgnoreCase(FULL)){
-			articleContainer.addChild(buildHeader(article,"p"));
-			articleContainer.addChild(buildTeaser(article,"p"));
-			articleContainer.addChild(buildBody(article,"p"));
+			articleContainer.addChild(buildHeader(article,containerElementName));
+			articleContainer.addChild(buildTeaser(article,containerElementName));
+			articleContainer.addChild(buildBody(article,containerElementName));
 		}
 		else if (type.equalsIgnoreCase(TEASER)){
 			if (!isLinked){
-				articleContainer = buildTeaser(article,"p");
+				articleContainer = buildTeaser(article,containerElementName);
 			}
 			else {
 				articleContainer = buildLinkedTeaser(article);
 			}
 		}
 		else if (type.equalsIgnoreCase(BODY)){
-			articleContainer = buildBody(article,"p");
+			articleContainer = buildBody(article,containerElementName);
 		}
 		else if (type.equalsIgnoreCase(HEADER)){
-			articleContainer.addChild(buildHeader(article,"p"));
+			articleContainer.addChild(buildHeader(article,containerElementName));
 		}
 		else if (type.equalsIgnoreCase(HEADERTEASER)){
-			articleContainer.addChild(buildHeader(article,"p"));
-			articleContainer.addChild(buildTeaser(article,"p"));
+			articleContainer.addChild(buildHeader(article,containerElementName));
+			articleContainer.addChild(buildTeaser(article,containerElementName));
 		}
 		return articleContainer;
 	}
