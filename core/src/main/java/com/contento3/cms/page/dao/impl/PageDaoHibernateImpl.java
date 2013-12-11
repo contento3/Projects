@@ -51,7 +51,7 @@ implements PageDao {
 		Page page=null;
 		if (!CollectionUtils.isEmpty(criteria.list())){
 			page = (Page)criteria.list().get(0);
-		}else{
+		}else if(path.indexOf(".uncached") != -1){
 			String path1 = path.substring(0,path.indexOf(".uncached"));
 			criteria = this.getSession()
 			.createCriteria(Page.class)
