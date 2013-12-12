@@ -135,8 +135,6 @@ public class PageUIManager {
 
 		
 		pagesTab.addComponent(horizontalLayout);
-		pagesTab.setHeight("675");
-		pagesTab.setWidth("775");
 
 		siteDto = siteService.findSiteById(siteId);
 		Tab tab = pagesTab.addTab(horizontalLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));

@@ -22,7 +22,7 @@ public interface TemplateService extends Service<TemplateDto>{
 	 * @param directoryName
 	 * @return Collection<TemplateDto> 
 	 */
-	Collection<TemplateDto> findTemplateByDirectoryName(String directoryName);
+	Collection<TemplateDto> findTemplateByDirectoryName(Integer directoryName);
 
 	/**
 	 * Finds the Template by templateId
@@ -50,4 +50,5 @@ public interface TemplateService extends Service<TemplateDto>{
 	TemplateDto findTemplateByNameAndAccount(String templateName,
 			Integer accountId) throws ResourceNotFoundException;
 
+	void clearCache(Integer cache);
 }

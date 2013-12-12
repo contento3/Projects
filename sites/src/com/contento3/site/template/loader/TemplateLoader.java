@@ -6,5 +6,5 @@ public interface TemplateLoader {
 
 	TemplateContentDto load (String resourceName,Integer siteId);
 	
-	TemplateContentDto loadErrorTemplate (String errorType,Integer siteId);
+	TemplateContentDto loadErrorTemplate (String errorType,String resourceName,Integer siteId);
 }

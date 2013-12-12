@@ -8,8 +8,9 @@ import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.model.Page;
 import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.common.dto.Dto;
 
-public class PageDto {
+public class PageDto extends Dto {
 
 	/**
 	 * URI for the page
@@ -104,6 +105,17 @@ public class PageDto {
     }
 
 
+
+    @Override
+	public Integer getId() {
+		return pageId;
+	}
+
+	@Override
+	public String getName() {
+		return title;
+	}
+    
 
 	public Integer getPageId() {
 		return pageId;

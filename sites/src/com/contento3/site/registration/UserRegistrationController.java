@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.view.AbstractTemplateView;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
@@ -66,7 +65,7 @@ public class UserRegistrationController {
     	userDto.setSiteId(site.getSiteId());
     	
 		//This is required to get the template for right site
-		model.addAttribute("siteId",site.getSiteId());
+		model.addAttribute("site",site);
 
     	LOGGER.info(String.format("Trying to register user with username : [%s]",user.getUsername()));
 		registrationService.create(userDto,DomainUtil.fetchDomain(request));
@@ -98,7 +97,7 @@ public class UserRegistrationController {
     	LOGGER.info("User Registration registering a user for site with siteId"+site.getSiteId());	
     	    	
 		//This is required to get the template for right site
-		model.addAttribute("siteId",site.getSiteId());
+		model.addAttribute("site",site);
 		model.addAttribute("user",new User());
 		return "user";
     }
