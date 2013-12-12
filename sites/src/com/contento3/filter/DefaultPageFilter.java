@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -21,10 +22,10 @@ import com.contento3.util.DomainUtil;
 
 public class DefaultPageFilter implements Filter {
 
+	private static final Logger LOGGER = Logger.getLogger(DefaultPageFilter.class);
+	
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -35,7 +36,7 @@ public class DefaultPageFilter implements Filter {
 	    final PageService pageService = (PageService)context.getBean("pageService");
 	    
 	    SiteDto site=null;
-	    String domainName = DomainUtil.fetchDomain((HttpServletRequest)request);
+	    final String domainName = DomainUtil.fetchDomain((HttpServletRequest)request);
 	    if( !domainName.equals("localhost") ){
 			site = siteService.findSiteByDomain(domainName);
 	    }
@@ -47,19 +48,18 @@ public class DefaultPageFilter implements Filter {
 	    request.setAttribute("site", site);
 	    if (requestURI.equals("/")){
 	    	try {
-				request.getServletContext().getRequestDispatcher(pageService.findById(site.getDefaultPageId()).getUri()).forward(request, response); 
+	    		final Integer defaultPageId = site.getDefaultPageId();
+	    		if (null!=defaultPageId)
+				request.getServletContext().getRequestDispatcher(pageService.findById(defaultPageId).getUri()).forward(request, response); 
 				
-			} catch (PageNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (final PageNotFoundException e) {
+				LOGGER.warn("No default page found for site with id ["+site.getSiteId()+"]");
 			}
 	    }
 	}
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

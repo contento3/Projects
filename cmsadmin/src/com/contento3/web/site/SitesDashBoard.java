@@ -109,13 +109,19 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	}
 	
 	@Override
-	public Component render(String command) {
+	public Component render(final String command) {
 	
 		final Panel panel = new Panel("<h3>Welcome to CONTENTO3!!</h3>");
 		panel.setSizeUndefined(); // Shrink to fit content
 		verticalLayout.addComponent(panel);
 		verticalLayout.setMargin(true);
-		
+		panel.setContent(createDashBoardItem());
+		panel.setContent(createDashBoardItem());
+
+		return verticalLayout;
+	}
+
+	private HorizontalLayout createDashBoardItem(){
 		// Create the content
 		final HorizontalLayout content = new HorizontalLayout();
 		final Label item = new Label("Start creating websites right here.You can create multiple websites under one account.",ContentMode.HTML);
@@ -132,10 +138,9 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		content.addComponent(labelLayout);
 		content.addComponent(imageLoader.loadEmbeddedImageByPath("images/sites-96.png"));
 		content.setMargin(true);
-		panel.setContent(content);	        
-		return verticalLayout;
+		return content;		
 	}
-
+	
 	@Override
 	public Component render(String command, Integer entityFilterId) {
 		// TODO Auto-generated method stub
