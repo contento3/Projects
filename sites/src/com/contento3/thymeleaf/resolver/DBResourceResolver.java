@@ -1,7 +1,6 @@
 package com.contento3.thymeleaf.resolver;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -13,6 +12,9 @@ import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.util.Validate;
 
+import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.service.PageService;
+import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.site.template.dto.TemplateContentDto;
 import com.contento3.site.template.loader.TemplateLoader;
 
@@ -24,13 +26,16 @@ public static final String NAME = "DB";
 
 private TemplateLoader templateLoader;
 
+private PageService pageService;
+
 public DBResourceResolver() {
     super();
 }
 
-public DBResourceResolver(final TemplateLoader templateLoader) {
+public DBResourceResolver(final TemplateLoader templateLoader,final PageService pageService) {
     super();
     this.templateLoader = templateLoader;
+    this.pageService = pageService;
 }
 
 public String getName() {
@@ -38,20 +43,28 @@ public String getName() {
 }
 
 
-public InputStream getResourceAsStream(final TemplateProcessingParameters templateProcessingParameters, final String resourceName) {
+public InputStream getResourceAsStream(final TemplateProcessingParameters templateProcessingParameters, String resourceName) {
     Validate.notNull(resourceName, "Resource name cannot be null");
     TemplateContentDto dto = null;
-    
+
     final RequestContext requestContext = (RequestContext)templateProcessingParameters.getContext().getVariables().get("springRequestContext");
 	final Map<String,Object> map = requestContext.getModel();
-	final Integer siteId = (Integer)map.get("siteId");
-	Validate.notNull(siteId, "siteId cannot be null");
-	 
-	dto = templateLoader.load(resourceName, siteId);
+	final SiteDto site = (SiteDto)map.get("site");
+	Validate.notNull(site, "site cannot be null");
 	
     try {
+
+    	//Look for site default page if the reource name starts with "/"
+    	if (resourceName.equals("/")){
+    		final PageDto pageDto = pageService.findById(site.getDefaultPageId());
+    		resourceName = pageDto.getUri();
+    	}
+
+    	final Integer siteId = site.getSiteId();
+    	dto = templateLoader.load(resourceName, siteId);
+
     	if (null==dto){
-    		dto = templateLoader.loadErrorTemplate("SIMPLE", siteId);
+    		dto = templateLoader.loadErrorTemplate("SIMPLE", resourceName,siteId);
     	}
    		
         return 	new ByteArrayInputStream(dto.getContent().getBytes());
@@ -81,7 +94,4 @@ public InputStream getResourceAsStream(final TemplateProcessingParameters templa
     }
 }
 
-	public void setTemplateLoader(final TemplateLoader templateLoader){
-		this.templateLoader = templateLoader;
-	}
 }

@@ -1,0 +1,9 @@
+30th November,2013
+==================================================================
+branch:develop 573e1aadb2980841726355c89eae4a30346852b1
+database: november 2013,1_ALTER_TABLE_TEMPLATE
+project deployed:cmsadmin,sites
+Notes:
+1.Bug fixes
+2.Template mgmt ui imrpvoements
+3. Freemarker to thymeleaf conversino

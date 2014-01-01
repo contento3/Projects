@@ -8,40 +8,36 @@ import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templateresolver.TemplateResolver;
 
-import com.contento3.caching.filter.CachingFilter;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.util.DomainUtil;
 
 public class SiteInterceptor extends HandlerInterceptorAdapter {
 
-	private static final Logger LOGGER = Logger.getLogger(CachingFilter.class);
-
-
 	static Logger logger = Logger.getLogger(SiteInterceptor.class);
-
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,HttpServletResponse response, Object handler) throws Exception {
 	logger.info("Before handling the request");
-	
-    final ServletContext servletContext  = request.getServletContext();
-    final WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-    final SiteService siteService = (SiteService)context.getBean("siteService");
-	
-    SiteDto site=null;
-    String domainName = DomainUtil.fetchDomain(request);
-    if( !domainName.equals("localhost") ){
-		site = siteService.findSiteByDomain(domainName);
-    }
-    else if(request.getParameter("siteId")!= null){
-		site = siteService.findSiteById( Integer.parseInt(request.getParameter("siteId")));
-    }
-    
-    request.setAttribute("site", site);
+		
+		if (null==request.getAttribute("site")){
+		    final ServletContext servletContext  = request.getServletContext();
+		    final WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+		    final SiteService siteService = (SiteService)context.getBean("siteService");
+			
+		    SiteDto site=null;
+		    String domainName = DomainUtil.fetchDomain(request);
+		    if( !domainName.equals("localhost") ){
+				site = siteService.findSiteByDomain(domainName);
+		    }
+		    else if(request.getParameter("siteId")!= null){
+				site = siteService.findSiteById( Integer.parseInt(request.getParameter("siteId")));
+		    }
+		
+		    request.setAttribute("site", site);
+		}
+		
 	return super.preHandle(request, response, handler);
 	}
 

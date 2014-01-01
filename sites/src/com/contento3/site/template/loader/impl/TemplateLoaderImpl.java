@@ -113,7 +113,7 @@ public class TemplateLoaderImpl implements TemplateLoader {
 			dto.setContent(templateDto.getTemplateText());
 		} catch (EntityNotFoundException e) {
 			LOGGER.error("Unable to find system template.Lets load the default error template");
-			dto = loadErrorTemplate("SIMPLE", siteId);
+			dto = loadErrorTemplate("SIMPLE",path.toString(), siteId);
 		}
 		return dto;
 	}
@@ -178,7 +178,7 @@ public class TemplateLoaderImpl implements TemplateLoader {
 	
 	
 	@Override
-	public TemplateContentDto loadErrorTemplate(final String errorType,final Integer siteId) {
+	public TemplateContentDto loadErrorTemplate(final String errorType,final String resourceName,final Integer siteId) {
 		// TODO Get error template for a site and for a type
 		//Otherwise just return the default error template.
 		final TemplateContentDto dto = new TemplateContentDto();

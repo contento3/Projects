@@ -42,9 +42,10 @@ public class SiteServiceImpl implements SiteService {
 		this.siteAssembler = siteAssembler;
 		this.pageLayoutDao = pageLayoutDao;
 	}
+	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Integer create(SiteDto siteDto) {
+	public Integer create(final SiteDto siteDto) {
 		Validate.notNull(siteDto,"siteDto cannot be null");
 		
 		Collection <PageLayout> defaultPageLayout = pageLayoutDao.findPageLayoutByAccountAndLayoutType(siteDto.getAccountDto().getAccountId(), 2);

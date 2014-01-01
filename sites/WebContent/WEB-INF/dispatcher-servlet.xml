@@ -27,6 +27,7 @@
 
 <mvc:interceptors>
 	<mvc:interceptor>
+		<mvc:mapping path="/"/>
 		<mvc:mapping path="/**/*"/>
         <mvc:mapping path="/register/**/*"/>	<!-- At the moment, thymeleaf is only used for user registration controller not for page controller -->
         <bean class="com.contento3.site.filter.SiteInterceptor" >
@@ -138,9 +139,9 @@
             <constructor-arg ref="templateService" />        
   </bean>
 
-  <bean id="dbResourceResolver"
-        class="com.contento3.thymeleaf.resolver.DBResourceResolver">
-            <property name="templateLoader" ref="tempLoader" />        
+  <bean id="dbResourceResolver" class="com.contento3.thymeleaf.resolver.DBResourceResolver">
+  		<constructor-arg name="templateLoader" ref="tempLoader" />
+        <constructor-arg name="pageService" ref="pageService" />        
   </bean>
   
 
@@ -154,6 +155,7 @@
     <property name="nonCacheablePatterns">
     	<set>
     	<value>*.uncached</value>
+    	<value>/</value>
     	</set>
     </property>
   </bean>

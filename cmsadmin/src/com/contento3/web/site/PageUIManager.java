@@ -126,17 +126,7 @@ public class PageUIManager {
 		// main component for the new site tab
 		horizontalLayout.setSpacing(true);
 
-//		GridLayout toolbarGridLayout = new GridLayout(1,6);
-//		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-//
-//		
-//		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
-//		builder.build();
-
-		
 		pagesTab.addComponent(horizontalLayout);
-		pagesTab.setHeight("675");
-		pagesTab.setWidth("775");
 
 		siteDto = siteService.findSiteById(siteId);
 		Tab tab = pagesTab.addTab(horizontalLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));
@@ -157,7 +147,7 @@ public class PageUIManager {
 		if (!CollectionUtils.isEmpty(pageDtos)) {
 			
 			table.setWidth(100, Unit.PERCENTAGE);
-			table.setPageLength(5);
+			table.setPageLength(pageDtos.size());
 			Button link = null;
 			for (PageDto page : pageDtos) {
 				addPageToPageListTable(page, siteId, pagesTab, link);
@@ -191,7 +181,6 @@ public class PageUIManager {
 		newPageParentlayout.setSpacing(true);
 		
 		ScreenHeader screenHeader = new ScreenHeader(newPageParentlayout,"Page");
-
         newPageRootlayout.setSpacing(true);
 		newPageRootlayout.addComponent(newPageParentlayout);
 

@@ -2,10 +2,13 @@ package com.contento3.cms.page.template.service.impl;
 
 import java.util.Collection;
 
+import net.sf.ehcache.CacheManager;
+
 import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.thymeleaf.cache.StandardCacheManager;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
@@ -21,8 +24,8 @@ import com.contento3.cms.page.template.service.TemplateAssembler;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.site.structure.dao.SiteDAO;
 import com.contento3.cms.site.structure.model.Site;
-import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.exception.ResourceNotFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -71,9 +74,9 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<TemplateDto> findTemplateByDirectoryName(final String directoryName) {
+	public Collection<TemplateDto> findTemplateByDirectoryName(final Integer directoryName) {
 		Validate.notNull(directoryName,"directoryName cannot be null");
-		Collection<Template> templateList = templateDao.findTemplateByDirectoryName(directoryName);
+		Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
 		return templateAssembler.domainsToDtos(templateList);
 	}
 
@@ -242,5 +245,13 @@ public class TemplateServiceImpl implements TemplateService {
 		}	
 		return templateAssembler.domainToDto(templateDao.findTemplateByPathAndAccount(dirPath, templateParts[templateParts.length-1], accountId),new TemplateDto());
 
+	}
+
+	@Override
+	public void clearCache(final Integer templateId) {
+		StandardCacheManager cachemanager = new StandardCacheManager();
+		String path= templateDao.findById(templateId).getTemplatePath();
+		String templateName = templateDao.findById(templateId).getTemplateName();
+		cachemanager.getTemplateCache().clearKey("aboutus");
 	}
 }

@@ -6,16 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter;
 
 import org.apache.log4j.Logger;
-import org.aspectj.runtime.internal.Conversions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import sun.tools.java.Parser;
 
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.util.DomainUtil;
-import com.sun.xml.internal.rngom.parse.Parseable;
 
 
 public class CachingFilter extends SimplePageCachingFilter {

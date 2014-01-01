@@ -82,7 +82,7 @@ public class TemplateListingHelper {
 				}
 			}
 		
-		Collection <TemplateDto> templateDtoList = templateService.findTemplateByDirectoryName(name);
+		Collection <TemplateDto> templateDtoList = templateService.findTemplateByDirectoryName(itemId);
 		
 			for (TemplateDto templateDto: templateDtoList){
 				String templateItemId = String.format("file:%d",templateDto.getTemplateId());

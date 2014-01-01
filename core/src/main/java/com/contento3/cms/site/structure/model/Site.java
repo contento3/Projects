@@ -59,7 +59,13 @@ public class Site implements Serializable {
 	 */
 	@Column(name="DEFAULT_LAYOUT_ID")
 	private Integer defaultLayoutId;
-	
+
+	/**
+	 * layout for site
+	 */
+	@Column(name="DEFAULT_PAGE_ID")
+	private Integer defaultPageId;
+
 	/**
 	 * siteDomains which site contains
 	 * @return
@@ -103,6 +109,19 @@ public class Site implements Serializable {
 
 	public void setDefaultLayoutId(final Integer defaultLayoutId) {
 		this.defaultLayoutId = defaultLayoutId;
+	}
+
+	/**
+	 * Returns LayoutId
+	 * @return Integer
+	 */
+	
+	public Integer getDefaultPageId() {
+		return defaultPageId;
+	}
+
+	public void setDefaultPageId(final Integer defaultPageId) {
+		this.defaultPageId = defaultPageId;
 	}
 
 	/**

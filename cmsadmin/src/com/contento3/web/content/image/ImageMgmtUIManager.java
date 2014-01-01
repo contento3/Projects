@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.vaadin.pagingcomponent.PagingComponent;
-import org.vaadin.pagingcomponent.listener.impl.LazyPagingComponentListener;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -28,7 +26,6 @@ import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
-import com.contento3.web.content.document.listener.DocumentSaveListener;
 import com.contento3.web.content.image.listener.AddImageButtonListener;
 import com.contento3.web.content.image.listener.AddLibraryButtonListener;
 import com.contento3.web.helper.SpringContextHelper;

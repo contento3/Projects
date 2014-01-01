@@ -105,13 +105,13 @@ public class SiteUIManager implements UIManager {
 				SitesDashBoard sitesDashBoard = new SitesDashBoard(uiTabSheet,contextHelper);
 				componentToReturn = sitesDashBoard.render(null);
 		}
-		else if (command.equals(NEWSITE)) {
-			VerticalLayout layout = renderNewSite();
-			uiTabSheet.addComponent(layout);
-			Tab tab1 = uiTabSheet.addTab(layout, "Create site", new ExternalResource("images/site.png"));
-			tab1.setClosable(true);
-			componentToReturn = uiTabSheet;
-		}
+//		else if (command.equals(NEWSITE)) {
+//			VerticalLayout layout = renderNewSite();
+//			uiTabSheet.addComponent(layout);
+//			Tab tab1 = uiTabSheet.addTab(layout, "Create site", new ExternalResource("images/site.png"));
+//			tab1.setClosable(true);
+//			componentToReturn = uiTabSheet;
+//		}
 		return componentToReturn;
 	}
 
@@ -143,7 +143,7 @@ public class SiteUIManager implements UIManager {
 		
 		
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		siteConfigUIManager = new SiteConfigUIManager(siteService,contextHelper);
+		siteConfigUIManager = new SiteConfigUIManager(pageService,siteService,contextHelper);
 		listeners.add(new CreatePageEventListener(pageUIManager,uiTabSheet,siteId));
 		listeners.add(new SiteConfigurationEventListener(siteConfigUIManager, uiTabSheet, siteId));
 		listeners.add(new ContentAssignerEventListener(siteContentUIManager, siteId));
@@ -204,7 +204,7 @@ public class SiteUIManager implements UIManager {
 		final String buttonText = "Site Configuration";
 		final Button siteConfigButton = new Button(buttonText);
 		horizontalLayout.addComponent(siteConfigButton);
-		siteConfigUIManager = new SiteConfigUIManager(siteService,contextHelper);
+		siteConfigUIManager = new SiteConfigUIManager(pageService,siteService,contextHelper);
 		siteConfigButton.addClickListener(new ClickListener() {
 		private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
