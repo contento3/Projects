@@ -2,7 +2,7 @@ package com.contento3.security.group.service;
 
 import java.util.Collection;
 
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 import com.contento3.security.group.dto.GroupDto;
 
 
@@ -11,7 +11,7 @@ import com.contento3.security.group.dto.GroupDto;
  * @author AARIJ
  *
  */
-public interface GroupService extends Service<GroupDto> {
+public interface GroupService extends StorableService<GroupDto> {
 	
 	/**
 	 * Returns the collection of Groups that matches the given/searched group name

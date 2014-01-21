@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import com.contento3.cms.content.dto.AssociatedContentScopeDto;
 import com.contento3.cms.content.model.AssociatedContentScopeTypeEnum;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface AssociatedContentScopeService extends Service<AssociatedContentScopeDto> {
+public interface AssociatedContentScopeService extends StorableService<AssociatedContentScopeDto> {
 
 	/**
 	 * Gets all the cotent scope for particular cotnent

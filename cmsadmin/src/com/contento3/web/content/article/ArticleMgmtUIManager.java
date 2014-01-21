@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
@@ -15,10 +14,7 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.listener.AddArticleButtonListener;
-import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
-import com.contento3.web.content.image.listener.AddImageButtonListener;
-import com.contento3.web.content.image.listener.AddLibraryButtonListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
@@ -27,11 +23,11 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -65,7 +61,7 @@ public class ArticleMgmtUIManager implements UIManager {
 	/**
 	 * main layout for article manager screen
 	 */
-	private VerticalLayout verticalLayout = new VerticalLayout();
+	private VerticalLayout verticalLayout;
 	
 	/**
 	 * Article table which shows articles
@@ -109,13 +105,18 @@ public class ArticleMgmtUIManager implements UIManager {
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Unit.PERCENTAGE);
 		final Tab articleTab;
-		tabSheet.addTab(verticalLayout, "Article Management",new ExternalResource("images/content-mgmt.png"));
-
-		articleTab = tabSheet.getTab(verticalLayout);
-		articleTab.setClosable(true);
-		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
-		renderArticleComponent();
+		
+		if (null==tabSheet.getTab(verticalLayout)){
+			verticalLayout = new VerticalLayout();
+			tabSheet.addTab(verticalLayout, "Article Management",new ExternalResource("images/article.png"));
+			articleTab = tabSheet.getTab(verticalLayout);
+			articleTab.setClosable(true);
+			this.verticalLayout.setSpacing(true);
+			this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
+			renderArticleComponent();
+		}
+		
+		tabSheet.setSelectedTab(verticalLayout);
 		return this.tabSheet;
 	}
 	
@@ -133,48 +134,57 @@ public class ArticleMgmtUIManager implements UIManager {
 	
 	private void renderArticleComponent() {
 		
-		Label articleHeading = new Label("Article Manager");
+		final HorizontalLayout mainLayout = new HorizontalLayout();
+		verticalLayout.addComponent(mainLayout);
+		verticalLayout.setWidth(95,Unit.PERCENTAGE);
+		verticalLayout.setHeight(400,Unit.PIXELS);
+		
+		final VerticalLayout contentLayout = new VerticalLayout();
+		final Label articleHeading = new Label("Article Manager");
 		articleHeading.setStyleName("screenHeading");
-		this.verticalLayout.addComponent(articleHeading);
-		this.verticalLayout.addComponent(new HorizontalRuler());
-		this.verticalLayout.setMargin(true);
-		
-//		addArticleButton();
-		
-		GridLayout toolbarGridLayout = new GridLayout(1,2);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		contentLayout.addComponent(articleHeading);
+		contentLayout.addComponent(new HorizontalRuler());
+		contentLayout.setMargin(true);
+		contentLayout.setSizeFull();
+		contentLayout.setHeight(250, Unit.PIXELS);
+
+		mainLayout.addComponent(contentLayout);
+		mainLayout.setWidth(100, Unit.PERCENTAGE);
+		mainLayout.setHeight(400, Unit.PIXELS);
+
+		mainLayout.setExpandRatio(contentLayout, 100);
+		final GridLayout toolbarGridLayout = new GridLayout(1,2);
+		mainLayout.addComponent(toolbarGridLayout);
+		mainLayout.setExpandRatio(toolbarGridLayout, 1);
+		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddArticleButtonListener(this.contextHelper,this.tabSheet,this.articleTable));
-		//listeners.add(new AddLibraryButtonListener(helper));
-		//listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId));
-		//ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable)
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();
-		HorizontalLayout horizon = new HorizontalLayout();
-		VerticalLayout verticl = new VerticalLayout();
-		horizon.addComponent(verticl);
-		this.verticalLayout.addComponent(horizon);
-		horizon.addComponent(toolbarGridLayout);
-		horizon.setWidth(100,Unit.PERCENTAGE);
-		horizon.setExpandRatio(toolbarGridLayout, 1);
-		horizon.setExpandRatio(verticl, 9);
-		horizon.setComponentAlignment(toolbarGridLayout, Alignment.TOP_CENTER);	
+		HorizontalLayout searchBar = new HorizontalLayout();
+		searchBar.setWidth(45,Unit.PERCENTAGE);
+		contentLayout.addComponent(searchBar);
+		//searchBar.addComponent(toolbarGridLayout);
+//		searchBar.setExpandRatio(toolbarGridLayout, 1);
+//		searchBar.setComponentAlignment(toolbarGridLayout, Alignment.TOP_CENTER);	
 		
 		final TextField searchHeader = new TextField("header name");
 		searchHeader.setInputPrompt("Article Header name");
 		final TextField searchCatagory = new TextField("catagory name");
 		searchCatagory.setInputPrompt("Article Category");
-		Button searchItem = new Button("search");
-		verticl.addComponent(searchHeader);
-		verticl.addComponent(searchCatagory);
-		verticl.addComponent(searchItem);
+		Button searchBtn = new Button("search");
+		searchBar.addComponent(searchHeader);
+		searchBar.addComponent(searchCatagory);
+		searchBar.addComponent(searchBtn);
+		searchBar.setComponentAlignment(searchBtn, Alignment.BOTTOM_RIGHT);	
 		
-		this.verticalLayout.addComponent(new HorizontalRuler());
+		contentLayout.addComponent(new HorizontalRuler());
 		
-		renderArticleTable();
+		renderArticleTable(contentLayout);
 		/**
 		 * search button listener .. 		
 		 */
-		searchItem.addClickListener(new Button.ClickListener() {
+		searchBtn.addClickListener(new Button.ClickListener() {
 			
 			private static final long serialVersionUID = 1L;
 
@@ -195,11 +205,11 @@ public class ArticleMgmtUIManager implements UIManager {
 	 * Render article table
 	 */
 	@SuppressWarnings("unchecked")
-	private void renderArticleTable() {
+	private void renderArticleTable(final VerticalLayout contentLayout) {
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
 		Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
 		tableBuilder.build((Collection)articles);
-		this.verticalLayout.addComponent(this.articleTable);
+		contentLayout.addComponent(this.articleTable);
 	}
 	
 	/**

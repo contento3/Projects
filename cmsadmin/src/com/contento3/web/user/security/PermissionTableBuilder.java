@@ -58,7 +58,7 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 				deleteLink.addStyleName("delete");
 				deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 				item.getItemProperty("delete").setValue(deleteLink);
-				deleteLink.addListener(new PermissionDeleteClickListener(permission, permissionService, deleteLink, permissiontable));
+				deleteLink.addClickListener(new PermissionDeleteClickListener(permission, permissionService, deleteLink, permissiontable));
 
 	}
 

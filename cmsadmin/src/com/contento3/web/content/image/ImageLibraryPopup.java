@@ -1,21 +1,31 @@
 package com.contento3.web.content.image;
 
+import java.util.Collection;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
+import com.contento3.dam.content.storage.exception.InvalidStorageException;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
+import com.contento3.dam.storagetype.service.StorageTypeService;
+import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -24,6 +34,7 @@ import com.vaadin.ui.Window.CloseEvent;
 
 public class ImageLibraryPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener{
 
+	private static final Logger LOGGER = Logger.getLogger(ImageLibraryPopup.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -53,6 +64,8 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 	 */
 	private ImageLibraryService imageLibraryService; 
 	
+	private StorageTypeService storageTypeService;
+	
 	boolean isModalWindowClosable = true;
 	
 	/**
@@ -63,6 +76,7 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 	public ImageLibraryPopup(final SpringContextHelper helper) {
 		this.helper = helper;
 		this.imageLibraryService = (ImageLibraryService) helper.getBean("imageLibraryService");
+		this.storageTypeService = (StorageTypeService) helper.getBean("storageTypeService");
 		
 		 // The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
@@ -85,9 +99,9 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 		popupWindow = new Window();
 		popupWindow.setPositionX(200);
 		popupWindow.setPositionY(100);
-		
-		popupWindow.setHeight(27,Unit.PERCENTAGE);
-    	popupWindow.setWidth(26,Unit.PERCENTAGE);
+
+		popupWindow.setHeight(60,Unit.PERCENTAGE);
+    	popupWindow.setWidth(30,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
         UI.getCurrent().addWindow(popupWindow);
@@ -98,32 +112,41 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
         popupMainLayout.setSpacing(true);
+        popupMainLayout.setMargin(true);
         
         //name field
         final HorizontalLayout nameDataLayout = new HorizontalLayout();
-        nameDataLayout.setSizeFull();
-        final Label nameLabel = new Label("Name");
-        final TextField nameTextField  = new TextField();
         nameDataLayout.setSpacing(true);
-        nameDataLayout.addComponent(nameLabel);
+        final TextField nameTextField  = new TextField();
+        nameTextField.setCaption("Name");
+        nameDataLayout.setSpacing(true);
         nameDataLayout.addComponent(nameTextField);
-        nameDataLayout.setComponentAlignment(nameLabel, Alignment.BOTTOM_LEFT);
         nameDataLayout.setComponentAlignment(nameTextField, Alignment.BOTTOM_RIGHT);
         popupMainLayout.addComponent(nameDataLayout);
         
         //description field
         final HorizontalLayout descriptionLayout = new HorizontalLayout();
-        descriptionLayout.setSizeFull();
-        final Label descriptionLabel = new Label("Description");
-        final TextField descriptionTextField  = new TextField();
+        final TextArea descriptionTextField  = new TextArea();
+        descriptionTextField.setCaption("Descrption");
+        descriptionTextField.setRows(5);        
+        descriptionTextField.setColumns(20);
         descriptionLayout.setSpacing(true);
-        descriptionLayout.addComponent(descriptionLabel);
         descriptionLayout.addComponent(descriptionTextField);
-        descriptionLayout.setComponentAlignment(descriptionLabel, Alignment.BOTTOM_LEFT);
         descriptionLayout.setComponentAlignment(descriptionTextField, Alignment.BOTTOM_RIGHT);
         popupMainLayout.addComponent(descriptionLayout);
         
-		
+        final HorizontalLayout storageTypeLayout = new HorizontalLayout();
+        storageTypeLayout.setSizeFull();
+        storageTypeLayout.setSpacing(true);
+        
+		final ComboDataLoader comboDataLoader = new ComboDataLoader();
+
+		final ComboBox storageTypeCombo = new ComboBox("Select Storage Type",comboDataLoader.loadDataInContainer((Collection)storageTypeService.findAll()));
+		storageTypeLayout.addComponent(storageTypeCombo);
+		popupMainLayout.addComponent(storageTypeLayout);
+		storageTypeCombo.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
+		storageTypeCombo.setItemCaptionPropertyId("name");
+
 		if (event.getButton().getCaption().equals("Add Library")){
 		    
 			nameTextField.setValue("");
@@ -135,28 +158,39 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 
 				public void buttonClick(ClickEvent event) {
 					
-					ImageLibraryDto library = new ImageLibraryDto();
-					library.setName(nameTextField.getValue().toString());
-					library.setDescription(descriptionTextField.getValue().toString());
-					
-					 //Get accountId from the session
-		            final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
-		            final AccountService accountService = (AccountService)helper.getBean("accountService");
-		            final AccountDto accountDto = accountService.findAccountById(accountId);
-		            library.setAccountDto(accountDto);
-		            
+
 		            if(!( nameTextField.getValue().toString().isEmpty() 
-		            		&& descriptionTextField.getValue().toString().isEmpty() ))
+		            		&& descriptionTextField.getValue().toString().isEmpty() && StringUtils.isEmpty((String)storageTypeCombo.getValue())   ) )
 		            {
+		            	ImageLibraryDto library=null;
 						try {
+							library = new ImageLibraryDto();
+							library.setName(nameTextField.getValue().toString());
+							library.setDescription(descriptionTextField.getValue().toString());
+
+							 //Get accountId from the session
+				            final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
+				            final AccountService accountService = (AccountService)helper.getBean("accountService");
+				            final AccountDto accountDto = accountService.findAccountById(accountId);
+				            library.setAccountDto(accountDto);
+				            library.setContentType("IMAGE");
+
+				            library.setStorageTypeId(Integer.parseInt(storageTypeCombo.getValue().toString()));
 							imageLibraryService.create(library);
 							Notification.show(library.getName() +" added succesfully");
-						} catch (EntityAlreadyFoundException e) {
-							e.printStackTrace();
+						} catch (final EntityAlreadyFoundException e) {
+							LOGGER.debug("Unable to create library with name" + library.getName());
+							Notification.show("Library with name "+library.getName()+ " already exists.Please use other library name.",Notification.Type.WARNING_MESSAGE);
 						}
-						catch (EntityNotCreatedException e) {
-							e.printStackTrace();
+						catch (final EntityNotCreatedException e) {
+							LOGGER.debug("Unable to create new library with name" + library.getName());
+							Notification.show("Library with name "+library.getName()+ " cannot be created.Please contact support team.",Notification.Type.WARNING_MESSAGE);
 						}
+						catch (final InvalidStorageException e) {
+							LOGGER.debug("Unable to create new library with name" + library.getName());
+							Notification.show("Storage configuration for this storage type is not configured for this account.Please contact support team for new configuration" ,Notification.Type.WARNING_MESSAGE);
+						}
+
 			    		UI.getCurrent().removeWindow(popupWindow);
 				        openbutton.setEnabled(true);
 		            }else{
@@ -169,6 +203,7 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
 		}//end if
 	
 		final HorizontalLayout addButtonLayout = new HorizontalLayout();
+		addButtonLayout.setSpacing(true);
 		popupMainLayout.addComponent(addButtonLayout);
 		addButtonLayout.addComponent(librarybutton);
 		addButtonLayout.setComponentAlignment(librarybutton,

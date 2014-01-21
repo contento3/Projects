@@ -3,9 +3,9 @@ package com.contento3.cms.page.template.service;
 import java.util.Collection;
 
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface TemplateDirectoryService extends Service <TemplateDirectoryDto>{
+public interface TemplateDirectoryService extends StorableService <TemplateDirectoryDto>{
 
 	Integer create(TemplateDirectoryDto type);
 

@@ -18,6 +18,7 @@ import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.account.AccountSettingsUIManager;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TabSheetHelper;
+import com.contento3.web.common.listener.TabSheetDetachListener;
 import com.contento3.web.content.SearchUI;
 import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
@@ -397,6 +398,10 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		UIManager sitesDashboard = UIManagerCreator.createUIManager(uiTabsheet,Manager.Dashboard,helper);
 		horiz.setSecondComponent(sitesDashboard.render(null));
 
+		uiTabsheet.addDetachListener(new TabSheetDetachListener());
+		uiTabsheet.addComponentDetachListener(new TabSheetDetachListener());
+
+		
 	   //When the item from the navigation is clicked then the 
         //below code will handle what is required to be done
         root.addItemClickListener(new ItemClickListener() {
@@ -408,7 +413,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
                 Object parentOfSelectedItem = hwContainer.getParent(itemSelected);
 
             	if (!TabSheetHelper.isTabLocked(uiTabsheet)){
-	
 	                if (null!=itemSelected && itemSelected.equals("Layout Manager")){
 	                		UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper);
 	                		horiz.setSecondComponent(layoutUIMgr.render(null));
@@ -419,12 +423,9 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	                }
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
-	    	    		UIManager contentUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Content,helper);
-	    	    		
-	    	    	//	Component tabSheet = contentUIMgr.render(itemSelected,hwContainer);
-	    	    	//	if (null!=tabSheet){
+	        				final TabSheet tabsheet = new TabSheet();
+	        				UIManager contentUIMgr = UIManagerCreator.createUIManager(tabsheet,Manager.Content,helper);
 	    	    			horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
-	    	    	//	}
 	        		}
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.SECURITY) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SECURITY)))){
@@ -436,7 +437,8 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	    	    		horiz.setSecondComponent(templateUIMgr.render(null));
 	        		}
 	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.CATEGORY_MGMT)){
-	    	    		UIManager categoryUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Category,helper);
+	        			TabSheet tabsheet = new TabSheet();
+	    	    		UIManager categoryUIMgr = UIManagerCreator.createUIManager(tabsheet,Manager.Category,helper);
 	    	    		horiz.setSecondComponent(categoryUIMgr.render(null));
 	        		}
                 	else if (null!=itemSelected && itemSelected.equals("Sites")) {

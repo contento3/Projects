@@ -1,0 +1,9 @@
+13th December November,2013
+==================================================================
+branch:develop 4561c167c53fc5a7d996d0119cbf1515c18f2c1e
+database: december 2013,1_ALTER_TABLE_SITE
+project deployed:cmsadmin,sites
+Notes:
+1.Bug fixes
+2.Template mgmt ui improvements
+3. Template caching

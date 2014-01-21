@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springmodules.org/schema/ehcache http://www.springmodules.org/schema/cache/springmodules-ehcache.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+<bean id="environmentConfig" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+<property name="algorithm" value="PBEWithMD5AndDES" />
+<property name="passwordEnvName" value="PEV" />
+</bean>
+
+
+<bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+<property name="config" ref="environmentConfig" />
+</bean>
+
+<bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+<constructor-arg ref="encryptor" />
+<property name="location" value="classpath:/config/spring/db.properties" />
+</bean>
+
+
+<bean id="storageDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+           <property name="driverClassName" value="${driver}"/>
+           <property name="url" value="${dburlStorage}"/>
+           <property name="username" value="${dbuserStorage}"/>
+           <property name="password" value="${dbpasswordStorage}"/>
+</bean>
+
+
+	<bean id="storageSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="storageDataSource" />
+		<property name="annotatedClasses">
+			<list>
+			     <value>com.contento3.dam.content.storage.S3Storage</value>
+			    <value>com.contento3.account.model.Account</value>
+			</list>
+		</property>	
+		<property name="mappingResources">
+			<list>
+			<!-- 	 <value>ContentType.hbm.xml</value> 
+				 <value>PageLayoutType.hbm.xml</value>-->
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
+				
+				<prop key="hibernate.c3p0.min_size">2 </prop>
+	            <prop key="hibernate.c3p0.max_size" >5</prop>
+	            <prop key="hibernate.c3p0.timeout">600</prop>
+	            <prop key="hibernate.c3p0.max_statements">0</prop>
+	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
+	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
+	            
+			</props>
+		</property>	</bean>
+
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+   	<bean id="s3StorageDao" class="com.contento3.dam.content.storage.dao.S3StorageDaoHibernateImpl">
+		<property name="sessionFactory" ref="storageSessionFactory" />
+	</bean>
+  
+</beans>

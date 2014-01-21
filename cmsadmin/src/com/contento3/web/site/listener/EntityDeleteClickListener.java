@@ -2,6 +2,7 @@ package com.contento3.web.site.listener;
 
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;

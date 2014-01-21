@@ -118,7 +118,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         horizontal.addComponent(templateOrdrTxtFld);
         horizontal.addComponent(closebutton);
 		contentLayout.addComponent(horizontal);
-        
+        contentLayout.setMargin(true);
         closebutton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings({ "unchecked", "rawtypes" })

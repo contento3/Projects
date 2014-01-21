@@ -29,8 +29,8 @@ public class StorageTypeHibernateImplTestCase extends AbstractTransactionalJUnit
 		StorageType storage = new StorageType();
 
 		storage.setName(expectedName);
-		storage.setStart_date(expectedStartDate);
-		storage.setEnd_date(expectedEndDate);
+		storage.setStartDate(expectedStartDate);
+		storage.setEndDate(expectedEndDate);
 		storage.setDescription(expectedDesc);
 		
 		storageDao.persist(storage);

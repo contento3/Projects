@@ -3,8 +3,6 @@ package com.contento3.web.content.article.listener;
 import java.util.Collection;
 import java.util.Date;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;

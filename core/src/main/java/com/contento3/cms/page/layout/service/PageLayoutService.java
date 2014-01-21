@@ -3,9 +3,9 @@ package com.contento3.cms.page.layout.service;
 import java.util.Collection;
 
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.SimpleService;
 
-public interface PageLayoutService extends Service<PageLayoutDto> {
+public interface PageLayoutService extends SimpleService<PageLayoutDto> {
 
 	/**
 	 * Returns a collection of page layouts for an account.
