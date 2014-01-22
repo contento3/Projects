@@ -7,11 +7,10 @@ import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.permission.service.PermissionService;
 import com.contento3.web.site.listener.EntityDeleteClickListener;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 
 
 public class PermissionDeleteClickListener extends EntityDeleteClickListener<PermissionDto> {

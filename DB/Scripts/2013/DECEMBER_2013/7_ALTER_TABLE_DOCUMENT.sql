@@ -1,0 +1,1 @@
+ALTER TABLE `cms`.`document` DROP FOREIGN KEY `FK_DOC_STRGTYPE` ;

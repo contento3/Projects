@@ -18,13 +18,15 @@ public class ImageLibraryDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 
 	@Override
 	public Collection<ImageLibrary> findImageLibraryByAccountId(
-			Integer accountId) {
+			final Integer accountId) {
 		Validate.notNull(accountId ,"accountId cannot be null");
 		Criteria criteria = this.getSession()
 				.createCriteria(ImageLibrary.class)
 				.add(Restrictions.eq("account.accountId", accountId));
 		return criteria.list();
 	}
+	
+	
 	
 	
 }

@@ -3,7 +3,7 @@ package com.contento3.web.content.document;
 public enum StorageTypeEnum {
 	FILE ("FILE"),
 	DATABASE("DATABASE"),
-	AMAZON_S3("AMAZON S3");
+	S3("S3");
 	
 	private String type;
 	

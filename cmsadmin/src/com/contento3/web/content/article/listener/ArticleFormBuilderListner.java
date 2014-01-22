@@ -10,6 +10,7 @@ import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
+import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
@@ -18,6 +19,7 @@ import com.contento3.web.content.article.ArticleMgmtUIManager;
 import com.contento3.web.content.article.AssociatedImagesUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
@@ -155,7 +157,7 @@ public class ArticleFormBuilderListner implements ClickListener{
         screenHeader = new ScreenHeader(formLayout,"Article");
 
 		parentLayout = new HorizontalLayout();
-		parentLayout.setSizeFull();
+		parentLayout.setHeight(75,Unit.PERCENTAGE);
 		parentLayout.addComponent(formLayout);
 		
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));
@@ -175,7 +177,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 
 		parentLayout.addComponent(toolbarGridLayout);
 		parentLayout.setExpandRatio(toolbarGridLayout, 1);
-		parentLayout.setExpandRatio(formLayout, 10);
+		parentLayout.setExpandRatio(formLayout, 40);
 		parentLayout.setComponentAlignment(toolbarGridLayout, Alignment.TOP_RIGHT);
 		tabSheet.setSelectedTab(parentLayout);
 

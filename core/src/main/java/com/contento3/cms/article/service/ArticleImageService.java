@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface ArticleImageService extends Service<ArticleImageDto>{
+public interface ArticleImageService extends StorableService<ArticleImageDto>{
 
 	/**
 	 * Return collection of ArticleImage by articleId and ImageId

@@ -1,7 +1,6 @@
 package com.contento3.dam.image.service.impl;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,21 +14,26 @@ import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.model.Image;
 import com.contento3.dam.image.service.ImageAssembler;
 import com.contento3.dam.image.service.ImageService;
+import com.contento3.storage.manager.StorageManager;
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class ImageServiceImpl implements ImageService {
 
 	private ImageAssembler imageAssembler;
 	private ImageDao imageDao;
 	private AccountDao accountDao;
+	private StorageManager storageManager;
 	
-	public ImageServiceImpl(final ImageAssembler imageAssembler,final ImageDao imageDao,final AccountDao accountDao){
+	public ImageServiceImpl(final ImageAssembler imageAssembler,final ImageDao imageDao,final AccountDao accountDao,
+			final StorageManager storageManager){
 		Validate.notNull(imageAssembler,"imageAssembler cannot be null");
 		Validate.notNull(imageDao,"imageDao cannot be null");
 		Validate.notNull(accountDao,"accountDao cannot be null");
+		Validate.notNull(storageManager,"storageManager cannot be null");
 		
 		this.imageAssembler = imageAssembler;
 		this.imageDao = imageDao;
 		this.accountDao = accountDao;
+		this.storageManager = storageManager;
 	}
 	
 	public ImageDto findImageByUuid(final String imageId){
@@ -55,14 +59,17 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainToDto(image);
 	}
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Integer create(final ImageDto imageDto) {
+	public Boolean create(final ImageDto imageDto) {
 		Validate.notNull(imageDto,"imageDto cannot be null");
 		Image image = imageAssembler.dtoToDomain(imageDto);
 		Account account = accountDao.findById(imageDto.getAccountDto().getAccountId());
 		image.setAccount(account);
-		image.setImageUuid(UUID.randomUUID().toString());
-		return imageDao.persist(image);
+		
+		//Pass the image to storage manager and 
+		//it will handle where to store the content.
+		return storageManager.addToStorage(image);
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)

@@ -61,6 +61,7 @@
 			     <value>com.contento3.dam.storagetype.model.StorageType</value>
 			     <value>com.contento3.cms.article.model.ArticleImage</value>
 			     <value>com.contento3.site.user.model.User</value>
+			     <value>com.contento3.dam.content.library.model.ContentStorageLibraryMapping</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -103,6 +104,11 @@
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
   -->
+  
+   	<bean id="contentStorageLibraryMappingDao" class="com.contento3.dam.content.library.dao.impl.ContentStorageLibraryMappingDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+  
  	<bean id="siteDAO"
 		class="com.contento3.cms.site.structure.dao.impl.SiteDAOHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />

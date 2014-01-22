@@ -7,6 +7,34 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+
+	<bean id="storageManager" class="com.contento3.storage.manager.impl.StorageManagerImpl">
+		<property name="factory" ref="storageProviderFactory" />
+		<property name="cslmDao" ref="contentStorageLibraryMappingDao" />
+	</bean>
+
+	<bean id="s3StorageProvider" class="com.contento3.storage.provider.impl.S3Provider">
+		<property name="storageDao" ref="s3StorageDao" />
+	</bean>
+
+	<bean id="dbStorageProvider" class="com.contento3.storage.provider.impl.DBProvider">
+		<property name="contentDaos">
+			<map>
+   				<entry key="IMAGE" value-ref="imageDao" />
+			</map>
+		</property>	
+	</bean>
+
+	<bean id="storageProviderFactory" class="com.contento3.storage.provider.StorageProviderFactory">
+	<property name="storageProviders" >
+		<map>
+   				<entry key="S3"   value-ref="s3StorageProvider" />
+				<!-- 		<entry key="FILE" value-ref="" /> -->
+				<entry key="DATABASE" value-ref="dbStorageProvider" />
+		</map>
+	</property>	
+   </bean> 
+
 	<bean id="accountAssembler" class="com.contento3.account.service.impl.AccountAssemblerImpl">
 	</bean>
 
@@ -135,6 +163,7 @@
 		<constructor-arg ref="imageAssembler" />
 		<constructor-arg ref="imageDao" />
 		<constructor-arg ref="accountDAO" />
+		<constructor-arg ref="storageManager" />
 	</bean>
 
 	<bean id="layoutBuilder" class="com.contento3.cms.page.layout.impl.LayoutBuilderImpl">
@@ -206,6 +235,10 @@
 	<bean id="imageLibraryService" class="com.contento3.dam.image.library.service.impl.ImageLibraryServiceImpl">
 		<constructor-arg ref="imageLibraryDao" />
 		<constructor-arg ref="imageLibraryAssembler" />
+		<constructor-arg ref="storageTypeDao" />
+		<constructor-arg ref="contentStorageLibraryMappingDao" />
+		<constructor-arg ref="storageProviderFactory" />
+		<constructor-arg ref="storageManager" />
 	</bean>
 
 

@@ -126,6 +126,8 @@ public class TemplateUIManager implements UIManager{
 	
 	private ImageLoader imageLoader;
 	
+	private VerticalLayout layout;
+	
 	String itemId;
 	/**
 	 * Constructor 
@@ -155,12 +157,16 @@ public class TemplateUIManager implements UIManager{
 		templateTab.setHeight(100,Unit.PERCENTAGE);
 		templateTab.setWidth(100,Unit.PERCENTAGE);
 		
-    	VerticalLayout layout = new VerticalLayout();
-    	layout.setWidth(100,Unit.PERCENTAGE);
+		if (null==templateTab.getTab(layout)){
+			layout = new VerticalLayout();
+			layout.setWidth(100,Unit.PERCENTAGE);
 
-    	Tab tab2 = templateTab.addTab(layout,"Template",new ExternalResource("images/template.png"));
-    	tab2.setClosable(true);
-    	renderTemplateListTab(layout);
+	    	Tab tab2 = templateTab.addTab(layout,"Template",new ExternalResource("images/template.png"));
+	    	tab2.setClosable(true);
+	    	renderTemplateListTab(layout);
+		}
+		
+		templateTab.setSelectedTab(layout);
 		return templateTab;
 	}
 
@@ -169,7 +175,7 @@ public class TemplateUIManager implements UIManager{
 		return null;
 	}
 	
-	public void renderTemplateListTab(VerticalLayout vLayout){
+	public void renderTemplateListTab(final VerticalLayout vLayout){
 		// Create the Accordion.
 		final Accordion accordion = new Accordion();
 

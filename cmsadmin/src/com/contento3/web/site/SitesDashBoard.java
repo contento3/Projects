@@ -11,6 +11,7 @@ import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.UIManager;
+import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
@@ -110,24 +111,43 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	
 	@Override
 	public Component render(final String command) {
-	
-		final Panel panel = new Panel("<h3>Welcome to CONTENTO3!!</h3>");
-		panel.setSizeUndefined(); // Shrink to fit content
-		verticalLayout.addComponent(panel);
-		verticalLayout.setMargin(true);
-		panel.setContent(createDashBoardItem());
-		panel.setContent(createDashBoardItem());
+		
+		final Label label = new Label("Welcome to Contento3!");
+		label.setSizeUndefined(); // Shrink to fit content
 
+		HorizontalLayout dashboardHeaderRow = new HorizontalLayout();
+		dashboardHeaderRow.setSpacing(true);
+		dashboardHeaderRow.addComponent(label);
+		
+		verticalLayout.addComponent(dashboardHeaderRow);
+		verticalLayout.addComponent(createDashboardRow());
 		return verticalLayout;
 	}
 
-	private HorizontalLayout createDashBoardItem(){
+	private HorizontalLayout createDashboardRow(){
+		HorizontalLayout dashboardRow = new HorizontalLayout();
+		dashboardRow.setSpacing(true);
+		final Panel panel = new Panel();
+		panel.setSizeUndefined(); // Shrink to fit content
+		dashboardRow.addComponent(panel);
+		dashboardRow.setMargin(true);
+		panel.setContent(createDashBoardItem("Start creating websites right here.You can create multiple websites under one account.","Create a site","sites-96.png",new SiteCreateListener(helper,siteDashboardTab,verticalLayout)));
+
+		final Panel panel2 = new Panel();
+		panel2.setContent(createDashBoardItem("You can create as many pages as you want for sites you have under your account.","Create a page","pages-icon-96.png",new SiteCreateListener(helper,siteDashboardTab,verticalLayout)));
+		panel2.setSizeUndefined(); // Shrink to fit content
+		dashboardRow.addComponent(panel2);
+		
+		return dashboardRow;
+	}	
+	
+	private HorizontalLayout createDashBoardItem(final String label,final String linkedCmsLabel,final String itemImage,final ClickListener listener){
 		// Create the content
 		final HorizontalLayout content = new HorizontalLayout();
-		final Label item = new Label("Start creating websites right here.You can create multiple websites under one account.",ContentMode.HTML);
-		final Button commandLabel = new Button("Create site");
+		final Label item = new Label(label,ContentMode.HTML);
+		final Button commandLabel = new Button(linkedCmsLabel);
 		commandLabel.addStyleName("link");
-		commandLabel.addClickListener(new SiteCreateListener(helper,siteDashboardTab,verticalLayout));
+		commandLabel.addClickListener(listener);
 		final VerticalLayout labelLayout = new VerticalLayout();
 		labelLayout.addComponent(item);
 		labelLayout.addComponent(commandLabel);
@@ -136,7 +156,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 
 		final ImageLoader imageLoader = new ImageLoader();
 		content.addComponent(labelLayout);
-		content.addComponent(imageLoader.loadEmbeddedImageByPath("images/sites-96.png"));
+		content.addComponent(imageLoader.loadEmbeddedImageByPath("images/"+itemImage));
 		content.setMargin(true);
 		return content;		
 	}

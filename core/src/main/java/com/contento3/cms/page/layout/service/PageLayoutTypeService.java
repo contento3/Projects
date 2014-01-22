@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import com.contento3.cms.page.layout.dto.PageLayoutTypeDto;
 import com.contento3.cms.page.layout.model.PageLayoutType;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface PageLayoutTypeService extends Service <PageLayoutTypeDto>{
+public interface PageLayoutTypeService extends StorableService <PageLayoutTypeDto>{
 
 	Collection<PageLayoutType> findAllPageLayoutType();
 	

@@ -3,9 +3,9 @@ package com.contento3.cms.article.service;
 import java.util.Collection;
 
 import com.contento3.cms.article.dto.RelatedArticleDto;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface RelatedArticleService extends Service<RelatedArticleDto> {
+public interface RelatedArticleService extends StorableService<RelatedArticleDto> {
 
 	/**
 	 * find  related articles associated to articleId

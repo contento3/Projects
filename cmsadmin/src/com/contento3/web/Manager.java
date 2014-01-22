@@ -10,6 +10,8 @@ public enum Manager {
 	User("user"),
 	Category("category"),
 	Article("article"),
+	Document("article"),
+	Image("article"),
 	Dashboard("dashboard");
 	
 	private String managerName;

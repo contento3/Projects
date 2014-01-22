@@ -1,10 +1,9 @@
 package com.contento3.security.role.service;
 import java.util.Collection;
 
-import com.contento3.common.service.Service;
+import com.contento3.common.service.SimpleService;
 import com.contento3.security.role.dto.RoleDto;
-import com.contento3.security.role.model.Role;
-public interface RoleService extends Service<RoleDto> {
+public interface RoleService extends SimpleService<RoleDto> {
 	/**
 	 * Find user by account id
 	 * @param accountId

@@ -9,12 +9,12 @@ import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.content.article.listener.ArticleDeleteClickListner;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
-import com.contento3.web.content.article.listener.AssociatedCategoryClickListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -91,7 +91,8 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		editLink.setData(article.getId());
 		editLink.addStyleName("edit");
 		editLink.setStyleName(BaseTheme.BUTTON_LINK);
-		editLink.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,articleTable));
+		ClickListener articleListener = new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,articleTable);
+		editLink.addClickListener(articleListener);
 		item.getItemProperty("edit").setValue(editLink);
 		
 		Button deleteLink = new Button();

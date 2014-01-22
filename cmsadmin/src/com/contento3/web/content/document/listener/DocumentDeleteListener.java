@@ -3,7 +3,7 @@ package com.contento3.web.content.document.listener;
 import org.vaadin.dialogs.ConfirmDialog;
 
 import com.contento3.common.exception.EntityCannotBeDeletedException;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.SimpleService;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
 import com.contento3.web.site.listener.EntityDeleteClickListener;
@@ -19,7 +19,7 @@ public class DocumentDeleteListener extends EntityDeleteClickListener<DocumentDt
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public DocumentDeleteListener(final DocumentDto dtoToDelete, final Service<DocumentDto> service, final Button deleteLink, final Table table) {
+	public DocumentDeleteListener(final DocumentDto dtoToDelete, final SimpleService<DocumentDto> service, final Button deleteLink, final Table table) {
 		super(dtoToDelete, service, deleteLink, table);
 	}
 	

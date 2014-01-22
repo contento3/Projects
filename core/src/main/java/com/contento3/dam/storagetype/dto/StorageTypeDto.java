@@ -9,7 +9,7 @@ public class StorageTypeDto extends Dto {
 	/**
 	 * Storage id of the StorageType
 	 */
-	private long storage_id;
+	private Integer storageTypeId;
 
 	/**
 	 * Name of StorageType
@@ -24,30 +24,39 @@ public class StorageTypeDto extends Dto {
 	/**
 	 * Start date of the StorageType
 	 */
-	private Date start_date;
+	private Date startDate;
 
 	/**
 	 * End date of the StorageType
 	 */
-	private Date end_date;
+	private Date endDate;
 
 	/**
 	 * Gets the storage id of the StorageType
 	 */
-	public long getStorage_id() {
-		return storage_id;
+	public Integer getStorageTypeId() {
+		return storageTypeId;
+	}
+
+	/**
+	 * Gets the storage id of the StorageType
+	 */
+	@Override
+	public Integer getId() {
+		return storageTypeId;
 	}
 
 	/**
 	 * Sets the storage id of the StorageType
 	 */
-	public void setStorage_id(long storage_id) {
-		this.storage_id = storage_id;
+	public void setStorageTypeId(final Integer storageTypeId) {
+		this.storageTypeId = storageTypeId;
 	}
 
 	/**
 	 * Gets the Name of the StorageType
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -55,7 +64,7 @@ public class StorageTypeDto extends Dto {
 	/**
 	 * Sets the Name of the StorageType
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -69,35 +78,35 @@ public class StorageTypeDto extends Dto {
 	/**
 	 * Sets the description of the StorageType
 	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
 	/**
 	 * Gets the start date of the StorageType
 	 */
-	public Date getStart_date() {
-		return start_date;
+	public Date getStartDate() {
+		return startDate;
 	}
 
 	/**
 	 * Sets the start date of the StorageType
 	 */
-	public void setStart_date(Date start_date) {
-		this.start_date = start_date;
+	public void setStartDate(final Date startDate) {
+		this.startDate = startDate;
 	}
 
 	/**
 	 * Get the end date of the StorageType
 	 */
-	public Date getEnd_date() {
-		return end_date;
+	public Date getEndDate() {
+		return endDate;
 	}
 
 	/**
 	 * Sets the end date of the StorageType
 	 */
-	public void setEnd_date(Date end_date) {
-		this.end_date = end_date;
+	public void setEndDate(final Date endDate) {
+		this.endDate = endDate;
 	}
 }

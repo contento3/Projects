@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface CategoryService extends Service<CategoryDto>{
+public interface CategoryService extends StorableService<CategoryDto>{
 
 	/**
 	 * Finds the category by categoryName

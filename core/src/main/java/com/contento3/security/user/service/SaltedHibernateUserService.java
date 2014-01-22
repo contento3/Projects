@@ -2,10 +2,10 @@ package com.contento3.security.user.service;
 
 import java.util.Collection;
 
-import com.contento3.common.service.Service;
+import com.contento3.common.service.SimpleService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
-public interface SaltedHibernateUserService extends Service<SaltedHibernateUserDto> {
+public interface SaltedHibernateUserService extends SimpleService<SaltedHibernateUserDto> {
 
 	/**
 	 * Find user by account id

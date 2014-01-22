@@ -8,14 +8,14 @@ import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.exception.ResourceNotFoundException;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.SimpleService;
 
 /**
  * Service layer for template.
  * @author HAMMAD
  *
  */
-public interface TemplateService extends Service<TemplateDto>{
+public interface TemplateService extends SimpleService<TemplateDto>{
 
 	/**
 	 * Finds the template by directoryName

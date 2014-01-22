@@ -1,8 +1,5 @@
 package com.contento3.dam.image.library.dto;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
 
@@ -26,10 +23,13 @@ public class ImageLibraryDto extends Dto {
 	/**
 	 * Account associated to image library
 	 */
-	@ManyToOne
-	@JoinColumn(name="ACCOUNT_ID")
 	private AccountDto accountDto;
 
+	private Integer storageTypeId;
+	
+	private String contentType;
+	
+	
 	@Override
 	public Integer getId() {
 		return id;
@@ -62,5 +62,21 @@ public class ImageLibraryDto extends Dto {
 
 	public void setAccountDto(final AccountDto accountDto) {
 		this.accountDto = accountDto;
+	}
+
+	public Integer getStorageTypeId() {
+		return storageTypeId;
+	}
+
+	public void setStorageTypeId(final Integer storageTypeId) {
+		this.storageTypeId = storageTypeId;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(final String contentType) {
+		this.contentType = contentType;
 	}
 }
