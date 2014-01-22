@@ -103,4 +103,19 @@ implements PageDao {
 		}
 		return rowCount;
 	}
+	
+	public Collection<Page> findNavigablePages(Integer siteId){
+		Validate.notNull(siteId,"title cannot be null");
+
+		Criteria criteria = this.getSession()
+		.createCriteria(Page.class)
+		.add(Restrictions
+		.eq("site.siteId", siteId)).add(Restrictions
+		.eq("isNavigable", 1));
+		
+		
+		Long rowCount = 0L;
+		
+		return criteria.list();
+	}
 }

@@ -43,6 +43,18 @@ public class PageDto extends Dto {
 	private SiteDto site;
 	
 	/**
+	 * site to which this page is associated
+	 */
+	private Integer isNavigable;
+	
+	public Integer getIsNavigable() {
+		return isNavigable;
+	}
+
+	public void setIsNavigable(Integer isNavigable) {
+		this.isNavigable = isNavigable;
+	}
+	/**
 	 * categories to which this page is associated
 	 */
 	private Collection<CategoryDto> categories;

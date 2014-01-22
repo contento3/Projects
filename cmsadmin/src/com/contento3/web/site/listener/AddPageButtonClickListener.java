@@ -13,6 +13,7 @@ import com.contento3.web.site.PageUIManager;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
@@ -29,7 +30,7 @@ public class AddPageButtonClickListener implements ClickListener {
 	final SpringContextHelper contextHelper;
 	private TextField titleTxt;
 	private TextField uriTxt;
-
+	private CheckBox checkbox ;
 	private SiteDto siteDto;
 
 	private ComboBox pageLayoutCombo;
@@ -44,10 +45,11 @@ public class AddPageButtonClickListener implements ClickListener {
 
 	private VerticalLayout newPageParentlayout;
 	
-	public AddPageButtonClickListener(SpringContextHelper contextHelper_ , TextField titleTxt_, TextField uriTxt_, SiteDto siteDto_, ComboBox pageLayoutCombo_, PageLayoutService pageLayoutService_, Integer pageId_, PageDto newPageDtoWithLayout_, TabSheet pagesTab_, VerticalLayout newPageParentlayout_, PageUIManager pageUIManager_) {
+	public AddPageButtonClickListener(SpringContextHelper contextHelper_ , TextField titleTxt_, TextField uriTxt_, CheckBox checkbox_, SiteDto siteDto_, ComboBox pageLayoutCombo_, PageLayoutService pageLayoutService_, Integer pageId_, PageDto newPageDtoWithLayout_, TabSheet pagesTab_, VerticalLayout newPageParentlayout_, PageUIManager pageUIManager_) {
 		this.contextHelper = contextHelper_;
 		this.titleTxt = titleTxt_;
 		this.uriTxt = uriTxt_;
+		this.checkbox = checkbox_;
 		this.siteDto = siteDto_;	
 		this.pageLayoutCombo = pageLayoutCombo_;
 		this.pageLayoutService = pageLayoutService_;
@@ -65,6 +67,7 @@ public class AddPageButtonClickListener implements ClickListener {
 		PageDto pageDto = new PageDto();
 		pageDto.setTitle(titleTxt.getValue().toString());
 		pageDto.setUri(uriTxt.getValue().toString());
+		pageDto.setIsNavigable((checkbox.getValue()== false)?0:1);
 		pageDto.setSite(siteDto);
 		pageDto.setCategories(new ArrayList<CategoryDto>());
 		////if(categories!=null){

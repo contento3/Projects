@@ -28,6 +28,7 @@ public class PageAssemblerImpl implements PageAssembler {
 		page.setPageId(dto.getPageId());
 		page.setUri(dto.getUri());
 		page.setTitle(dto.getTitle());
+		page.setIsNavigable(dto.getIsNavigable());
 		page.setSite(siteAssembler.dtoToDomain(dto.getSite()));
 		
 		if(dto.getCategories() != null)
@@ -45,6 +46,7 @@ public class PageAssemblerImpl implements PageAssembler {
 		domain.setPageId(dto.getPageId());
 		domain.setUri(dto.getUri());
 		domain.setTitle(dto.getTitle());
+		domain.setIsNavigable(dto.getIsNavigable());
 		domain.setSite(siteAssembler.dtoToDomain(dto.getSite()));
 		
 		if(dto.getCategories() != null)
@@ -63,6 +65,7 @@ public class PageAssemblerImpl implements PageAssembler {
 		dto.setPageId(domain.getPageId());
 		dto.setUri(domain.getUri());
 		dto.setTitle(domain.getTitle());
+		dto.setIsNavigable(domain.getIsNavigable());
 		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
 		
 		if(domain.getCategories()!=null)

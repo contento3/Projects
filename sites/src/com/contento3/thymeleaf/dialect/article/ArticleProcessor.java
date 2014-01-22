@@ -7,6 +7,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.thymeleaf.Arguments;
 import org.thymeleaf.Configuration;
+import org.thymeleaf.Template;
+import org.thymeleaf.TemplateRepository;
+import org.thymeleaf.dom.Document;
 import org.thymeleaf.dom.Element;
 import org.thymeleaf.dom.Node;
 import org.thymeleaf.dom.Text;
@@ -14,10 +17,13 @@ import org.thymeleaf.processor.element.AbstractMarkupSubstitutionElementProcesso
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
+import org.thymeleaf.util.DOMUtils;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
+import org.thymeleaf.TemplateProcessingParameters;
 public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor {
 
 	private static final Logger LOGGER = Logger.getLogger(ArticleProcessor.class);
@@ -87,14 +93,16 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 			final Element element) {
 
 		final List<Node> nodes = new ArrayList<Node>();
-
+		String repo = arguments.getTemplateName();
 		//First check the mandatory fields i.e. id, if id is not present then its siteId that needs to be present.
 		//If both are not available then this tag is not a valid one.
-		
+//		Template template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/site1/testin", arguments.getContext()));
+//		Template template2 = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/test/testing", arguments.getContext()));
 		final Integer id = element.getAttributeValue("id")!=null? Integer.parseInt(element.getAttributeValue("id")):null;
-
+//		 List<Node> doc = template.getDocument().getChildren();
+//		  Element eElement = (Element) doc.get(0);
 	    final String uuid = parseString(arguments,element,"uuid");
-
+//	    DOMUtils.extractFragmentByElementAndAttributeValue(doc, "div", arg2, arg3) 
 		final String seoKeyword = element.getAttributeValue("seoKeyword");
 
 		final Integer siteId = parseInteger(arguments,element,"siteId");

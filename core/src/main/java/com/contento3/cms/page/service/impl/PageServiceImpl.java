@@ -78,7 +78,11 @@ public class PageServiceImpl implements PageService {
 		Validate.notNull(siteId,"siteId cannot be null");
 		return pageAssembler.domainsToDtos(pageDao.findPageBySiteId(siteId)); 
 	}
-
+	@Override
+	public Collection<PageDto> findNavigablePagesBySiteId(Integer siteId){
+		Validate.notNull(siteId,"siteId cannot be null");
+		return pageAssembler.domainsToDtos(pageDao.findNavigablePages(siteId)); 
+	}
 	public PageDto findPageBySiteId(final Integer siteId,final Integer pageId){
 		Validate.notNull(siteId,"siteId cannot be null");
 		Validate.notNull(pageId,"pageId cannot be null");

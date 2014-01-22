@@ -37,4 +37,11 @@ public interface PageDao extends GenericDao<Page,Integer> {
 	 */
 	Page findPageByTitleAndSiteId(String title, Integer siteId);
 
+	/**
+	 * Returns the Collection of Pages with isNavigation equal true for a given site
+	 * @param siteId id for a site
+	 * @return
+	 */
+	Collection<Page> findNavigablePages(Integer siteId);
+
 }

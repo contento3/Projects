@@ -1,12 +1,20 @@
 package com.contento3.thymeleaf.dialect.navigation;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.thymeleaf.context.IProcessingContext;
 import org.thymeleaf.dialect.AbstractDialect;
+import org.thymeleaf.dialect.IExpressionEnhancingDialect;
 import org.thymeleaf.processor.IProcessor;
 
-public class NavigationDialect extends AbstractDialect {
+import com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl;
+import com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest;
+import com.contento3.thymeleaf.dialect.helper.ThymeUtility;
+
+public class NavigationDialect extends AbstractDialect implements IExpressionEnhancingDialect  {
 
 	private NavigationProcessor navigationProcessor;
 	
@@ -33,5 +41,13 @@ public class NavigationDialect extends AbstractDialect {
 
 	public void setNavigationProcessor(final NavigationProcessor navigationProcessor ) {
 		this.navigationProcessor = navigationProcessor ;
+	}
+
+	@Override
+	public Map<String, Object> getAdditionalExpressionObjects(
+			IProcessingContext arg0) {
+		HashMap<String,Object> expressionobjects = new HashMap<String,Object>();
+        expressionobjects.put("utility", new ThymeUtility());
+        return expressionobjects;
 	}
 }

@@ -83,7 +83,7 @@
 	<property name="templateService" ref="templateService" />
 </bean>
 
-<!-- 
+ 
 <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
   <property name="freemarkerVariables">
     <map>
@@ -124,7 +124,7 @@
   </property>
 </bean>
 
- -->
+ 
     
   <!-- **************************************************************** -->
   <!--  THYMELEAF-SPECIFIC ARTIFACTS                                    -->
@@ -175,7 +175,7 @@
 	      <property name="articleService" ref="articleService" />
 	</bean>  
 	<bean id="navigationProcessor" class="com.contento3.thymeleaf.dialect.navigation.NavigationProcessor">
-	      
+	      <property name="pageService" ref="pageService" />
 	</bean>  
 
   <bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">

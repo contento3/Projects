@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
 	 */
 	private CategoryAssembler categoryAssembler;
 
-	CategoryServiceImpl(final CategoryAssembler categoryAssembler,final CategoryDao categoryDao,final AccountDao accountDao){
+	public CategoryServiceImpl(final CategoryAssembler categoryAssembler,final CategoryDao categoryDao,final AccountDao accountDao){
 		Validate.notNull(categoryAssembler,"categoryAssembler cannot be null");
 		Validate.notNull(accountDao,"accountDao cannot be null");
 		Validate.notNull(categoryDao,"categoryDao cannot be null");

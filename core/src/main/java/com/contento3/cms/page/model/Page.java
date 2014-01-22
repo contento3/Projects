@@ -51,6 +51,12 @@ public class Page implements Serializable {
 	private String title;
 	
 	/**
+	 * Page visibility in navigation
+	 */
+	@Column (name = "IS_NAVIGABLE")
+	private Integer isNavigable;
+
+	/**
 	 * parent page if any for this page
 	 */
 	@ManyToOne
@@ -118,6 +124,13 @@ public class Page implements Serializable {
 		this.categories = categories;
 	}
 
+	public Integer getIsNavigable() {
+		return isNavigable;
+	}
+
+	public void setIsNavigable(final Integer isNavigable) {
+		this.isNavigable = isNavigable;
+	}
 	/**
 	 * Returns the title of this page.
 	 * @return

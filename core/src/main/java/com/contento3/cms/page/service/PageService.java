@@ -77,6 +77,13 @@ public interface PageService {
      * @param pageId
      * @throws EntityAlreadyFoundException 
      */
+	
     void update(final PageDto pageDto) throws EntityAlreadyFoundException;
-
+    
+    /**
+	 * Returns the {@link Collection} of {@link PageDto} by siteId
+	 * @param siteId
+	 * @return {@link Collection} of PageDto
+	 */
+	 Collection <PageDto> findNavigablePagesBySiteId(Integer siteId);
 }

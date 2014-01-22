@@ -42,6 +42,7 @@ import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
@@ -195,8 +196,12 @@ public class PageUIManager {
 		uriTxt.setCaption("Uri");
 		siteDto = siteService.findSiteById(siteId);
 		
+		final CheckBox checkbox1 = new CheckBox();
+		checkbox1.setCaption("Add to Navigation");
+		
 		newPageFormLayout.addComponent(titleTxt);
 		newPageFormLayout.addComponent(uriTxt);
+		newPageFormLayout.addComponent(checkbox1);
 		newPageFormLayout.setWidth(100,Unit.PERCENTAGE);
 		newPageFormLayout.setSpacing(true);
 		
@@ -248,7 +253,7 @@ public class PageUIManager {
 
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddPageButtonClickListener(contextHelper,titleTxt,uriTxt,siteDto,pageLayoutCombo,pageLayoutService, pageId,newPageDtoWithLayout,pagesTab,newPageParentlayout,this));
+		listeners.add(new AddPageButtonClickListener(contextHelper,titleTxt,uriTxt,checkbox1,siteDto,pageLayoutCombo,pageLayoutService, pageId,newPageDtoWithLayout,pagesTab,newPageParentlayout,this));
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
 		builder.build();
 
@@ -267,6 +272,7 @@ public class PageUIManager {
 				PageDto pageDto = new PageDto();
 				pageDto.setTitle(titleTxt.getValue().toString());
 				pageDto.setUri(uriTxt.getValue().toString());
+				pageDto.setIsNavigable((checkbox1.getValue())?1:0);
 				pageDto.setSite(siteDto);
 				pageDto.setCategories(new ArrayList<CategoryDto>());
 ////				if(categories!=null){
@@ -450,6 +456,8 @@ public class PageUIManager {
 				.getTitle());
 		((TextField) newPageFormLayout.getComponent(1)).setValue(pageDto
 				.getUri());
+		Boolean checkboxValue = (pageDto.getIsNavigable() == null) ? false : true; 
+		((CheckBox) newPageFormLayout.getComponent(2)).setValue(checkboxValue); 
 
 		// This will be used to be passed to the template assignment sub window
 		selectedPageId = pageDto.getPageId();

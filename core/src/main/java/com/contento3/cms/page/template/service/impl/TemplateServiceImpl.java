@@ -79,7 +79,7 @@ public class TemplateServiceImpl implements TemplateService {
 		Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
 		return templateAssembler.domainsToDtos(templateList);
 	}
-
+	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public TemplateDto findTemplateById(final Integer templateId) {
