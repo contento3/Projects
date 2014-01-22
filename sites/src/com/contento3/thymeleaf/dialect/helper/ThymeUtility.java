@@ -31,22 +31,19 @@ public class ThymeUtility {
      * @return Formatted date string.
      */
 	CategoryService categoryService ;
-    public ArrayList<String> showCategoryListing(int catId, int accountId) {
-            Collection<CategoryDto> temp = this.categoryService.findChildCategories(catId,accountId);
+    public ArrayList<String> showCategoryListing(final int catId,final int accountId) {
+            final Collection<CategoryDto> temp = this.categoryService.findChildCategories(catId,accountId);
             ArrayList<String> categoryList = new ArrayList<String>();
-            String html ="<ul>";
-            for (CategoryDto categoryDto : temp) {
-				html += "<li>" + categoryDto.getName() + "</li>";
+//            String html ="<ul>";
+            for (final CategoryDto categoryDto : temp) {
+//				html += "<li>" + categoryDto.getName() + "</li>";
 				categoryList.add(categoryDto.getName());
 			}
-            html += "</ul>";
+//            html += "</ul>";
             return categoryList;
     }
 	public ThymeUtility() {
-		int a = 1;
-		a=a+1;
 		ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
-		 
 		this.categoryService = (CategoryService) ctx.getBean("categoryService");
 	}
     

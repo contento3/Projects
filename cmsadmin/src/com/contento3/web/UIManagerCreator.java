@@ -13,13 +13,10 @@ import com.vaadin.ui.TabSheet;
 
 public class UIManagerCreator {
 
-	static UIManager contentUIMgr = null;
-
-	static UIManager articleUIMgr = null;
-
 	public static UIManager createUIManager(final TabSheet uiTabSheet,final Manager manager,final SpringContextHelper helper){
 	    UIManager uiMgr = null;
 	    
+	    UIManager contentUIMgr = null;
 		if (manager.equals(Manager.Content)){
 			if (contentUIMgr==null)
 				contentUIMgr = new ContentUIManager(uiTabSheet,helper);
@@ -36,29 +33,23 @@ public class UIManagerCreator {
 		else if (manager.equals(Manager.Site)){
 		 	uiMgr = new SiteUIManager(uiTabSheet,helper);
 			return uiMgr;
-
 		}
 		else 
 	    if (manager.equals(Manager.Template)){
-		 	uiMgr = new TemplateUIManager(uiTabSheet,helper);
-			return uiMgr;
-
+	    	UIManager templateUIMgr;
+			templateUIMgr = new TemplateUIManager(uiTabSheet,helper);
+			return templateUIMgr;
 	    }
 		else if (manager.equals(Manager.User)){
 		 	uiMgr = new SecurityUIManager(uiTabSheet,helper);
 			return uiMgr;
-
 		}
 		else if (manager.equals(Manager.Category)){
-		 	uiMgr = new PageCategoryUIManager(uiTabSheet,helper);
-			return uiMgr;
+			UIManager categoryUIMgr;
+			categoryUIMgr = new PageCategoryUIManager(uiTabSheet,helper);
+			return categoryUIMgr;
 		}
-		else if (manager.equals(Manager.Article)){
-			if (articleUIMgr==null)
-				articleUIMgr = new ArticleMgmtUIManager(uiTabSheet,helper);
-				return articleUIMgr;
-		}
-	return null;
+			return null;
 	}
 	
 }

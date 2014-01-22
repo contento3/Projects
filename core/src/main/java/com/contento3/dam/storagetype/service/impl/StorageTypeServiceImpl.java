@@ -1,5 +1,7 @@
 package com.contento3.dam.storagetype.service.impl;
 
+import java.util.Collection;
+
 import org.apache.commons.lang.Validate;
 
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -47,8 +49,13 @@ public class StorageTypeServiceImpl implements StorageTypeService {
 	}
 
 	@Override
-	public Object findByName(final String name) {
+	public StorageTypeDto findByName(final String name) {
 		return storageTypeAssembler.domainToDto( (StorageType) storageTypeDao.findByName(name) );
+	}
+
+	@Override
+	public Collection <StorageTypeDto> findAll() {
+		return storageTypeAssembler.domainsToDtos(storageTypeDao.findAll() );
 	}
 
 }

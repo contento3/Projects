@@ -13,7 +13,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.contento3.account.dto.AccountDto;
-import com.contento3.account.service.AccountService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.dam.image.dto.ImageDto;
@@ -49,6 +48,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 
@@ -123,7 +123,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	/**
 	 * main layout for image manager screen
 	 */
-	private VerticalLayout mainLayout = new VerticalLayout();
+	private VerticalLayout mainLayout;
 	/**
 	 * Layout contain images
 	 */
@@ -160,11 +160,17 @@ public class ImageMgmtUIManager extends CustomComponent
 	@Override
 	public Component render(String command) {
 		this.tabSheet.setHeight(100, Unit.PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(mainLayout, "Image Management",new ExternalResource("images/content-mgmt.png"));
-		articleTab.setClosable(true);
-		this.mainLayout.setSpacing(true);
-		this.mainLayout.setWidth(100,Unit.PERCENTAGE);
-		renderImageMgmntComponenets();
+		
+		if (null==tabSheet.getTab(mainLayout)){
+			mainLayout = new VerticalLayout();
+			final Tab articleTab = tabSheet.addTab(mainLayout, "Image Management",new ExternalResource("images/image-multi.png"));
+			articleTab.setClosable(true);
+			this.mainLayout.setSpacing(true);
+			this.mainLayout.setWidth(100,Unit.PERCENTAGE);
+			renderImageMgmntComponenets();
+		}
+		
+		tabSheet.setSelectedTab(mainLayout);
 		return this.tabSheet;
 	}
 
@@ -493,9 +499,6 @@ public class ImageMgmtUIManager extends CustomComponent
     }
     
     // This is called if the upload is finished.
-    /**
-     * 
-     */
     public void uploadSucceeded(Upload.SucceededEvent event) {
         // Log the upload on screen.
         root.setContent(new Label(String.format("File %s of type ' %s ' uploaded.",event.getFilename(),event.getMIMEType())));
@@ -508,25 +511,23 @@ public class ImageMgmtUIManager extends CustomComponent
  		try {
  			fis = new FileInputStream(file);
  		} 
- 		catch (FileNotFoundException e) {
+ 		catch (final FileNotFoundException e) {
  			LOGGER.error("Unable to upload the image.",e);
  		}
         try {
         	
  			fis.read(bFile);
- 			
  			if(caption.equals("Add")){
- 				
-	            ImageDto imageDto = new ImageDto();
+ 		        ImageDto imageDto = new ImageDto();
 	            imageDto.setAltText(altTextField.getValue().toString());
 	            imageDto.setImage(bFile);
 	            imageDto.setName(imageNameField.getValue().toString());
 	            //Get accountId from the session
 	            final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
-	            final AccountService accountService = (AccountService)helper.getBean("accountService");
 	            final AccountDto accountDto = new AccountDto();
 	            accountDto.setAccountId(accountId);
 	            imageDto.setAccountDto(accountDto);
+	            imageDto.setFile(file);
 	            final ImageService imageService = (ImageService)helper.getBean("imageService");
 	            
 	            //set imageLibrary to imageDto
@@ -538,19 +539,27 @@ public class ImageMgmtUIManager extends CustomComponent
 	            }
 	            imageDto.setSiteDto(new ArrayList<SiteDto>());
 	 	        fis.close();
-	 	        imageService.create(imageDto);
+	 	        Boolean isImageSave = imageService.create(imageDto);
+	 	        
+	 	        if (isImageSave){
+	 	        	Notification.show("Image uploaded successfully",Notification.Type.TRAY_NOTIFICATION);
+	 	        }
+	 	        else {
+	 	        	Notification.show("Image not uploaded successfully.If this persist please contact support team.",Notification.Type.WARNING_MESSAGE);
+	 	        }
+	 	        
  			}else{ //else edit
  				if(bFile != null)
  					this.imageDto.setImage(bFile);
  				
  			}
-		} catch (EntityAlreadyFoundException e) {
+		} catch (final EntityAlreadyFoundException e) {
 			LOGGER.error("Unable to create the image as it is already created",e);
 		}
         catch (final java.io.FileNotFoundException e) {
 			LOGGER.error("Unable to create the image.",e);
         }
-        catch(IOException ioe){
+        catch(final IOException ioe){
 			LOGGER.error("Unable to create the image.",ioe);
 		}
 

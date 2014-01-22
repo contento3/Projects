@@ -3,7 +3,7 @@ package com.contento3.dam.document.service;
 import java.util.Collection;
 
 import com.contento3.common.exception.EntityAlreadyFoundException;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.SimpleService;
 import com.contento3.dam.document.dto.DocumentDto;
 
 /**
@@ -11,7 +11,7 @@ import com.contento3.dam.document.dto.DocumentDto;
  * Service for the document entities.
  */
 
-public interface DocumentService extends Service<DocumentDto>{
+public interface DocumentService extends SimpleService<DocumentDto>{
 
 	/**
 	 * Returns the DocumentDto that has the given unique uid, and belongs

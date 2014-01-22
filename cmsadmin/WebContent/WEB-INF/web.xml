@@ -62,7 +62,7 @@
     <jsp-file>/jsp/login_error.jsp</jsp-file>
   </servlet>
   <servlet>
-    <servlet-name>olivecms</servlet-name>
+    <servlet-name>c3cms</servlet-name>
     <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
     <init-param>
       <param-name>UI</param-name>
@@ -95,11 +95,11 @@
     <url-pattern>/jsp/login_error</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>olivecms</servlet-name>
+    <servlet-name>c3cms</servlet-name>
     <url-pattern>/home/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>olivecms</servlet-name>
+    <servlet-name>c3cms</servlet-name>
     <url-pattern>/VAADIN/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>

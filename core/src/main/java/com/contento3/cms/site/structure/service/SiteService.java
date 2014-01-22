@@ -3,9 +3,9 @@ package com.contento3.cms.site.structure.service;
 import java.util.Collection;
 
 import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface SiteService extends Service<SiteDto> {
+public interface SiteService extends StorableService<SiteDto> {
 	
 	/**
 	 * Used to create a site for a given account.

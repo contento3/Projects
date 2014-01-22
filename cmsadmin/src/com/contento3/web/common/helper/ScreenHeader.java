@@ -18,6 +18,6 @@ public class ScreenHeader {
 		final Label screenHeading = new Label(heading); 
 		screenHeading.setStyleName("screenHeading");
 		layout.addComponent(screenHeading);
-		layout.addComponent(new HorizontalRuler());
+		//layout.addComponent(new HorizontalRuler());
 	}
 }

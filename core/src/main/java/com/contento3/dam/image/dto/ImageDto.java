@@ -1,5 +1,6 @@
 package com.contento3.dam.image.dto;
 
+import java.io.File;
 import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
@@ -21,6 +22,8 @@ public class ImageDto extends Dto{
 	private AccountDto accountDto;
 	
 	private byte[] image;
+	
+	private File file;
 	
 	/**
 	 * sites that contains image
@@ -114,6 +117,14 @@ public class ImageDto extends Dto{
 
 	public void setImageUuid(String imageUuid) {
 		this.imageUuid = imageUuid;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(final File file) {
+		this.file = file;
 	}
 
 }

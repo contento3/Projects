@@ -10,28 +10,28 @@ import com.contento3.dam.storagetype.service.StorageTypeAssembler;
 public class StorageTypeAssemblerImpl implements StorageTypeAssembler {
 
 	@Override
-	public StorageType dtoToDomain(StorageTypeDto dto) {
+	public StorageType dtoToDomain(final StorageTypeDto dto) {
 		
 		StorageType storageType = new StorageType();
 		
 		storageType.setName( dto.getName() );
 		storageType.setDescription( dto.getDescription() );
-		storageType.setStart_date( dto.getStart_date() );
-		storageType.setEnd_date( dto.getEnd_date() );
-		storageType.setStorage_id( dto.getStorage_id() );
+		storageType.setStartDate( dto.getStartDate() );
+		storageType.setEndDate( dto.getEndDate() );
+		storageType.setStorageTypeId( dto.getStorageTypeId() );
 		
 		return storageType;
 	}
 
 	@Override
-	public StorageTypeDto domainToDto(StorageType domain) {
+	public StorageTypeDto domainToDto(final StorageType domain) {
 		StorageTypeDto storageTypeDto = new StorageTypeDto();
 		
 		storageTypeDto.setName( domain.getName() );
 		storageTypeDto.setDescription( domain.getDescription() );
-		storageTypeDto.setStart_date( domain.getStart_date() );
-		storageTypeDto.setEnd_date( domain.getEnd_date() );
-		storageTypeDto.setStorage_id( domain.getStorage_id() );
+		storageTypeDto.setStartDate( domain.getStartDate() );
+		storageTypeDto.setEndDate( domain.getEndDate() );
+		storageTypeDto.setStorageTypeId( domain.getStorageTypeId() );
 		
 		return storageTypeDto;
 	}

@@ -28,12 +28,13 @@ public class ImageAssemblerImpl implements ImageAssembler {
 		if (null!=dto.getId()){
 			domain.setImageId(dto.getId());
 		}
-		domain.setImageUuid(dto.getImageUuid());
+	//	domain.setImageUuid(dto.getImageUuid());
 		domain.setAltText(dto.getAltText());
 		domain.setImage(dto.getImage());
 		domain.setName(dto.getName());
 		domain.setSites(siteAssembler.dtosToDomains(dto.getSiteDto()));
 		domain.setImageLibrary(imageLibraryAssembler.dtoToDomain(dto.getImageLibraryDto()));
+		domain.setFile(dto.getFile());
 		return domain;
 	}
 
@@ -45,6 +46,7 @@ public class ImageAssemblerImpl implements ImageAssembler {
 		dto.setImage(domain.getImage());
 		dto.setImageUuid(domain.getImageUuid());
 		dto.setName(domain.getName());
+		dto.setFile(domain.getFile());
 		dto.setSiteDto(siteAssembler.domainsToDtos(domain.getSites()));
 		dto.setImageLibraryDto(imageLibraryAssembler.domainToDto(domain.getImageLibrary()));
 		return dto;

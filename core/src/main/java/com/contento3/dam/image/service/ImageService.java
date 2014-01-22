@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 import com.contento3.dam.image.dto.ImageDto;
 
-public interface ImageService extends Service<ImageDto> {
+public interface ImageService extends StorableService<ImageDto> {
 
 	/**
 	 * Finds image by uuid
@@ -54,7 +54,7 @@ public interface ImageService extends Service<ImageDto> {
      * @param categoryDto
      * @return
      */
-	Integer create(ImageDto imageDto) throws EntityAlreadyFoundException;
+	Boolean create(ImageDto imageDto) throws EntityAlreadyFoundException;
 	
 	/**
 	 * Update image 

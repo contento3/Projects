@@ -122,7 +122,7 @@ implements Window.CloseListener,Button.ClickListener {
         popupMainLayout.addComponent(inputDataLayout);
         popupMainLayout.setSpacing(true);
         popupMainLayout.addComponent(parentCategoryLbl);
-        
+        popupMainLayout.setMargin(true);
         popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */

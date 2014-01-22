@@ -3,9 +3,9 @@ package com.contento3.cms.article.service;
 import java.util.Collection;
 
 import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 
-public interface ArticleService extends Service<ArticleDto>{
+public interface ArticleService extends StorableService<ArticleDto>{
 
 	/**
 	 * Returns the collection of Article for a given accountId provided

@@ -33,6 +33,9 @@ public class ContentUIManager implements UIManager{
 	
 	ArticleMgmtUIManager articleManager;
 	
+	ImageMgmtUIManager imageManager;
+	
+	DocumentMgmtUIManager documentMgmtUIMgr;
 	/**
 	 * Represents the navigation items in the Content Manager section.
 	 */
@@ -75,7 +78,9 @@ public class ContentUIManager implements UIManager{
 		if (command.equals(NavigationConstant.CONTENT_MANAGER)){
 			//Add the content screen tab and also add the child items
 			//tabsheet = new TabSheet();
-			renderContentNavigationItems(hwContainer);
+			if (hwContainer.size()!=0)
+				renderContentNavigationItems(hwContainer);
+			
 		}
 		else if (command.equals(NavigationConstant.CONTENT_ART_MGMT)){
 			tabsheet = renderArticleUI();
@@ -137,17 +142,21 @@ public class ContentUIManager implements UIManager{
 
 		
 		if(element.equals("Article")){
+			if (null==articleManager){
 			articleManager = new ArticleMgmtUIManager(elementTab,helper);
+			}
 			elementTab = (TabSheet) articleManager.render(null);
 		}
 		else if(element.equals("Image")){
-			
-			final ImageMgmtUIManager imageMgmtUIMgr = new ImageMgmtUIManager(elementTab,helper);
-			elementTab = (TabSheet) imageMgmtUIMgr.render(null);	
+			if (null==imageManager){
+				imageManager = new ImageMgmtUIManager(elementTab,helper);
+			}
+			elementTab = (TabSheet) imageManager.render(null);
 		}
 		else if(element.equals("Document")){
-			
-			final DocumentMgmtUIManager documentMgmtUIMgr = new DocumentMgmtUIManager(elementTab,helper);
+			if (null==documentMgmtUIMgr){
+				documentMgmtUIMgr = new DocumentMgmtUIManager(elementTab,helper);
+			}
 			elementTab = (TabSheet) documentMgmtUIMgr.render(null);	
 		}
 

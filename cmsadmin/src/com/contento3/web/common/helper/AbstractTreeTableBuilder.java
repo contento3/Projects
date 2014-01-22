@@ -34,7 +34,7 @@ public abstract class AbstractTreeTableBuilder implements TableBuilder<TreeTable
 			for (Dto dto : dtos) {
 				assignDataToTable(dto, treeTable,container);
 			}
-			//table.setPageLength(dtos.size());
+			treeTable.setPageLength(dtos.size());
 		}
 		else{
 			//tree.setPageLength(1);

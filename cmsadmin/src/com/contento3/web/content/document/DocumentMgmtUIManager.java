@@ -52,7 +52,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	/**
 	 * main layout for document manager screen
 	 */
-	private final VerticalLayout verticalLayout = new VerticalLayout();
+	private VerticalLayout verticalLayout;
 	
 	/**
 	 * Article table which shows documents
@@ -92,13 +92,19 @@ public class DocumentMgmtUIManager implements UIManager {
 	}
 
 	@Override
-	public Component render(String command) {
+	public Component render(final String command) {
 		this.tabSheet.setHeight(100, Unit.PERCENTAGE);
-		final Tab articleTab = tabSheet.addTab(verticalLayout, "Document Management",new ExternalResource("images/content-mgmt.png"));
-		articleTab.setClosable(true);
-		this.verticalLayout.setSpacing(true);
-		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
-		renderDocumentComponent();
+		
+		if (null==tabSheet.getTab(verticalLayout)){
+			verticalLayout = new VerticalLayout();
+			final Tab docTab = tabSheet.addTab(verticalLayout, "Document Management",new ExternalResource("images/document.png"));
+			docTab.setClosable(true);
+			this.verticalLayout.setSpacing(true);
+			this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
+			renderDocumentComponent();
+		}
+		
+		tabSheet.setSelectedTab(verticalLayout);
 		return this.tabSheet;
 	}
 

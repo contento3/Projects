@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import com.contento3.account.model.Account;
 
 @Entity
-@Table(name = "IMAGE_LIBRARY")
+@Table(name = "CONTENT_LIBRARY")
 public class ImageLibrary {
 	
 	/**

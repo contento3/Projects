@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -22,9 +23,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class StorageType implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	@Id @GeneratedValue
-	@Column(name = "STORAGE_ID")
-	private long storage_id;
+	@Id @GeneratedValue (strategy=GenerationType.AUTO)
+	@Column( name = "STORAGE_TYPE_ID")
+	private Integer storageTypeId;
 	
 	@Column(name = "NAME")
 	private String name;
@@ -33,40 +34,49 @@ public class StorageType implements Serializable{
 	private String description;
 	
 	@Column(name = "START_DATE")
-	private Date start_date;
-	
+	private Date startDate;
+
 	@Column(name = "END_DATE")
-	private Date end_date;
+	private Date endDate;
 	
-	public long getStorage_id() {
-		return storage_id;
+	public Integer getStorageTypeId() {
+		return storageTypeId;
 	}
-	public void setStorage_id(long storage_id) {
-		this.storage_id = storage_id;
+	
+	public void setStorageTypeId(final Integer storageTypeId) {
+		this.storageTypeId = storageTypeId;
 	}
+	
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
+	
+	public void setName(final String name) {
 		this.name = name;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
-	public void setDescription(String description) {
+	
+	public void setDescription(final String description) {
 		this.description = description;
 	}
-	public Date getStart_date() {
-		return start_date;
+	
+	public Date getStartDate() {
+		return startDate;
 	}
-	public void setStart_date(Date start_date) {
-		this.start_date = start_date;
+	
+	public void setStartDate(final Date startDate) {
+		this.startDate = startDate;
 	}
-	public Date getEnd_date() {
-		return end_date;
+	
+	public Date getEndDate() {
+		return endDate;
 	}
-	public void setEnd_date(Date end_date) {
-		this.end_date = end_date;
+	
+	public void setEndDate(final Date endDate) {
+		this.endDate = endDate;
 	}
 }
 

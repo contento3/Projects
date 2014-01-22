@@ -2,10 +2,10 @@ package com.contento3.dam.document.service;
 
 import java.util.Collection;
 
-import com.contento3.common.service.Service;
+import com.contento3.common.service.StorableService;
 import com.contento3.dam.document.dto.DocumentTypeDto;
 
-public interface DocumentTypeService extends Service<DocumentTypeDto>{
+public interface DocumentTypeService extends StorableService<DocumentTypeDto>{
 
 	/**
 	 * Returns the DocumentTypeDto that has the

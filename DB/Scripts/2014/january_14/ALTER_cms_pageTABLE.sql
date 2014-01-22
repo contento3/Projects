@@ -1,0 +1,1 @@
+ALTER TABLE `page` ADD `IS_NAVIGABLE` TINYINT( 1 ) NULL COMMENT 'whether to show this page in main menu or not'
