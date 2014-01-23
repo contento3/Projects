@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 
@@ -32,6 +34,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -61,6 +64,7 @@ public class ArticleMgmtUIManager implements UIManager {
 	 */
 
 	private TabSheet tabSheet;
+	Log4JLogger logger;
 
 	/**
 	 * main layout for article manager screen
@@ -197,8 +201,10 @@ public class ArticleMgmtUIManager implements UIManager {
 	@SuppressWarnings("unchecked")
 	private void renderArticleTable() {
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
+		try
+		{
 		Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
-		tableBuilder.build((Collection)articles);
+		tableBuilder.build((Collection)articles);} catch(AuthorizationException ex){logger.debug("you are not permitted to see article", ex);}
 		this.verticalLayout.addComponent(this.articleTable);
 	}
 	
@@ -219,8 +225,12 @@ public class ArticleMgmtUIManager implements UIManager {
 		
 		final AbstractTableBuilder reBuiltTable = new ArticleTableBuilder(this.parentWindow,this.contextHelper,
 				this.tabSheet,this.articleTable);
-		Collection<ArticleDto> articles = this.articleService.findBySearch(header, catagory);
-		reBuiltTable.rebuild((Collection)articles);
+		try
+		{
+			Collection<ArticleDto> articles = this.articleService.findBySearch(header, catagory);
+			reBuiltTable.rebuild((Collection)articles);
+		}
+		catch(AuthorizationException ex){logger.debug("you are not permitted to see article", ex);}
 	}
 	
 	/**
@@ -229,7 +239,11 @@ public class ArticleMgmtUIManager implements UIManager {
 	@RequiresPermissions("article:add")
 	private void addArticleButton(){
 		Button addButton = new Button("Add Article");
-		addButton.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable));
+		try
+		{
+			addButton.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable));
+		}
+		catch(AuthorizationException ex){logger.debug("you are not permitted to add article", ex);}
 		this.verticalLayout.addComponent(addButton);
 	}
 

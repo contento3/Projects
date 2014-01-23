@@ -2,6 +2,8 @@ package com.contento3.web.content.document.listener;
 
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.dam.document.dto.DocumentDto;
@@ -63,7 +65,8 @@ public class DocumentEditListener implements ClickListener {
 			Notification.show("You must upload a document to Save.");
 			return;
 		}
-		
+		try
+		{
 		DocumentDto documentDto;
 		StorageTypeDto storageTypeDto = (StorageTypeDto) storageTypeService.findByName("DATABASE");
 		
@@ -90,6 +93,8 @@ public class DocumentEditListener implements ClickListener {
 		tabSheet.removeTab(documentTab);
 		resetTable();
 		tabSheet.removeTab(documentTab);
+		}
+		catch(AuthorizationException ex){Notification.show("You are not permitted to edit documents");}
 	}
 
 	/**

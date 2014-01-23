@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -21,6 +23,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -127,8 +130,11 @@ public class RoleUIManager implements UIManager {
 	private void renderRoleTable(VerticalLayout verticl) {
 		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(contextHelper,roleTable);
 		//tableBuilder.build((Collection)roleService.findAllRoles());
+		try
+		{
 		tableBuilder.build((Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
-        
+		}
+		catch(AuthorizationException ex){}
 		verticl.addComponent(roleTable);
 		
 	}

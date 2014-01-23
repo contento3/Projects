@@ -6,10 +6,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.service.PageLayoutService;
-import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.util.CachedTypedProperties;
@@ -19,10 +17,12 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.AddPageButtonClickListener;
 import com.contento3.web.site.listener.AddSiteDomainClickListener;
 import com.contento3.web.site.listener.AddSiteLanguageClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -36,6 +36,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class SiteConfigUIManager {
 	
@@ -67,11 +68,8 @@ public class SiteConfigUIManager {
 	 */
 	final PageLayoutService pageLayoutService;
 	
-	final PageService pageService;
-	
-	public SiteConfigUIManager (final PageService pageService,final SiteService siteService,final SpringContextHelper helper){
+	public SiteConfigUIManager (final SiteService siteService,final SpringContextHelper helper){
 		this.siteService = siteService;
-		this.pageService = pageService;
 		this.contextHelper = helper;
 		this.pageLayoutService = (PageLayoutService) contextHelper.getBean("pageLayoutService");
 		
@@ -92,32 +90,20 @@ public class SiteConfigUIManager {
 			siteConfigParentLayout.setSpacing(true);
 			siteConfigParentLayout.setMargin(true);
 
-			final ScreenHeader screenHeader = new ScreenHeader(siteConfigParentLayout,"Site Configuration");
-			VerticalLayout verticl = new VerticalLayout();
-			HorizontalLayout horizontl = new HorizontalLayout();
-			verticl.setSpacing(true);
-			//verticl.setMargin(true);
-			horizontl.addComponent(verticl);
-			siteConfigParentLayout.addComponent(horizontl);
-			GridLayout toolbarGridLayout = new GridLayout(1,2);
-			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-			horizontl.setWidth(100, Unit.PERCENTAGE);
-			horizontl.addComponent(toolbarGridLayout);
-			horizontl.setExpandRatio(verticl, 8);
-			horizontl.setExpandRatio(toolbarGridLayout, 1);
-
-			renderSiteDomains(siteDto,siteTabSheet,pageId,horizontl,verticl,listeners);
-			renderLayoutAndLanguage(siteDto,horizontl,verticl,listeners);
-			
-			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"siteConfig",listeners);
-			builder.build();
+			renderSiteDomains(siteDto,siteTabSheet,pageId);
+			renderLayoutAndLanguage(siteDto);
 	}// end renderSiteConfig()
 	
 	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId, HorizontalLayout horizontl, VerticalLayout verticl, List<com.vaadin.event.MouseEvents.ClickListener> listeners){
-		
+	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId){
+		VerticalLayout verticl = new VerticalLayout();
+		HorizontalLayout horizontl = new HorizontalLayout();
+		verticl.setSpacing(true);
+		//verticl.setMargin(true);
+		horizontl.addComponent(verticl);
+		final ScreenHeader screenHeader = new ScreenHeader(siteConfigParentLayout,"Site Configuration");
 		final Label siteDomainLbl = new Label("Domains"); 
 		siteDomainLbl.setStyleName("screenSubHeading");
 		verticl.addComponent(siteDomainLbl);
@@ -138,44 +124,49 @@ public class SiteConfigUIManager {
 		
 		siteTabSheet.setSelectedTab(siteConfigParentLayout);
 		
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddSiteDomainClickListener(contextHelper,siteDto.getSiteId(),siteDomainTable));
-//		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
-//		builder.build();
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
 		
+		horizontl.setWidth(100, Unit.PERCENTAGE);
+		horizontl.addComponent(toolbarGridLayout);
+		horizontl.setExpandRatio(verticl, 8);
+		horizontl.setExpandRatio(toolbarGridLayout, 1);
 		//Pop-up that adds a new domain
 		//final Button button = new Button("Add domain", new SiteDomainPopup(contextHelper,siteDto.getSiteId(),siteDomainTable));
 		//verticl.addComponent(button);
-		
-		verticl.addComponent(new HorizontalRuler());
+		siteConfigParentLayout.addComponent(horizontl);
+		siteConfigParentLayout.addComponent(new HorizontalRuler());
 		
         
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void renderLayoutAndLanguage(final SiteDto siteDto, HorizontalLayout horizontl, VerticalLayout verticl, List<com.vaadin.event.MouseEvents.ClickListener> listeners){
-
-		// List box to select Default Page 
-		final Collection<PageDto> pagesDto = pageService.findPageBySiteId(siteDto.getSiteId());
-		final ComboDataLoader comboDataLoader = new ComboDataLoader();
-		final ComboBox pageCombo = new ComboBox("Default Page",comboDataLoader.loadDataInContainer((Collection)pagesDto));
-		pageCombo.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
-		pageCombo.setItemCaptionPropertyId("name");
-		pageCombo.setValue(siteDto.getDefaultPageId());
-
+	public void renderLayoutAndLanguage(final SiteDto siteDto){
+		// List box to select Page layouts
+		VerticalLayout verticl = new VerticalLayout();
+		HorizontalLayout horizontl = new HorizontalLayout();
+		horizontl.addComponent(verticl);
+		verticl.setSpacing(true);
+		verticl.setMargin(true);
 		
-		// List box to select Page layouts 
+		
+		
 		final Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
+		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 		final ComboBox pageLayoutCombo = new ComboBox("Default Page Layout",comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
 		pageLayoutCombo.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 		pageLayoutCombo.setValue(siteDto.getDefaultLayoutId());
-
-		verticl.addComponent(pageCombo);
+		
+		//final VerticalLayout siteDefaultLayoutLanguageLayout = new VerticalLayout();
 		verticl.addComponent(pageLayoutCombo);
-
+		//verticl.addComponent(siteDefaultLayoutLanguageLayout);
 		verticl.setSpacing(true);
 		verticl.setMargin(true);
-		
+		/* Reading CachedTypedProperties file :"language.propeties" */
 		final Collection<String> languages = new ArrayList<String>();
 		String presetLanguage = "";
 		
@@ -202,18 +193,30 @@ public class SiteConfigUIManager {
 		emptyLabel2.setHeight("1em");
 		verticl.addComponent(emptyLabel2);
 		final Button siteSaveButton = new Button("Save");
-//		verticl.addComponent(siteSaveButton);
+		verticl.addComponent(siteSaveButton);
 		verticl.setSpacing(true);
 		verticl.setMargin(true);
 		siteSaveButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				saveSite(siteDto,  pageLayoutCombo,languageCombo,pageCombo);
+				saveSite(siteDto,  pageLayoutCombo,languageCombo);
 				Notification.show(String.format("SiteConfig for %s saved successfullly",siteDto.getSiteName()));
 			}// end buttonClick
 		});// end siteSaveButton listener
 		
-		listeners.add(new AddSiteLanguageClickListener(siteDto,  pageLayoutCombo,languageCombo,pageCombo,this));
+		GridLayout toolbarGridLayout = new GridLayout(1,1);
+		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new AddSiteLanguageClickListener(siteDto,  pageLayoutCombo,languageCombo,this));
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		builder.build();
+		
+		horizontl.setWidth(100, Unit.PERCENTAGE);
+		horizontl.addComponent(toolbarGridLayout);
+		horizontl.setExpandRatio(verticl, 8);
+		horizontl.setExpandRatio(toolbarGridLayout, 1);
+		
+		siteConfigParentLayout.addComponent(horizontl);
+		
 	}
 	
 	/**
@@ -223,7 +226,8 @@ public class SiteConfigUIManager {
 	 * @param pageLayoutCombo
 	 * @param languageCombo
 	 */
-	public void saveSite(final SiteDto siteDto,final ComboBox pageLayoutCombo,final ComboBox languageCombo,final ComboBox pageCombo) {
+	public void saveSite(final SiteDto siteDto,final ComboBox pageLayoutCombo,final ComboBox languageCombo) {
+		
 		
 		if(languageCombo.getValue()!=null){
 			final String lang = languageCombo.getValue().toString();
@@ -238,13 +242,7 @@ public class SiteConfigUIManager {
 		
 		if (null != pageLayoutCombo.getValue()) {
 			siteDto.setDefaultLayoutId(pageLayoutService.findPageLayoutById(Integer.parseInt(pageLayoutCombo.getValue().toString())).getId());
-		}
-		
-		if (null != pageCombo.getValue()) {
-			siteDto.setDefaultPageId(Integer.parseInt(pageCombo.getValue().toString()));
 		}	
-
-		
 		siteService.update(siteDto);
 	}//end saveSite	
 

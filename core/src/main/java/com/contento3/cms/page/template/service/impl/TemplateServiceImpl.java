@@ -2,13 +2,11 @@ package com.contento3.cms.page.template.service.impl;
 
 import java.util.Collection;
 
-import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.thymeleaf.cache.StandardCacheManager;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
@@ -24,8 +22,8 @@ import com.contento3.cms.page.template.service.TemplateAssembler;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.site.structure.dao.SiteDAO;
 import com.contento3.cms.site.structure.model.Site;
-import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.ResourceNotFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -64,37 +62,37 @@ public class TemplateServiceImpl implements TemplateService {
 		this.accountDao = accountDao;
 		this.siteDao = siteDao;
 	}
-	
+	@RequiresPermissions("TEMPLATE:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(final TemplateDto templateDto) throws EntityAlreadyFoundException {
 		Validate.notNull(templateDto,"templateDto cannot be null");
 		return templateDao.persist(buildTemplateInstance(templateDto));
 	}
-
+	@RequiresPermissions("TEMPLATE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<TemplateDto> findTemplateByDirectoryName(final Integer directoryName) {
+	public Collection<TemplateDto> findTemplateByDirectoryName(final String directoryName) {
 		Validate.notNull(directoryName,"directoryName cannot be null");
-		Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
+		Collection<Template> templateList = templateDao.findTemplateByDirectoryName(directoryName);
 		return templateAssembler.domainsToDtos(templateList);
 	}
-
+	@RequiresPermissions("TEMPLATE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public TemplateDto findTemplateById(final Integer templateId) {
 		Validate.notNull(templateId,"templateId cannot be null");
 		Template template = templateDao.findById(templateId);
-		return templateAssembler.domainToDto(template,new TemplateDto());
+		return templateAssembler.domainToDto(template);
 	}
-	
+	@RequiresPermissions("TEMPLATE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public TemplateDto findTemplateByNameAndAccount(String templatePath,Integer accountId) throws ResourceNotFoundException {
+	public TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws ResourceNotFoundException {
 		Validate.notNull(templatePath,"templatePath cannot be null");
 		Validate.notNull(accountId,"accountId cannot be null");
 		split(templatePath);
-		Collection<Template> templateList = templateDao.findTemplateByNameAndAccount(templateName, parentDirectory, "text/freemarker", accountId);
+		Collection<Template> templateList = templateDao.findTemplateByPathAndAccount(templateName, parentDirectory, "text/freemarker", accountId);
 		
 		if (CollectionUtils.isEmpty(templateList)){
 			throw new ResourceNotFoundException();
@@ -106,25 +104,25 @@ public class TemplateServiceImpl implements TemplateService {
 			originalTemplate = template;
 		}
 		
-		return templateAssembler.domainToDto(originalTemplate,new TemplateDto());
+		return templateAssembler.domainToDto(originalTemplate);
 	}
-
+	@RequiresPermissions("TEMPLATE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public TemplateDto findTemplateByNameAndSiteId(String templatePath,Integer siteId) throws ResourceNotFoundException {
+	public TemplateDto findTemplateByPathAndSiteId(String templatePath,Integer siteId) throws ResourceNotFoundException {
 		Validate.notNull(siteId,"siteId cannot be null");
 		Validate.notNull(siteDao,"siteDao cannot be null");
 		Site site = siteDao.findById(siteId);
-		return findTemplateByNameAndAccount(templatePath,site.getAccount().getAccountId());
+		return findTemplateByPathAndAccount(templatePath,site.getAccount().getAccountId());
 	}
-
+	@RequiresPermissions("TEMPLATE:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void updateTemplate(final TemplateDto templateDto) throws EntityAlreadyFoundException {
 		Validate.notNull(templateDto,"templateDto cannot be null");
 		templateDao.update(buildTemplateInstance(templateDto));
 	}
-
+	@RequiresPermissions("TEMPLATE:VIEW")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public TemplateDto findSystemTemplateForAccount(final SystemTemplateNameEnum templateCategory,final Integer accountId) throws EntityNotFoundException {
@@ -133,7 +131,8 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		String category = templateCategory.toString();
 		Template template = templateDao.findSystemTemplateForAccount(category,accountId,true);
-				
+		
+		
 		//If there is no template defined for this account and category, the template object will be 
 		//null. In that case we should find the global system template for the given category.
 		if (null==template){
@@ -143,9 +142,9 @@ public class TemplateServiceImpl implements TemplateService {
 		if (null==template)
 			throw new EntityNotFoundException("No system template either for account or global found for category: "+category);
 		
-		return templateAssembler.domainToDto(template,new TemplateDto());
+		return templateAssembler.domainToDto(template);
 	}
-
+	@RequiresPermissions("TEMPLATE:ADD")
 	private String buildTemplatePath(final Template template){
 		Validate.notNull(template,"template cannot be null");
 		String templateName = template.getTemplateName();
@@ -195,6 +194,7 @@ public class TemplateServiceImpl implements TemplateService {
 	 * @return
 	 * @throws EntityAlreadyFoundException 
 	 */
+	@RequiresPermissions("TEMPLATE:VIEW")
 	private Template buildTemplateInstance(final TemplateDto templateDto) throws EntityAlreadyFoundException{
 		Validate.notNull(templateDto,"templateDto cannot be null");
 		TemplateType templateType = templateTypeDao.findByName(templateDto.getTemplateType().getTemplateTypeName());
@@ -209,49 +209,17 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		
 		templateDirectory.setAccount(account);
-		
-		Template template = null;
-		if (null!=templateDto.getTemplateId())
-			template = templateDao.findById(templateDto.getTemplateId());
-		else {
-			template = new Template();
-		}
-		
-		template = templateAssembler.dtoToDomain(templateDto,template);
+		Template template = templateAssembler.dtoToDomain(templateDto);
 		template.setDirectory(templateDirectory);
 		template.setTemplateType(templateType);
 		template.setAccount(account);
 		return template;
 	}
-
+	@RequiresPermissions("TEMPLATE:DELETE")
 	@Override
 	public void delete(final TemplateDto dtoToDelete) {
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public TemplateDto findTemplateByPathAndAccount(final String path,
-			final Integer accountId) throws Exception {
-		Validate.notNull(path,"template path cannot be null");
-		Validate.notNull(accountId,"template path cannot be null");
-
-		String [] templateParts = path.split("/");
-		String dirPath = "";
-		for (int i=0;i<templateParts.length-1;i++)
-		{
-			dirPath = dirPath + "/" + templateParts[i];
-		}	
-		return templateAssembler.domainToDto(templateDao.findTemplateByPathAndAccount(dirPath, templateParts[templateParts.length-1], accountId),new TemplateDto());
-
-	}
-
-	@Override
-	public void clearCache(final Integer templateId) {
-		StandardCacheManager cachemanager = new StandardCacheManager();
-		String path= templateDao.findById(templateId).getTemplatePath();
-		String templateName = templateDao.findById(templateId).getTemplateName();
-		cachemanager.getTemplateCache().clearKey("aboutus");
 	}
 }

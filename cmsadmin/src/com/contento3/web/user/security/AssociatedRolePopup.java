@@ -2,14 +2,15 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
+import antlr.collections.List;
+
 import com.contento3.security.group.service.GroupService;
+import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.AddAssociatedPermissionsListener;
-import com.contento3.web.user.listner.AddAssociatedUsersListener;
 import com.contento3.web.user.listner.DeleteAssociatedPermissionListener;
-import com.contento3.web.user.listner.DeleteAssociatedUsersListener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -21,9 +22,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class AssociatedPermissionPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener{
-
-	private static final long serialVersionUID = 1L;
+public class AssociatedRolePopup extends CustomComponent implements Window.CloseListener,Button.ClickListener
+{
 
 	/**
 	 *  Reference to main window
@@ -53,12 +53,12 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
 	/**
 	 * Group service used for group related operations
 	 */
-	RoleService roleService;
+	GroupService groupService;
 	
 	/**
-	 * Table for user
+	 * Table for role
 	 */
-    Table permissionTable;
+    Table roleTable;
 	
 	boolean isModalWindowClosable = true;
 	
@@ -74,10 +74,10 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
 	 * @param helper
 	 * @param table
 	 */
-	public AssociatedPermissionPopup(final SpringContextHelper helper,final Table table) {
+	public AssociatedRolePopup(final SpringContextHelper helper,final Table table) {
 		this.helper = helper;
-		this.roleService = (RoleService) this.helper.getBean("roleService");
-		this.permissionTable = new Table();
+		this.groupService = (GroupService) this.helper.getBean("groupService");
+		this.roleTable = new Table();
 		
 		 // The component contains a button that opens the window.
         layout = new VerticalLayout();
@@ -87,19 +87,18 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
         layout.addComponent(openbutton);
         setCompositionRoot(layout);
 	}
-	
-	 public void openButtonClick(final Button.ClickEvent event) {
+	@Override
+	public void buttonClick(ClickEvent event) {
 		// TODO Auto-generated method stub
-		 /* Create a new window. */
-	  	popupWindow = new Window();
-	  	this.tableBuilder = new AssociatedPermissionTableBuilder(popupWindow,helper,permissionTable);
+/*		popupWindow = new Window();
+	  	this.tableBuilder = new AssociatedRoleTableBuilder(popupWindow,helper,roleTable);
 	  	
-	  	int roleId = (Integer) event.getButton().getData();
+	  	List<RoleDto> roles = event.getButton().getData();
 	  	
-        final Button addPermissionButton = new Button("Add");
-        addPermissionButton.addClickListener(new AddAssociatedPermissionsListener(mainwindow,helper, roleId,tableBuilder));
-        final Button deletePermissionButton = new Button("Delete");
-    	deletePermissionButton.addClickListener(new DeleteAssociatedPermissionListener(mainwindow,helper, roleId,tableBuilder));
+        final Button addRoleButton = new Button("Add");
+        addRoleButton.addClickListener(new AddAssociatedPermissionsListener(mainwindow,helper, roleId,tableBuilder));
+        final Button deleteRoleButton = new Button("Delete");
+    	deleteRoleButton.addClickListener(new DeleteAssociatedPermissionListener(mainwindow,helper, roleId,tableBuilder));
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
@@ -107,10 +106,10 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
     	popupWindow.setWidth(37,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        UI.getCurrent().addWindow(popupWindow);
+        /*UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addCloseListener(this);
+        /*popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         popupWindow.setCaption("Associated Permissions");
         final VerticalLayout popupMainLayout = new VerticalLayout();
@@ -118,53 +117,35 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
         final HorizontalLayout addButtonLayout = new HorizontalLayout();
         addButtonLayout.setSpacing(true);
         popupMainLayout.addComponent(addButtonLayout);
-        addButtonLayout.addComponent(addPermissionButton);
-        addButtonLayout.addComponent(deletePermissionButton);
+        addButtonLayout.addComponent(addRoleButton);
+        addButtonLayout.addComponent(deleteRoleButton);
         
         /* Adding user table to pop-up */
-        popupMainLayout.addComponent(renderAssociatedPermissionTable(roleId));
+        /*popupMainLayout.addComponent(renderAssociatedRoleTable(roles));
         popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
-        openbutton.setEnabled(false);
-		
+        //openbutton.setEnabled(false);
+
 	}
-	
-	 /**
-	   * Render AssociatedUserTable
-	   * @param groupId
-	   * @return
-	   */
-	  @SuppressWarnings({ "rawtypes", "unchecked" })
-	  private Table renderAssociatedPermissionTable(final Integer roleId){
-		  permissionTable.setPageLength(25);
-		  tableBuilder.build((Collection)roleService.findById(roleId).getPermissions());
-		return permissionTable;
+	 @SuppressWarnings({ "rawtypes", "unchecked" })
+	  private Table renderAssociatedRoleTable(final Integer roleId){
+		  roleTable.setPageLength(25);
+		  //tableBuilder.build((Collection)groupService.);
+		return roleTable;
 	  }
 
-	  /**
-	   *  Handle Close button click and close the window.
-	   */
-	    public void closeButtonClick(final Button.ClickEvent event) {
-	    	if (!isModalWindowClosable){
+
+	@Override
+	public void windowClose(CloseEvent e) {
+		// TODO Auto-generated method stub
+		if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */
 	        layout.removeComponent(popupWindow);
 	        
 	        /* Return to initial state. */
 	        openbutton.setEnabled(true);
 	    	}
-	    }
-	@Override
-	public void windowClose(CloseEvent e) {
-		// TODO Auto-generated method stub
-		  /* Return to initial state. */
-        openbutton.setEnabled(true);
-	}
-	
-	@Override
-	public void buttonClick(final Button.ClickEvent event) {
-		this.openButtonClick(event);
 	}
 
-	
 }

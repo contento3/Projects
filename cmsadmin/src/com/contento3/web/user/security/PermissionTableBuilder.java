@@ -1,5 +1,7 @@
 package com.contento3.web.user.security;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.entity.dto.EntityDto;
 import com.contento3.security.entityoperation.dto.EntityOperationDto;
@@ -34,6 +36,7 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void assignDataToTable(Dto dto, Table permissiontable, Container permissioncontainer) {
 		// TODO Auto-generated method stub
+		try{
 		PermissionDto permission = (PermissionDto) dto;
 		Item item = permissioncontainer.addItem(permission.getId());
 		item.getItemProperty("permission").setValue(permission.getId());
@@ -59,13 +62,13 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 				deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 				item.getItemProperty("delete").setValue(deleteLink);
 				deleteLink.addListener(new PermissionDeleteClickListener(permission, permissionService, deleteLink, permissiontable));
-
+		}catch(AuthorizationException ex){}
 	}
 
 	@Override
 	public void buildHeader(Table permissiontable, Container permissioncontainer) {
 		// TODO Auto-generated method stub
-		permissioncontainer.addContainerProperty("permission", String.class, null);
+		permissioncontainer.addContainerProperty("permission", Integer.class, null);
 		permissioncontainer.addContainerProperty("entity", String.class, null);
 		permissioncontainer.addContainerProperty("entityoperation", String.class, null);
 		permissioncontainer.addContainerProperty("edit", Button.class, null);

@@ -3,6 +3,8 @@ package com.contento3.web.user.security;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -191,8 +193,11 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
     			private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
     			{
-   					handleEditPermission(Entity,EntityOperation,Integer.parseInt(permissionIdTxtFld.getValue().toString()));
-    			}
+   					try
+   					{
+    				handleEditPermission(Entity,EntityOperation,Integer.parseInt(permissionIdTxtFld.getValue().toString()));
+   					}catch(AuthorizationException ex){}
+   				}
             	});
         }
         else
@@ -204,7 +209,10 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) 
 			{
+				try
+				{
 					handleNewPermission(permissionIdTxtFld,Entity,EntityOperation);
+				}catch(AuthorizationException ex){}
 			}
         	});
         }
@@ -232,10 +240,12 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 		catch (EntityNotCreatedException e) {
 			Notification.show("Permission not created", Notification.TYPE_ERROR_MESSAGE);
 		}
+		catch(AuthorizationException ex){}
 		Notification.show(permissionDto.getId() +" permission created succesfully");
 		resetTable();
     }
 	private void handleEditPermission(final ComboBox entityIdCmboBox,final ComboBox entityOperationIdCmboBox,final Integer editId){
+		try{
 		final PermissionDto permissionDto = permissionService.findById(editId);
 		String entitystr= entityIdCmboBox.getValue().toString();
 		int entId = Integer.parseInt(entitystr);
@@ -249,6 +259,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 		permissionDto.setEntityOperation(entityOperationDto);
 		permissionService.update(permissionDto);
 		Notification.show(permissionDto.getId()+" permission edit succesfully");
+		}catch(AuthorizationException ex){}
 		resetTable();
     }
 	@Override

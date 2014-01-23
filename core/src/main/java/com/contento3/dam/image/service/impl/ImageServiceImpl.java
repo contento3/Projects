@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,17 +33,18 @@ public class ImageServiceImpl implements ImageService {
 		this.accountDao = accountDao;
 	}
 	
+	@RequiresPermissions("IMAGE:VIEW")
 	public ImageDto findImageByUuid(final String imageId){
 		Validate.notNull(imageId,"imageId cannot be null");
 		return imageAssembler.domainToDto(imageDao.findByUuid(imageId));
 	}
-
+	@RequiresPermissions("IMAGE:VIEW")
 	@Override
 	public Collection<ImageDto> findImageByAccountId(final Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
 		return imageAssembler.domainsToDtos(imageDao.findByAccountId(accountId));
 	}
-
+	@RequiresPermissions("IMAGE:VIEW")
 	@Override
 	public ImageDto findImageByNameAndAccountId(final String name,final Integer accountId) throws EntityNotFoundException{
 		Validate.notNull(name,"name cannot be null");
@@ -54,7 +56,7 @@ public class ImageServiceImpl implements ImageService {
 		
 		return imageAssembler.domainToDto(image);
 	}
-
+	@RequiresPermissions("IMAGE:ADD")
 	@Override
 	public Integer create(final ImageDto imageDto) {
 		Validate.notNull(imageDto,"imageDto cannot be null");
@@ -64,7 +66,7 @@ public class ImageServiceImpl implements ImageService {
 		image.setImageUuid(UUID.randomUUID().toString());
 		return imageDao.persist(image);
 	}
-	
+	@RequiresPermissions("IMAGE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ImageDto> findLatestImagesBySiteId(Integer siteId,
@@ -74,14 +76,14 @@ public class ImageServiceImpl implements ImageService {
 		
 		return imageAssembler.domainsToDtos(imageDao.findLatestImagesBySiteId(siteId, count));
 	}
-
+	@RequiresPermissions("IMAGE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ImageDto> findImagesByLibrary(final Integer libraryId) {
 		Validate.notNull(libraryId,"libraryId cannot be null");
 		return imageAssembler.domainsToDtos(imageDao.findImagesByLibrary(libraryId));
 	}
-
+	@RequiresPermissions("IMAGE:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(final ImageDto imageDto) {
@@ -91,13 +93,13 @@ public class ImageServiceImpl implements ImageService {
 		image.setAccount(account);
 		imageDao.update(image);
 	}
-
+	@RequiresPermissions("IMAGE:DELETE")
 	@Override
 	public void delete(ImageDto dtoToDelete) {
 		// TODO Auto-generated method stub
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 	}
-	
+	@RequiresPermissions("IMAGE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ImageDto findById(Integer imageId){

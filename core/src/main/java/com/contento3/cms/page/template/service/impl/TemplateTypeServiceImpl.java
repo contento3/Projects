@@ -1,5 +1,6 @@
 package com.contento3.cms.page.template.service.impl;
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import com.contento3.cms.page.template.dao.TemplateTypeDao;
 import com.contento3.cms.page.template.dto.TemplateTypeDto;
@@ -26,20 +27,20 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		this.templateTypeDao = templateTypeDao;
 		this.templateTypeAssembler = templateTypeAssembler;
 	}
-	
+	@RequiresPermissions("TEMPLATE_TYPE:ADD")
 	@Override
 	public Integer create(TemplateTypeDto type) {
 		Validate.notNull(type,"type cannot be null");
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@RequiresPermissions("TEMPLATE_TYPE:VIEW")
 	public TemplateTypeDto findById(Integer templateTypeId){
 		Validate.notNull(templateTypeId,"templateTypeId cannot be null");
 		TemplateType templateType = templateTypeDao.findById(templateTypeId);
 		return templateTypeAssembler.domainToDto(templateType);
 	}
-
+	@RequiresPermissions("TEMPLATE_TYPE:DELETE")
 	@Override
 	public void delete(TemplateTypeDto dtoToDelete) {
 		// TODO Auto-generated method stub

@@ -126,7 +126,17 @@ public class PageUIManager {
 		// main component for the new site tab
 		horizontalLayout.setSpacing(true);
 
+//		GridLayout toolbarGridLayout = new GridLayout(1,6);
+//		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+//
+//		
+//		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+//		builder.build();
+
+		
 		pagesTab.addComponent(horizontalLayout);
+		pagesTab.setHeight("675");
+		pagesTab.setWidth("775");
 
 		siteDto = siteService.findSiteById(siteId);
 		Tab tab = pagesTab.addTab(horizontalLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));
@@ -147,7 +157,7 @@ public class PageUIManager {
 		if (!CollectionUtils.isEmpty(pageDtos)) {
 			
 			table.setWidth(100, Unit.PERCENTAGE);
-			table.setPageLength(pageDtos.size());
+			table.setPageLength(5);
 			Button link = null;
 			for (PageDto page : pageDtos) {
 				addPageToPageListTable(page, siteId, pagesTab, link);
@@ -181,6 +191,7 @@ public class PageUIManager {
 		newPageParentlayout.setSpacing(true);
 		
 		ScreenHeader screenHeader = new ScreenHeader(newPageParentlayout,"Page");
+
         newPageRootlayout.setSpacing(true);
 		newPageRootlayout.addComponent(newPageParentlayout);
 
@@ -241,7 +252,7 @@ public class PageUIManager {
 				comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
 
 		Button newPageSubmitBtn = new Button(pageButtonTitle);
-		//newPageFormLayout.addComponent(pageLayoutCombo);
+		newPageFormLayout.addComponent(pageLayoutCombo);
 		//newPageFormLayout.addComponent(newPageSubmitBtn);
 		pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
@@ -454,10 +465,10 @@ public class PageUIManager {
 		// This will be used to be passed to the template assignment sub window
 		selectedPageId = pageDto.getPageId();
 
-//		if (null != pageDto.getPageLayoutDto()) {
-//			((ComboBox) newPageFormLayout.getComponent(2)).select(pageDto
-//					.getPageLayoutDto().getId());
-//		}
+		if (null != pageDto.getPageLayoutDto()) {
+			((ComboBox) newPageFormLayout.getComponent(2)).select(pageDto
+					.getPageLayoutDto().getId());
+		}
 		return renderPageLayouts(pageDto);
 	}
 

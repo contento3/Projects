@@ -1,5 +1,6 @@
 package com.contento3.web.content.document.listener;
 
+import org.apache.shiro.authz.AuthorizationException;
 import org.vaadin.dialogs.ConfirmDialog;
 
 import com.contento3.common.exception.EntityCannotBeDeletedException;
@@ -29,7 +30,7 @@ public class DocumentDeleteListener extends EntityDeleteClickListener<DocumentDt
 	@Override
 	public void buttonClick(ClickEvent event) {
 		
-		final Object id = getDeleteLink().getData();
+		try{final Object id = getDeleteLink().getData();
 		final String name = (String) getTable().getContainerProperty(id,"documents").getValue();
 		if(getDtoToDelete().getDocumentTitle().equals(name)){
 			ConfirmDialog.show(UI.getCurrent(), " Are you really sure to delete?",
@@ -55,6 +56,6 @@ public class DocumentDeleteListener extends EntityDeleteClickListener<DocumentDt
 			                }
 			            }
 			        });
-		}
+		}}catch(AuthorizationException ex){Notification.show("You are not permitted to delete documents");}
 	}
 }

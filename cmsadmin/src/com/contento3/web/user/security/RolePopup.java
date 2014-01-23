@@ -2,6 +2,8 @@ package com.contento3.web.user.security;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -171,7 +173,11 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
     			private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
     			{
+    				try
+    				{
     					handleEditRole(roleNameTxtFld,roledescTxtFld,roleidTxtFld,Integer.parseInt(roleidTxtFld.getValue().toString()));
+    				}
+    				catch(AuthorizationException ex){}
     			}
             	});
         }
@@ -184,7 +190,11 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) 
 			{
+				try
+				{
 					handleNewRole(roleNameTxtFld,roledescTxtFld,roleidTxtFld);
+				}
+				catch(AuthorizationException ex){}
 			}
         	});
         }
@@ -211,10 +221,13 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		catch (EntityNotCreatedException e) {
 			Notification.show("Role not created", Notification.Type.ERROR_MESSAGE);
 		}
+		catch(AuthorizationException ex){}
 		Notification.show(roleDto.getName()+" role created succesfully");
 		resetTable();
     }
 	private void handleEditRole(final TextField rolename,final TextField roledesc,final TextField roleid,final Integer editId){
+		try
+		{
 		final RoleDto roleDto = roleService.findById(editId);
 		/*String tempstr=roleid.getValue().toString();
 		int tempint= Integer.parseInt(tempstr);
@@ -223,15 +236,20 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		roleDto.setRoleName(rolename.getValue().toString());
 		roleDto.setRoleDesc(roledesc.getValue().toString());
 		roleService.update(roleDto);
+		
 		Notification.show(roleDto.getName()+" role edit succesfully");
+		}catch(AuthorizationException ex){}
 		resetTable();
     }
 	@SuppressWarnings("rawtypes")
 	private void resetTable(){
+		try
+		{
 		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(helper,roleTable);
 		//final Collection<RoleDto> roleDto = roleService.findAllRoles();
 		final Collection<RoleDto> roleDto = roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
-		tableBuilder.rebuild((Collection)roleDto);
+		tableBuilder.rebuild((Collection)roleDto);}
+		catch(AuthorizationException ex){}
 		UI.getCurrent().removeWindow(popupWindow);
         openbutton.setEnabled(true);
     }

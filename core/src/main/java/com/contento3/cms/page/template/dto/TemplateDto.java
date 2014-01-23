@@ -18,8 +18,6 @@ public class TemplateDto {
 	
 	private AccountDto accountDto;
 	
-	private String templatePath;
-	
 	public AccountDto getAccountDto() {
 		return accountDto;
 	}
@@ -74,14 +72,6 @@ public class TemplateDto {
 
 	public TemplateDirectoryDto getTemplateDirectoryDto() {
 		return templateDirectoryDto;
-	}
-
-	public String getTemplatePath() {
-		return templatePath;
-	}
-
-	public void setTemplatePath(final String templatePath) {
-		this.templatePath = templatePath;
 	}
 
 }

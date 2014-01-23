@@ -22,13 +22,13 @@ public class SiteAssemblerImpl implements SiteAssembler {
 	 * Transform Account to AccountDto and vice versa.
 	 */
 	private AccountAssembler accountAssembler;
-
 	private SiteDomainAssembler siteDomainAssembler;
 
 	
 	public SiteAssemblerImpl(final AccountAssembler accountAssembler,final SiteDomainAssembler siteDomainAssembler){
 		this.accountAssembler = accountAssembler;
 		this.siteDomainAssembler = siteDomainAssembler;
+
 	}
 	
 	@Override
@@ -38,7 +38,6 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		site.setSiteName(dto.getSiteName());
 		site.setAccount(accountAssembler.dtoToDomain(dto.getAccountDto()));
 		site.setDefaultLayoutId(dto.getDefaultLayoutId());
-		site.setDefaultPageId(dto.getDefaultPageId());
 		
 		if(null!=dto.getSiteDomainDto()){
 			site.setSiteDomain(siteDomainAssembler.dtosToDomains(dto.getSiteDomainDto()));
@@ -60,7 +59,6 @@ public class SiteAssemblerImpl implements SiteAssembler {
 			dto.setDefaultLayoutId(domain.getDefaultLayoutId());
 			dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
 			dto.setLanguage(domain.getLanguage());
-			dto.setDefaultPageId(domain.getDefaultPageId());
 		}
 		return dto;
 	}

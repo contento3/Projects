@@ -11,24 +11,21 @@ public class AddSiteLanguageClickListener implements ClickListener {
 
 	private SiteDto siteDto;
 	private ComboBox pageLayoutCombo;
-	private ComboBox pageCombo;
-	
 	private ComboBox languageCombo;
 	private SiteConfigUIManager siteConfigUIManager;
 
 	public AddSiteLanguageClickListener(SiteDto siteDto,
-			ComboBox pageLayoutCombo, ComboBox languageCombo,ComboBox pageCombo, SiteConfigUIManager siteConfigUIManager) {
+			ComboBox pageLayoutCombo, ComboBox languageCombo, SiteConfigUIManager siteConfigUIManager) {
 		
 		this.siteDto = siteDto;
 		this.pageLayoutCombo = pageLayoutCombo;
 		this.languageCombo = languageCombo;
-		this.pageCombo = pageCombo;
 		this.siteConfigUIManager = siteConfigUIManager;
 	}
 
 	@Override
 	public void click(ClickEvent event) { 
-		siteConfigUIManager.saveSite(siteDto,  pageLayoutCombo,languageCombo,pageCombo);
+		siteConfigUIManager.saveSite(siteDto,  pageLayoutCombo,languageCombo);
 		Notification.show(String.format("SiteConfig for %s saved successfullly",siteDto.getSiteName()));
 	}
 

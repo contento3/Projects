@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -312,6 +313,7 @@ public class ImageAddListener extends CustomComponent implements ClickListener,
         catch(IOException ioe){
 			LOGGER.error("Unable to create the image.",ioe);
 		}
+        catch(AuthorizationException ex){}
 
         imagePanelContent.removeAllComponents();
 	    imagePanel.setSizeFull();

@@ -26,7 +26,8 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
 	}
 	
 	@Override
-	public Template dtoToDomain(TemplateDto dto,Template domain) {
+	public Template dtoToDomain(TemplateDto dto) {
+		Template domain = new Template();
 		
 		if (null!=dto.getTemplateId()){
 			domain.setTemplateId(dto.getTemplateId());
@@ -36,13 +37,13 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
 		domain.setTemplateName(dto.getTemplateName());
 		domain.setTemplateText(dto.getTemplateText());
 		domain.setTemplateType(templateTypeAssembler.dtoToDomain(dto.getTemplateType()));
-		domain.setTemplatePath(dto.getTemplatePath());
 		//domain.setDirectory(templateDirectoryAssembler.dtoToDomain(dto.getTemplateDirectoryDto()));
 		return domain;
 	}
 
 	@Override
-	public TemplateDto domainToDto(Template domain,TemplateDto dto) {
+	public TemplateDto domainToDto(Template domain) {
+		TemplateDto dto = new TemplateDto();
 		dto.setTemplateId(domain.getTemplateId());
 		dto.setGlobal(domain.isGlobal());
 		dto.setTemplateName(domain.getTemplateName());
@@ -50,16 +51,16 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
 		dto.setAccountDto(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setTemplateType(templateTypeAssembler.domainToDto(domain.getTemplateType()));
 		dto.setTemplateDirectoryDto(templateDirectoryAssembler.domainToDto(domain.getDirectory()));
-		dto.setTemplatePath(domain.getTemplatePath());
 		return dto;
 	}
 
 	@Override
 	public Collection<TemplateDto> domainsToDtos(Collection<Template> domains) {
-		Collection<TemplateDto> dtos = new ArrayList<TemplateDto>();
+		Collection <TemplateDto> dtos = new ArrayList<TemplateDto>();
+		
 		Iterator<Template> iterator = domains.iterator();
 		while (iterator.hasNext()){
-			dtos.add(domainToDto(iterator.next(),new TemplateDto()));
+			dtos.add(domainToDto(iterator.next()));
 		}
 		return dtos;
 	}
@@ -70,7 +71,7 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
 		
 		Iterator<Template> iterator = domains.iterator();
 		while (iterator.hasNext()){
-			dtos.add(domainToDto(iterator.next(),new TemplateDto()));
+			dtos.add(domainToDto(iterator.next()));
 		}
 		
 		return domains;

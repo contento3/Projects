@@ -3,6 +3,7 @@ package com.contento3.web.content.article.listener;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import com.contento3.account.service.AccountService;
@@ -88,6 +89,8 @@ public class ArticleSaveListener implements ClickListener{
 			Notification.show(unsaveNotification);
 		}
 		else{
+			try
+			{
 			final Date createdDate= new Date();
 			articleDto.setDateCreated(createdDate);
 			articleDto.setLastUpdated(createdDate);
@@ -116,7 +119,8 @@ public class ArticleSaveListener implements ClickListener{
 			//tabSheet.removeTab(articleTab);
 			resetTable();
 			//tabSheet.removeTab(articleTab);
-		}
+		}}
+			catch(AuthorizationException ex){Notification.show("You are not permitted to update articles");}
 		   
 	  }
 		

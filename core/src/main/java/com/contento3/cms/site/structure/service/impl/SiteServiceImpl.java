@@ -42,10 +42,10 @@ public class SiteServiceImpl implements SiteService {
 		this.siteAssembler = siteAssembler;
 		this.pageLayoutDao = pageLayoutDao;
 	}
-	
+	@RequiresPermissions("SITE:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Integer create(final SiteDto siteDto) {
+	public Integer create(SiteDto siteDto) {
 		Validate.notNull(siteDto,"siteDto cannot be null");
 		
 		Collection <PageLayout> defaultPageLayout = pageLayoutDao.findPageLayoutByAccountAndLayoutType(siteDto.getAccountDto().getAccountId(), 2);
@@ -54,7 +54,7 @@ public class SiteServiceImpl implements SiteService {
 		Site site = siteAssembler.dtoToDomain(siteDto);
 		return siteDao.persist(site);
 	}
-	
+	@RequiresPermissions("SITE:EDIT")
 	@Transactional(readOnly = false)
 	@Override
 	public SiteDto update(SiteDto siteDto){
@@ -64,7 +64,7 @@ public class SiteServiceImpl implements SiteService {
 		return siteAssembler.domainToDto(site);
 	}
 	
-	
+	@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public SiteDto findSiteById(Integer siteId){
@@ -72,21 +72,21 @@ public class SiteServiceImpl implements SiteService {
 		return siteAssembler.domainToDto(siteDao.findById(siteId));
 	}
 
-	
+	@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public SiteDto findSiteByDomain(String domain){
 		Validate.notNull(domain,"domain cannot be null");
 		return siteAssembler.domainToDto(siteDao.findByDomain(domain));
 	}
-
+	@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<SiteDto> findSitesByAccountId(Integer accountId) {
 		Validate.notNull(accountId,"accountId cannot be null");
 		return siteAssembler.domainsToDtos(siteDao.findByAccount(accountId));
 	}
-
+	@RequiresPermissions("SITE:DELETE")
 	@Override
 	public void delete(SiteDto dtoToDelete) {
 		// TODO Auto-generated method stub

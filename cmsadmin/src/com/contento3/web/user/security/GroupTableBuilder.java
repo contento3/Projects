@@ -1,5 +1,7 @@
 package com.contento3.web.user.security;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
@@ -50,6 +52,8 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 	 */
 	@Override
 	public void assignDataToTable(final Dto dto,final Table groupTable,final Container groupContainer) {
+		try
+		{
 		GroupDto group = (GroupDto) dto;
 		Item item = groupContainer.addItem(group.getGroupId());
 		item.getItemProperty("groups").setValue(group.getGroupName());
@@ -78,6 +82,17 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		viewLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("associated users").setValue(viewLink);
 		
+		/*
+		final Button viewRoleLink = new Button("View Roles",new AssociatedRolePopup(contextHelper, new Table()));
+		viewLink.setCaption("ViewRoles");
+		viewLink.setData(group.getRoles());
+		viewLink.addStyleName("associated roles");
+		viewLink.setStyleName(BaseTheme.BUTTON_LINK);
+		item.getItemProperty("associated roles").setValue(viewLink);
+		*/
+		}catch(AuthorizationException ex){}
+		
+		
 	}
 
 	/**
@@ -91,7 +106,7 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		groupContainer.addContainerProperty("edit", Button.class, null);
 		groupContainer.addContainerProperty("delete", Button.class, null);
 		groupContainer.addContainerProperty("associated users", Button.class, null);
-
+		//groupContainer.addContainerProperty("associated roles", Button.class, null);
 		groupTable.setWidth(100, Unit.PERCENTAGE);
 		groupTable.setContainerDataSource(groupContainer);
 	}

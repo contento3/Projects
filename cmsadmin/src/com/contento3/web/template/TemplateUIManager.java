@@ -64,16 +64,12 @@ import com.vaadin.ui.VerticalLayout;
 
 public class TemplateUIManager implements UIManager{
 
-	private static final String CONTEXT_ITEM_RENAME = "Rename directory";
+	private static final String CONTEXT_ITEM_RENAME = "Rename";
 	
-	private static final String CONTEXT_ITEM_CREATE = "Create new directory";
-
-	private static final String CONTEXT_ITEM_CREATE_TEMPLATE = "Create new template";
-
-	private static final String CONTEXT_ITEM_OPEN = "Open template";
+	private static final String CONTEXT_ITEM_CREATE = "Create new";
 	
-	private static final String CONTEXT_ITEM_CLEAR_CACHE = "Clear Cache";
-
+	private static final String CONTEXT_ITEM_OPEN = "Open";
+	
 	/**
 	 * Logger for Template
 	 */
@@ -230,7 +226,7 @@ public class TemplateUIManager implements UIManager{
 		buttonLayout.setSpacing(true);
 		
 		VerticalLayout panelContent = new VerticalLayout();
-		panelContent.setHeight(500,Unit.PIXELS);
+		panelContent.setHeight(700,Unit.PIXELS);
 		
 		panelContent.addComponent(accordion);
 		panelContent.addComponent(buttonLayout);
@@ -239,6 +235,7 @@ public class TemplateUIManager implements UIManager{
 		
 		//Add the accordion
 		vLayout.addComponent(panel);
+		panel.setWidth(100,Unit.PERCENTAGE);
 		vLayout.setHeight(100,Unit.PERCENTAGE);
 		panel.setContent(panelContent);
 	}
@@ -248,7 +245,7 @@ public class TemplateUIManager implements UIManager{
 
 		//Populate the global template list
 		VerticalLayout globalTemplateListLayout = new VerticalLayout();
-		globalTemplateListLayout.setHeight(80, Unit.PERCENTAGE);
+		globalTemplateListLayout.setHeight(100, Unit.PERCENTAGE);
 		Tab globalTemplatesTab = accordion.addTab(globalTemplateListLayout, "Global Templates", new ExternalResource("images/template.png"));
 		accordion.addTab(globalTemplateListLayout, "Global Templates", new ExternalResource("images/template.png"));
 		globalTemplatesTab.setClosable(true);
@@ -257,14 +254,13 @@ public class TemplateUIManager implements UIManager{
 		
 		//Populate the template list
 		VerticalLayout templateListLayout = new VerticalLayout();
-		templateListLayout.setHeight(80, Unit.PERCENTAGE);
+		templateListLayout.setHeight(100, Unit.PERCENTAGE);
 		Tab templatesTab = accordion.addTab(templateListLayout, "Templates", new ExternalResource("images/template.png"));
+
 		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false);
 
-		accordion.setSelectedTab(templateListLayout);
 		//Add the tree to the vertical layout for template list.
 		templateListLayout.addComponent(populateTemplateList(templateDirectoryList,templateDirectoryService, false));
-		
 	}
 	
 	public Tree populateTemplateList(final Collection<TemplateDirectoryDto> directoryDtos,final TemplateDirectoryService templateDirectoryService, final boolean isGlobalDir){
@@ -288,13 +284,11 @@ public class TemplateUIManager implements UIManager{
     	    	contextMenu.removeAllItems();
     	    	if (itemId.startsWith("file:")){
 	    	    	contextMenu.addItem(CONTEXT_ITEM_OPEN).setData(CONTEXT_ITEM_OPEN);
-	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE_TEMPLATE).setData(CONTEXT_ITEM_CREATE_TEMPLATE);
-	    	    	contextMenu.addItem(CONTEXT_ITEM_CLEAR_CACHE).setData(CONTEXT_ITEM_CLEAR_CACHE);
+	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
     	    	}
     	    	else {
    	    	    	contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(CONTEXT_ITEM_RENAME);
    	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
-	    	    	contextMenu.addItem(CONTEXT_ITEM_CREATE_TEMPLATE).setData(CONTEXT_ITEM_CREATE_TEMPLATE);
     	    	}
     	    }
     	};
@@ -311,12 +305,8 @@ public class TemplateUIManager implements UIManager{
 						itemId = null;
 					}
 				
-					else if (itemName.equals(CONTEXT_ITEM_CREATE_TEMPLATE)){
+					else if (itemName.equals(CONTEXT_ITEM_CREATE)){
 						renderTemplate(null);
-						itemId = null;
-					}
-					else if (itemName.equals(CONTEXT_ITEM_CLEAR_CACHE)){
-						clearTemplateCache(new Integer(itemId.substring(5)));
 						itemId = null;
 					}
 				}
@@ -328,10 +318,6 @@ public class TemplateUIManager implements UIManager{
 					}
 					else if (itemName.equals(CONTEXT_ITEM_CREATE)){
 						renderFolderTab(null);
-					}
-					else if (itemName.equals(CONTEXT_ITEM_CREATE_TEMPLATE)){
-						renderTemplate(null);
-						itemId = null;
 					}
 				}
 			}
@@ -486,7 +472,7 @@ public class TemplateUIManager implements UIManager{
 				}
 			}
 		
-		Collection <TemplateDto> templateDtoList = templateService.findTemplateByDirectoryName(selectedDirectoryId);
+		Collection <TemplateDto> templateDtoList = templateService.findTemplateByDirectoryName(name);
 		
 		for (TemplateDto templateDto: templateDtoList){
 			String templateItemId = String.format("file:%d",templateDto.getTemplateId());
@@ -502,12 +488,7 @@ public class TemplateUIManager implements UIManager{
 		}
  	}
 	
-	private void clearTemplateCache(final Integer templateId){
-		templateService.clearCache(templateId);
-	}
-	
-	
-	private void renderTemplate(final Integer templateId){
+	private void renderTemplate(Integer templateId){
 		final VerticalLayout createNewTemplate = new VerticalLayout();
 		URL url = null;
 		TemplateDto templateDto=null;
@@ -529,8 +510,6 @@ public class TemplateUIManager implements UIManager{
 		              .append(templateDto.getTemplateType().getTemplateTypeId())
 		        	  .append("&accountId=")
 				      .append(accountId)
-   		        	  .append("&isGlobal=")
-				      .append(templateDto.isGlobal())
 				      .append("")
         			  .append("&directoryPath=")
   			          .append(String.format("/%s",buildPath(selectedDirectoryId,templateDto.getTemplateDirectoryDto().getDirectoryName())));
@@ -553,8 +532,6 @@ public class TemplateUIManager implements UIManager{
   			  	      .append(accountId)
   			  	      .append("&directoryId=")
   			  	      .append(directoryDto.getId())
-   		        	  .append("&isGlobal=")
-				      .append(directoryDto.isGlobal())
   			  	      .append("&templateName=")
   			  	      .append("")
         			  .append("&directoryPath=")

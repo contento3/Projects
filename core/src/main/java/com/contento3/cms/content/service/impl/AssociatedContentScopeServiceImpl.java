@@ -3,6 +3,7 @@ package com.contento3.cms.content.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,14 +35,14 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 		this.associatedContentScopeAssembler = associatedContentScopeAssembler;
 		this.associatedContentScopeDao = associatedContentScopeDao;
 	}
-	
+	@RequiresPermissions("ASSOCIATED_CONTENT:ADD")
 	@Override
 	public Object create(final AssociatedContentScopeDto dto)
 			throws EntityAlreadyFoundException {
 		Validate.notNull(dto,"dto cannot be null");
 		return associatedContentScopeDao.persist(associatedContentScopeAssembler.dtoToDomain(dto));
 	}
-
+	@RequiresPermissions("ASSOCIATED_CONTENT:DELETE")
 	@Override
 	public void delete(final AssociatedContentScopeDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
@@ -49,7 +50,7 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 		associatedContentScopeDao.delete(associatedContentScopeAssembler.dtoToDomain(dtoToDelete));
 
 	}
-
+	@RequiresPermissions("ASSOCIATED_CONTENT:VIEW")
 	@Override
 	public 	Collection<AssociatedContentScopeDto> getContentScopeForType(final AssociatedContentScopeTypeEnum scopeType)
 	{
@@ -57,6 +58,7 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 		return this.associatedContentScopeAssembler.domainsToDtos(this.associatedContentScopeDao.findAll());
 	}
 
+	@RequiresPermissions("ASSOCIATED_CONTENT:VIEW")
 	@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
 	@Override
 	public AssociatedContentScopeDto findById(Integer contentScopeId) {

@@ -3,6 +3,8 @@ package com.contento3.web.user.security;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.security.group.dto.GroupDto;
@@ -177,7 +179,9 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 	        groupButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
-					handleEditGroup(textField,descriptionArea,Id);
+					try{
+					handleEditGroup(textField,descriptionArea,Id);}
+					catch(AuthorizationException ex){}
 				}	
 			});
     	}
@@ -188,7 +192,9 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 	        groupButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
 				public void buttonClick(ClickEvent event) {
-					handleNewGroup(textField,descriptionArea);
+					try{
+					handleNewGroup(textField,descriptionArea);}
+					catch(AuthorizationException ex){}
 				}	
 			});
     	}
@@ -199,6 +205,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
      * @param textField
      */
 	private void handleNewGroup(final TextField textField,final TextArea descriptionArea){
+		try{
 		final GroupDto groupDto = new GroupDto();
 		groupDto.setGroupName(textField.getValue().toString());
 		groupDto.setDescription(descriptionArea.getValue().toString());
@@ -210,6 +217,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 		
 		groupService.create(groupDto);
 		Notification.show(groupDto.getGroupName()+" group created succesfully");
+		}catch(AuthorizationException ex){}
 		resetTable();
     }
 
@@ -219,23 +227,28 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
      * @param textField
      */
 	private void handleEditGroup(final TextField textField,final TextArea descriptionArea,final Integer editId){
+		try{
 		final GroupDto groupDto = groupService.findById(editId);
 			groupDto.setGroupName(textField.getValue().toString());
 			groupDto.setDescription(descriptionArea.getValue().toString());
 			groupService.update(groupDto);
 			Notification.show(groupDto.getGroupName()+" group edit succesfully");
-		resetTable();
+		}catch(AuthorizationException ex){}
+			resetTable();
     }
 	/**
 	 * Reset table
 	 */
 	 @SuppressWarnings("rawtypes")
 		private void resetTable(){
+		 try
+		 {
 			final AbstractTableBuilder tableBuilder = new GroupTableBuilder(helper,groupTable);
 			final Collection<GroupDto> groupDto = this.groupService.findAllGroups();
 			tableBuilder.rebuild((Collection)groupDto);
 			UI.getCurrent().removeWindow(popupWindow);
-	        openbutton.setEnabled(true);
+	        openbutton.setEnabled(true);}
+		 catch(AuthorizationException ex){}
 	    }
 	 
 	  /**

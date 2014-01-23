@@ -3,6 +3,7 @@ package com.contento3.cms.page.template.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +48,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		this.pageDao = pageDao;
 		this.sectionTypeDao = sectionTypeDao;
 	}
-	
+	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:ADD")
 	@Override
 	public PageTemplatePK create(PageTemplateDto dto) throws EntityAlreadyFoundException {
 		Validate.notNull(dto,"dto cannot be null");
@@ -80,20 +81,20 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 			throw new EntityAlreadyFoundException("Page template already exist.");
 		}
 	}
-	
+	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:VIEW")
 	@Override
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(final Integer pageId,final Integer pageSectionTypeId) {
 		Validate.notNull(pageId,"pageId cannot be null");
 		Validate.notNull(pageSectionTypeId,"pageSectionTypeId cannot be null");
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionTypeId));
 	}
-
+	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:VIEW")
 	@Override
 	public Collection<PageTemplateDto> findByPageId(Integer pageId) {
 		Validate.notNull(pageId,"pageId cannot be null");
 		return assembler.domainsToDtos(dao.findByPageId(pageId));
 	}
-
+	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:VIEW")
 	@Override
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(
 			Integer pageId, PageSectionTypeEnum pageSectionType) {
@@ -101,7 +102,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		Validate.notNull(pageSectionType,"pageSectionType cannot be null");
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionType));
 	}
-
+	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:DELETE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(final PageTemplateDto dto) {
