@@ -91,27 +91,31 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public Collection<Article> findLatestArticleByCategory(final Integer categoryId,
-		final Integer numberOfArticles,final Integer siteId) {
-			Validate.notNull(categoryId,"siteId cannot be null");
-			Validate.notNull(siteId,"siteId cannot be null");
-			Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
+    @Override
+    public Collection<Article> findLatestArticleByCategory(final Collection<Integer> categoryIds,
+            final Integer numberOfArticles,final Integer siteId) {
+                    Validate.notNull(categoryIds,"categoryIds cannot be null");
+                    Validate.notNull(siteId,"siteId cannot be null");
+                    Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
 
-		final Criteria criteria = this.getSession()
-			.createCriteria(Article.class)
-		    .addOrder(Order.desc("dateCreated"))
-		    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-		    .setFirstResult(0).setMaxResults(numberOfArticles)
-		    .add(Restrictions.eq("isVisible", 1))
-		    .createAlias("categories", "category")
-		    .add(Restrictions.eq("category.categoryId", categoryId))
-		    .createAlias("site", "s")
-		    .add(Restrictions.eq("s.siteId", siteId));
-		
-		return criteria.list();
-	}
+            final Criteria criteria = this.getSession()
+                    .createCriteria(Article.class)
+                //.addOrder(Order.desc("dateCreated"))
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                //.setFirstResult(0).setMaxResults(numberOfArticles)
+                .add(Restrictions.eq("isVisible", 1))
+                .createAlias("site", "s")
+                .add(Restrictions.eq("s.siteId", siteId));
 
+                    if (CollectionUtils.isEmpty(categoryIds)){
+                            criteria.createCriteria("categories","c")
+                            .add(Restrictions.in("c.categoryId", categoryIds));
+                    }
+                
+                    return criteria.list();
+    }
+	
+	
 	@Override
 	public Article findArticleByIdAndSiteId(final Integer articleId,final Integer siteId) {
 			Validate.notNull(articleId,"articleId cannot be null");

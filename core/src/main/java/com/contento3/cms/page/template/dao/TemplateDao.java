@@ -7,16 +7,17 @@ import com.contento3.common.dao.GenericDao;
 
 public interface TemplateDao extends GenericDao<Template,Integer> {
 
-	Collection<Template> findTemplateByDirectoryName(String name);
+        Collection<Template> findTemplateByDirectoryName(String name);
 
-	Collection<Template> findTemplateByPathAndAccount(String templateName,String parentDirectory,String templateType,Integer accountId);
+        Collection<Template> findTemplateByNameAndAccount(String templateName,String parentDirectory,String templateType,Integer accountId);
 
-	Template findSystemTemplateForAccount(String templateCategory,
-			Integer accountId, Boolean isGlobal);
+        Template findTemplateByPathAndAccount(String path,String templateName,Integer accountId);
 
-	Template findGlobalSystemTemplate(String templateCategory);
+        Template findSystemTemplateForAccount(String templateCategory,
+                        Integer accountId, Boolean isGlobal);
 
-	Collection<Template> findTemplateByDirectoryId(Integer id);
+        Template findGlobalSystemTemplate(String templateCategory);
 
+        Collection<Template> findTemplateByDirectoryId(Integer id);
 
 }
