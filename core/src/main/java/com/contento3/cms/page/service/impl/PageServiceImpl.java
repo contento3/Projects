@@ -157,4 +157,10 @@ public class PageServiceImpl implements PageService {
 		
 		return isExists;
 	}
+
+	@Override
+	public Collection<PageDto> findNavigablePagesBySiteId(final Integer siteId) {
+		Validate.notNull(siteId,"siteId cannot be null");
+		return pageAssembler.domainsToDtos(pageDao.findNavigablePages(siteId)); 	
+	}
 }
