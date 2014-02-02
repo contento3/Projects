@@ -49,7 +49,7 @@ public class PageCategoryUIManager implements UIManager{
 	/**
 	 * Article table which shows articles
 	 */
-	private final TreeTable categoryTable =  new TreeTable("Category");
+	private final TreeTable categoryTable =  new TreeTable();
 
 	private final TabSheet tabSheet;
 
@@ -71,15 +71,16 @@ public class PageCategoryUIManager implements UIManager{
 
 		if (null==tabSheet.getTab(verticalLayout)){
 			verticalLayout = new VerticalLayout();
+			verticalLayout.setHeight("100%");
 			Tab tab = tabSheet.addTab(verticalLayout,"Categories",new ExternalResource("images/category.png"));
 			tab.setClosable(true);
 			tabSheet.setSelectedTab(verticalLayout);
-	
+			tabSheet.setHeight("100%");
 			HorizontalLayout horizon = new HorizontalLayout();
 			VerticalLayout verticl = new VerticalLayout();
 			this.verticalLayout.addComponent(horizon);
 			horizon.addComponent(verticl);
-			
+			horizon.setHeight("100%");
 			final ScreenHeader screenHeader = new ScreenHeader(verticl,"Category Management");
 			verticl.addComponent(new HorizontalRuler());
 

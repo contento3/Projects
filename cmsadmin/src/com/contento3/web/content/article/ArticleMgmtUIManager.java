@@ -42,6 +42,7 @@ public class ArticleMgmtUIManager implements UIManager {
 	public final static String ARTICLE_BODY_LBL = "Body";
 	public final static String ARTICLE_POSTED_DATE = "Article Posted Date";
 	public final static String ARTICLE_EXPIRY_DATE = "Article Expiry Date";
+	public final static String ARTICLE_SEO_LBL = "SEO Friendly Url";
 
 	/**
 	 * Used to get service beans from spring context.

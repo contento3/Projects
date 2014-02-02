@@ -44,6 +44,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		domain.setLastUpdated(dto.getLastUpdated());
 		domain.setExpiryDate(dto.getExpiryDate());
 		domain.setIsVisible(dto.getIsVisible());
+		domain.setSeoFriendlyUrl(dto.getSeoFriendlyUrl());
 		domain.setSite(siteAssembler.dtosToDomains(dto.getSite()));
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategoryDtos()));
@@ -65,6 +66,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		dto.setLastUpdated(domain.getLastUpdated());
 		dto.setExpiryDate(domain.getExpiryDate());
 		dto.setIsVisible(domain.getIsVisible());
+		dto.setSeoFriendlyUrl(domain.getSeoFriendlyUrl());
 		dto.setSite(siteAssembler.domainsToDtos(domain.getSite()));
 		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setCategoryDtos(categoryAssembler.domainsToDtos(domain.getCategories()));

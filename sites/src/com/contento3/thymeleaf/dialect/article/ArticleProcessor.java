@@ -7,9 +7,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.thymeleaf.Arguments;
 import org.thymeleaf.Configuration;
-import org.thymeleaf.Template;
-import org.thymeleaf.TemplateRepository;
-import org.thymeleaf.dom.Document;
 import org.thymeleaf.dom.Element;
 import org.thymeleaf.dom.Node;
 import org.thymeleaf.dom.Text;
@@ -17,13 +14,9 @@ import org.thymeleaf.processor.element.AbstractMarkupSubstitutionElementProcesso
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
-import org.thymeleaf.util.DOMUtils;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-
-import org.thymeleaf.TemplateProcessingParameters;
 public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor {
 
 	private static final Logger LOGGER = Logger.getLogger(ArticleProcessor.class);
@@ -72,7 +65,7 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 	 *  
 	 */
 	
-	private final String TEASER="TEASER";
+	private final static transient String TEASER="TEASER";
 	
 	private final String FULL="FULL";
 

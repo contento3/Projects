@@ -8,7 +8,6 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.AddAssociatedUsersListener;
 import com.contento3.web.user.listner.DeleteAssociatedUsersListener;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;

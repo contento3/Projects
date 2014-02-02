@@ -77,6 +77,11 @@ public class ArticleDto extends Dto {
 	 * Article visibility
 	 */
 	private Integer isVisible;
+
+	/**
+	 * Seo friendly URL
+	 */
+	private String seoFriendlyUrl;
 	
 	/**
 	 * Associated images to article
@@ -196,6 +201,14 @@ public class ArticleDto extends Dto {
 
 	public final void setAssociateImagesDtos(final Collection<ArticleImageDto> associateImagesDtos) {
 		this.associateImagesDtos = associateImagesDtos;
+	}
+
+	public String getSeoFriendlyUrl() {
+		return seoFriendlyUrl;
+	}
+
+	public void setSeoFriendlyUrl(final String seoFriendlyUrl) {
+		this.seoFriendlyUrl = seoFriendlyUrl;
 	}
 
     /*
