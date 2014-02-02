@@ -3,6 +3,7 @@ package com.contento3.cms.page.layout.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,24 +25,24 @@ public class PageLayoutTypeServiceImpl implements PageLayoutTypeService {
 		this.layoutTypeDAO = layoutTypeDAO;	
 		this.assembler = assembler;
 	}
-	
+	@RequiresPermissions("PAGELAYOUT_TYPE:VIEW")
 	@Override
 	public Collection<PageLayoutType> findAllPageLayoutType(){
 		return layoutTypeDAO.findAll();	
 	}
-
+	@RequiresPermissions("PAGELAYOUT_TYPE:VIEW")
 	@Override
 	public PageLayoutTypeDto findByName(final String name){
 		Validate.notNull(name,"name cannot be null");
 		return assembler.domainToDto(layoutTypeDAO.findByName(name));
 	}
-	
+	@RequiresPermissions("PAGELAYOUT_TYPE:ADD")
 	@Override
 	public Integer create(final PageLayoutTypeDto dto){
 		Validate.notNull(dto,"dto cannot be null");
 		return layoutTypeDAO.persist(assembler.dtoToDomain(dto));
 	}
-
+	@RequiresPermissions("PAGELAYOUT_TYPE:DELETE")
 	@Override
 	public void delete(PageLayoutTypeDto dtoToDelete) {
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
@@ -113,6 +115,8 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 	public void click(ClickEvent event) {
 		//validation article exist
 		if(articleId != null){
+			try
+			{
 			AssociatedContentScopeService contentScopeService = (AssociatedContentScopeService) this.helper.getBean("associatedContentScopeService");
 			final ComboDataLoader comboDataLoader = new ComboDataLoader();
 			final Collection<AssociatedContentScope> contentScopeForImage = (Collection) contentScopeService.getContentScopeForType(AssociatedContentScopeTypeEnum.IMAGE);
@@ -136,7 +140,8 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 
 			contentScopeCombo.addValueChangeListener(new ContentScopeChangeListener(articleId,accountId,helper,imagePicker));
 
-			this.mainLayout.addComponentAsFirst(contentScopeCombo);
+			this.mainLayout.addComponentAsFirst(contentScopeCombo);}
+			catch(AuthorizationException ex){Notification.show("You are not permitted to assign image to articles");}
 		}else{
 			//warning message
 			Notification.show("Unable to assign image to article before creating the article itself", "please create the article first", Notification.TYPE_WARNING_MESSAGE);

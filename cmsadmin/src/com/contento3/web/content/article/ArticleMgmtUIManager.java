@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import com.contento3.cms.article.dto.ArticleDto;
@@ -15,6 +17,7 @@ import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.article.listener.AddArticleButtonListener;
 import com.contento3.web.content.article.listener.ArticleFormBuilderListner;
+import com.contento3.web.content.document.DocumentMgmtUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
@@ -37,6 +40,8 @@ import com.vaadin.ui.Window;
 
 public class ArticleMgmtUIManager implements UIManager {
 	
+	private static final Logger LOGGER = Logger.getLogger(ArticleMgmtUIManager.class);
+
 	public final static String ARTICLE_HEADING_LBL = "Header";
 	public final static String ARTICLE_TEASER_LBL = "Teaser";
 	public final static String ARTICLE_BODY_LBL = "Body";
@@ -208,9 +213,16 @@ public class ArticleMgmtUIManager implements UIManager {
 	@SuppressWarnings("unchecked")
 	private void renderArticleTable(final VerticalLayout contentLayout) {
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
-		Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
-		tableBuilder.build((Collection)articles);
-		contentLayout.addComponent(this.articleTable);
+		try
+		{
+			Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
+			tableBuilder.build((Collection)articles);
+		} 
+		catch(AuthorizationException ex)
+		{
+			LOGGER.debug("you are not permitted to see article", ex);
+		}
+		this.verticalLayout.addComponent(this.articleTable);
 	}
 	
 	/**
@@ -230,8 +242,14 @@ public class ArticleMgmtUIManager implements UIManager {
 		
 		final AbstractTableBuilder reBuiltTable = new ArticleTableBuilder(this.parentWindow,this.contextHelper,
 				this.tabSheet,this.articleTable);
-		Collection<ArticleDto> articles = this.articleService.findBySearch(header, catagory);
-		reBuiltTable.rebuild((Collection)articles);
+		try
+		{
+			Collection<ArticleDto> articles = this.articleService.findBySearch(header, catagory);
+			reBuiltTable.rebuild((Collection)articles);
+		}
+		catch(final AuthorizationException ex){
+			LOGGER.debug("you are not permitted to see article", ex);
+		}
 	}
 	
 	/**
@@ -240,7 +258,13 @@ public class ArticleMgmtUIManager implements UIManager {
 	@RequiresPermissions("article:add")
 	private void addArticleButton(){
 		Button addButton = new Button("Add Article");
-		addButton.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable));
+		try
+		{
+			addButton.addClickListener(new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,this.articleTable));
+		}
+		catch(final AuthorizationException ex){
+			LOGGER.debug("you are not permitted to add article", ex);
+		}
 		this.verticalLayout.addComponent(addButton);
 	}
 

@@ -38,15 +38,14 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	 Collection<Article> findLatestArticleBySiteId(Integer siteId,Integer count);
 	
 	 /**
-	  * find {@link Collection} of article for a given site and category
-	  * @param categoryName
-	  * @param numberOfArticles
-	  * @param siteId
-	  * @return
-	  */
-	 Collection<Article> findLatestArticleByCategory(Collection<Integer> categoryIds,
-			Integer numberOfArticles, Integer siteId);
-	 
+      * find {@link Collection} of article for a given site and category
+      * @param categoryName
+      * @param numberOfArticles
+      * @param siteId
+      * @return
+      */
+     Collection<Article> findLatestArticleByCategory(Collection<Integer> categoryIds,
+                    Integer numberOfArticles, Integer siteId);	 
 	 /**
 	  * Returns the article based on article and siteid
 	  * @param articleId

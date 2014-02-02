@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -142,12 +144,13 @@ public class GroupUIManager implements UIManager {
 	 * Render group table to screen
 	 */
 	private void renderGroupTable(VerticalLayout verticl) {
+		try{
 		
 		final AbstractTableBuilder tableBuilder = new GroupTableBuilder(contextHelper,groupTable);
 		
 		tableBuilder.build((Collection)groupService.findAllGroups());
 		
-		verticl.addComponent(groupTable);
+		verticl.addComponent(groupTable);}catch(AuthorizationException ex){}
 	}
 	
 

@@ -2,6 +2,8 @@ package com.contento3.web.content.image;
 
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
@@ -150,6 +152,7 @@ implements Window.CloseListener,Button.ClickListener{
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				try{
 				
 				imageDto.setAltText(altTextField.getValue().toString());
 				imageDto.setName(nameTextField.getValue().toString());
@@ -167,7 +170,7 @@ implements Window.CloseListener,Button.ClickListener{
 	            imageService.update(imageDto);
 	    		Notification.show(imageDto.getName() +" updated succesfully");
 	    		UI.getCurrent().removeWindow(popupWindow);
-		        openbutton.setEnabled(true);
+		        openbutton.setEnabled(true);}catch(AuthorizationException ex){}
 			}
 		});
 		

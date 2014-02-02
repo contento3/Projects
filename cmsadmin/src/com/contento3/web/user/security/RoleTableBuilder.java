@@ -1,5 +1,7 @@
 package com.contento3.web.user.security;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
@@ -31,6 +33,8 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void assignDataToTable(final Dto dto,final Table roletable,final Container rolecontainer) {
 		// TODO Auto-generated method stub
+		try
+		{
 		RoleDto role = (RoleDto) dto;
 		Item item = rolecontainer.addItem(role.getId());
 		item.getItemProperty("role").setValue(role.getName());
@@ -61,6 +65,7 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 				viewLink.addStyleName("permissions");
 				viewLink.setStyleName(BaseTheme.BUTTON_LINK);
 				item.getItemProperty("permissions").setValue(viewLink);
+		}catch(AuthorizationException ex){}
 	}
 
 	@Override

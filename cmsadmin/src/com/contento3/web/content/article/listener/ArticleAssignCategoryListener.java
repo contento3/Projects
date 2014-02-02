@@ -3,6 +3,8 @@ package com.contento3.web.content.article.listener;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.category.dto.CategoryDto;
@@ -57,6 +59,8 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 	public void click(ClickEvent event) {
 		//validation article exist
 		if(articleId != null){
+			try
+			{
 			Collection<String> listOfColumns = new ArrayList<String>();
 			listOfColumns.add("Categories");
 			GenricEntityPicker categoryPicker;
@@ -65,6 +69,8 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			setCaption("Add Category");
 			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
 			categoryPicker.build();
+			}
+			catch(AuthorizationException ex){Notification.show("You are not permitted to assign category to articles");}
 		}else{
 			//warning message
 			Notification.show("Opening failed", "create article first", Notification.Type.WARNING_MESSAGE);

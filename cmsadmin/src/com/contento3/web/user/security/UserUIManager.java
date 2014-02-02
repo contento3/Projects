@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -21,6 +23,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -112,8 +115,11 @@ public class UserUIManager implements UIManager {
 		verticl.addComponent(new HorizontalRuler());
 		verticl.setMargin(true);
 		horizon.setWidth(100, Unit.PERCENTAGE);
+		try
+		{
 		addUserButton(horizon);
-		renderUserTable(verticl);
+		}
+		catch(AuthorizationException ex){}
 		
 		horizon.setExpandRatio(verticl, 9);
 	}
@@ -141,7 +147,10 @@ public class UserUIManager implements UIManager {
 	 */
 	private void renderUserTable(VerticalLayout verticl) {
 		final AbstractTableBuilder tableBuilder = new UserTableBuilder(contextHelper,userTable);
+		try
+		{
 		tableBuilder.build((Collection)userService.findUsersByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
+		}catch(AuthorizationException ex){}
 		verticl.addComponent(userTable);
 	}
 

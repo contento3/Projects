@@ -48,8 +48,8 @@ public class Template {
 	@JoinColumn(name = "TEMPLATE_CATEGORY_ID")
 	private TemplateCategory templateCategory;
 
-	@Column(name = "TEMPLATE_PATH")
-	private String templatePath;
+    @Column(name = "TEMPLATE_PATH")
+    private String templatePath;
 
 	public Integer getTemplateId() {
 		return templateId;
@@ -107,12 +107,12 @@ public class Template {
 		return directory;
 	}
 
-	public String getTemplatePath() {
-		return templatePath;
-	}
+    public String getTemplatePath() {
+        return templatePath;
+    }
 
-	public void setTemplatePath(final String templatePath) {
-		this.templatePath = templatePath;
+    public void setTemplatePath(final String templatePath) {
+        this.templatePath = templatePath;
 	}
 
 	public void setAccount(final Account account) {

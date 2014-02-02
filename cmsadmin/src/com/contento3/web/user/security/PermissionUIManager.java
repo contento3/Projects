@@ -1,6 +1,9 @@
 package com.contento3.web.user.security;
 
 import java.util.Collection;
+
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.security.permission.service.PermissionService;
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.UIManager;
@@ -104,12 +107,14 @@ public class PermissionUIManager implements UIManager{
 		this.verticalLayout.addComponent(addButton);
 	}
 	private void renderPermissionTable() {
+		try
+		{
 		final AbstractTableBuilder tableBuilder = new PermissionTableBuilder(contextHelper,permissionTable);
 		//tableBuilder.build((Collection)roleService.findAllRoles());
 		tableBuilder.build((Collection)permissionService.findAllPermissions());
         
 		this.verticalLayout.addComponent(permissionTable);
-		
+		}catch(AuthorizationException ex){}
 	}
 
 }

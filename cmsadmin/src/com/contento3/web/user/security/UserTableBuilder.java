@@ -1,5 +1,7 @@
 package com.contento3.web.user.security;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
@@ -44,6 +46,8 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 	 */
 	@Override
 	public void assignDataToTable(final Dto dto,final Table userTable,final Container userContainer) {
+		try
+		{
 		SaltedHibernateUserDto user = (SaltedHibernateUserDto) dto;
 		Item item = userContainer.addItem(user.getName());
 		item.getItemProperty("users").setValue(user.getName());
@@ -65,7 +69,7 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);
 		deleteLink.addClickListener(new UserDeleteClickListener(user, userService, deleteLink, userTable));
-		
+		}catch(AuthorizationException ex){}
 	}
 
 	/**

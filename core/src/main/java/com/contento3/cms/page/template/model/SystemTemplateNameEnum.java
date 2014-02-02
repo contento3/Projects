@@ -5,7 +5,7 @@ public enum SystemTemplateNameEnum {
 	SYSTEM_ERROR_SIMPLE("errorSimple"),
 	SYSTEM_REGISTER("registerForm"),
 	SYSTEM_REGISTER_SUCCESS("registerSuccess"),
-	SYSTEM_ARTICLE("article");
+    SYSTEM_ARTICLE("article");
 		
 	private String value;
 		

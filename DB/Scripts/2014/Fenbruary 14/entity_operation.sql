@@ -1,0 +1,13 @@
+
+
+CREATE TABLE IF NOT EXISTS `entity_operation` (
+  `ENTITY_OPERATION_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ENTITY_OPERATION_NAME` varchar(50) NOT NULL,
+  PRIMARY KEY (`ENTITY_OPERATION_ID`)
+)
+;
+
+INSERT INTO `entity_operation` (`ENTITY_OPERATION_ID`, `ENTITY_OPERATION_NAME`) VALUES
+(1, 'add'),
+(2, 'delete'),
+(3, 'update');

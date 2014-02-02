@@ -3,6 +3,7 @@ package com.contento3.cms.page.category.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -34,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
 	 */
 	private CategoryAssembler categoryAssembler;
 
-	public CategoryServiceImpl(final CategoryAssembler categoryAssembler,final CategoryDao categoryDao,final AccountDao accountDao){
+	CategoryServiceImpl(final CategoryAssembler categoryAssembler,final CategoryDao categoryDao,final AccountDao accountDao){
 		Validate.notNull(categoryAssembler,"categoryAssembler cannot be null");
 		Validate.notNull(accountDao,"accountDao cannot be null");
 		Validate.notNull(categoryDao,"categoryDao cannot be null");
@@ -42,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
 		this.categoryAssembler=categoryAssembler;
 		this.accountDao = accountDao;
 	}//end CategoryServiceImpl()
-
+	@RequiresPermissions("CATEGORY:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(final CategoryDto categoryDto,final Integer parentId)  {
@@ -65,13 +66,13 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setAccount(account);
 		return categoryDao.persist(category);
 	}//end create()
-
+	@RequiresPermissions("CATEGORY:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(final CategoryDto categoryDto)  {
 		throw new IllegalArgumentException("This method is not implemented");
 	}//end create()
-
+	@RequiresPermissions("CATEGORY:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public CategoryDto findCategoryByName(final String categoryName,final Integer accountId) {
@@ -81,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
 		final CategoryDto categoryDto = categoryAssembler.domainToDto(category);
 		return categoryDto;
 	}//end findCategoryByName()
-
+	@RequiresPermissions("CATEGORY:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findNullParentIdCategory(final Integer accountId){
@@ -90,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
 		Collection<CategoryDto> categoryDtos = categoryAssembler.domainsToDtos(categories);
 		return categoryDtos;
 	}//end findNullParentIdCategory()
-
+	@RequiresPermissions("CATEGORY:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findChildCategories(final Integer parentId,final Integer accountId){
@@ -101,7 +102,7 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryDtos;
 	}//end findChildCategories()
 
-
+	@RequiresPermissions("CATEGORY:EDIT")
 	@Transactional(readOnly = false)
 	@Override
 	public void update(final CategoryDto categoryDto,final Integer parentCategoryId){
@@ -117,21 +118,21 @@ public class CategoryServiceImpl implements CategoryService {
 		 category.setAccount(accountDao.findById(categoryDto.getAccountId()));
 		 categoryDao.update(category);
 	}
-
+	@RequiresPermissions("CATEGORY:VIEW")
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<CategoryDto> findByAccountId(final Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
 		return categoryAssembler.domainsToDtos(categoryDao.findAll()); //MARK BROKEN FUNCTIONALITY
 	}
-
+	@RequiresPermissions("CATEGORY:VIEW")
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public CategoryDto findById(Integer id) {
 		Validate.notNull(id,"id cannot be null");
 		return categoryAssembler.domainToDto(categoryDao.findById(id));
 	}
-
+	@RequiresPermissions("CATEGORY:DELETE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(CategoryDto dtoToDelete) throws EntityCannotBeDeletedException {

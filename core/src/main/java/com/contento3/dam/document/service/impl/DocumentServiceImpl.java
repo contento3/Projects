@@ -27,7 +27,7 @@ public class DocumentServiceImpl implements DocumentService {
 		this.documentAssembler = documentAssembler;
 		this.documentDao = documentDao;
 	}
-	@RequiresPermissions("document:add")
+	@RequiresPermissions("DOCUMENT:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(DocumentDto documentDto) throws EntityAlreadyFoundException {
@@ -41,7 +41,7 @@ public class DocumentServiceImpl implements DocumentService {
 		
 		return documentPk;
 	}
-	
+	@RequiresPermissions("DOCUMENT:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(DocumentDto documentDto) throws EntityAlreadyFoundException {
@@ -57,7 +57,7 @@ public class DocumentServiceImpl implements DocumentService {
 		
 		documentDao.update(documentAssembler.dtoToDomain(documentDto, document));
 	}
-	
+	@RequiresPermissions("DOCUMENT:DELETE")
 	@Override
 	public void delete(DocumentDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
@@ -66,6 +66,7 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 	
 	//removed , propagation = Propagation.REQUIRES_NEW from annotations for JUnit
+	@RequiresPermissions("DOCUMENT:VIEW")
 	@Transactional(readOnly = true)
 	@Override
 	public DocumentDto findByUuid(Integer accountId, String uuid) {
@@ -73,7 +74,7 @@ public class DocumentServiceImpl implements DocumentService {
 		Validate.notNull(uuid,"uuid cannot be null");
 		return documentAssembler.domainToDto(documentDao.findByUuid(accountId, uuid));
 	}
-	
+	@RequiresPermissions("DOCUMENT:VIEW")
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<DocumentDto> findByType(Integer accountId, String type) {
@@ -81,14 +82,14 @@ public class DocumentServiceImpl implements DocumentService {
 		Validate.notNull(type,"type cannot be null");
 		return documentAssembler.domainsToDtos(documentDao.findByType(accountId, type));
 	}
-	
+	@RequiresPermissions("DOCUMENT:VIEW")
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<DocumentDto> findByAccountId(Integer accountId) {
 		Validate.notNull(accountId,"accountId cannot be null");
 		return documentAssembler.domainsToDtos(documentDao.findByAccountId(accountId));
 	}
-
+	@RequiresPermissions("DOCUMENT:VIEW")
 	@Transactional(readOnly = true)
 	@Override
 	public DocumentDto findById(Integer documentId) {

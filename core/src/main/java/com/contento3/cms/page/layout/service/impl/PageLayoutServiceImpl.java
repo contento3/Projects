@@ -3,6 +3,7 @@ package com.contento3.cms.page.layout.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,21 +35,21 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 		this.pageSectionAssembler = pageSectionAssembler;
 		this.assembler = assembler;
 	}
-
+	@RequiresPermissions("PAGELAYOUT:VIEW")
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public Collection<PageLayoutDto> findPageLayoutByAccount(final Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
 		return assembler.domainsToDtos(pageLayoutDao.findPageLayoutByAccount(accountId));
 	}
-	
+	@RequiresPermissions("PAGELAYOUT:VIEW")
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public PageLayoutDto findPageLayoutById(final Integer pageLayoutId){
 		Validate.notNull(pageLayoutId,"pageLayoutId cannot be null");
 		return assembler.domainToDto(pageLayoutDao.findById(pageLayoutId));
 	}
-
+	@RequiresPermissions("PAGELAYOUT:ADD")
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public Integer create(PageLayoutDto pageLayoutDto){
@@ -66,7 +67,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 		
 		return newLayoutId;
 	}
-
+	@RequiresPermissions("PAGELAYOUT:DELETE")
 	@Override
 	public void delete(PageLayoutDto dtoToDelete) {
 		// TODO Auto-generated method stub

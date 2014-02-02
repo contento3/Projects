@@ -79,8 +79,5 @@ public class PageDaoHibernateImplTest extends AbstractTransactionalJUnit4SpringC
 		Page page = unitUnderTest.findById(pageId);
 		assertNotNull(page);
 	}
-	public String show(){
-		return "hello";
-	}
 
 }

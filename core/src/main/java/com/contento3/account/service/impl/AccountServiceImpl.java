@@ -1,6 +1,7 @@
 package com.contento3.account.service.impl;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.dto.AccountDto;
@@ -28,6 +29,7 @@ public class AccountServiceImpl implements AccountService {
 		this.assembler = assembler;
 	}
 
+	@RequiresPermissions("ACCOUNT:VIEW")
 	@Override
 	public AccountDto findAccountById(Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
