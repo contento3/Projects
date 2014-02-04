@@ -3,6 +3,7 @@ package com.contento3.security.user.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Hash;
@@ -44,7 +45,7 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		this.userAssembler = saltedHibernateUserAssembler;
 		this.groupDao = groupDao;
 	}
-
+	@RequiresPermissions("add:user")
 	@Override
 	public Integer create(final SaltedHibernateUserDto dto)
 			throws EntityAlreadyFoundException, EntityNotCreatedException {
@@ -66,7 +67,7 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		}
 		return userId;
 	}
-
+	
 	@Override
 	public void delete(final SaltedHibernateUserDto dtoToDelete) throws EntityCannotBeDeletedException {
 		//Check the user if it is associated to a groups
@@ -80,24 +81,20 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 			throw new EntityCannotBeDeletedException("User with id ["+ dtoToDelete.getId() +"]" + "cannot be deleted.");
 		} 
 	}
-	
 	public Collection<SaltedHibernateUserDto> findUsersByAccountId(final Integer accountId) {
 		Validate.notNull(accountId,"accountId cannot be null");
 		return userAssembler.domainsToDtos(userDao.findUsersByAccountId(accountId));
 	}
-
 	@Override
 	public SaltedHibernateUserDto findUserById(final Integer userId) {
 		Validate.notNull(userId,"userId cannot be null");
 		return userAssembler.domainToDto(userDao.findById(userId));
 	}
-
 	@Override
 	public SaltedHibernateUserDto findUserByUsername(final String username) {
 		Validate.notNull(username,"username cannot be null");
 		return userAssembler.domainToDto(userDao.findByUsername(username));
 	}
-
 	@Override
 	public void update(SaltedHibernateUserDto dtoToUpdate) {
 		Validate.notNull(dtoToUpdate,"dtoToUpdate cannot be null");

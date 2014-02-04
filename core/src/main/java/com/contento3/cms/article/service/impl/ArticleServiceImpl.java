@@ -3,6 +3,7 @@ package com.contento3.cms.article.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,7 +34,7 @@ public class ArticleServiceImpl implements ArticleService {
 		this.articleDao = articleDao;
 		this.articleImageAssembler = articleImageAssembler;
 	}
-	//@RequiresPermissions("article:add")
+	@RequiresPermissions("ARTICLE:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(ArticleDto articleDto){
@@ -43,20 +44,65 @@ public class ArticleServiceImpl implements ArticleService {
 				articleDto.setAssociateImagesDtos(new ArrayList<ArticleImageDto>());
 		
 		Article article = articleAssembler.dtoToDomain(articleDto);
+
+		//Replace head value so that it is compatible for seo friendly url.
+		//Space or other character must be replace with '-'.
+		buildSEOFriendlyURLValue(article);
+
 		article.setAssociateImages(this.articleImageAssembler.dtosToDomains(articleDto.getAssociateImagesDtos()));
 		return articleDao.persist(article);
 		}
 		
+	/**
+	 * Build the correct seo friendly url by replacing space characrer ' ' with dash character '-'.
+	 * If there is any other character like ';' or ',' that will replaced too.
+	 * If we got the property empty from ui then we need to use the value from header field.
+	 * @return String correct valid value for seo friendly url
+	 */
+	private void buildSEOFriendlyURLValue(final Article article){
+		final String value = article.getSeoFriendlyUrl();
+		final String articleHeadValue = article.getHead();
 		
+		String valueToProcess=null;
+		char charToReplace[] = {' ',';',',','.'}; 
+		if (StringUtils.isEmpty(value)){
+			valueToProcess = articleHeadValue;
+		}
+		else {
+			valueToProcess=value;
+		}
+
+		for(int i=0;i<charToReplace.length;i++){
+			valueToProcess = valueToProcess.replace(charToReplace[i], '-');
+		}
 		
+
+		if (valueToProcess.endsWith("-")){
+			valueToProcess = valueToProcess.substring(0,valueToProcess.length()-2);
+		}
+
+		if (valueToProcess.startsWith("-")){
+			valueToProcess = valueToProcess.substring(1,valueToProcess.length()-1);
+		}
+
+		article.setSeoFriendlyUrl(valueToProcess);
+	}	
 	
+
+	@RequiresPermissions("ARTICLE:EDIT")
 	@Transactional(readOnly = false,propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(ArticleDto articleDto){
 		Validate.notNull(articleDto,"articleDto cannot be null");
-		articleDao.update(articleAssembler.dtoToDomain(articleDto));
+		
+		Article article = articleAssembler.dtoToDomain(articleDto);
+		//Replace head value so that it is compatible for seo friendly url.
+		//Space or other character must be replace with '-'.
+		buildSEOFriendlyURLValue(article);
+
+		articleDao.update(article);
 	}
-	
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findByAccountId(Integer accountId) {
@@ -64,7 +110,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findByAccountId(accountId));
 	}
 	
-
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Override
 	public Collection<ArticleDto> findBySearch(String header, String catagory) {
 		Validate.notNull(header,"header cannot be null");
@@ -74,7 +120,7 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 	
 	
-
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticle(int count) {
@@ -84,14 +130,14 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 		
-	
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ArticleDto findByUuid(String uuid) {
 		Validate.notNull(uuid,"uuid cannot be null");
 		return articleAssembler.domainToDto(articleDao.findByUuid(uuid));
 	}
-	
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ArticleDto findById(Integer id) {
@@ -101,7 +147,7 @@ public class ArticleServiceImpl implements ArticleService {
 		articleDto.setAssociateImagesDtos(this.articleImageAssembler.domainsToDtos(article.getAssociateImages()));
 		return articleDto;
 	}
-	
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer count, Integer start) {
@@ -110,13 +156,13 @@ public class ArticleServiceImpl implements ArticleService {
 		//Validate.notNull(count,"count cannot be null");
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count,start));
 	}
-
+	@RequiresPermissions("ARTICLE:DELETE")
 	@Override
 	public void delete(ArticleDto dtoToDelete) {
 		// TODO Auto-generated method stub
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 	}
-	
+	@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void updateAssociateImages(final ArticleDto articleDto){
@@ -125,10 +171,11 @@ public class ArticleServiceImpl implements ArticleService {
 		article.setAssociateImages(this.articleImageAssembler.dtosToDomains(articleDto.getAssociateImagesDtos()));
 		this.articleDao.update(article);
 	}
-
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-	@Override
-	public Collection<ArticleDto> findLatestArticleByCategory(
+	
+	@RequiresPermissions("ARTICLE:VIEW")
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public Collection<ArticleDto> findLatestArticleByCategory(
 		final Collection<Integer> categoryIds, final Integer siteId, Integer numberOfArticles, Integer start) {
 		Validate.notNull(categoryIds,"categoryIds collection cannot be null");
 //		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");

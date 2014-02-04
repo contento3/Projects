@@ -19,7 +19,6 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -112,8 +111,11 @@ import com.vaadin.ui.Window.CloseEvent;
 	        popupWindow.addCloseListener(this);
 	        popupWindow.setModal(true);
 	        
-	        UI.getCurrent().addWindow(popupWindow);
 	        final VerticalLayout popupMainLayout = new VerticalLayout();
+	        popupMainLayout.setSpacing(true);
+	        popupMainLayout.setMargin(true);
+
+	        popupWindow.setContent(popupMainLayout);
 	        final Label label = new Label("Site Name");
 	        label.setWidth(100,Unit.PERCENTAGE);
 	        final HorizontalLayout inputDataLayout = new HorizontalLayout();
@@ -151,13 +153,13 @@ import com.vaadin.ui.Window.CloseEvent;
 	        addButtonLayout.setComponentAlignment(siteAddButton, Alignment.BOTTOM_RIGHT);
 	        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
 	        
-	        popupWindow.setContent(popupMainLayout);
 	        popupWindow.setResizable(false);
+	        
 	        /* Allow opening only one window at a time. */
 	        openbutton.setEnabled(false);
 
 	        siteAddButton.setCaption("Add");
-		    popupWindow.setCaption("Add new group");
+		    popupWindow.setCaption("Add new site");
 		    siteAddButton.addClickListener(new ClickListener() {
 					private static final long serialVersionUID = 1L;
 					public void buttonClick(ClickEvent event) {

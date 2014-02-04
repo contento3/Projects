@@ -82,17 +82,24 @@ public class Article implements Serializable  {
 	 */
 	@Column (name = "LAST_UPDATED")
 	private Date lastUpdated;
+	
 	/**
 	 * Expiry date for article
 	 */
 	@Column (name = "EXPIRY_DATE")
 	private Date expiryDate;
+
 	/**
 	 * Article visibility
 	 */
 	@Column (name = "IS_VISIBLE")
 	private Integer isVisible;
 
+	/**
+	 * SEO Friendly keyword
+	 */
+	@Column (name = "SEO_FRIENDLY_URL")
+	private String seoFriendlyUrl;
 
 	/**
 	 * articles which are associated to site
@@ -245,7 +252,17 @@ public class Article implements Serializable  {
 		return associateImages;
 	}
 
-	public final void setAssociateImages(Collection<ArticleImage> associateImages) {
+	public final void setAssociateImages(final Collection<ArticleImage> associateImages) {
 		this.associateImages = associateImages;
 	}
+
+	public String getSeoFriendlyUrl() {
+		return seoFriendlyUrl;
+	}
+
+	public void setSeoFriendlyUrl(final String seoFriendlyUrl) {
+		this.seoFriendlyUrl = seoFriendlyUrl;
+	}
+
+
 }

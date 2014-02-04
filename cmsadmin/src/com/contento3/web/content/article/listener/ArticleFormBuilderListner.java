@@ -10,7 +10,6 @@ import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
@@ -115,7 +114,6 @@ public class ArticleFormBuilderListner implements ClickListener{
         articleForm.setContextHelper(helper);
         articleForm.setParentWindow(parentWindow);
         articleForm.setTabSheet(tabSheet);
-        
 	}
 	
 	
@@ -141,11 +139,11 @@ public class ArticleFormBuilderListner implements ClickListener{
 		
       final ArticleDto article = this.articleService.findById(editId);
 		articleForm.getArticleHeading().setValue(article.getHead());
-			articleForm.getArticleTeaser().setValue(article.getTeaser());
+		articleForm.getArticleTeaser().setValue(article.getTeaser());
 		articleForm.getBodyTextField().setValue(article.getBody());
 		articleForm.getPostedDatefield().setValue(article.getDatePosted());
 		articleForm.getExpiryDatefield().setValue(article.getExpiryDate());
-		
+		articleForm.getSeoFriendlyURL().setValue(article.getSeoFriendlyUrl());
 		return formLayout;
 	}
 	
@@ -154,10 +152,14 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 */
 	private void buildArticleUI(final String command,final Integer articleId){
 		formLayout = new VerticalLayout();
-        screenHeader = new ScreenHeader(formLayout,"Article");
+		//formLayout.setHeight(100,Unit.PERCENTAGE);
+		formLayout.setWidth(80,Unit.PERCENTAGE);
+
+		screenHeader = new ScreenHeader(formLayout,"Article");
 
 		parentLayout = new HorizontalLayout();
-		parentLayout.setHeight(75,Unit.PERCENTAGE);
+		parentLayout.setHeight(100,Unit.PERCENTAGE);
+		parentLayout.setWidth(100,Unit.PERCENTAGE);
 		parentLayout.addComponent(formLayout);
 		
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));
@@ -191,6 +193,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 			articleForm.getArticleTeaser().setValue("");
 			articleForm.getExpiryDatefield().setValue(null);
 			articleForm.getPostedDatefield().setValue(null);
+			articleForm.getSeoFriendlyURL().setValue("");
 		}
 		
 		articleForm.getArticleHeading().setCaption(ArticleMgmtUIManager.ARTICLE_HEADING_LBL);
@@ -198,7 +201,10 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleForm.getArticleTeaser().setCaption(ArticleMgmtUIManager.ARTICLE_TEASER_LBL);
 		articleForm.getArticleTeaser().setColumns(65);
 		articleForm.getArticleTeaser().setRows(3);
-		
+
+		articleForm.getSeoFriendlyURL().setCaption(ArticleMgmtUIManager.ARTICLE_SEO_LBL);
+		articleForm.getSeoFriendlyURL().setColumns(65);
+
 		articleForm.getConfig().disableElementsPath();
 		articleForm.getConfig().setResizeDir(CKEditorConfig.RESIZE_DIR.HORIZONTAL);
 		articleForm.getConfig().setToolbarCanCollapse(false);
@@ -224,10 +230,11 @@ public class ArticleFormBuilderListner implements ClickListener{
         articleForm.getExpiryDatefield().setInputPrompt("Insert Date");
         articleForm.getExpiryDatefield().setResolution(Resolution.DAY);
         
-        formLayout.setSpacing(true);
+        //formLayout.setSpacing(true);
         formLayout.setMargin(true);
         formLayout.addComponent(articleForm.getArticleHeading());
 	    formLayout.addComponent(articleForm.getArticleTeaser());
+	    formLayout.addComponent(articleForm.getSeoFriendlyURL());
 	    
 	    //Layout for article related dates
 	    final HorizontalLayout datesLayout = new HorizontalLayout();

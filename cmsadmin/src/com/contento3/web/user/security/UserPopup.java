@@ -2,6 +2,8 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -275,6 +277,7 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
 		catch (EntityNotCreatedException e) {
 			Notification.show("User not created", Notification.Type.ERROR_MESSAGE);
 		}
+		catch(AuthorizationException ex){}
 		Notification.show(userDto.getName()+" user created succesfully");
 		resetTable();
     }
@@ -284,11 +287,15 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
      * @param textField
      */
 	private void handleEditUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final String editId,final PasswordField password){
+		try
+		{
 		final SaltedHibernateUserDto userDto = userService.findUserByUsername(editId);
 		userDto.setUserName(username.getValue().toString());
 		userDto.setPassword(password.getValue().toString());
 		//userService.update(userDto);
 		Notification.show(userDto.getName()+" user edit succesfully");
+	}
+	catch(AuthorizationException ex){}
 		resetTable();
     }
 	
@@ -298,10 +305,14 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
 	 @SuppressWarnings("rawtypes")
 		private void resetTable(){
 			final AbstractTableBuilder tableBuilder = new UserTableBuilder(helper,userTable);
+			try
+			{
 			final Collection<SaltedHibernateUserDto> userDto = userService.findUsersByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+			
 			tableBuilder.rebuild((Collection)userDto);
 			layout.removeComponent(popupWindow);
-
+	 }
+		catch(AuthorizationException ex){}
 	        openbutton.setEnabled(true);
 	    }
 	 

@@ -1,5 +1,6 @@
 package com.contento3.web.content.article.listener;
 
+import org.apache.shiro.authz.AuthorizationException;
 import org.vaadin.dialogs.ConfirmDialog;
 
 import com.contento3.cms.article.dto.ArticleDto;
@@ -48,12 +49,14 @@ public class ArticleDeleteClickListner extends EntityDeleteClickListener<Article
 						public void onClose(ConfirmDialog dialog) {
 			                if (dialog.isConfirmed()) {
 			                    // Confirmed to continue
-			                	getDtoToDelete().setIsVisible(0);
-			                	((ArticleService) getService()).update(getDtoToDelete());
-			                	getTable().removeItem(id);
-			                	getTable().setPageLength(getTable().getPageLength()-1);
-			        			Notification.show(getDtoToDelete().getHead()+" article deleted succesfully");
-			                	
+			                	try
+			                	{
+			                		getDtoToDelete().setIsVisible(0);
+			                		((ArticleService) getService()).update(getDtoToDelete());
+			                		getTable().removeItem(id);
+			                		getTable().setPageLength(getTable().getPageLength()-1);
+			        				Notification.show(getDtoToDelete().getHead()+" article deleted succesfully");
+			                	}catch(AuthorizationException ex){Notification.show("You are not permitted to delete articles");}
 			                } else {
 			                    // User did not confirm
 			                    

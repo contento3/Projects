@@ -3,6 +3,7 @@ package com.contento3.web.content.article.listener;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.service.ArticleImageService;
@@ -14,6 +15,7 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -112,6 +114,8 @@ public class ArticleAsscContentScopeListener extends CustomComponent implements 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void buildAssociateContentScopeTable(){
+        try 
+		{
 		ArticleImageService service = (ArticleImageService) this.helper.getBean("articleImageService");
 		Collection<ArticleImageDto> artImage = service.findAsscArticleImageById(this.article.getId(), image.getId());
 		Collection<AssociatedContentScopeDto> contentScope = new ArrayList<AssociatedContentScopeDto>();
@@ -122,6 +126,10 @@ public class ArticleAsscContentScopeListener extends CustomComponent implements 
 		AbstractTableBuilder tableBuilder = new AsscContentScopeTableBuilder(table);
 		tableBuilder.build((Collection)contentScope);
 		this.popupMainLayout.addComponent(table);	
+		}
+		catch(AuthorizationException ex){
+		Notification.show("You are not permitted");
+		}
 	}
 	
 	  /**

@@ -283,7 +283,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         //Then add the content SearchUI object that renders the content search ui
         final SearchUI searchUI = new SearchUI();
         mainAndContentSplitter.addComponent(searchUI.render());
-        mainAndContentSplitter.setSplitPosition(75,Unit.PERCENTAGE);
+        mainAndContentSplitter.setSplitPosition(85,Unit.PERCENTAGE);
         
         mainAndContentSplitter.addSplitterClickListener(new SplitterClickListener(){
 			/**
@@ -295,7 +295,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 				float splitPosition = mainAndContentSplitter.getSplitPosition();
 				
 		        if (splitPosition==96)
-		        	mainAndContentSplitter.setSplitPosition(75,Unit.PERCENTAGE);
+		        	mainAndContentSplitter.setSplitPosition(85,Unit.PERCENTAGE);
 		        else
 		        	mainAndContentSplitter.setSplitPosition(96,Unit.PERCENTAGE);
 			}
@@ -303,7 +303,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
         // Add a horizontal SplitPanel to the lower area
         horiz.setLocked(true);
-        horiz.setSplitPosition(15);
+        horiz.setSplitPosition(12);
         
         horiz.addSplitterClickListener(new SplitterClickListener(){
 			/**

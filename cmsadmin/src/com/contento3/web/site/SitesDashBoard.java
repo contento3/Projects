@@ -11,11 +11,11 @@ import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.UIManager;
-import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.SiteCreateListener;
+import com.contento3.web.site.listener.SiteCreatePopup;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -131,12 +131,12 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		panel.setSizeUndefined(); // Shrink to fit content
 		dashboardRow.addComponent(panel);
 		dashboardRow.setMargin(true);
-		panel.setContent(createDashBoardItem("Start creating websites right here.You can create multiple websites under one account.","Create a site","sites-96.png",new SiteCreateListener(helper,siteDashboardTab,verticalLayout)));
-
-		final Panel panel2 = new Panel();
-		panel2.setContent(createDashBoardItem("You can create as many pages as you want for sites you have under your account.","Create a page","pages-icon-96.png",new SiteCreateListener(helper,siteDashboardTab,verticalLayout)));
-		panel2.setSizeUndefined(); // Shrink to fit content
-		dashboardRow.addComponent(panel2);
+		panel.setContent(createDashBoardItem("Start creating websites right here.You can create multiple websites under one account.","Create a site","sites-96.png",new SiteCreatePopup(helper)));
+//TODO
+//		final Panel panel2 = new Panel();
+//		panel2.setContent(createDashBoardItem("You can create as many pages as you want for sites you have under your account.","Create a page","pages-icon-96.png",new SiteCreateListener(helper,siteDashboardTab,verticalLayout)));
+//		panel2.setSizeUndefined(); // Shrink to fit content
+//		dashboardRow.addComponent(panel2);
 		
 		return dashboardRow;
 	}	

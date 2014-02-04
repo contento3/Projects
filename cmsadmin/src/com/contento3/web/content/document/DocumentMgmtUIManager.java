@@ -6,20 +6,27 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
+import com.contento3.security.model.Permission;
 import com.contento3.security.permission.dao.PermissionDao;
+import com.contento3.security.permission.service.PermissionAssembler;
+import com.contento3.security.user.dao.SaltedHibernateUserDao;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
-import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.content.document.listener.AddDocumentButtonListener;
 import com.contento3.web.content.document.listener.DocumentFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.listener.AddPageButtonClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
@@ -27,6 +34,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -92,7 +100,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	}
 
 	@Override
-	public Component render(final String command) {
+	public Component render(String command) {
 		this.tabSheet.setHeight(100, Unit.PERCENTAGE);
 		
 		if (null==tabSheet.getTab(verticalLayout)){
@@ -135,21 +143,22 @@ public class DocumentMgmtUIManager implements UIManager {
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		//com.contento3.security.permission.model.Permission permission =  permissionDao.findById(17);
 		Subject currentUser = SecurityUtils.getSubject();
-		if (currentUser.isPermitted("document:add"))
+		try
 		{
 			listeners.add(new AddDocumentButtonListener(this.contextHelper,this.tabSheet,this.documentTable));
-			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"site",listeners);
-			builder.build();
 		}
+		catch(AuthorizationException ex){Notification.show("You are not permitted to add documents");}
 		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
 		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"site",listeners);
+		builder.build();
 		horizontal.addComponent(toolbarGridLayout);
 		horizontal.setWidth(100,Unit.PERCENTAGE);
 		horizontal.setExpandRatio(verticaal, 8);
 		horizontal.setExpandRatio(toolbarGridLayout, 1);
 		verticaal.addComponent(new HorizontalRuler());
-		addDocumentButton();
-		renderDocumentTable();
+		//addDocumentButton();
+		//renderDocumentTable();
 	}
 	
 	/**
@@ -158,8 +167,10 @@ public class DocumentMgmtUIManager implements UIManager {
 	@SuppressWarnings("unchecked")
 	private void renderDocumentTable() {
 		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper, this.tabSheet, this.documentTable);
-		Collection<DocumentDto> documents = this.documentService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
-		tableBuilder.build((Collection)documents);
+		try {
+		Collection<DocumentDto> documents = this.documentService.findByAccountId(accountId);
+		tableBuilder.build((Collection)documents);}
+		catch(AuthorizationException ex){Notification.show("You are not permitted to view documents");}
 		this.verticalLayout.addComponent(this.documentTable);
 		
 	}
@@ -169,14 +180,14 @@ public class DocumentMgmtUIManager implements UIManager {
 	 */
 	
 	private void addDocumentButton(){
-	//	com.contento3.security.permission.model.Permission permission =  permissionDao.findById(17);
-//		Subject currentUser = SecurityUtils.getSubject();
-//		if (currentUser.isPermitted("document:add"))
-//		{
+		com.contento3.security.permission.model.Permission permission =  permissionDao.findById(17);
+		Subject currentUser = SecurityUtils.getSubject();
+		if (currentUser.isPermitted("document:add"))
+		{
 		final Button addButton = new Button("Add Document");
 		addButton.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,this.documentTable));
 		this.verticalLayout.addComponent(addButton);
-//		}
+		}
 		
 	}
 	

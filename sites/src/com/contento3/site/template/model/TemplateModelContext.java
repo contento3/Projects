@@ -52,5 +52,5 @@ public class TemplateModelContext implements TemplateHashModel {
 	public boolean isEmpty() throws TemplateModelException {
 		return (models == null) ? true : models.isEmpty();
 	}
-
+	
 }

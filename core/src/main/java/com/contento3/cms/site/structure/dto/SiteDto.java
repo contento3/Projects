@@ -30,12 +30,12 @@ public class SiteDto implements Serializable {
 	 * layout for site
 	 */
 	private Integer defaultLayoutId;
-
-	/**
-	 * page for site
-	 */
-	private Integer defaultPageId;
 	
+	/**
+     * page for site
+     */
+    private Integer defaultPageId;
+    
 	/**
 	 * sitedomains for site
 	 */
@@ -86,10 +86,12 @@ public class SiteDto implements Serializable {
 	public void setSiteName(final String siteName) {
 		this.siteName = siteName;
 	}
+	
 	public Integer getDefaultPageId() {
-		return defaultPageId;
+          return defaultPageId;
 	}
+	
 	public void setDefaultPageId(final Integer defaultPageId) {
-		this.defaultPageId = defaultPageId;
+          this.defaultPageId = defaultPageId;
 	}
 }

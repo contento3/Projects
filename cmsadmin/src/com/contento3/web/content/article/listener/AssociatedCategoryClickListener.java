@@ -3,6 +3,7 @@
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.util.CachedTypedProperties;
@@ -13,6 +14,7 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -127,12 +129,15 @@ public class AssociatedCategoryClickListener extends EntityListener implements W
 
 	@Override
 	public void click(ClickEvent event) {
+		try
+		{
 		this.vLayout = new VerticalLayout();
 		this.table = new Table();
 		AbstractTableBuilder categoryTable = new AssociatedCategoryTableBuilder(table);
 		categoryTable.build((Collection)articleService.findById(articleId).getCategoryDtos());
 		vLayout.addComponent(table);
-		renderPopUp();
+		renderPopUp();}
+		catch(AuthorizationException ex){Notification.show("You are not permitted to view categories of articles");}
 	}
 
 }

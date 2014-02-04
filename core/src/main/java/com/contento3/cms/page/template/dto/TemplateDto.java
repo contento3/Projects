@@ -76,12 +76,12 @@ public class TemplateDto {
 		return templateDirectoryDto;
 	}
 
-	public String getTemplatePath() {
-		return templatePath;
-	}
+    public String getTemplatePath() {
+        return templatePath;
+}
 
-	public void setTemplatePath(final String templatePath) {
-		this.templatePath = templatePath;
-	}
+    public void setTemplatePath(final String templatePath) {
+        this.templatePath = templatePath;
+    }
 
 }

@@ -2,6 +2,8 @@ package com.contento3.web.content.document.listener;
 
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.account.service.AccountService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
@@ -143,6 +145,7 @@ public class DocumentSaveListener implements ClickListener {
 			//e.printStackTrace();
 			return;
 		}
+		catch(AuthorizationException ex){Notification.show("You are not permitted to Add or Update the Document");}
 		
 		/* At this point we can assume that the document has been created.
 		 * Otherwise, Java would've thrown an exception by now.

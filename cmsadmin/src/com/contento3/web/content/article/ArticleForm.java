@@ -14,6 +14,11 @@ public class ArticleForm extends UIContext {
 	 */
 	private TextField articleHeading = new TextField();
 
+	/**
+	 * Textfield for article heading
+	 */
+	private TextField seoFriendlyURL = new TextField();
+
 	
 	/**
 	 * TextField article teaser
@@ -44,16 +49,10 @@ public class ArticleForm extends UIContext {
 	 * Article Heading
 	 * @return
 	 */
-	
-	
-	
-	
 	public TextField getArticleHeading() {
-	
 		articleHeading.setRequired(true);
 		articleHeading.setRequiredError("header Required");
 		return articleHeading;
-		
 	}
 
 	/**
@@ -132,7 +131,6 @@ public class ArticleForm extends UIContext {
 	 */
 	public void setBodyTextField(final CKEditorTextField bodyTextField) {
 		this.bodyTextField = bodyTextField;
-		
 		this.bodyTextField.setRequired(true);
 		this.bodyTextField.setRequiredError("body required");
 	}
@@ -152,6 +150,14 @@ public class ArticleForm extends UIContext {
 	public void setExpiryDatefield(final PopupDateField expiryDatefield) {
 		this.expiryDatefield = expiryDatefield;
 
+	}
+
+	public TextField getSeoFriendlyURL() {
+		return seoFriendlyURL;
+	}
+
+	public void setSeoFriendlyURL(final TextField seoFriendlyURL) {
+		this.seoFriendlyURL = seoFriendlyURL;
 	}
 
 }

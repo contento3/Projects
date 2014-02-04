@@ -3,6 +3,9 @@ package com.contento3.web.content.article.listener;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
@@ -65,16 +68,16 @@ public class ArticleSaveListener implements ClickListener{
 
 	 
 	@Override
-	public void click(ClickEvent event) {
+	public void click(final ClickEvent event) {
 		ArticleDto articleDto = new ArticleDto();
 
 		if (null!= articleId){
 			articleDto = articleService.findById(articleId);
 		}
 			
-			articleDto.setHead(articleForm.getArticleHeading().getValue().toString());
-			articleDto.setTeaser(articleForm.getArticleTeaser().getValue().toString());
-			articleDto.setBody(articleForm.getBodyTextField().getValue().toString());
+		articleDto.setHead(articleForm.getArticleHeading().getValue().toString());
+		articleDto.setTeaser(articleForm.getArticleTeaser().getValue().toString());
+		articleDto.setBody(articleForm.getBodyTextField().getValue().toString());
 		
 		final String unsaveNotification ="cannot add article";
 		final String saveNotification =articleDto.getHead()+" saved successfully";
@@ -86,6 +89,8 @@ public class ArticleSaveListener implements ClickListener{
 			Notification.show(unsaveNotification);
 		}
 		else{
+			try
+			{
 			final Date createdDate= new Date();
 			articleDto.setDateCreated(createdDate);
 			articleDto.setLastUpdated(createdDate);
@@ -97,16 +102,15 @@ public class ArticleSaveListener implements ClickListener{
 			articleDto.setIsVisible(1);
 			articleForm.getPostedDatefield().getValue();
 			articleDto.setDatePosted((Date)articleForm.getPostedDatefield().getValue());
-		
+			articleDto.setSeoFriendlyUrl(articleForm.getSeoFriendlyURL().getValue());
+			
 		//new article is creating is article id == null
 		if (null==articleId){
 			articleDto.setDateCreated(new Date());
 			articleDto.setAccount(accountService.findAccountById(accountId));
 			articleService.create(articleDto);
 			Notification.show(saveNotification);
-			//tabSheet.removeTab(articleTab);
 			resetTable();
-			//tabSheet.removeTab(articleTab);
 		}
 		else{
 			articleService.update(articleDto);
@@ -114,7 +118,8 @@ public class ArticleSaveListener implements ClickListener{
 			//tabSheet.removeTab(articleTab);
 			resetTable();
 			//tabSheet.removeTab(articleTab);
-		}
+		}}
+			catch(AuthorizationException ex){Notification.show("You are not permitted to update articles");}
 		   
 	  }
 		
