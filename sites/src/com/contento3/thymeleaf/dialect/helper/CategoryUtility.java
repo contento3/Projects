@@ -14,6 +14,7 @@ import org.thymeleaf.dialect.AbstractDialect;
 import org.thymeleaf.dialect.IExpressionEnhancingDialect;
 import org.thymeleaf.processor.IProcessor;
 
+import com.amazonaws.http.HttpRequest;
 import com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
@@ -22,7 +23,7 @@ import com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest;
 import com.contento3.site.template.model.TemplateModelMap;
 import com.contento3.site.template.model.TemplateModelMapImpl;
 
-public class ThymeUtility {
+public class CategoryUtility {
     /**
      * Format a Joda DateTime using the given pattern.
      *
@@ -42,7 +43,7 @@ public class ThymeUtility {
 //            html += "</ul>";
             return categoryList;
     }
-	public ThymeUtility() {
+	public CategoryUtility() {
 		ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
 		this.categoryService = (CategoryService) ctx.getBean("categoryService");
 	}

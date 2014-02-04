@@ -74,14 +74,16 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Article> findLatestArticleBySiteId(final Integer siteId,final Integer count) {
+	public Collection<Article> findLatestArticleBySiteId(final Integer siteId,final Integer count, Integer start) {
 		Validate.notNull(siteId,"siteId cannot be null");
-
+		if (start == null){
+			start = 0;
+		}
 		final Criteria criteria = this.getSession()
 				.createCriteria(Article.class)
 				.addOrder(Order.desc("dateCreated"))
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-				.setFirstResult(0)
+				.setFirstResult(start)
 				.add(Restrictions.eq("isVisible", 1))
 				.createCriteria("site")
 				.add(Restrictions.eq("siteId", siteId));
@@ -96,25 +98,27 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Article> findLatestArticleByCategory(final Collection<Integer> categoryIds,
-		final Integer numberOfArticles,final Integer siteId) {
+		final Integer numberOfArticles,final Integer siteId, final Integer start) {
 			Validate.notNull(categoryIds,"categoryIds cannot be null");
 			Validate.notNull(siteId,"siteId cannot be null");
-			Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
-
+//			Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
+			
 		final Criteria criteria = this.getSession()
 			.createCriteria(Article.class)
 		    //.addOrder(Order.desc("dateCreated"))
 		    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-		    //.setFirstResult(0).setMaxResults(numberOfArticles)
+		    .setFirstResult(0)
 		    .add(Restrictions.eq("isVisible", 1))
 		    .createAlias("site", "s")
 		    .add(Restrictions.eq("s.siteId", siteId));
 
-			if (CollectionUtils.isEmpty(categoryIds)){
+			if (! CollectionUtils.isEmpty(categoryIds)){
 				criteria.createCriteria("categories","c")
 				.add(Restrictions.in("c.categoryId", categoryIds));
 			}
-		    
+		    if(numberOfArticles != null){
+		    	criteria.setMaxResults(numberOfArticles);
+		    }
 			return criteria.list();
 	}
 

@@ -104,11 +104,11 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId,Integer count) {
+	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer count, Integer start) {
 		// TODO Auto-generated method stub
 		Validate.notNull(siteId,"siteId cannot be null");
 		//Validate.notNull(count,"count cannot be null");
-		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count));
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count,start));
 	}
 
 	@Override
@@ -129,12 +129,12 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticleByCategory(
-		final Collection<Integer> categoryIds, final Integer numberOfArticles, final Integer siteId) {
+		final Collection<Integer> categoryIds, final Integer siteId, Integer numberOfArticles, Integer start) {
 		Validate.notNull(categoryIds,"categoryIds collection cannot be null");
-		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
+//		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
 		Validate.notNull(siteId,"siteId cannot be null");
 		
-		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryIds, numberOfArticles, siteId));
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryIds, numberOfArticles, siteId, start));
 	}
 
 	@Override

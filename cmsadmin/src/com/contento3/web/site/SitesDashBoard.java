@@ -288,7 +288,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 			}
 		}
 		
-		articleDto = articleService.findLatestArticleBySiteId(siteId, 5);
+		articleDto = articleService.findLatestArticleBySiteId(siteId, 5,null);
 		if(!articleDto.isEmpty()){
 			for(ArticleDto article: articleDto){
 					Item item = articleContainer.addItem(article.getId());

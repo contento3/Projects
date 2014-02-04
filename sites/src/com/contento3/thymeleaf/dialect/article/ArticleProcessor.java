@@ -301,7 +301,7 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 		    	categoryIdList.add(Integer.parseInt(categoryIdsArray[index]));
 		    }
 		}
-	   return articleService.findLatestArticleByCategory(categoryIdList, count, siteId);
+	   return articleService.findLatestArticleByCategory(categoryIdList, siteId, count, null);
 	}
 
 	private ArticleDto fetchSingle(final Integer articleId){

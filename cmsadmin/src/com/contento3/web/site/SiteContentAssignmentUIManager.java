@@ -134,7 +134,7 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		listOfColumns.add("Articles");
 		GenricEntityPicker contentPicker;
 		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
-		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null));
+		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null,null));
 		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);
 		contentPicker.setCaption("Assign Content to Site");
 		contentPicker.build();

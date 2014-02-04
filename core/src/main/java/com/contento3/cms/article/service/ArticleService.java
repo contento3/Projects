@@ -58,7 +58,7 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	 * @param siteId
 	 * @return
 	 */
-	Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId,Integer count);
+	Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer limit, Integer start);
 	
 	/**
 	 * Finds a {@link Collection} of Article for a site for a given category.
@@ -67,7 +67,7 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	 * @param siteId
 	 * @return
 	 */
-	Collection<ArticleDto> findLatestArticleByCategory(Collection<Integer> categoryIds,Integer numberOfArticles,Integer siteId);
+	Collection<ArticleDto> findLatestArticleByCategory(Collection<Integer> categoryIds,Integer siteId, Integer limit, Integer start);
 
 	/**
 	 * Add associated images to article

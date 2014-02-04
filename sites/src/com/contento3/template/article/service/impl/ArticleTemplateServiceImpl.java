@@ -28,7 +28,7 @@ public class ArticleTemplateServiceImpl implements ArticleTemplateService {
 			final Integer categoryId,final Integer numberOfArticles,final Integer siteId) {
 		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
 		Validate.notNull(siteId,"siteId cannot be null");
-		return (List<ArticleTemplateDto>) articleTemplateAssembler.assemble(articleService.findLatestArticleByCategory(CollectionUtils.asList(categoryId), numberOfArticles, siteId));
+		return (List<ArticleTemplateDto>) articleTemplateAssembler.assemble(articleService.findLatestArticleByCategory(CollectionUtils.asList(categoryId), siteId, numberOfArticles, null));
 	}
 
 	@Override

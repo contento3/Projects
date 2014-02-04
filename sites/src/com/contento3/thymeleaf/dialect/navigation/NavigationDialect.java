@@ -12,7 +12,8 @@ import org.thymeleaf.processor.IProcessor;
 
 import com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl;
 import com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest;
-import com.contento3.thymeleaf.dialect.helper.ThymeUtility;
+import com.contento3.thymeleaf.dialect.helper.ArticleUtility;
+import com.contento3.thymeleaf.dialect.helper.CategoryUtility;
 
 public class NavigationDialect extends AbstractDialect implements IExpressionEnhancingDialect  {
 
@@ -47,7 +48,8 @@ public class NavigationDialect extends AbstractDialect implements IExpressionEnh
 	public Map<String, Object> getAdditionalExpressionObjects(
 			IProcessingContext arg0) {
 		HashMap<String,Object> expressionobjects = new HashMap<String,Object>();
-        expressionobjects.put("utility", new ThymeUtility());
+		expressionobjects.put("CategoryUtility", new CategoryUtility());
+		expressionobjects.put("ArticleUtility", new ArticleUtility());
         return expressionobjects;
 	}
 }
