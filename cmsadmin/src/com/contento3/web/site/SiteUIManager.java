@@ -3,8 +3,6 @@ package com.contento3.web.site;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.page.service.PageService;
@@ -16,13 +14,11 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.common.helper.TextFieldRendererHelper;
-import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.ContentAssignerEventListener;
 import com.contento3.web.site.listener.CreatePageEventListener;
 import com.contento3.web.site.listener.SiteConfigurationEventListener;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -32,10 +28,8 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * Used to render ui related to sites and site pages.

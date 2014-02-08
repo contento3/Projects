@@ -3,7 +3,6 @@ package com.contento3.cms.site.structure.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +41,7 @@ public class SiteServiceImpl implements SiteService {
 		this.siteAssembler = siteAssembler;
 		this.pageLayoutDao = pageLayoutDao;
 	}
-	@RequiresPermissions("SITE:ADD")
+//	@RequiresPermissions("SITE:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(SiteDto siteDto) {
@@ -54,7 +53,7 @@ public class SiteServiceImpl implements SiteService {
 		Site site = siteAssembler.dtoToDomain(siteDto);
 		return siteDao.persist(site);
 	}
-	@RequiresPermissions("SITE:EDIT")
+	//@RequiresPermissions("SITE:EDIT")
 	@Transactional(readOnly = false)
 	@Override
 	public SiteDto update(SiteDto siteDto){
@@ -64,7 +63,7 @@ public class SiteServiceImpl implements SiteService {
 		return siteAssembler.domainToDto(site);
 	}
 	
-	@RequiresPermissions("SITE:VIEW")
+	//@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public SiteDto findSiteById(Integer siteId){
@@ -72,21 +71,23 @@ public class SiteServiceImpl implements SiteService {
 		return siteAssembler.domainToDto(siteDao.findById(siteId));
 	}
 
-	@RequiresPermissions("SITE:VIEW")
+	//@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public SiteDto findSiteByDomain(String domain){
+	public SiteDto findSiteByDomain(String domain, boolean isPublished){
 		Validate.notNull(domain,"domain cannot be null");
-		return siteAssembler.domainToDto(siteDao.findByDomain(domain));
+		return siteAssembler.domainToDto(siteDao.findByDomain(domain, isPublished));
 	}
-	@RequiresPermissions("SITE:VIEW")
+	
+	//@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<SiteDto> findSitesByAccountId(Integer accountId) {
+	public Collection<SiteDto> findSitesByAccountId(Integer accountId, boolean isPublished) {
 		Validate.notNull(accountId,"accountId cannot be null");
-		return siteAssembler.domainsToDtos(siteDao.findByAccount(accountId));
+		return siteAssembler.domainsToDtos(siteDao.findByAccount(accountId, isPublished));
 	}
-	@RequiresPermissions("SITE:DELETE")
+	
+//	@RequiresPermissions("SITE:DELETE")
 	@Override
 	public void delete(SiteDto dtoToDelete) {
 		// TODO Auto-generated method stub

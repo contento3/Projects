@@ -449,7 +449,8 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	            		// so that this new site is added and hence displayed to the tree 
 	            		//if (CollectionUtils.isEmpty(sites)){
 	            			SiteService siteService = (SiteService) helper.getBean("siteService");
-	            			sites = siteService.findSitesByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+	            			System.out.println("account id:" + (Integer)SessionHelper.loadAttribute("accountId"));
+	            			sites = siteService.findSitesByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false);
 	            		//}
 	            	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
 	            			

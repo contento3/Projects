@@ -33,9 +33,7 @@ public class CachingFilter extends SimplePageCachingFilter {
 	    String domainName = DomainUtil.fetchDomain(httpRequest);
 	    LOGGER.info("Page Controller for request uri: "+domainName);
 	    try {
-	    		site = siteService.findSiteByDomain(
-	    			domainName
-	    			);
+	    		site = siteService.findSiteByDomain(domainName, true);
 	    	
 		} catch (Exception e) {
 			LOGGER.error("Invalid request",e);

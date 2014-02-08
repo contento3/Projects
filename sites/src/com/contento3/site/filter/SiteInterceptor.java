@@ -29,7 +29,7 @@ public class SiteInterceptor extends HandlerInterceptorAdapter {
 		    SiteDto site=null;
 		    String domainName = DomainUtil.fetchDomain(request);
 		    if( !domainName.equals("localhost") ){
-				site = siteService.findSiteByDomain(domainName);
+				site = siteService.findSiteByDomain(domainName, true);
 		    }
 		    else if(request.getParameter("siteId")!= null){
 				site = siteService.findSiteById( Integer.parseInt(request.getParameter("siteId")));

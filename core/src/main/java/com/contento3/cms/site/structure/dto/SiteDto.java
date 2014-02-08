@@ -3,6 +3,8 @@ package com.contento3.cms.site.structure.dto;
 import java.io.Serializable;
 import java.util.Collection;
 
+import javax.persistence.Column;
+
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
 
@@ -47,6 +49,20 @@ public class SiteDto implements Serializable {
 	 */
 	private String language;
 	
+	/**
+	 *Publish/Unpublish status for site
+	 */
+	@Column(name = "STATUS")
+	private Integer status;
+
+
+	public Integer getStatus() {
+		return status;
+	}
+	
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 	
 	public String getLanguage() {
 		return language;
