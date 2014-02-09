@@ -3,6 +3,7 @@ package com.contento3.cms.site.structure.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +80,7 @@ public class SiteServiceImpl implements SiteService {
 		Validate.notNull(domain,"domain cannot be null");
 		return siteAssembler.domainToDto(siteDao.findByDomain(domain));
 	}
+	
 	@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override

@@ -1,43 +1,36 @@
 package com.contento3.web.user.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.authz.AuthorizationException;
 
-import com.contento3.account.dto.AccountDto;
-import com.contento3.account.service.AccountService;
+import com.contento3.common.dto.Dto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
-import com.contento3.security.entity.dao.EntityDao;
 import com.contento3.security.entity.dto.EntityDto;
-import com.contento3.security.entity.model.PermissionEntity;
-import com.contento3.security.entity.service.EntityAssembler;
 import com.contento3.security.entity.service.EntityService;
 import com.contento3.security.entityoperation.dto.EntityOperationDto;
-import com.contento3.security.entityoperation.service.EntityOperationAssembler;
 import com.contento3.security.entityoperation.service.EntityOperationService;
 import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.permission.service.PermissionService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
-import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Notification;
 
 public class PermissionPopup extends CustomComponent implements Window.CloseListener,Button.ClickListener{
 
@@ -97,7 +90,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
     }
 	
 	public void openButtonClick(Button.ClickEvent event) {
-		// TODO Auto-generated method stub
+
 		/* Create a new window. */
         final Button permissionButton = new Button();
 		popupWindow = new Window();
@@ -105,77 +98,89 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(61,Sizeable.UNITS_PERCENTAGE);
-    	popupWindow.setWidth(40,Sizeable.UNITS_PERCENTAGE);
+    	popupWindow.setHeight(38,Unit.PERCENTAGE);
+    	popupWindow.setWidth(30,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
         UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        popupWindow.addListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
         
         final VerticalLayout popupMainLayout = new VerticalLayout();
         final Label label = new Label("Permission Id");
-        label.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        label.setWidth(100,Unit.PERCENTAGE);
         final HorizontalLayout inputDataLayout = new HorizontalLayout();
         final TextField permissionIdTxtFld = new TextField("Permission Id");
         permissionIdTxtFld.setInputPrompt("Enter Permission Id");
-        permissionIdTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
+        permissionIdTxtFld.setWidth(100,Unit.PERCENTAGE);
         permissionIdTxtFld.setColumns(15);
         
         inputDataLayout.setSizeFull();
         inputDataLayout.setSpacing(true);
-        inputDataLayout.addComponent(permissionIdTxtFld);
-        inputDataLayout.setComponentAlignment(permissionIdTxtFld, Alignment.TOP_LEFT);
+       // inputDataLayout.addComponent(permissionIdTxtFld);
+       // inputDataLayout.setComponentAlignment(permissionIdTxtFld, Alignment.TOP_LEFT);
         
         popupMainLayout.setSpacing(true);
+        popupMainLayout.setMargin(true);
         popupMainLayout.addComponent(inputDataLayout);
        
        
 
         /* adding first name text field */
         final HorizontalLayout firstNameLayout = new HorizontalLayout();
-       
-        final ComboBox Entity= new ComboBox("Entity Id");
-        Collection<EntityDto> entityDto=   entityService.findAllEntities();
-        for(EntityDto dto:entityDto)
-        {
-        	Entity.addItem(dto.getId());
-        }
+
+        ComboDataLoader comboLoader =  new ComboDataLoader();
+
+        Collection<Dto> entityDtos= (Collection) entityService.findAllEntities();
+        final ComboBox entityCombo= new ComboBox("Entity",comboLoader.loadDataInContainer(entityDtos));
+
+        entityCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
+        entityCombo.setItemCaptionPropertyId("name");
+
+//        for(EntityDto dto:entityDto)
+//        {
+//        	Entity.addItem(dto.getId());
+//        }
         
         firstNameLayout.setSizeFull();
         firstNameLayout.setSpacing(true);
-        firstNameLayout.addComponent(Entity);
-        firstNameLayout.setComponentAlignment(Entity, Alignment.TOP_LEFT);
+        firstNameLayout.addComponent(entityCombo);
+        firstNameLayout.setComponentAlignment(entityCombo, Alignment.TOP_LEFT);
      	popupMainLayout.addComponent(firstNameLayout);
         
-        firstNameLayout.addComponent(Entity);
+        firstNameLayout.addComponent(entityCombo);
         popupMainLayout.addComponent(firstNameLayout);
         final HorizontalLayout lastNameLayout = new HorizontalLayout();
           
+        
           //final TextField EntityOperationTxtFld = new TextField("Entity Operation id");
-          final ComboBox EntityOperation= new ComboBox("Entity Operation Id");
-          Collection<EntityOperationDto> entityOperationDto=   entityOperationService.findAllEntityOperations();
-          for(EntityOperationDto dto:entityOperationDto)
-          {
-          	EntityOperation.addItem(dto.getId());
-          }
+          Collection<Dto> entityOperationDto= (Collection)  entityOperationService.findAllEntityOperations();
+          final ComboBox entityOperationCombo= new ComboBox("Entity Operation:",comboLoader.loadDataInContainer(entityOperationDto));
+
+          entityOperationCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
+          entityOperationCombo.setItemCaptionPropertyId("name");
+
+//          for(EntityOperationDto dto:entityOperationDto)
+//          {
+//          	EntityOperation.addItem(dto.getId());
+//          }
           //EntityOperationTxtFld.setInputPrompt("Enter Entity Operation id");
           //EntityOperationTxtFld.setWidth(100,Sizeable.UNITS_PERCENTAGE);
           //EntityOperationTxtFld.setColumns(15);
-         
+          
           lastNameLayout.setSizeFull();
           lastNameLayout.setSpacing(true);
-          lastNameLayout.addComponent(EntityOperation);
-          lastNameLayout.setComponentAlignment(EntityOperation, Alignment.TOP_LEFT);
+          lastNameLayout.addComponent(entityOperationCombo);
+          lastNameLayout.setComponentAlignment(entityOperationCombo, Alignment.TOP_LEFT);
        	popupMainLayout.addComponent(lastNameLayout);
         final HorizontalLayout addButtonLayout = new HorizontalLayout();
         popupMainLayout.addComponent(addButtonLayout);
 
         addButtonLayout.addComponent(permissionButton);
         addButtonLayout.setComponentAlignment(permissionButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
         
         popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
@@ -189,13 +194,13 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 			PermissionDto permissionDto = permissionService.findById(permissionId);
 			//roleNameTxtFld.setValue(roleDto.getName());
 			permissionIdTxtFld.setValue(Integer.toString(permissionDto.getId()));
-        	permissionButton.addListener(new ClickListener(){
+        	permissionButton.addClickListener(new ClickListener(){
     			private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
     			{
    					try
    					{
-    				handleEditPermission(Entity,EntityOperation,Integer.parseInt(permissionIdTxtFld.getValue().toString()));
+    				handleEditPermission(entityCombo,entityOperationCombo,Integer.parseInt(permissionIdTxtFld.getValue().toString()));
    					}catch(AuthorizationException ex){}
    				}
             	});
@@ -204,14 +209,14 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
         {
         
         	permissionButton.setCaption("Add");
-        	popupWindow.setCaption("Add new permission");
-        	permissionButton.addListener(new ClickListener() {
+        	popupWindow.setCaption("Add Permission");
+        	permissionButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) 
 			{
 				try
 				{
-					handleNewPermission(permissionIdTxtFld,Entity,EntityOperation);
+					handleNewPermission(permissionIdTxtFld,entityCombo,entityOperationCombo);
 				}catch(AuthorizationException ex){}
 			}
         	});
@@ -222,12 +227,12 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 		PermissionDto permissionDto = new PermissionDto();
 		try {
 			String permstr=permissionIdTxtFld.getValue().toString();
-			int permId= Integer.parseInt(permstr);
+			//int permId= Integer.parseInt(permstr);
 			String entitystr= entityIdCmboBox.getValue().toString();
 			int entId = Integer.parseInt(entitystr);
 			String entityopstr= entityOperationIdCmboBox.getValue().toString();
 			int entopId = Integer.parseInt(entityopstr);
-			permissionDto.setPermissionId(permId);
+			//permissionDto.setPermissionId(permId);
 			
 			final EntityDto entityDto = entityService.findById(entId);
 			permissionDto.setEntity(entityDto);
@@ -235,12 +240,14 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 			permissionDto.setEntityOperation(entityOperationDto);
 			permissionService.create(permissionDto);
 		} catch (EntityAlreadyFoundException e) {
-			Notification.show("Permission already exists", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("Permission already exists", Notification.Type.ERROR_MESSAGE);
 		}
 		catch (EntityNotCreatedException e) {
-			Notification.show("Permission not created", Notification.TYPE_ERROR_MESSAGE);
+			Notification.show("Permission not created", Notification.Type.ERROR_MESSAGE);
 		}
-		catch(AuthorizationException ex){}
+		catch(AuthorizationException ex){
+			Notification.show("You are not authorized to do this operation.");
+		}
 		Notification.show(permissionDto.getId() +" permission created succesfully");
 		resetTable();
     }

@@ -48,7 +48,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		this.pageDao = pageDao;
 		this.sectionTypeDao = sectionTypeDao;
 	}
-	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:ADD")
+	@RequiresPermissions("PAGE:ASSOCIATE_TEMPLATE")
 	@Override
 	public PageTemplatePK create(PageTemplateDto dto) throws EntityAlreadyFoundException {
 		Validate.notNull(dto,"dto cannot be null");
@@ -81,20 +81,20 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 			throw new EntityAlreadyFoundException("Page template already exist.");
 		}
 	}
-	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:VIEW")
+	@RequiresPermissions("PAGE:ASSOCIATE_TEMPLATE")
 	@Override
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(final Integer pageId,final Integer pageSectionTypeId) {
 		Validate.notNull(pageId,"pageId cannot be null");
 		Validate.notNull(pageSectionTypeId,"pageSectionTypeId cannot be null");
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionTypeId));
 	}
-	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:VIEW")
+	@RequiresPermissions("PAGE:ASSOCIATE_TEMPLATE")
 	@Override
 	public Collection<PageTemplateDto> findByPageId(Integer pageId) {
 		Validate.notNull(pageId,"pageId cannot be null");
 		return assembler.domainsToDtos(dao.findByPageId(pageId));
 	}
-	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:VIEW")
+	@RequiresPermissions("PAGE:ASSOCIATE_TEMPLATE")
 	@Override
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(
 			Integer pageId, PageSectionTypeEnum pageSectionType) {
@@ -102,7 +102,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		Validate.notNull(pageSectionType,"pageSectionType cannot be null");
 		return assembler.domainsToDtos(dao.findByPageAndPageSectionType(pageId, pageSectionType));
 	}
-	@RequiresPermissions("PAGE_TEMPLATE_ASSOCIATION:DELETE")
+	@RequiresPermissions("PAGE:DISASSOCIATE_TEMPLATE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(final PageTemplateDto dto) {

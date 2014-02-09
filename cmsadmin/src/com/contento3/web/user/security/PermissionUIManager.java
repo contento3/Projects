@@ -5,25 +5,20 @@ import java.util.Collection;
 import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.security.permission.service.PermissionService;
-import com.contento3.security.role.service.RoleService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
-import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Sizeable;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.TabSheet.Tab;
 
 public class PermissionUIManager implements UIManager{
 	/**
@@ -106,15 +101,17 @@ public class PermissionUIManager implements UIManager{
 		Button addButton = new Button("Add Permission", new PermissionPopup(contextHelper,permissionTable));
 		this.verticalLayout.addComponent(addButton);
 	}
+	
 	private void renderPermissionTable() {
 		try
 		{
 		final AbstractTableBuilder tableBuilder = new PermissionTableBuilder(contextHelper,permissionTable);
-		//tableBuilder.build((Collection)roleService.findAllRoles());
 		tableBuilder.build((Collection)permissionService.findAllPermissions());
         
 		this.verticalLayout.addComponent(permissionTable);
-		}catch(AuthorizationException ex){}
+		}catch(AuthorizationException ex){
+			
+		}
 	}
 
 }

@@ -5,6 +5,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -26,6 +30,13 @@ public class SiteInterceptor extends HandlerInterceptorAdapter {
 		    final WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
 		    final SiteService siteService = (SiteService)context.getBean("siteService");
 			
+        	final UsernamePasswordToken token = new UsernamePasswordToken("guest123","guest123");
+
+		    Subject subject =   SecurityUtils.getSubject();
+		    subject.login(token);
+		    
+		    
+		    //subject.login(arg0)
 		    SiteDto site=null;
 		    String domainName = DomainUtil.fetchDomain(request);
 		    if( !domainName.equals("localhost") ){
