@@ -7,3 +7,4 @@
 # Java class files
 *.class
 /classes/**/*
+.settings

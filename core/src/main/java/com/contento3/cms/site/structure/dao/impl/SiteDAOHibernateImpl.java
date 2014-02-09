@@ -26,7 +26,6 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 	public Collection<Site> findByAccount(final Integer accountId, boolean isPublished){
 		Validate.notNull(accountId,"accountId cannot be null");
 		
-	
 		
 		final Criteria criteria = this.getSession()
 								.createCriteria(Site.class)

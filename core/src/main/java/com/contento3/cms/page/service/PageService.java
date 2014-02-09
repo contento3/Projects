@@ -3,6 +3,7 @@ package com.contento3.cms.page.service;
 import java.util.Collection;
 
 import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageCannotCreateException;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 
@@ -46,8 +47,9 @@ public interface PageService {
      * 
      * @param pageDto
      * @return
+     * @throws PageCannotCreateException 
      */
-    Integer create(final PageDto pageDto);
+    Integer create(final PageDto pageDto) throws PageCannotCreateException;
 
     /**
      * Finds the Page with its layout info by id 
@@ -61,8 +63,9 @@ public interface PageService {
      * @param pageDto
      * @return PageDto
      * @throws EntityAlreadyFoundException 
+     * @throws PageCannotCreateException 
      */
-    PageDto createAndReturn(final PageDto pageDto) throws EntityAlreadyFoundException  ;
+    PageDto createAndReturn(final PageDto pageDto) throws EntityAlreadyFoundException, PageCannotCreateException;
 
     /**
      * Finds the page by path and siteId
@@ -76,9 +79,10 @@ public interface PageService {
      * Used to update the page.
      * @param pageId
      * @throws EntityAlreadyFoundException 
+     * @throws PageCannotCreateException 
      */
 	
-    void update(final PageDto pageDto) throws EntityAlreadyFoundException;
+    void update(final PageDto pageDto) throws EntityAlreadyFoundException, PageCannotCreateException;
     
     /**
 	 * Returns the {@link Collection} of {@link PageDto} by siteId

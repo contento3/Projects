@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageCannotCreateException;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.common.dto.Dto;
@@ -107,6 +108,8 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 			} catch (EntityAlreadyFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (PageCannotCreateException e) {
+				Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
 		

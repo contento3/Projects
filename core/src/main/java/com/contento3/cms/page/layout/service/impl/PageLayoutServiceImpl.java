@@ -35,21 +35,24 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 		this.pageSectionAssembler = pageSectionAssembler;
 		this.assembler = assembler;
 	}
-	@RequiresPermissions("PAGELAYOUT:VIEW")
+	
+	//@RequiresPermissions("PAGELAYOUT:VIEW")
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public Collection<PageLayoutDto> findPageLayoutByAccount(final Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
 		return assembler.domainsToDtos(pageLayoutDao.findPageLayoutByAccount(accountId));
 	}
-	@RequiresPermissions("PAGELAYOUT:VIEW")
+	
+	//@RequiresPermissions("PAGELAYOUT:VIEW")
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public PageLayoutDto findPageLayoutById(final Integer pageLayoutId){
 		Validate.notNull(pageLayoutId,"pageLayoutId cannot be null");
 		return assembler.domainToDto(pageLayoutDao.findById(pageLayoutId));
 	}
-	@RequiresPermissions("PAGELAYOUT:ADD")
+	
+	//@RequiresPermissions("PAGELAYOUT:ADD")
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public Integer create(PageLayoutDto pageLayoutDto){
@@ -67,7 +70,8 @@ public class PageLayoutServiceImpl implements PageLayoutService {
 		
 		return newLayoutId;
 	}
-	@RequiresPermissions("PAGELAYOUT:DELETE")
+	
+	//@RequiresPermissions("PAGELAYOUT:DELETE")
 	@Override
 	public void delete(PageLayoutDto dtoToDelete) {
 		// TODO Auto-generated method stub

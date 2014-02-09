@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageCannotCreateException;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.service.PageLayoutService;
@@ -366,6 +367,8 @@ public class PageUIManager {
 				}
 				catch(EntityAlreadyFoundException e){
 					Notification.show("Page already exists with this title or uri",Notification.Type.ERROR_MESSAGE);
+				} catch(PageCannotCreateException e) {
+					Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
 				}
 
 			}
