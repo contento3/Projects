@@ -1,3 +1,5 @@
+/**/*.cache.js
+
 /application.log.1
 /log.roo
 
@@ -7,3 +9,7 @@
 # Java class files
 *.class
 /classes/**/*
+
+
+
+
