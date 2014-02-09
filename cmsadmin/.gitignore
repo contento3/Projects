@@ -1,5 +1,7 @@
 /**/*.cache.js
 
+/cmsadmin/WebContent/VAADIN/widgetsets/com.contento3.web.widgetset.CmsadminWidgetset/*.cache.js
+
 /application.log.1
 /log.roo
 
