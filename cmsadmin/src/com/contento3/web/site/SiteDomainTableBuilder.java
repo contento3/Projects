@@ -51,7 +51,7 @@ public class SiteDomainTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("Delete").setValue(deleteLink);
 		deleteLink.addClickListener(new EntityDeleteClickListener<SiteDomainDto>(siteDomainDto,siteDomainService,deleteLink,siteDomainTable));
 
-		SiteDto siteDto = siteService.findSiteByDomain(siteDomainDto.getDomainName());
+		SiteDto siteDto = siteService.findSiteByDomain(siteDomainDto.getDomainName(), false);
 		final Button editLink = new Button("Edit Domain", new SiteDomainPopup(contextHelper,siteDto.getSiteId(),siteDomainTable));
 
 		editLink.setCaption("Edit");

@@ -45,7 +45,7 @@ public class StaticResourceViewResolver extends AbstractView {
 		String resourcePath ="";
 		
 	    final String siteDomain = DomainUtil.fetchDomain(request);
-	    final SiteDto site = siteService.findSiteByDomain(siteDomain);
+	    final SiteDto site = siteService.findSiteByDomain(siteDomain, true);
 	    final AccountDto accountDto;
 
 	    if (null!=site){

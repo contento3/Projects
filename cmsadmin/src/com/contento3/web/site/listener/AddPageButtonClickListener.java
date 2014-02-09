@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageCannotCreateException;
 import com.contento3.cms.page.layout.service.PageLayoutService;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -107,6 +108,8 @@ public class AddPageButtonClickListener implements ClickListener {
 		}
 		catch(EntityAlreadyFoundException e){
 			Notification.show("Page already exists with this title or uri",Notification.Type.ERROR_MESSAGE);
+		} catch (PageCannotCreateException e) {
+			Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
 		}
 
 	}

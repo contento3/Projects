@@ -178,7 +178,7 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 	 */
 	public void  renderSiteContent(){
 		buildTables();
-		siteDto = (Collection<SiteDto>) siteService.findSitesByAccountId(accountId);
+		siteDto = (Collection<SiteDto>) siteService.findSitesByAccountId(accountId, false);
 		//siteDto = new ArrayList<SiteDto>();
 		if(!(siteDto.isEmpty())){
 			

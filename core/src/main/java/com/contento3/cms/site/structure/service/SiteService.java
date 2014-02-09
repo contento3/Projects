@@ -17,9 +17,10 @@ public interface SiteService extends StorableService<SiteDto> {
 	/**
 	 * 
 	 * Finds all the sites for a given account
+	 * @param isPublished TODO
 	 * @return
 	 */
-	Collection<SiteDto> findSitesByAccountId(Integer accountId);
+	Collection<SiteDto> findSitesByAccountId(Integer accountId, boolean isPublished);
 
 	/**
 	 * Finds the site by site id
@@ -30,9 +31,10 @@ public interface SiteService extends StorableService<SiteDto> {
 	/**
 	 * Finds the site by domains
 	 * @param domain
+	 * @param isPublished TODO
 	 * @return
 	 */
-	SiteDto findSiteByDomain(String domain);
+	SiteDto findSiteByDomain(String domain, boolean isPublished);
 	
 	/**
 	 * Update site data into DB

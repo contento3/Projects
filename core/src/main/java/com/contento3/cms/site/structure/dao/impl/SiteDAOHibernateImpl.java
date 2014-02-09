@@ -23,8 +23,10 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Site> findByAccount(final Integer accountId){
+	public Collection<Site> findByAccount(final Integer accountId, boolean isPublished){
 		Validate.notNull(accountId,"accountId cannot be null");
+		
+		
 		final Criteria criteria = this.getSession()
 								.createCriteria(Site.class)
 								.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
@@ -32,11 +34,16 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 								.setCacheRegion(CACHE_REGION)
 								.add(Restrictions
 								.eq("account.accountId", accountId));
+		
+		if(isPublished) {
+			criteria.add(Restrictions.eq("status", 1));
+		}
+		
 		return criteria.list();
 	}
 
 	@Override
-	public Site findByDomain(final String domain){
+	public Site findByDomain(final String domain, boolean isPublished){
 		Validate.notNull(domain,"domain cannot be null");
 
 		final Criteria criteria = this.getSession()
@@ -44,6 +51,10 @@ public class SiteDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<Site
 							    .createAlias("siteDomain", "domain")
 		    					.add(Restrictions
 								.eq("domain.domainName", domain));
+		if(isPublished) {
+			criteria.add(Restrictions.eq("status", 1));
+		}
+		
 		final List<Site> sites = criteria.list();
 		Site site = null;
 		

@@ -42,7 +42,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 		Validate.notNull(userDto,"articleImageDao cannot be null");
 		Validate.notNull(domain,"articleImageDao cannot be null");
 		
-		final Site site = siteDao.findByDomain(domain);
+		final Site site = siteDao.findByDomain(domain, false);
 		
 		String password = userDto.getPassword();
 		passwordEncoder = new BCryptPasswordEncoder();

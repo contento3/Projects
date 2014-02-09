@@ -45,7 +45,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 		}
 		
 		site.setLanguage(dto.getLanguage());
-		
+		site.setStatus(dto.getStatus());
 		return site;
 	}
 
@@ -61,6 +61,7 @@ public class SiteAssemblerImpl implements SiteAssembler {
 			dto.setSiteDomainDto(siteDomainAssembler.domainsToDtos(domain.getSiteDomain()));
 			dto.setLanguage(domain.getLanguage());
 			dto.setDefaultPageId(domain.getDefaultPageId());
+			dto.setStatus(domain.getStatus());
 		}
 		return dto;
 	}

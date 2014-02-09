@@ -81,6 +81,7 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 			throw new EntityAlreadyFoundException("Page template already exist.");
 		}
 	}
+
 	@RequiresPermissions("PAGE:ASSOCIATE_TEMPLATE")
 	@Override
 	public Collection<PageTemplateDto> findByPageAndPageSectionType(final Integer pageId,final Integer pageSectionTypeId) {

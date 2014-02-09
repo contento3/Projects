@@ -38,7 +38,7 @@ public class DefaultPageFilter implements Filter {
 	    SiteDto site=null;
 	    final String domainName = DomainUtil.fetchDomain((HttpServletRequest)request);
 	    if( !domainName.equals("localhost") ){
-			site = siteService.findSiteByDomain(domainName);
+			site = siteService.findSiteByDomain(domainName, true);
 	    }
 	    else if(request.getParameter("siteId")!= null){
 			site = siteService.findSiteById( Integer.parseInt(request.getParameter("siteId")));

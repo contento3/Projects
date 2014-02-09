@@ -61,7 +61,7 @@ public class ExtendedFreemarkerView extends FreeMarkerView {
 		}
 		
 		LOGGER.info(String.format("Requested page [%s]",pagePath));
-		SiteDto siteDto = siteService.findSiteByDomain(DomainUtil.fetchDomain(request));
+		SiteDto siteDto = siteService.findSiteByDomain(DomainUtil.fetchDomain(request), true);
 		PrintWriter writer = response.getWriter();
 
 		//model.clear();

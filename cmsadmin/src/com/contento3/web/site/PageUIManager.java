@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.dto.PageDto;
+import com.contento3.cms.page.exception.PageCannotCreateException;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.layout.dto.PageLayoutDto;
 import com.contento3.cms.page.layout.service.PageLayoutService;
@@ -30,15 +31,13 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.PageTemplateAssignmentPopup;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
-import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.AddPageButtonClickListener;
-import com.contento3.web.site.listener.PageAssignCategoryListener;
-import com.contento3.web.site.listener.PageViewCategoryListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -61,6 +60,8 @@ import com.vaadin.ui.VerticalLayout;
 public class PageUIManager {
 
 	private static final Logger LOGGER = Logger.getLogger(PageUIManager.class);
+	private final static String BUTTON_NAME_PUBLISHED = "Published";
+	private final static String BUTTON_NAME_UNPUBLISHED = "Unpublished";
 
 	/**
 	 * Site Service to find site related information
@@ -109,15 +110,25 @@ public class PageUIManager {
 		container.addContainerProperty("Uri", String.class, null);
 		container.addContainerProperty("Edit", Button.class, null);
 	}
-
+	
 	public TabSheet renderPageListing(final Integer siteId,final TabSheet pagesTab,final VerticalLayout horizontalLayout,final VerticalLayout pageLayout) {
 		//pageLayout.addComponent(horizontalLayout);
-
+		siteDto = siteService.findSiteById(siteId);
+		HorizontalLayout horizLayout = new HorizontalLayout();
+		
 		final Label subHeadingLbl = new Label("Site pages");
 		subHeadingLbl.setStyleName("screenSubHeading");
+		horizLayout.addComponent(subHeadingLbl);
 		
+		// published/unpublished button
+		final Button btnPublish = new Button(getButtonTitle()); 
+		btnPublish.addClickListener(publishedListener());
+		horizLayout.addComponent(btnPublish);
+		horizLayout.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
+		horizLayout.setWidth(100, Unit.PERCENTAGE);
+	
+		pageLayout.addComponent(horizLayout);
 		pageLayout.setSpacing(true);
-		pageLayout.addComponent(subHeadingLbl);
 		pageLayout.addComponent(new HorizontalRuler());
 		
 		final Table table = new Table();
@@ -129,7 +140,6 @@ public class PageUIManager {
 
 		pagesTab.addComponent(horizontalLayout);
 
-		siteDto = siteService.findSiteById(siteId);
 		Tab tab = pagesTab.addTab(horizontalLayout, siteDto.getSiteName(),new ExternalResource("images/site.png"));
 		tab.setClosable(true);
 		pagesTab.setImmediate(true);
@@ -163,7 +173,51 @@ public class PageUIManager {
 
 		return pagesTab;
 	}
+	
+	/**
+	 * Get Title for published/Unpublished button
+	 * @return Button name 
+	 */
+	private String getButtonTitle() {
+		
+		if(siteDto.getStatus() == 0) {
+			return BUTTON_NAME_PUBLISHED;
+		} else {
+			return BUTTON_NAME_UNPUBLISHED;
+		}
+	}
+	
+	
+	/**
+	 * Listener for publish button
+	 * @return
+	 */
+	private ClickListener publishedListener() {
+	
+		ClickListener listener = new ClickListener() {
 
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+			
+				System.out.println("Button Pressed");
+				if(siteDto != null) {
+					if( event.getButton().getCaption().equals(BUTTON_NAME_PUBLISHED) ) {
+						siteDto.setStatus(1); // set status publishes
+						event.getButton().setCaption(BUTTON_NAME_UNPUBLISHED);
+						
+					} else {
+						siteDto.setStatus(0);
+						event.getButton().setCaption(BUTTON_NAME_PUBLISHED);
+					}
+					siteService.update(siteDto);
+				}
+			}
+		};
+		
+		return listener;
+	}
 
 	/**
 	 * Used to render a tab to create a new page.This includes selecting layout
@@ -313,6 +367,8 @@ public class PageUIManager {
 				}
 				catch(EntityAlreadyFoundException e){
 					Notification.show("Page already exists with this title or uri",Notification.Type.ERROR_MESSAGE);
+				} catch(PageCannotCreateException e) {
+					Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
 				}
 
 			}
