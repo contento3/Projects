@@ -3,6 +3,7 @@ package com.contento3.security.group.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,19 @@ import com.contento3.security.user.dto.SaltedHibernateUserDto;
 @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 public class GroupServiceImpl implements GroupService {
 
+	/**
+	 * 
+	 */
+	public Collection<GroupDto> type;
+	
+	/**
+	 * 
+	 */
 	private GroupAssembler groupAssembler;
+	
+	/**
+	 * 
+	 */
 	private GroupDao groupDao;
 	
 	public GroupServiceImpl(final GroupDao groupDao,final GroupAssembler groupAssembler){
@@ -30,22 +43,23 @@ public class GroupServiceImpl implements GroupService {
 		this.groupAssembler = groupAssembler;
 	}
 
+	@RequiresPermissions("GROUP:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public GroupDto findByGroupName(String groupName){
 		Validate.notNull(groupName,"groupName cannot be null");
 		return groupAssembler.domainToDto(groupDao.findByGroupName(groupName));
 	}
-	
-	public Collection<GroupDto> type;
-	
+
+	@RequiresPermissions("GROUP:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<GroupDto> findAllGroups(){
-		//Validate.notNull(groupDao,"dto cannot be null");
-		return groupAssembler.domainsToDtos(groupDao.findAll());
+	public Collection<GroupDto> findByAccountId(final Integer accountId){
+		Validate.notNull(accountId,"groupName cannot be null");
+		return groupAssembler.domainsToDtos(groupDao.findByAccountId(accountId));
 	}
-	
+
+	@RequiresPermissions("GROUP:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(final GroupDto groupDto) {
@@ -53,12 +67,15 @@ public class GroupServiceImpl implements GroupService {
 		return groupDao.persist(groupAssembler.dtoToDomain(groupDto));
 	}
 
+	@RequiresPermissions("GROUP:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public GroupDto findById(Integer id) {
 		Validate.notNull(id,"id cannot be null");
 		return groupAssembler.domainToDto(groupDao.findById(id));
 	}
+	
+	@RequiresPermissions("GROUP:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(GroupDto groupDto) {
@@ -67,6 +84,7 @@ public class GroupServiceImpl implements GroupService {
 		
 	}
 	
+	@RequiresPermissions("GROUP:DELETE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void delete(GroupDto group) {
@@ -78,7 +96,7 @@ public class GroupServiceImpl implements GroupService {
 			groupDao.delete(groupAssembler.dtoToDomain(group));
 	}
 
-
+	@RequiresPermissions("GROUP:DELETE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void deleteWithException(GroupDto group) throws Exception {
@@ -91,7 +109,8 @@ public class GroupServiceImpl implements GroupService {
 		else
 			throw new Exception("can`t delete user associated to group");		
 	}
-
+	
+	@RequiresPermissions("GROUP:VIEW_LISTING")
 	@Override
 	public Collection<GroupDto> findByUserId(Integer id) {
 		// TODO Auto-generated method stub

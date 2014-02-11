@@ -13,13 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
-
 import com.contento3.account.model.Account;
-import com.contento3.cms.page.category.model.Category;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.user.model.SaltedHibernateUser;
 

@@ -9,7 +9,7 @@ import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
-import com.contento3.security.role.model.Role;
+import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
@@ -92,7 +92,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
         openbutton = new Button("Add Group", this);
         openbutton.addClickListener(this);
         layout.addComponent(openbutton);
-
+        layout.setMargin(true);
         setCompositionRoot(layout);
 	}
 	
@@ -132,6 +132,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
         inputDataLayout.setComponentAlignment(textField, Alignment.TOP_LEFT);
         
         popupMainLayout.setSpacing(true);
+        popupMainLayout.setMargin(true);
         popupMainLayout.addComponent(inputDataLayout);
        
         /* adding description area */
@@ -194,7 +195,10 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 				public void buttonClick(ClickEvent event) {
 					try{
 					handleNewGroup(textField,descriptionArea);}
-					catch(AuthorizationException ex){}
+					catch(AuthorizationException ex){
+						System.out.println();
+						
+					}
 				}	
 			});
     	}
@@ -210,7 +214,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 		groupDto.setGroupName(textField.getValue().toString());
 		groupDto.setDescription(descriptionArea.getValue().toString());
 		groupDto.setMembers(new ArrayList<SaltedHibernateUserDto>());
-		groupDto.setRoles(new ArrayList<Role>());
+		groupDto.setRoles(new ArrayList<RoleDto>());
 		
 		final AccountDto accountDto = accountService.findAccountById(((Integer)SessionHelper.loadAttribute("accountId")));
 		groupDto.setAccountDto(accountDto);
@@ -244,7 +248,7 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 		 try
 		 {
 			final AbstractTableBuilder tableBuilder = new GroupTableBuilder(helper,groupTable);
-			final Collection<GroupDto> groupDto = this.groupService.findAllGroups();
+			final Collection<GroupDto> groupDto = this.groupService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 			tableBuilder.rebuild((Collection)groupDto);
 			UI.getCurrent().removeWindow(popupWindow);
 	        openbutton.setEnabled(true);}

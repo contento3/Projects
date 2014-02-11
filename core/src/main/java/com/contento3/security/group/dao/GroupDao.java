@@ -25,4 +25,12 @@ public interface GroupDao extends GenericDao <Group, Integer> {
 	 * @return
 	 */
 	Collection<Group> findByUserId(Integer userid);
+
+	/**
+	 * Returns the collection of Groups that are associated to this account 
+	 * @param accountId
+	 * @return
+	 */
+	Collection<Group> findByAccountId(Integer accountId);
+	
 }

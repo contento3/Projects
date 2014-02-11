@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import java_cup.version;
-
 import org.apache.log4j.Logger;
 
 import com.contento3.cms.article.dto.ArticleDto;
@@ -19,11 +17,7 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
-import com.contento3.web.content.article.listener.ArticleAttachContentListener;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.listener.ContentAssignerEventListener;
-import com.contento3.web.site.listener.CreatePageEventListener;
-import com.contento3.web.site.listener.SiteConfigurationEventListener;
 import com.contento3.web.site.listener.SiteContentAssignerClickEvent;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
@@ -38,7 +32,6 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 public class SiteContentAssignmentUIManager extends EntityListener  implements ClickListener{
 

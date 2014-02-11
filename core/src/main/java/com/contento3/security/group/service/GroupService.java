@@ -19,14 +19,7 @@ public interface GroupService extends StorableService<GroupDto> {
 	 * @returns collection of GroupDto Objects.
 	 */
 	GroupDto findByGroupName(String groupName);
-	
-	/**
-	 * Returns the collection of all the Groups.
-	 * @param
-	 * @returns collection of GroupDto Objects.
-	 */
-	Collection <GroupDto> findAllGroups();
-	
+
 	/**
      * Creates a group
      * @param groupDto
@@ -50,5 +43,12 @@ public interface GroupService extends StorableService<GroupDto> {
 	 * @param id
 	 * @throws Exception 
 	 */
-	void deleteWithException(final GroupDto group) throws Exception;
+	void deleteWithException(GroupDto group) throws Exception;
+
+	/**
+	 * Find Group by accountId
+	 * @param accountId
+	 * @return
+	 */
+	Collection<GroupDto> findByAccountId(Integer accountId);
 }
