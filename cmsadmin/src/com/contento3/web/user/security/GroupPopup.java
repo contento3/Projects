@@ -7,6 +7,7 @@ import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.security.role.dto.RoleDto;
@@ -209,8 +210,9 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
      * @param textField
      */
 	private void handleNewGroup(final TextField textField,final TextArea descriptionArea){
-		try{
+
 		final GroupDto groupDto = new GroupDto();
+		try{
 		groupDto.setGroupName(textField.getValue().toString());
 		groupDto.setDescription(descriptionArea.getValue().toString());
 		groupDto.setMembers(new ArrayList<SaltedHibernateUserDto>());
@@ -221,7 +223,11 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 		
 		groupService.create(groupDto);
 		Notification.show(groupDto.getGroupName()+" group created succesfully");
-		}catch(AuthorizationException ex){}
+		}
+		catch(final EntityAlreadyFoundException eafe){
+			Notification.show("Group with name "+groupDto.getGroupName()+" already exists.");
+		}
+		catch(final AuthorizationException ex){}
 		resetTable();
     }
 

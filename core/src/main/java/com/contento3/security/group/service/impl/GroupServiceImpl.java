@@ -7,8 +7,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.group.dao.GroupDao;
 import com.contento3.security.group.dto.GroupDto;
+import com.contento3.security.group.model.Group;
 import com.contento3.security.group.service.GroupAssembler;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
@@ -46,9 +48,9 @@ public class GroupServiceImpl implements GroupService {
 	@RequiresPermissions("GROUP:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public GroupDto findByGroupName(String groupName){
+	public GroupDto findByGroupName(String groupName,Integer accountId){
 		Validate.notNull(groupName,"groupName cannot be null");
-		return groupAssembler.domainToDto(groupDao.findByGroupName(groupName));
+		return groupAssembler.domainToDto(groupDao.findByGroupName(groupName,accountId));
 	}
 
 	@RequiresPermissions("GROUP:VIEW_LISTING")
@@ -62,8 +64,12 @@ public class GroupServiceImpl implements GroupService {
 	@RequiresPermissions("GROUP:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Integer create(final GroupDto groupDto) {
+	public Integer create(final GroupDto groupDto) throws EntityAlreadyFoundException {
 		Validate.notNull(groupDto,"groupDto cannot be null");
+		final Group group = groupDao.findByGroupName(groupDto.getGroupName(), groupDto.getAccountDto().getAccountId());
+		if (null!=group){
+			throw new EntityAlreadyFoundException("Group with same name is already created");
+		}
 		return groupDao.persist(groupAssembler.dtoToDomain(groupDto));
 	}
 

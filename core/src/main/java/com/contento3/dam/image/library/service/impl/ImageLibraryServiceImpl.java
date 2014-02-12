@@ -25,7 +25,7 @@ import com.contento3.storage.provider.StorageProviderFactory;
 public class ImageLibraryServiceImpl implements ImageLibraryService  {
 
 	private ImageLibraryDao imageLibraryDao;
-	
+
 	private ImageLibraryAssembler imageLibraryAssembler;
 	
 	private StorageTypeDao storageTypeDao;
@@ -97,20 +97,27 @@ public class ImageLibraryServiceImpl implements ImageLibraryService  {
 
 	@Override
 	public Collection<ImageLibraryDto> findImageLibraryByAccountId(
-			Integer accountId) {
+			final Integer accountId) {
 		Validate.notNull(accountId,"accountId cannot be null");
 		return imageLibraryAssembler.domainsToDtos(imageLibraryDao.findImageLibraryByAccountId(accountId));
 	}
 
 	@Override
-	public ImageLibraryDto findImageLibraryById(Integer imageLibraryId) {
+	public ImageLibraryDto findImageLibraryById(final Integer imageLibraryId) {
 		Validate.notNull(imageLibraryId,"imageLibraryId cannot be null");
 		return imageLibraryAssembler.domainToDto(imageLibraryDao.findById(imageLibraryId));
 	}
 
 	@Override
-	public void delete(ImageLibraryDto dtoToDelete) {
+	public void delete(final ImageLibraryDto dtoToDelete) {
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
+		if (dtoToDelete.getContentType().equals("IMAGE")){
+			
+		}
+		
+		final ContentStorageLibraryMapping contentStorageLibraryMapping = contentStorageLibraryMappingDao.findByLibraryId(dtoToDelete.getId(), dtoToDelete.getAccountDto().getAccountId());
+		contentStorageLibraryMappingDao.delete(contentStorageLibraryMapping);
+		imageLibraryDao.delete(contentStorageLibraryMapping.getLibrary());
 	}
 
 }

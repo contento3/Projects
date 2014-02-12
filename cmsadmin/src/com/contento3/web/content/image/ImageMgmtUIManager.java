@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
@@ -111,7 +112,7 @@ public class ImageMgmtUIManager extends CustomComponent
      */
     FileOutputStream fos ;
     
-    private ImageLibraryService imageLibraryService;
+    final private ImageLibraryService imageLibraryService;
     
     private ComboBox imageLibrayCombo;
     
@@ -210,7 +211,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		listeners.add(new AddLibraryButtonListener(helper));
 		//listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"imgMgmt",listeners);
 		builder.build();
 		
 		/*Add Image button listener*/
@@ -243,8 +244,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		/* image library combo*/
 		//Get accountId from the session
         final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
-		ImageLibraryService imageLibraryService = (ImageLibraryService) this.helper.getBean("imageLibraryService");
-	    Collection<ImageLibraryDto> imageLibraryDto = imageLibraryService.findImageLibraryByAccountId(accountId);
+		Collection<ImageLibraryDto> imageLibraryDto = imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 	    final ComboBox imageLibrayCombo = new ComboBox("Select library",
 				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
@@ -259,10 +259,6 @@ public class ImageMgmtUIManager extends CustomComponent
 	    Button searchButton = new Button("Search");
 		/*Search Image button listener*/
 	    searchButton.addClickListener(new ClickListener() {
-			
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -274,14 +270,36 @@ public class ImageMgmtUIManager extends CustomComponent
 					Collection<ImageDto> images = imageService.findImagesByLibrary(libraryId);
 					displayImages(images);
 				}else{
-					Notification.show("Search Failed", "Select library first",Notification.Type.ERROR_MESSAGE);
+					Notification.show("Please select library from the list to search.",Notification.Type.TRAY_NOTIFICATION);
 				}
 			}
-
-			
 		});
-	    
+
+	    final Button deleteLibraryButton = new Button("Delete Library");
+	    deleteLibraryButton.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(final ClickEvent event) {
+				Object id = imageLibrayCombo.getValue();
+				if(id != null){
+					int libraryId = Integer.parseInt(id.toString());
+					final ImageLibraryDto imageLibrary = imageLibraryService.findImageLibraryById(libraryId);
+					try {
+						imageLibraryService.delete(imageLibrary);
+					} catch (final EntityCannotBeDeletedException e) {
+						Notification.show("Library cannot be deleted.",Notification.Type.TRAY_NOTIFICATION);
+					}
+				}else{
+					Notification.show("Please select library to delete.",Notification.Type.TRAY_NOTIFICATION);
+				}
+			}
+		});
+
 	    horiz.addComponent(searchButton);
+	    horiz.addComponent(deleteLibraryButton);
+
+	    horiz.setComponentAlignment(deleteLibraryButton, Alignment.BOTTOM_LEFT);
 	    horiz.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
 	    verticall.addComponent(horiz);
 	    verticall.addComponent(imagePanlelayout);

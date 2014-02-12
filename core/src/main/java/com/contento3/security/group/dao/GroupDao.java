@@ -17,7 +17,7 @@ public interface GroupDao extends GenericDao <Group, Integer> {
 	 * @param Group name
 	 * @return
 	 */
-	Group findByGroupName(String groupName);
+	Group findByGroupName(String groupName,Integer accountId);
 	
 	/**
 	 * Returns the collection of Groups that are associated to this given user 

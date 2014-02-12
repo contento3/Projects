@@ -7,26 +7,20 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
-import com.contento3.security.model.Permission;
 import com.contento3.security.permission.dao.PermissionDao;
-import com.contento3.security.permission.service.PermissionAssembler;
-import com.contento3.security.user.dao.SaltedHibernateUserDao;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
-import com.contento3.web.content.article.listener.ArticleAttachContentListener;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.document.listener.AddDocumentButtonListener;
 import com.contento3.web.content.document.listener.DocumentFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.listener.AddPageButtonClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
@@ -65,7 +59,7 @@ public class DocumentMgmtUIManager implements UIManager {
 	/**
 	 * Article table which shows documents
 	 */
-	private final Table documentTable =  new Table("Documents");
+	private final Table documentTable =  new Table();
 
 	/**
 	 * Document service for document related operations
@@ -132,12 +126,12 @@ public class DocumentMgmtUIManager implements UIManager {
 		final Label documentHeading = new Label("Document Manager");
 		documentHeading.setStyleName("screenHeading");
 		HorizontalLayout horizontal = new HorizontalLayout();
-		VerticalLayout verticaal = new VerticalLayout();
-		horizontal.addComponent(verticaal);
+		VerticalLayout innerLayout = new VerticalLayout();
+		horizontal.addComponent(innerLayout);
 		this.verticalLayout.addComponent(horizontal);
-		verticaal.addComponent(documentHeading);
+		innerLayout.addComponent(documentHeading);
 	//	verticaal.addComponent(new HorizontalRuler());
-		verticaal.setMargin(true);
+		innerLayout.setMargin(true);
 		
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
@@ -150,29 +144,28 @@ public class DocumentMgmtUIManager implements UIManager {
 		catch(AuthorizationException ex){Notification.show("You are not permitted to add documents");}
 		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
 		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"site",listeners);
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"document",listeners);
 		builder.build();
 		horizontal.addComponent(toolbarGridLayout);
 		horizontal.setWidth(100,Unit.PERCENTAGE);
-		horizontal.setExpandRatio(verticaal, 8);
+		horizontal.setExpandRatio(innerLayout, 8);
 		horizontal.setExpandRatio(toolbarGridLayout, 1);
-		verticaal.addComponent(new HorizontalRuler());
+		innerLayout.addComponent(new HorizontalRuler());
 		//addDocumentButton();
-		//renderDocumentTable();
+		renderDocumentTable(innerLayout);
 	}
 	
 	/**
 	 * Render document table
 	 */
 	@SuppressWarnings("unchecked")
-	private void renderDocumentTable() {
+	private void renderDocumentTable(final VerticalLayout innerLayout) {
 		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper, this.tabSheet, this.documentTable);
 		try {
-		Collection<DocumentDto> documents = this.documentService.findByAccountId(accountId);
+		Collection<DocumentDto> documents = this.documentService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 		tableBuilder.build((Collection)documents);}
 		catch(AuthorizationException ex){Notification.show("You are not permitted to view documents");}
-		this.verticalLayout.addComponent(this.documentTable);
-		
+		innerLayout.addComponent(this.documentTable);
 	}
 
 	/**

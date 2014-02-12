@@ -20,7 +20,7 @@ implements GroupDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Group findByGroupName(final String groupName)
+	public Group findByGroupName(final String groupName,final Integer accountId)
 	{
 		Validate.notNull(groupName,"groupName cannot be null");
 		final Criteria criteria = this.getSession()

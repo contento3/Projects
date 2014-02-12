@@ -2,6 +2,7 @@ package com.contento3.security.group.service;
 
 import java.util.Collection;
 
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.StorableService;
 import com.contento3.security.group.dto.GroupDto;
 
@@ -18,14 +19,15 @@ public interface GroupService extends StorableService<GroupDto> {
 	 * @param Group name
 	 * @returns collection of GroupDto Objects.
 	 */
-	GroupDto findByGroupName(String groupName);
+	GroupDto findByGroupName(String groupName,Integer accountId);
 
 	/**
      * Creates a group
      * @param groupDto
      * @return
+	 * @throws EntityAlreadyFoundException 
      */
-	Integer create(final GroupDto groupDto);
+	Integer create(final GroupDto groupDto) throws EntityAlreadyFoundException;
 	/**
 	 * return group whose id match
 	 * @param id
