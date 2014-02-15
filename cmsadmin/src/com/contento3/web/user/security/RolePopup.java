@@ -118,6 +118,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
         inputDataLayout.addComponent(roleNameTxtFld);
         inputDataLayout.setComponentAlignment(roleNameTxtFld, Alignment.TOP_LEFT);
         
+        popupMainLayout.setMargin(true);
         popupMainLayout.setSpacing(true);
         popupMainLayout.addComponent(inputDataLayout);
        
@@ -137,19 +138,9 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
         firstNameLayout.setComponentAlignment(roledescTxtFld, Alignment.TOP_LEFT);
      	popupMainLayout.addComponent(firstNameLayout);
 
-     	  final HorizontalLayout lastNameLayout = new HorizontalLayout();
-          
-          final TextField roleidTxtFld = new TextField("Role id");
-          roleidTxtFld.setInputPrompt("Enter role id");
-          roleidTxtFld.setWidth(100,Unit.PERCENTAGE);
-          roleidTxtFld.setColumns(15);
-       	
-          lastNameLayout.setSizeFull();
-          lastNameLayout.setSpacing(true);
-          lastNameLayout.addComponent(roleidTxtFld);
-          lastNameLayout.setComponentAlignment(roleidTxtFld, Alignment.TOP_LEFT);
-       	popupMainLayout.addComponent(lastNameLayout);
+        final TextField roleidTxtFld = new TextField("Role id");
         final HorizontalLayout addButtonLayout = new HorizontalLayout();
+        
         popupMainLayout.addComponent(addButtonLayout);
 
         addButtonLayout.addComponent(roleButton);
@@ -167,8 +158,9 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
         	popupWindow.setCaption("Edit Role");
 			final int rolename =  (Integer) event.getButton().getData();
 			RoleDto roleDto = roleService.findById(rolename);
-			//roleNameTxtFld.setValue(roleDto.getName());
+			roleNameTxtFld.setValue(roleDto.getName());
 			roleidTxtFld.setValue(roleDto.getId().toString());
+
         	roleButton.addClickListener(new ClickListener() {
     			private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
@@ -229,10 +221,6 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		try
 		{
 		final RoleDto roleDto = roleService.findById(editId);
-		/*String tempstr=roleid.getValue().toString();
-		int tempint= Integer.parseInt(tempstr);
-		roleDto.setRoleid(tempint);*/
-		//roleid.setValue(roleDto.getRoleid().toString());
 		roleDto.setRoleName(rolename.getValue().toString());
 		roleDto.setRoleDesc(roledesc.getValue().toString());
 		roleService.update(roleDto);
@@ -246,7 +234,6 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		try
 		{
 		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(helper,roleTable);
-		//final Collection<RoleDto> roleDto = roleService.findAllRoles();
 		final Collection<RoleDto> roleDto = roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 		tableBuilder.rebuild((Collection)roleDto);}
 		catch(AuthorizationException ex){}

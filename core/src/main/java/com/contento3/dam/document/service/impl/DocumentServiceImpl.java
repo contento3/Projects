@@ -27,6 +27,7 @@ public class DocumentServiceImpl implements DocumentService {
 		this.documentAssembler = documentAssembler;
 		this.documentDao = documentDao;
 	}
+	
 	@RequiresPermissions("DOCUMENT:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -41,6 +42,7 @@ public class DocumentServiceImpl implements DocumentService {
 		
 		return documentPk;
 	}
+	
 	@RequiresPermissions("DOCUMENT:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -57,6 +59,7 @@ public class DocumentServiceImpl implements DocumentService {
 		
 		documentDao.update(documentAssembler.dtoToDomain(documentDto, document));
 	}
+	
 	@RequiresPermissions("DOCUMENT:DELETE")
 	@Override
 	public void delete(DocumentDto dtoToDelete)
@@ -65,15 +68,15 @@ public class DocumentServiceImpl implements DocumentService {
 		documentDao.delete(documentAssembler.dtoToDomain(dtoToDelete));
 	}
 	
-	//removed , propagation = Propagation.REQUIRES_NEW from annotations for JUnit
 	@RequiresPermissions("DOCUMENT:VIEW")
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public DocumentDto findByUuid(Integer accountId, String uuid) {
 		Validate.notNull(accountId,"accountId cannot be null");
 		Validate.notNull(uuid,"uuid cannot be null");
 		return documentAssembler.domainToDto(documentDao.findByUuid(accountId, uuid));
 	}
+	
 	@RequiresPermissions("DOCUMENT:VIEW")
 	@Transactional(readOnly = true)
 	@Override
@@ -82,13 +85,15 @@ public class DocumentServiceImpl implements DocumentService {
 		Validate.notNull(type,"type cannot be null");
 		return documentAssembler.domainsToDtos(documentDao.findByType(accountId, type));
 	}
-	@RequiresPermissions("DOCUMENT:VIEW")
+	
+	@RequiresPermissions("DOCUMENT:VIEW_LISTING")
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<DocumentDto> findByAccountId(Integer accountId) {
 		Validate.notNull(accountId,"accountId cannot be null");
 		return documentAssembler.domainsToDtos(documentDao.findByAccountId(accountId));
 	}
+	
 	@RequiresPermissions("DOCUMENT:VIEW")
 	@Transactional(readOnly = true)
 	@Override

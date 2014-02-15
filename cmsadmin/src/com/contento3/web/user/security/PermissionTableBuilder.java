@@ -16,6 +16,7 @@ import com.contento3.web.user.listner.RoleDeleteClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.server.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -61,7 +62,7 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 				deleteLink.addStyleName("delete");
 				deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 				item.getItemProperty("delete").setValue(deleteLink);
-				deleteLink.addListener(new PermissionDeleteClickListener(permission, permissionService, deleteLink, permissiontable));
+				deleteLink.addClickListener(new PermissionDeleteClickListener(permission, permissionService, deleteLink, permissiontable));
 		}catch(AuthorizationException ex){}
 	}
 
@@ -74,7 +75,7 @@ public class PermissionTableBuilder extends AbstractTableBuilder {
 		permissioncontainer.addContainerProperty("edit", Button.class, null);
 		permissioncontainer.addContainerProperty("delete", Button.class, null);
 
-		permissiontable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		permissiontable.setWidth(100, Unit.PERCENTAGE);
 		permissiontable.setContainerDataSource(permissioncontainer);
 		
 	}

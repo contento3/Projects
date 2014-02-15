@@ -76,20 +76,18 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		
 		//add view button item into list
 		final Button viewLink = new Button("View users",new AssociatedUserPopup(contextHelper, new Table()));
-		viewLink.setCaption("View");
+		viewLink.setCaption("View associated users");
 		viewLink.setData(group.getGroupId());
-		viewLink.addStyleName("associated users");
 		viewLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("associated users").setValue(viewLink);
+		item.getItemProperty("associated_users").setValue(viewLink);
 		
-		/*
+		
 		final Button viewRoleLink = new Button("View Roles",new AssociatedRolePopup(contextHelper, new Table()));
-		viewLink.setCaption("ViewRoles");
-		viewLink.setData(group.getRoles());
-		viewLink.addStyleName("associated roles");
-		viewLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("associated roles").setValue(viewLink);
-		*/
+		viewRoleLink.setCaption("View associated roles");
+		viewRoleLink.setData(group.getGroupId());
+		viewRoleLink.setStyleName(BaseTheme.BUTTON_LINK);
+		item.getItemProperty("associated_roles").setValue(viewRoleLink);
+
 		}catch(AuthorizationException ex){}
 		
 		
@@ -105,8 +103,8 @@ public class GroupTableBuilder extends AbstractTableBuilder {
 		groupContainer.addContainerProperty("groups", String.class, null);
 		groupContainer.addContainerProperty("edit", Button.class, null);
 		groupContainer.addContainerProperty("delete", Button.class, null);
-		groupContainer.addContainerProperty("associated users", Button.class, null);
-		//groupContainer.addContainerProperty("associated roles", Button.class, null);
+		groupContainer.addContainerProperty("associated_users", Button.class, null);
+		groupContainer.addContainerProperty("associated_roles", Button.class, null);
 		groupTable.setWidth(100, Unit.PERCENTAGE);
 		groupTable.setContainerDataSource(groupContainer);
 	}

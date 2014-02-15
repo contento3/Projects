@@ -20,7 +20,7 @@ implements GroupDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Group findByGroupName(final String groupName)
+	public Group findByGroupName(final String groupName,final Integer accountId)
 	{
 		Validate.notNull(groupName,"groupName cannot be null");
 		final Criteria criteria = this.getSession()
@@ -44,6 +44,17 @@ implements GroupDao {
 		.createCriteria(Group.class)
 		.createAlias("members", "member")
 		.add(Restrictions.eq("member.userId", userid));
+		
+		return criteria.list();
+	}
+
+	@Override
+	public Collection<Group> findByAccountId(Integer accountId) {
+		Validate.notNull(accountId,"accountId cannot be null");
+		final Criteria criteria = this.getSession()
+		.createCriteria(Group.class)
+		.add(Restrictions
+		.eq("account.accountId", accountId));
 		
 		return criteria.list();
 	}

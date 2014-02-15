@@ -78,7 +78,6 @@ public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
 	 */
 	public void buildEmptyTable(final Container container){
 		final Item item = container.addItem("-1");
-		item.getItemProperty("groups").setValue("No record found.");
 	}
 
 }

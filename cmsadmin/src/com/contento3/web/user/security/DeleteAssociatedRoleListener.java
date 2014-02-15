@@ -1,11 +1,11 @@
-package com.contento3.web.user.listner;
+package com.contento3.web.user.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.common.dto.Dto;
-import com.contento3.security.permission.dto.PermissionDto;
-import com.contento3.security.permission.service.PermissionService;
+import com.contento3.security.group.dto.GroupDto;
+import com.contento3.security.group.service.GroupService;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -17,11 +17,9 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+public class DeleteAssociatedRoleListener extends EntityListener implements ClickListener {
 
-public class DeleteAssociatedPermissionListener extends EntityListener implements ClickListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -42,16 +40,18 @@ public class DeleteAssociatedPermissionListener extends EntityListener implement
 	/**
 	 * hold group id
 	 */
-	 Integer roleId=null;
+	 Integer groupId=null;
 	 
 	 /**
 	  *Abstract TableBuilder  used to create dynamic table 
 	  */
-	 private  AbstractTableBuilder asscoiatedPermissionTable;
+	 private  AbstractTableBuilder asscoiatedRoleTable;
 	/**
 	 * Role Service for role related activities	
 	 */
 	 RoleService roleService;
+	 
+	 GroupService groupService;
 	 
 	/**
 	 * Constructor
@@ -61,12 +61,10 @@ public class DeleteAssociatedPermissionListener extends EntityListener implement
 	 * @param groupId
 	 * @param tableBuilder
 	 */
-	public DeleteAssociatedPermissionListener(final Window main,final SpringContextHelper helper,final Integer roleId,final AbstractTableBuilder asscoiatedPermissionTable) {
-		
-		this.mainwindow = main;
+	public DeleteAssociatedRoleListener(final SpringContextHelper helper,final Integer groupId,final AbstractTableBuilder asscoiatedRoleTable) {
 		this.helper = helper;
-		this.roleId = roleId;
-		this.asscoiatedPermissionTable = asscoiatedPermissionTable;
+		this.groupId = groupId;
+		this.asscoiatedRoleTable = asscoiatedRoleTable;
 		this.roleService = (RoleService) helper.getBean("roleService");
 	}
 	
@@ -78,14 +76,14 @@ public class DeleteAssociatedPermissionListener extends EntityListener implement
 	public void buttonClick(Button.ClickEvent event) {
 		
 		Collection<String> listOfColumns = new ArrayList<String>();
-		listOfColumns.add("id");
+		listOfColumns.add("name");
 		GenricEntityPicker PermissionPicker;
 		this.vLayout = new VerticalLayout();
-		
-		Collection<Dto> dtos = (Collection) roleService.findById(roleId).getPermissions();
+		this.groupService = (GroupService) helper.getBean("groupService");
+		Collection<Dto> dtos = (Collection) groupService.findById(groupId).getRoles();
 		
 		if (dtos!=null) {
-			setCaption("Delete Permission");//extend class method
+			setCaption("Delete Role");//extend class method
 			PermissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
 			PermissionPicker.build();
 		}
@@ -101,24 +99,26 @@ public class DeleteAssociatedPermissionListener extends EntityListener implement
 		/* update group member */
 		Collection<String> selectedItems =(Collection<String>) this.vLayout.getData();
 		if(selectedItems != null){
-			Collection<PermissionDto> itemsToDelete = new ArrayList<PermissionDto>();
-			PermissionService permissionService =(PermissionService) this.helper.getBean("permissionService");
-			RoleDto role = roleService.findById(roleId);
+			final Collection<RoleDto> itemsToDelete = new ArrayList<RoleDto>();
+			final GroupDto group = groupService.findById(groupId);
+			
 			for(String id : selectedItems ){
-				 PermissionDto permission = permissionService.findById(Integer.parseInt(id));
+				 RoleDto role = roleService.findById(Integer.parseInt(id));
 		     	// validation
 	
-		     	 for(PermissionDto dto : role.getPermissions()){
-		     		 if(dto.getId().equals(permission.getId()))
+		     	 for(RoleDto dto : group.getRoles()){
+		     		 if(role.getId().equals(dto.getId()))
 		     			itemsToDelete.add(dto);
 		     	 }//end inner for
+		     	
 			}//end outer for
 		
-			role.getPermissions().removeAll(itemsToDelete);
- 		 	roleService.update(role);	
-			asscoiatedPermissionTable.rebuild((Collection) role.getPermissions()); //refresh previous popup table
+			group.getRoles().removeAll(itemsToDelete);
+ 		 	groupService.update(group);	
+			asscoiatedRoleTable.rebuild((Collection) group.getRoles()); //refresh previous popup table
 		}	
 	}
+
 
 
 }

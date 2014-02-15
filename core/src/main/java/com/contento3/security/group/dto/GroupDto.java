@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
+import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
@@ -26,7 +27,7 @@ public class GroupDto extends Dto {
 	/**
 	 * Authorities associated to group
 	 */
-	private Collection<Role> roles;
+	private Collection<RoleDto> roles;
 	
 	/**
 	 * Members associated to group
@@ -42,7 +43,7 @@ public class GroupDto extends Dto {
 	 * Return group related roles
 	 * @return
 	 */
-	public Collection<Role> getRoles() {
+	public Collection<RoleDto> getRoles() {
 		return roles;
 	}
 
@@ -50,7 +51,7 @@ public class GroupDto extends Dto {
 	 * Sets group roles
 	 * @param roles
 	 */
-	public void setRoles(final Collection<Role> roles) {
+	public void setRoles(final Collection<RoleDto> roles) {
 		this.roles = roles;
 	}
 

@@ -65,6 +65,13 @@ public class StaticResourceViewResolver extends AbstractView {
 				}
 				else {
 						final TemplateDto templateDto = templateService.findTemplateByNameAndAccount(request.getRequestURI(),accountDto.getAccountId());
+			    		if (requestURI.contains("js/")){
+			    			 response.setHeader("Content-type", "application/javascript");
+			    		}	 
+			    		else if (requestURI.contains("css/")){
+			    			 response.setHeader("Content-type", "text/css");
+			    		}	
+			    		
 						response.getWriter().print(templateDto.getTemplateText());
 						response.getWriter().close();
 				}

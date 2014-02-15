@@ -124,7 +124,7 @@ public class PageServiceImpl implements PageService {
 		return 	pageAssembler.domainToDto(page);
 	}
 	
-	//@RequiresPermissions("PAGE:EDIT")
+	@RequiresPermissions("PAGE:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(final PageDto pageDto) throws EntityAlreadyFoundException, PageCannotCreateException {
@@ -146,7 +146,7 @@ public class PageServiceImpl implements PageService {
 	 * @param url
 	 * @return
 	 */
-	//@RequiresPermissions("PAGE:VIEW")
+	@RequiresPermissions("PAGE:VIEW")
 	private boolean isPageExists(final PageDto pageDto){
 		Validate.notNull(pageDto,"pageDto cannot be null");
 		

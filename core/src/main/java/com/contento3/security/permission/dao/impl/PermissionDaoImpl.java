@@ -28,7 +28,7 @@ implements PermissionDao{
 		Criteria criteria = this.getSession()
 				.createCriteria(Permission.class)
 				.add(Restrictions
-				.eq("permissionid", id));
+				.eq("permissionId", id));
 		Permission permission = null;
 		
 		

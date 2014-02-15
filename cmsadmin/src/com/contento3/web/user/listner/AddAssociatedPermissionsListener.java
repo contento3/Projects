@@ -76,8 +76,6 @@ public class AddAssociatedPermissionsListener extends EntityListener implements 
 		this.vLayout = new VerticalLayout();
 		Collection<Dto> dtos = null;
 		
-		//dtos = (Collection) permissionService.findPermissionByRoleId(roleId);
-		//dtos = (Collection) roleService.findById(roleId).getPermissions();
 		dtos = (Collection) permissionService.findAllPermissions();
 		if (dtos!=null) {
 			setCaption("Add Permission");//extend class method

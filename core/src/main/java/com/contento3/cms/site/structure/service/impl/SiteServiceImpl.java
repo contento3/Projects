@@ -43,7 +43,7 @@ public class SiteServiceImpl implements SiteService {
 		this.siteAssembler = siteAssembler;
 		this.pageLayoutDao = pageLayoutDao;
 	}
-
+	
 	@RequiresPermissions("SITE:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override

@@ -118,6 +118,8 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
         
         /* Adding user table to pop-up */
         popupMainLayout.addComponent(renderAssociatedPermissionTable(roleId));
+        popupMainLayout.setMargin(true);
+        
         popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
         /* Allow opening only one window at a time. */
