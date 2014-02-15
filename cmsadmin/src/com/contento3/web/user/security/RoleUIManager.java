@@ -13,17 +13,14 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.user.listner.AddGroupClickListener;
 import com.contento3.web.user.listner.AddRoleClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -111,12 +108,10 @@ public class RoleUIManager implements UIManager {
 	@Override
 	public Component render(String command,
 			HierarchicalContainer treeItemContainer) {
-		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	private void addRoleButton(HorizontalLayout horizontl){
-//		Button addButton = new Button("Add Role", new RolePopup(contextHelper,roleTable));
-//		this.verticalLayout.addComponent(addButton);
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddRoleClickListener(contextHelper, roleTable ));
@@ -129,12 +124,13 @@ public class RoleUIManager implements UIManager {
 
 	private void renderRoleTable(VerticalLayout verticl) {
 		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(contextHelper,roleTable);
-		//tableBuilder.build((Collection)roleService.findAllRoles());
 		try
 		{
-		tableBuilder.build((Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
+			tableBuilder.build((Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
 		}
-		catch(AuthorizationException ex){}
+		catch(AuthorizationException ex){
+			
+		}
 		verticl.addComponent(roleTable);
 		
 	}

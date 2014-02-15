@@ -25,6 +25,7 @@ public class PermissionServiceImpl implements PermissionService{
 		this.permissionDao=permissionDao;
 		this.permissionAssembler= permissionAssembler;
 	}
+	
 	@RequiresPermissions("PERMISSION:ADD")
 	@Override
 	public Integer create(PermissionDto dto) throws EntityAlreadyFoundException,
@@ -60,7 +61,7 @@ public class PermissionServiceImpl implements PermissionService{
 		// TODO Auto-generated method stub
 		permissionDao.update( permissionAssembler.dtoToDomain(dtoToUpdate) );
 	}
-	@RequiresPermissions("PERMISSION:VIEW")
+	@RequiresPermissions("PERMISSION:VIEW_LISTING")
 	@Override
 	public Collection<PermissionDto> findAllPermissions() {
 		// TODO Auto-generated method stub

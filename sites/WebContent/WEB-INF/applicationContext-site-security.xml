@@ -3,6 +3,95 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+
+	<beans:bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    	<beans:property name="securityManager" ref="securityManager"/>
+	    <beans:property name="loginUrl"  value="http://www.yahoo.com"/>
+	  <!--  <beans:property name="successUrl" value="/"/>
+	    <beans:property name="unauthorizedUrl" value="/unauthorized.jsp"/> -->
+	    <!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
+	    <!-- defined will be automatically acquired and available via its beanName in chain        -->
+	    <!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
+	    <!-- <property name="filters">
+	        <util:map>
+	            <entry key="anAlias" value-ref="someFilter"/>
+	        </util:map>
+	    </beans:property> -->
+	    <beans:property name="filterChainDefinitions">
+        <beans:value>
+			/secure/** = authc        
+            /** = anon
+        </beans:value>
+    	</beans:property>
+	</beans:bean>
+
+	<!-- Define any javax.servlet.Filter beans you want anywhere in this application context.   -->
+	<!-- They will automatically be acquired by the 'shiroFilter' bean above and made available -->
+	<!-- to the 'filterChainDefinitions' property.  Or you can manually/explicitly add them     -->
+	<!-- to the shiroFilter's 'filters' Map if desired. See its JavaDoc for more details.       -->
+	<!--  <beans:bean id="someFilter" class="..."/>
+	<beans:bean id="anotherFilter" class="..."></beans:bean>-->
+
+
+	<beans:bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <!-- Single realm app.  If you have multiple realms, use the 'realms' property instead. -->
+    <beans:property name="realm" ref="authenticationAuthorizationRealm"/>
+    <!-- By default the servlet container sessions will be used.  Uncomment this line
+         to use shiro's native sessions (see the JavaDoc for more): -->
+    <!-- <beans:property name="sessionMode" value="native"/>-->
+	</beans:bean>
+	
+	<beans:bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+<!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
+<!-- the lifecycleBeanProcessor has run: -->
+
+<beans:bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+<beans:bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    <beans:property name="securityManager" ref="securityManager"/>
+</beans:bean>
+<!--editted above   -->
+	<!-- Define the Shiro Realm implementation you want to use to connect to your back-end -->
+	<!-- security datasource: -->
+	<beans:bean id="authenticationAuthorizationRealm" class="com.contento3.site.security.SiteUserAuthorisationAuthenticationRealm">
+		<beans:property name="saltedHibernateUserDao" ref="saltedHibernateUserDao" />	
+		<beans:property name="permissionDao" ref="permissionDao" />
+		<beans:property name="credentialsMatcher" ref="allowAllMatcher" />	
+	</beans:bean>
+ 
+ 
+   <beans:bean id="allowAllMatcher" class="org.apache.shiro.authc.credential.SimpleCredentialsMatcher">
+   </beans:bean> 
+
+    <beans:bean id="hashMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+    		<beans:property name="hashAlgorithmName" value="Sha-256" />	
+    		<beans:property name="hashIterations" value="1" />
+    		<beans:property name="hashSalted" value="true" />
+	</beans:bean> 
+    
+    <beans:bean id="passwordService" class="org.apache.shiro.authc.credential.DefaultPasswordService">
+	</beans:bean> 
+    
+    <beans:bean id="passwordMatcher" class="org.apache.shiro.authc.credential.PasswordMatcher">
+    		<beans:property name="passwordService" ref="passwordService" />	
+	</beans:bean> 
+    
+	<beans:bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+		<beans:constructor-arg ref="encryptor" />
+		<beans:property name="location" value="classpath:/config/spring/db.properties" />
+	</beans:bean>
+    
+	
+	<beans:bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+           <beans:property name="driverClassName" value="${driver}"/>
+           <beans:property name="url" value="${dburlPlatformUser}"/>
+           <beans:property name="username" value="${dbuserPlatformUser}"/>
+           <beans:property name="password" value="${dbpasswordPlatformUser}"/>	
+	</beans:bean>
+	
+
+	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"/>
+
+
 	<beans:bean id="environmentConfig" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
 		<beans:property name="algorithm" value="PBEWithMD5AndDES" />
 			<beans:property name="passwordEnvName" value="PEV" />

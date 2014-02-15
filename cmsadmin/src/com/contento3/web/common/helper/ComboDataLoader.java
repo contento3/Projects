@@ -38,6 +38,7 @@ public class ComboDataLoader implements IComboDataLoader<Dto> {
 					dto.getId());
 		}
 
+		
 		container.sort(new Object[] { "name" }, new boolean[] { true });
 		return container;
 	}

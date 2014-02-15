@@ -70,21 +70,17 @@ public class AddAssociatedPermissionsListener extends EntityListener implements 
 	@Override
 	public void buttonClick(ClickEvent event) {
 		final PermissionService permissionService = (PermissionService) helper.getBean("permissionService");
-		final RoleService roleService = (RoleService) helper.getBean("roleService");
 		Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("permissions");
 		GenricEntityPicker permissionPicker;
 		this.vLayout = new VerticalLayout();
 		Collection<Dto> dtos = null;
 		
-		//dtos = (Collection) permissionService.findPermissionByRoleId(roleId);
-		//dtos = (Collection) roleService.findById(roleId).getPermissions();
 		dtos = (Collection) permissionService.findAllPermissions();
 		if (dtos!=null) {
 			setCaption("Add Permission");//extend class method
 			permissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
 			permissionPicker.build();
-			
 		}
 	}
 	

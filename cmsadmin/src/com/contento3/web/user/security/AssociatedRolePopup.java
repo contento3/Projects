@@ -2,16 +2,9 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
-import antlr.collections.List;
-
 import com.contento3.security.group.service.GroupService;
-import com.contento3.security.role.dto.RoleDto;
-import com.contento3.security.role.service.RoleService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.user.listner.AddAssociatedPermissionsListener;
-import com.contento3.web.user.listner.DeleteAssociatedPermissionListener;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -81,24 +74,26 @@ public class AssociatedRolePopup extends CustomComponent implements Window.Close
 		
 		 // The component contains a button that opens the window.
         layout = new VerticalLayout();
-        openbutton = new Button("Associated Permission");
+        openbutton = new Button("Associated Role");
         openbutton.addClickListener(this);
         
         layout.addComponent(openbutton);
         setCompositionRoot(layout);
 	}
+	
 	@Override
 	public void buttonClick(ClickEvent event) {
 		// TODO Auto-generated method stub
-/*		popupWindow = new Window();
-	  	this.tableBuilder = new AssociatedRoleTableBuilder(popupWindow,helper,roleTable);
+		popupWindow = new Window();
+	  	this.tableBuilder= new AssociatedRoleTableBuilder(helper,roleTable);
 	  	
-	  	List<RoleDto> roles = event.getButton().getData();
-	  	
+	  	//List<RoleDto> roles = event.getButton().getData();
+	  	Integer groupId = Integer.parseInt(event.getButton().getData().toString());
+
         final Button addRoleButton = new Button("Add");
-        addRoleButton.addClickListener(new AddAssociatedPermissionsListener(mainwindow,helper, roleId,tableBuilder));
+        addRoleButton.addClickListener(new AddAssociatedRoleListener(helper, groupId,tableBuilder));
         final Button deleteRoleButton = new Button("Delete");
-    	deleteRoleButton.addClickListener(new DeleteAssociatedPermissionListener(mainwindow,helper, roleId,tableBuilder));
+        deleteRoleButton.addClickListener(new DeleteAssociatedRoleListener(helper, groupId,tableBuilder));
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
@@ -106,12 +101,12 @@ public class AssociatedRolePopup extends CustomComponent implements Window.Close
     	popupWindow.setWidth(37,Unit.PERCENTAGE);
        
     	/* Add the window inside the main window. */
-        /*UI.getCurrent().addWindow(popupWindow);
+        UI.getCurrent().addWindow(popupWindow);
         
         /* Listen for close events for the window. */
-        /*popupWindow.addCloseListener(this);
+        popupWindow.addCloseListener(this);
         popupWindow.setModal(true);
-        popupWindow.setCaption("Associated Permissions");
+        popupWindow.setCaption("Associated Role");
         final VerticalLayout popupMainLayout = new VerticalLayout();
         popupMainLayout.setSpacing(true);
         final HorizontalLayout addButtonLayout = new HorizontalLayout();
@@ -121,23 +116,25 @@ public class AssociatedRolePopup extends CustomComponent implements Window.Close
         addButtonLayout.addComponent(deleteRoleButton);
         
         /* Adding user table to pop-up */
-        /*popupMainLayout.addComponent(renderAssociatedRoleTable(roles));
+        popupMainLayout.addComponent(renderAssociatedRoleTable(groupId));
+        popupMainLayout.setMargin(true);
         popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
+        
         /* Allow opening only one window at a time. */
-        //openbutton.setEnabled(false);
+        openbutton.setEnabled(false);
 
 	}
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
-	  private Table renderAssociatedRoleTable(final Integer roleId){
-		  roleTable.setPageLength(25);
-		  //tableBuilder.build((Collection)groupService.);
-		return roleTable;
+	  private Table renderAssociatedRoleTable(final Integer id){
+		 roleTable.setPageLength(25);
+		 tableBuilder.build((Collection)groupService.findById(id).getRoles());
+		 return roleTable;
 	  }
 
 
 	@Override
-	public void windowClose(CloseEvent e) {
+	public void windowClose(final CloseEvent e) {
 		// TODO Auto-generated method stub
 		if (!isModalWindowClosable){
 	        /* Windows are managed by the application object. */

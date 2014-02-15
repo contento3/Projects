@@ -120,6 +120,7 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	        
 	        /* Adding user table to pop-up */
 	        popupMainLayout.addComponent(renderAssociatedUserTable(groupId));
+	        popupMainLayout.setMargin(true);
 	        popupWindow.setContent(popupMainLayout);
 	        popupWindow.setResizable(false);
 	        /* Allow opening only one window at a time. */

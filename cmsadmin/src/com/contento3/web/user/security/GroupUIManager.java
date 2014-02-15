@@ -11,13 +11,12 @@ import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
-import com.contento3.web.content.article.listener.ArticleAttachContentListener;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.user.listner.AddGroupClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -123,7 +122,7 @@ public class GroupUIManager implements UIManager {
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddGroupClickListener(contextHelper, groupTable));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"group",listeners);
 		builder.build();
 		renderGroupTable(verticl);
 		horizon.addComponent(toolbarGridLayout);
@@ -143,14 +142,15 @@ public class GroupUIManager implements UIManager {
 	/**
 	 * Render group table to screen
 	 */
-	private void renderGroupTable(VerticalLayout verticl) {
+	private void renderGroupTable(final VerticalLayout verticl) {
 		try{
-		
-		final AbstractTableBuilder tableBuilder = new GroupTableBuilder(contextHelper,groupTable);
-		
-		tableBuilder.build((Collection)groupService.findAllGroups());
-		
-		verticl.addComponent(groupTable);}catch(AuthorizationException ex){}
+			final AbstractTableBuilder tableBuilder = new GroupTableBuilder(contextHelper,groupTable);
+			tableBuilder.build((Collection)groupService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
+			verticl.addComponent(groupTable);
+		}
+		catch(final AuthorizationException ex){
+			
+		}
 	}
 	
 

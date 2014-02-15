@@ -38,7 +38,7 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 		RoleDto role = (RoleDto) dto;
 		Item item = rolecontainer.addItem(role.getId());
 		item.getItemProperty("role").setValue(role.getName());
-	    System.out.println(role.getName()+"umair");
+
 		//adding edit button item into list
 	    final Button editLink = new Button("Edit roles",new RolePopup(contextHelper, roletable));
 		editLink.setCaption("Edit");

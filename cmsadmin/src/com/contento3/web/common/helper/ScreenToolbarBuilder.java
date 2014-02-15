@@ -95,7 +95,7 @@ public class ScreenToolbarBuilder {
 	private void buildCell(final List<String> imagePaths,final List<String> tooltips,final Integer count,final ClickListener listener){
 		final ImageLoader imageLoader = new ImageLoader();
 		final String path = "images/"+imagePaths.get(count);
-		final String tooltip = imagePaths.get(count);
+		final String tooltip = tooltips.get(count);
 		
 	    final Embedded icon = imageLoader.loadEmbeddedImageByPath(path);
 	    

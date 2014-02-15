@@ -4,23 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.common.dto.Dto;
-import com.contento3.security.group.dto.GroupDto;
-import com.contento3.security.group.service.GroupService;
+import com.contento3.security.permission.dto.PermissionDto;
+import com.contento3.security.permission.service.PermissionService;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
-import com.contento3.security.user.dto.SaltedHibernateUserDto;
-import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.contento3.security.permission.dto.*;
-import com.contento3.security.permission.service.*;
 
 
 public class DeleteAssociatedPermissionListener extends EntityListener implements ClickListener {
@@ -117,7 +112,6 @@ public class DeleteAssociatedPermissionListener extends EntityListener implement
 		     		 if(dto.getId().equals(permission.getId()))
 		     			itemsToDelete.add(dto);
 		     	 }//end inner for
-		     	
 			}//end outer for
 		
 			role.getPermissions().removeAll(itemsToDelete);

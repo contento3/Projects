@@ -2,6 +2,7 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.account.dto.AccountDto;
@@ -93,131 +94,131 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
         setCompositionRoot(layout);
 	}
 	
-	  /** 
+	 	/** 
 	   * Handle the clicks for the two buttons.
 	   */
-    public void openButtonClick(Button.ClickEvent event) {
-        /* Create a new window. */
-        final Button userButton = new Button();
+    	public void openButtonClick(Button.ClickEvent event) {
+	    /* Create a new window. */
+	    final Button userButton = new Button();
 		popupWindow = new Window();
-    	
-		popupWindow.setPositionX(200);
-    	popupWindow.setPositionY(100);
-
-    	popupWindow.setHeight(61,Unit.PERCENTAGE);
-    	popupWindow.setWidth(23,Unit.PERCENTAGE);
-       
-    	/* Add the window inside the main window. */
-        UI.getCurrent().addWindow(popupWindow);
-        
-        /* Listen for close events for the window. */
-        popupWindow.addCloseListener(this);
-        popupWindow.setModal(true);
-        
-        final VerticalLayout popupMainLayout = new VerticalLayout();
-        final Label label = new Label("User Name");
-        label.setWidth(100,Unit.PERCENTAGE);
-        final HorizontalLayout inputDataLayout = new HorizontalLayout();
-        final TextField userNameTxtFld = new TextField("User Name");
-        userNameTxtFld.setInputPrompt("Enter user name");
-        userNameTxtFld.setWidth(100,Unit.PERCENTAGE);
-        userNameTxtFld.setColumns(15);
-        
-        inputDataLayout.setSizeFull();
-        inputDataLayout.setSpacing(true);
-        inputDataLayout.addComponent(userNameTxtFld);
-        inputDataLayout.setComponentAlignment(userNameTxtFld, Alignment.TOP_LEFT);
-        
-        popupMainLayout.setSpacing(true);
-        popupMainLayout.addComponent(inputDataLayout);
-       
-        /* adding email text field */
-        final HorizontalLayout emailLayout = new HorizontalLayout();
-       
-        final TextField emailTxtFld = new TextField("Email");
-        emailTxtFld.setInputPrompt("Enter user email");
-        emailTxtFld.setWidth(100,Unit.PERCENTAGE);
-        emailTxtFld.setColumns(15);
-     	
-        emailLayout.setSizeFull();
-        emailLayout.setSpacing(true);
-        emailLayout.addComponent(emailTxtFld);
-        emailLayout.setComponentAlignment(emailTxtFld, Alignment.TOP_LEFT);
-     	popupMainLayout.addComponent(emailLayout);
-
-        /* adding first name text field */
-        final HorizontalLayout firstNameLayout = new HorizontalLayout();
-       
-        final TextField fNameTxtFld = new TextField("First Name");
-        fNameTxtFld.setInputPrompt("Enter first name");
-        fNameTxtFld.setWidth(100,Unit.PERCENTAGE);
-        fNameTxtFld.setColumns(15);
-     	
-        firstNameLayout.setSizeFull();
-        firstNameLayout.setSpacing(true);
-        firstNameLayout.addComponent(fNameTxtFld);
-        firstNameLayout.setComponentAlignment(fNameTxtFld, Alignment.TOP_LEFT);
-     	popupMainLayout.addComponent(firstNameLayout);
-
-     	
-     	/* adding last name text field */
-        final HorizontalLayout lastNameLayout = new HorizontalLayout();
-       
-        final TextField lNameTxtFld = new TextField("Last Name");
-        lNameTxtFld.setInputPrompt("Enter last name");
-        lNameTxtFld.setWidth(100,Unit.PERCENTAGE);
-        lNameTxtFld.setColumns(15);
-     	
-        lastNameLayout.setSizeFull();
-        lastNameLayout.setSpacing(true);
-        lastNameLayout.addComponent(lNameTxtFld);
-        lastNameLayout.setComponentAlignment(lNameTxtFld, Alignment.TOP_LEFT);
-     	popupMainLayout.addComponent(lastNameLayout);
-
-
-     	/* adding last name text field */
-        final HorizontalLayout pwdLayout = new HorizontalLayout();
-       
-        final PasswordField pwdTxtFld = new PasswordField("Password");
-        pwdTxtFld.setInputPrompt("Enter password");
-        pwdTxtFld.setWidth(100,Unit.PERCENTAGE);
-        pwdTxtFld.setColumns(15);
-     	
-        pwdLayout.setSizeFull();
-        pwdLayout.setSpacing(true);
-        pwdLayout.addComponent(pwdTxtFld);
-        pwdLayout.setComponentAlignment(pwdTxtFld, Alignment.TOP_LEFT);
-     	popupMainLayout.addComponent(pwdLayout);
-
-     	/* adding last name text field */
-        final HorizontalLayout confirmPwdLayout = new HorizontalLayout();
-       
-        final PasswordField confirmPwdTxtFld = new PasswordField("Confirm Password");
-        confirmPwdTxtFld.setInputPrompt("Confirm Password");
-        confirmPwdTxtFld.setWidth(100,Unit.PERCENTAGE);
-        confirmPwdTxtFld.setColumns(20);
-        
-     	
-        confirmPwdLayout.setSizeFull();
-        confirmPwdLayout.setSpacing(true);
-        confirmPwdLayout.addComponent(confirmPwdTxtFld);
-        confirmPwdLayout.setComponentAlignment(confirmPwdTxtFld, Alignment.TOP_LEFT);
-     	popupMainLayout.addComponent(confirmPwdLayout);
-     	
-        final HorizontalLayout addButtonLayout = new HorizontalLayout();
-        popupMainLayout.addComponent(addButtonLayout);
-
-        addButtonLayout.addComponent(userButton);
-        addButtonLayout.setComponentAlignment(userButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
-        
-        popupWindow.setContent(popupMainLayout);
-        popupWindow.setResizable(false);
-        /* Allow opening only one window at a time. */
-        openbutton.setEnabled(false);
-
 		
-		if (pwdTxtFld.getValue().equals(confirmPwdTxtFld.getValue())){
+		popupWindow.setPositionX(200);
+		popupWindow.setPositionY(100);
+	
+		popupWindow.setHeight(61,Unit.PERCENTAGE);
+		popupWindow.setWidth(23,Unit.PERCENTAGE);
+	   
+		/* Add the window inside the main window. */
+	    UI.getCurrent().addWindow(popupWindow);
+	    
+	    /* Listen for close events for the window. */
+	    popupWindow.addCloseListener(this);
+	    popupWindow.setModal(true);
+	    
+	    final VerticalLayout popupMainLayout = new VerticalLayout();
+	    final Label label = new Label("User Name");
+	    label.setWidth(100,Unit.PERCENTAGE);
+	    final HorizontalLayout inputDataLayout = new HorizontalLayout();
+	    final TextField userNameTxtFld = new TextField("User Name");
+	    userNameTxtFld.setInputPrompt("Enter user name");
+	    userNameTxtFld.setWidth(100,Unit.PERCENTAGE);
+	    userNameTxtFld.setColumns(15);
+	    
+	    inputDataLayout.setSizeFull();
+	    inputDataLayout.setSpacing(true);
+	    inputDataLayout.addComponent(userNameTxtFld);
+	    inputDataLayout.setComponentAlignment(userNameTxtFld, Alignment.TOP_LEFT);
+	    
+	    popupMainLayout.setSpacing(true);
+	    popupMainLayout.addComponent(inputDataLayout);
+	   
+	    /* adding email text field */
+	    final HorizontalLayout emailLayout = new HorizontalLayout();
+	   
+	    final TextField emailTxtFld = new TextField("Email");
+	    emailTxtFld.setInputPrompt("Enter user email");
+	    emailTxtFld.setWidth(100,Unit.PERCENTAGE);
+	    emailTxtFld.setColumns(15);
+	 	
+	    emailLayout.setSizeFull();
+	    emailLayout.setSpacing(true);
+	    emailLayout.addComponent(emailTxtFld);
+	    emailLayout.setComponentAlignment(emailTxtFld, Alignment.TOP_LEFT);
+	 	popupMainLayout.addComponent(emailLayout);
+	
+	    /* adding first name text field */
+	    final HorizontalLayout firstNameLayout = new HorizontalLayout();
+	   
+	    final TextField fNameTxtFld = new TextField("First Name");
+	    fNameTxtFld.setInputPrompt("Enter first name");
+	    fNameTxtFld.setWidth(100,Unit.PERCENTAGE);
+	    fNameTxtFld.setColumns(15);
+	 	
+	    firstNameLayout.setSizeFull();
+	    firstNameLayout.setSpacing(true);
+	    firstNameLayout.addComponent(fNameTxtFld);
+	    firstNameLayout.setComponentAlignment(fNameTxtFld, Alignment.TOP_LEFT);
+	 	popupMainLayout.addComponent(firstNameLayout);
+	
+	 	
+	 	/* adding last name text field */
+	    final HorizontalLayout lastNameLayout = new HorizontalLayout();
+	   
+	    final TextField lNameTxtFld = new TextField("Last Name");
+	    lNameTxtFld.setInputPrompt("Enter last name");
+	    lNameTxtFld.setWidth(100,Unit.PERCENTAGE);
+	    lNameTxtFld.setColumns(15);
+	 	
+	    lastNameLayout.setSizeFull();
+	    lastNameLayout.setSpacing(true);
+	    lastNameLayout.addComponent(lNameTxtFld);
+	    lastNameLayout.setComponentAlignment(lNameTxtFld, Alignment.TOP_LEFT);
+	 	popupMainLayout.addComponent(lastNameLayout);
+	
+	
+	 	/* adding last name text field */
+	    final HorizontalLayout pwdLayout = new HorizontalLayout();
+	   
+	    final PasswordField pwdTxtFld = new PasswordField("Password");
+	    pwdTxtFld.setInputPrompt("Enter password");
+	    pwdTxtFld.setWidth(100,Unit.PERCENTAGE);
+	    pwdTxtFld.setColumns(15);
+	 	
+	    pwdLayout.setSizeFull();
+	    pwdLayout.setSpacing(true);
+	    pwdLayout.addComponent(pwdTxtFld);
+	    pwdLayout.setComponentAlignment(pwdTxtFld, Alignment.TOP_LEFT);
+	 	popupMainLayout.addComponent(pwdLayout);
+	
+	 	/* adding last name text field */
+	    final HorizontalLayout confirmPwdLayout = new HorizontalLayout();
+	   
+	    final PasswordField confirmPwdTxtFld = new PasswordField("Confirm Password");
+	    confirmPwdTxtFld.setInputPrompt("Confirm Password");
+	    confirmPwdTxtFld.setWidth(100,Unit.PERCENTAGE);
+	    confirmPwdTxtFld.setColumns(20);
+	    
+	 	
+	    confirmPwdLayout.setSizeFull();
+	    confirmPwdLayout.setSpacing(true);
+	    confirmPwdLayout.addComponent(confirmPwdTxtFld);
+	    confirmPwdLayout.setComponentAlignment(confirmPwdTxtFld, Alignment.TOP_LEFT);
+	 	popupMainLayout.addComponent(confirmPwdLayout);
+	 	
+	    final HorizontalLayout addButtonLayout = new HorizontalLayout();
+	    popupMainLayout.addComponent(addButtonLayout);
+	
+	    addButtonLayout.addComponent(userButton);
+	    addButtonLayout.setComponentAlignment(userButton, Alignment.BOTTOM_RIGHT);
+	    addButtonLayout.setWidth(100, Unit.PERCENTAGE);
+	    
+	    popupMainLayout.setMargin(true);
+	    popupWindow.setContent(popupMainLayout);
+	    popupWindow.setResizable(false);
+	    /* Allow opening only one window at a time. */
+	    openbutton.setEnabled(false);
+	
+		
 			if (event != null && event.getButton().getCaption().equals("Edit")){
 				userButton.setCaption("Save");
 				popupWindow.setCaption("Edit user");
@@ -234,7 +235,12 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
 		        userButton.addClickListener(new ClickListener() {
 					private static final long serialVersionUID = 1L;
 					public void buttonClick(ClickEvent event) {
-						handleEditUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,username,pwdTxtFld);
+						if (pwdTxtFld.getValue().trim().equals(confirmPwdTxtFld.getValue().trim())){
+							handleEditUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,username,pwdTxtFld);
+						}
+						else {
+							Notification.show("Password and confirm password field does not match", Notification.Type.WARNING_MESSAGE);
+						}
 					}	
 				});
 	    	}
@@ -245,14 +251,15 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
 		        userButton.addClickListener(new ClickListener() {
 					private static final long serialVersionUID = 1L;
 					public void buttonClick(ClickEvent event) {
+						if (pwdTxtFld.getValue().trim().equals(confirmPwdTxtFld.getValue().trim())){
 							handleNewUser(userNameTxtFld,emailTxtFld,fNameTxtFld,lNameTxtFld,pwdTxtFld);
 						}
+						else {
+							Notification.show("Password and confirm password field does not match", Notification.Type.TRAY_NOTIFICATION);
+						}
+					}	
 		        });
 	    	}
-		}
-		else {
-			Notification.show("Password and confirm password field does not match", Notification.Type.WARNING_MESSAGE);
-		}
     }
 
     /**
@@ -262,23 +269,69 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
 	private void handleNewUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final PasswordField pwdTxtFld){
 		SaltedHibernateUserDto userDto = new SaltedHibernateUserDto();
 		try {
-			userDto.setUserName(username.getValue().toString());
+			boolean isValid = true;
+			if (!StringUtils.isEmpty(username.getValue().toString())){
+				userDto.setUserName(username.getValue().toString());
+			}
+			else {
+				isValid = false;
+			}
+
+			if (!StringUtils.isEmpty(pwdTxtFld.getValue().toString())){
+				userDto.setPassword(pwdTxtFld.getValue().toString());
+			}
+			else {
+				isValid = false;
+			}
+
+			if (!StringUtils.isEmpty(firstName.getValue().toString())){
+				userDto.setFirstName(firstName.getValue().toString());
+			}
+			else {
+				isValid = false;
+			}
+			
+			if (!StringUtils.isEmpty(lastName.getValue().toString())){
+				userDto.setLastName(lastName.getValue().toString());
+			}
+			else {
+				isValid = false;
+			}
+
+			if (!StringUtils.isEmpty(emailField.getValue().toString())){
+				userDto.setEmail(emailField.getValue().toString());
+			}
+			else {
+				isValid = false;
+			}
+
+			if (!StringUtils.isEmpty(pwdTxtFld.getValue().toString())){
+				userDto.setEmail(pwdTxtFld.getValue().toString());
+			}
+			else {
+				isValid = false;
+			}
+			
 			userDto.setEnabled(true);
-			userDto.setPassword(pwdTxtFld.getValue().toString());
-			userDto.setFirstName(firstName.getValue().toString());
-			userDto.setLastName(lastName.getValue().toString());
-			userDto.setEmail(emailField.getValue().toString());
+
+			if (!isValid){
+				Notification.show("All fields are mandatory to create user.", Notification.Type.TRAY_NOTIFICATION);
+				return;
+			}
+			
 			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute("accountId"));
 			userDto.setAccount(accountDto);
 			userService.create(userDto);
-		} catch (EntityAlreadyFoundException e) {
-			Notification.show("User already exists", Notification.Type.ERROR_MESSAGE);
+			Notification.show(userDto.getName()+" user created succesfully",Notification.Type.TRAY_NOTIFICATION);
+		} catch (final EntityAlreadyFoundException e) {
+			Notification.show("User already exists with username "+userDto.getUsername(), Notification.Type.TRAY_NOTIFICATION);
 		}
-		catch (EntityNotCreatedException e) {
-			Notification.show("User not created", Notification.Type.ERROR_MESSAGE);
+		catch (final EntityNotCreatedException e) {
+			Notification.show("User not created", Notification.Type.TRAY_NOTIFICATION);
 		}
-		catch(AuthorizationException ex){}
-		Notification.show(userDto.getName()+" user created succesfully");
+		catch(AuthorizationException ex){
+			Notification.show("You do not have permission to create user", Notification.Type.TRAY_NOTIFICATION);
+		}
 		resetTable();
     }
     

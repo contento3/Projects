@@ -220,6 +220,7 @@
 		class="com.contento3.security.group.service.impl.GroupAssemblerImpl">
 		<constructor-arg ref="saltedHibernateUserAssembler" />
 		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="roleAssembler" />
 	</bean>
 
 	<bean id="groupService"

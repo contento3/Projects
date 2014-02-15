@@ -13,21 +13,17 @@ import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.user.listner.AddRoleClickListener;
 import com.contento3.web.user.listner.AddUserClickListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class UserUIManager implements UIManager {
@@ -117,9 +113,12 @@ public class UserUIManager implements UIManager {
 		horizon.setWidth(100, Unit.PERCENTAGE);
 		try
 		{
-		addUserButton(horizon);
+			renderUserTable(verticl);
+			addUserButton(horizon);
 		}
-		catch(AuthorizationException ex){}
+		catch(AuthorizationException ex){
+			
+		}
 		
 		horizon.setExpandRatio(verticl, 9);
 	}
@@ -128,14 +127,12 @@ public class UserUIManager implements UIManager {
 	 * display "Add User" button on the top of tab sheet
 	 */
 	private void addUserButton(HorizontalLayout horizontl){
-		//final Button addButton = new Button("Add User", new UserPopup(contextHelper,userTable));
-		//this.verticalLayout.addComponent(addButton);
-		
+
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddUserClickListener(contextHelper, userTable ));
+		listeners.add(new AddUserClickListener(contextHelper, userTable));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"user",listeners);
 		builder.build();
 		horizontl.addComponent(toolbarGridLayout);
 		horizontl.setExpandRatio(toolbarGridLayout, 1);
