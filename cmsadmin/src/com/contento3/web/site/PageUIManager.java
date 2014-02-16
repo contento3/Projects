@@ -180,7 +180,7 @@ public class PageUIManager {
 	 */
 	private String getButtonTitle() {
 		
-		if(siteDto.getStatus() == 0) {
+		if(siteDto.getStatus() == null || siteDto.getStatus() == 0) {
 			return BUTTON_NAME_PUBLISHED;
 		} else {
 			return BUTTON_NAME_UNPUBLISHED;

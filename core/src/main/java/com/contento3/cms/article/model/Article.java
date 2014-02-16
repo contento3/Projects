@@ -134,7 +134,22 @@ public class Article implements Serializable  {
 	
 	@OneToMany(cascade=CascadeType.ALL , mappedBy="primaryKey.article" , fetch=FetchType.LAZY)
 	private Collection<ArticleImage> associateImages;
+	
+	
+	/**
+	 * Published/Unpublished Status for Article
+	 */
+	@Column( name ="STATUS")
+	private Integer status;
 
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	public Integer getIsVisible() {
 		return isVisible;

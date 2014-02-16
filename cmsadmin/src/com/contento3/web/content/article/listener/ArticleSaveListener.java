@@ -131,7 +131,7 @@ public class ArticleSaveListener implements ClickListener{
 	 @SuppressWarnings("rawtypes")
 	 private void resetTable(){
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.helper,this.tabSheet,this.table);
-		final Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
+		final Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId, false);
 		tableBuilder.rebuild((Collection)articles);
 	}
 
