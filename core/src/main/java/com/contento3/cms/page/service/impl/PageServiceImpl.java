@@ -185,4 +185,11 @@ public class PageServiceImpl implements PageService {
 		Validate.notNull(siteId,"siteId cannot be null");
 		return pageAssembler.domainsToDtos(pageDao.findNavigablePages(siteId)); 	
 	}
+
+	@Override
+	public Collection<PageDto> findPagesByCategory(
+			Collection<Integer> categoryIds, Integer siteId, Integer accountId) {
+		// TODO Auto-generated method stub
+		return pageAssembler.domainsToDtos(pageDao.findPagesByCategory(categoryIds, accountId, siteId));
+	}
 }
