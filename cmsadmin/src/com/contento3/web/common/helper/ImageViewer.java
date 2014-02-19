@@ -6,6 +6,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -91,11 +92,11 @@ public class ImageViewer extends CustomComponent implements Window.CloseListener
 	}
 	
 	private void renderImage(){
-		//Panel panel = new Panel();
-		//panel.setHeight(380, UNITS_PIXELS);
-		//panel.setWidth(400, UNITS_PIXELS);
+		Panel panel = new Panel();
+		panel.setHeight(380, UNITS_PIXELS);
+		panel.setWidth(400, UNITS_PIXELS);
 		//panel.addComponent(loadImage(image));
-		//this.popupMainLayout.addComponent(panel);
+		this.popupMainLayout.addComponent(panel);
 		this.popupMainLayout.addComponent(loadImage(image));
 	}
 	
@@ -106,7 +107,7 @@ public class ImageViewer extends CustomComponent implements Window.CloseListener
      */
 	public Embedded loadImage(final ImageDto imageDto) {
 		final ImageLoader imageLoader = new ImageLoader();
-		final Embedded embedded = imageLoader.loadImage(imageDto.getImage(), 425, 425);
+		final Embedded embedded = imageLoader.loadImage(imageDto.getImage(), 100, 100);
 		return embedded;
 	}
 

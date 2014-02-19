@@ -19,15 +19,6 @@ public interface RoleService extends SimpleService<RoleDto> {
 	RoleDto findRoleByName(final String name);
 
 	/**
-	 * Updates the SalterHibernateUserDto
-	 * @param SalterHibernateUserDto
-	 * @return void
-	 */
-	Collection <RoleDto> findAllRoles();
-	
-
-	//Integer create(final RoleDto roleDto);
-	/**
 	 * return group whose id match
 	 * @param id
 	 * @return
@@ -38,4 +29,11 @@ public interface RoleService extends SimpleService<RoleDto> {
 	 * @param groupDto
 	 */
 	void update(final RoleDto roleDto);
+	
+	/**
+	 * Finds role by Id
+	 * @param Id Primary key roleId
+	 * @return RoleDto
+	 */
+	RoleDto findRoleById(Integer Id);
 }

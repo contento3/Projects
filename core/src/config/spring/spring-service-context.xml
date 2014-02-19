@@ -240,6 +240,12 @@
 		<constructor-arg ref="contentStorageLibraryMappingDao" />
 		<constructor-arg ref="storageProviderFactory" />
 		<constructor-arg ref="storageManager" />
+		<property name="contentDaos">
+			<map>
+   				<entry key="IMAGE" value-ref="imageDao" />
+			</map>
+		</property>	
+		
 	</bean>
 
 

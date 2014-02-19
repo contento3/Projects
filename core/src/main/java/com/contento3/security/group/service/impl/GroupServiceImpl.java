@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.security.group.dao.GroupDao;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.model.Group;
@@ -50,7 +51,7 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public GroupDto findByGroupName(String groupName,Integer accountId){
 		Validate.notNull(groupName,"groupName cannot be null");
-		return groupAssembler.domainToDto(groupDao.findByGroupName(groupName,accountId));
+		return groupAssembler.domainToDto(groupDao.findByGroupName(groupName,accountId),new GroupDto());
 	}
 
 	@RequiresPermissions("GROUP:VIEW_LISTING")
@@ -66,11 +67,12 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public Integer create(final GroupDto groupDto) throws EntityAlreadyFoundException {
 		Validate.notNull(groupDto,"groupDto cannot be null");
-		final Group group = groupDao.findByGroupName(groupDto.getGroupName(), groupDto.getAccountDto().getAccountId());
+		Group group = groupDao.findByGroupName(groupDto.getGroupName(), groupDto.getAccountDto().getAccountId());
 		if (null!=group){
-			throw new EntityAlreadyFoundException("Group with same name is already created");
+			throw new EntityAlreadyFoundException("Group with same name already exist");
 		}
-		return groupDao.persist(groupAssembler.dtoToDomain(groupDto));
+		group = new Group();
+		return groupDao.persist(groupAssembler.dtoToDomain(groupDto,new Group()));
 	}
 
 	@RequiresPermissions("GROUP:VIEW")
@@ -78,16 +80,23 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public GroupDto findById(Integer id) {
 		Validate.notNull(id,"id cannot be null");
-		return groupAssembler.domainToDto(groupDao.findById(id));
+		return groupAssembler.domainToDto(groupDao.findById(id),new GroupDto());
 	}
 	
 	@RequiresPermissions("GROUP:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void update(GroupDto groupDto) {
+	public void update(final GroupDto groupDto) throws EntityAlreadyFoundException {
 		Validate.notNull(groupDto,"groupDto cannot be null");
-		groupDao.update(groupAssembler.dtoToDomain(groupDto));
+		Group group = groupDao.findByGroupName(groupDto.getGroupName(), groupDto.getAccountDto().getAccountId());
+		if (null!=group && !group.getGroupId().equals(groupDto.getGroupId())){
+			throw new EntityAlreadyFoundException("Group with same name already exist");
+		}
+		else if (null==group) {
+			group = new Group();
+		}
 		
+		groupDao.update(groupAssembler.dtoToDomain(groupDto,group));
 	}
 	
 	@RequiresPermissions("GROUP:DELETE")
@@ -99,27 +108,31 @@ public class GroupServiceImpl implements GroupService {
 		members=group.getMembers();
 		
 		if(members.isEmpty())
-			groupDao.delete(groupAssembler.dtoToDomain(group));
+			groupDao.delete(groupAssembler.dtoToDomain(group,new Group()));
 	}
 
 	@RequiresPermissions("GROUP:DELETE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void deleteWithException(GroupDto group) throws Exception {
+	public void deleteWithException(GroupDto group) throws EntityCannotBeDeletedException {
 		Validate.notNull(group,"group cannot be null");
 		Collection<SaltedHibernateUserDto> members;
 		members=group.getMembers();
 		
 		if(members.isEmpty())
-			groupDao.delete(groupAssembler.dtoToDomain(group));
+			groupDao.delete(groupAssembler.dtoToDomain(group,new Group()));
 		else
-			throw new Exception("can`t delete user associated to group");		
+			throw new EntityCannotBeDeletedException("You can`t delete group because users are associated to group");	
+		
+		if(group.getRoles().isEmpty())
+			groupDao.delete(groupAssembler.dtoToDomain(group,new Group()));
+		else
+			throw new EntityCannotBeDeletedException("You can`t delete group because roles are associated to group");
 	}
 	
 	@RequiresPermissions("GROUP:VIEW_LISTING")
 	@Override
 	public Collection<GroupDto> findByUserId(Integer id) {
-		// TODO Auto-generated method stub
 		return groupAssembler.domainsToDtos(groupDao.findByUserId(id));
 	}
 

@@ -14,7 +14,6 @@ import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.site.listener.SiteCreateListener;
 import com.contento3.web.site.listener.SiteCreatePopup;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;

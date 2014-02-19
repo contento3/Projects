@@ -99,7 +99,7 @@ public class PageCategoryUIManager implements UIManager{
 			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 			listeners.add(new AddCategoryClickListener(contextHelper, categoryTable,tabSheet ));
 			
-			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"category",listeners);
 			builder.build();
 			horizon.addComponent(toolbarGridLayout);
 			horizon.setWidth(100,Unit.PERCENTAGE);

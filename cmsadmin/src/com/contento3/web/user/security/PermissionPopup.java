@@ -81,6 +81,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 		this.permissionService = (PermissionService) this.helper.getBean("permissionService");
 		this.entityService = (EntityService) this.helper.getBean("entityService");
 		this.entityOperationService = (EntityOperationService) this.helper.getBean("entityOperationService");
+		
 		// The component contains a button that opens the window.
         final VerticalLayout layout = new VerticalLayout();
 		openbutton = new Button("Add Permission");
@@ -119,14 +120,9 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
         
         inputDataLayout.setSizeFull();
         inputDataLayout.setSpacing(true);
-       // inputDataLayout.addComponent(permissionIdTxtFld);
-       // inputDataLayout.setComponentAlignment(permissionIdTxtFld, Alignment.TOP_LEFT);
-        
         popupMainLayout.setSpacing(true);
         popupMainLayout.setMargin(true);
         popupMainLayout.addComponent(inputDataLayout);
-       
-       
 
         /* adding first name text field */
         final HorizontalLayout firstNameLayout = new HorizontalLayout();
@@ -139,11 +135,6 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
         entityCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
         entityCombo.setItemCaptionPropertyId("name");
 
-        
-//        for(EntityDto dto:entityDto)
-//        {
-//        	Entity.addItem(dto.getId());
-//        }
         
         firstNameLayout.setSizeFull();
         firstNameLayout.setSpacing(true);
@@ -158,29 +149,29 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
         Collection<Dto> entityOperationDto= (Collection)  entityOperationService.findAllEntityOperations();
         final ComboBox entityOperationCombo= new ComboBox("Entity Operation:",comboLoader.loadDataInContainer(entityOperationDto));
 
-          entityOperationCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
-          entityOperationCombo.setItemCaptionPropertyId("name");
+        entityOperationCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
+        entityOperationCombo.setItemCaptionPropertyId("name");
 
-          lastNameLayout.setSizeFull();
-          lastNameLayout.setSpacing(true);
-          lastNameLayout.addComponent(entityOperationCombo);
-          lastNameLayout.setComponentAlignment(entityOperationCombo, Alignment.TOP_LEFT);
-          popupMainLayout.addComponent(lastNameLayout);
-          final HorizontalLayout addButtonLayout = new HorizontalLayout();
-          popupMainLayout.addComponent(addButtonLayout);
+        lastNameLayout.setSizeFull();
+        lastNameLayout.setSpacing(true);
+        lastNameLayout.addComponent(entityOperationCombo);
+        lastNameLayout.setComponentAlignment(entityOperationCombo, Alignment.TOP_LEFT);
+        popupMainLayout.addComponent(lastNameLayout);
+        final HorizontalLayout addButtonLayout = new HorizontalLayout();
+        popupMainLayout.addComponent(addButtonLayout);
 
-          addButtonLayout.addComponent(permissionButton);
-          addButtonLayout.setComponentAlignment(permissionButton, Alignment.BOTTOM_RIGHT);
-          addButtonLayout.setWidth(100, Unit.PERCENTAGE);
+        addButtonLayout.addComponent(permissionButton);
+        addButtonLayout.setComponentAlignment(permissionButton, Alignment.BOTTOM_RIGHT);
+        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
         
-          popupWindow.setContent(popupMainLayout);
-          popupWindow.setResizable(false);
+        popupWindow.setContent(popupMainLayout);
+        popupWindow.setResizable(false);
         
-          /* Allow opening only one window at a time. */
-          openbutton.setEnabled(false);
+        /* Allow opening only one window at a time. */
+        openbutton.setEnabled(false);
           
-          if(event.getButton().getCaption().equals("Edit"))
-          {
+        if(event!=null && event.getButton().getCaption().equals("Edit"))
+        {
         	permissionButton.setCaption("Edit");
         	popupWindow.setCaption("Edit Permission");
 			final int permissionId =  (Integer) event.getButton().getData();
@@ -191,7 +182,8 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 			
 			permissionIdTxtFld.setValue(Integer.toString(permissionDto.getId()));
         	permissionButton.addClickListener(new ClickListener(){
-    			private static final long serialVersionUID = 1L;
+    	
+        		private static final long serialVersionUID = 1L;
     			public void buttonClick(ClickEvent event) 
     			{
    					try
@@ -203,7 +195,6 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
         }
         else
         {
-        
         	permissionButton.setCaption("Add");
         	popupWindow.setCaption("Add Permission");
         	permissionButton.addClickListener(new ClickListener() {
@@ -213,44 +204,53 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 				try
 				{
 					handleNewPermission(permissionIdTxtFld,entityCombo,entityOperationCombo);
-				}catch(AuthorizationException ex){}
+				}
+				catch(final AuthorizationException ex){
+					
+				}
 			}
         	});
         }
         
 	}
+	
+	/**
+	 * Handles a new permission creation
+	 * @param permissionIdTxtFld
+	 * @param entityIdCmboBox
+	 * @param entityOperationIdCmboBox
+	 */
 	private void handleNewPermission(final TextField permissionIdTxtFld,ComboBox entityIdCmboBox,final ComboBox entityOperationIdCmboBox){
 		PermissionDto permissionDto = new PermissionDto();
 		try {
 			String permstr=permissionIdTxtFld.getValue().toString();
-			//int permId= Integer.parseInt(permstr);
 			String entitystr= entityIdCmboBox.getValue().toString();
 			int entId = Integer.parseInt(entitystr);
 			String entityopstr= entityOperationIdCmboBox.getValue().toString();
 			int entopId = Integer.parseInt(entityopstr);
-			//permissionDto.setPermissionId(permId);
-			
+
 			final EntityDto entityDto = entityService.findById(entId);
 			permissionDto.setEntity(entityDto);
 			final EntityOperationDto entityOperationDto = entityOperationService.findById(entopId);
 			permissionDto.setEntityOperation(entityOperationDto);
 			permissionService.create(permissionDto);
+			Notification.show("Permission "+permissionDto.getName() +" created succesfully",Notification.Type.TRAY_NOTIFICATION);
 		} catch (EntityAlreadyFoundException e) {
-			Notification.show("Permission already exists", Notification.Type.ERROR_MESSAGE);
+			Notification.show("Permission already exists", Notification.Type.TRAY_NOTIFICATION);
 		}
-		catch (EntityNotCreatedException e) {
-			Notification.show("Permission not created", Notification.Type.ERROR_MESSAGE);
+		catch (final EntityNotCreatedException e) {
+			Notification.show("Permission not created", Notification.Type.TRAY_NOTIFICATION);
 		}
-		catch(AuthorizationException ex){
-			Notification.show("You are not authorized to do this operation.");
+		catch(final AuthorizationException ex){
+			Notification.show("You are not authorized to perform this operation.");
 		}
-		Notification.show(permissionDto.getId() +" permission created succesfully");
 		resetTable();
     }
 	
 	private void handleEditPermission(final ComboBox entityIdCmboBox,final ComboBox entityOperationIdCmboBox,final Integer editId){
+		PermissionDto permissionDto = null;
 		try{
-			final PermissionDto permissionDto = permissionService.findById(editId);
+			permissionDto = permissionService.findById(editId);
 			String entitystr= entityIdCmboBox.getValue().toString();
 			int entId = Integer.parseInt(entitystr);
 			String entityopstr= entityOperationIdCmboBox.getValue().toString();
@@ -262,20 +262,22 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 			permissionDto.setEntity(entityDto);
 			permissionDto.setEntityOperation(entityOperationDto);
 			permissionService.update(permissionDto);
-			Notification.show(permissionDto.getId()+" permission edit succesfully");
-		}catch(AuthorizationException ex){}
+			Notification.show("Permission with name "+permissionDto.getName()+" updated succesfully",Notification.Type.TRAY_NOTIFICATION);
+		} 
+		catch(EntityAlreadyFoundException ex){
+			Notification.show("Permission "+permissionDto.getName()+ "already exists",Notification.Type.TRAY_NOTIFICATION);
+		}
+		catch(AuthorizationException ex){}
 		resetTable();
     }
 	@Override
 	public void windowClose(CloseEvent e) {
-		// TODO Auto-generated method stub
 		openbutton.setEnabled(true);
 	}
 
 	@SuppressWarnings("rawtypes")
 	private void resetTable(){
 		final AbstractTableBuilder tableBuilder = new PermissionTableBuilder(helper,permissionTable);
-		//final Collection<RoleDto> roleDto = roleService.findAllRoles();
 		final Collection<PermissionDto> permissionDto = permissionService.findAllPermissions();
 		tableBuilder.rebuild((Collection)permissionDto);
 		UI.getCurrent().removeWindow(popupWindow);
@@ -293,8 +295,6 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
 
 	@Override
 	public void buttonClick(ClickEvent event) {
-		// TODO Auto-generated method stub
 		this.openButtonClick(event);
-		
 	}
 }

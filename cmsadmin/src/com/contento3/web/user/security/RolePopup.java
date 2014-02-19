@@ -11,7 +11,6 @@ import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
-import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
@@ -24,6 +23,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -127,10 +127,11 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
         /* adding first name text field */
         final HorizontalLayout firstNameLayout = new HorizontalLayout();
        
-        final TextField roledescTxtFld = new TextField("Role Description");
+        final TextArea roledescTxtFld = new TextArea("Role Description");
         roledescTxtFld.setInputPrompt("Enter role description name");
         roledescTxtFld.setWidth(100,Unit.PERCENTAGE);
         roledescTxtFld.setColumns(15);
+        roledescTxtFld.setRows(10);
      	
         firstNameLayout.setSizeFull();
         firstNameLayout.setSpacing(true);
@@ -195,12 +196,9 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 
 	
 	
-	private void handleNewRole(final TextField rolename,final TextField roledesc,final TextField roleidTxtFld){
+	private void handleNewRole(final TextField rolename,final TextArea roledesc,final TextField roleidTxtFld){
 		RoleDto roleDto = new RoleDto();
 		try {
-			String tempstr=roleidTxtFld.getValue().toString();
-			int tempint= Integer.parseInt(tempstr);
-			roleDto.setRoleId(tempint);
 			roleDto.setRoleName(rolename.getValue().toString());
 			roleDto.setRoleDesc(roledesc.getValue().toString());
 			roleDto.setPermissions(new ArrayList<PermissionDto>());
@@ -217,7 +215,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		Notification.show(roleDto.getName()+" role created succesfully");
 		resetTable();
     }
-	private void handleEditRole(final TextField rolename,final TextField roledesc,final TextField roleid,final Integer editId){
+	private void handleEditRole(final TextField rolename,final TextArea roledesc,final TextField roleid,final Integer editId){
 		try
 		{
 		final RoleDto roleDto = roleService.findById(editId);

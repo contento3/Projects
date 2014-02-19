@@ -48,7 +48,7 @@ public class EntityOperation {
 	 * @param void
 	 * @return
 	 */
-	public Integer getEntityId()
+	public Integer getEntityOperationId()
 	{
 		return(entityOperationId);
 	}

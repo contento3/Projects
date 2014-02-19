@@ -2,10 +2,8 @@ package com.contento3.security.group.model;
 
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +12,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.contento3.account.model.Account;
 import com.contento3.security.role.model.Role;
@@ -27,6 +28,7 @@ import com.contento3.security.user.model.SaltedHibernateUser;
 @Entity
 @Table( name="GROUP" , schema ="PLATFORM_USERS")
 public class Group {
+	
 	/**
 	 * Primary key id for group
 	 */
@@ -46,24 +48,21 @@ public class Group {
 	@Column(name="DESCRIPTION")
 	private String description;
 	
-	
 	/**
 	 * Roles associated to group
 	 */
-	/*@ManyToMany(fetch = FetchType.EAGER,mappedBy="")
-	@Cascade({ org.hibernate.annotations.CascadeType.DELETE,
-		org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-	private Collection<GroupRole> roles;
-	*/
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@ManyToMany
 	@JoinTable(name="GROUP_ROLE",
 		joinColumns={@JoinColumn(name="GROUP_ID",unique=true)},
 		inverseJoinColumns={@JoinColumn(name="ROLE_ID",unique=true)})
 	private Collection<Role> roles;
+
 	/**
 	 * Members associated to group
 	 */
-	@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany
 	@JoinTable(name= "GROUP_MEMBER",
 	joinColumns={
 			@JoinColumn(name="GROUP_ID",unique= true)},
@@ -91,7 +90,7 @@ public class Group {
 		return members;
 	}
 
-	public void setMembers(Collection<SaltedHibernateUser> members) {
+	public void setMembers(final Collection<SaltedHibernateUser> members) {
 		this.members = members;
 	}
 

@@ -18,9 +18,24 @@ import com.contento3.storage.manager.StorageManager;
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class ImageServiceImpl implements ImageService {
 
+	/**
+	 * Assembler that assembles the image to image dto and vice versa
+	 */
 	private ImageAssembler imageAssembler;
+	
+	/**
+	 * Dao that fetches the data for image entity
+	 */
 	private ImageDao imageDao;
+	
+	/**
+	 * Account that image is associated with
+	 */
 	private AccountDao accountDao;
+	
+	/**
+	 * Storage manager that stores the image based on selected library
+	 */
 	private StorageManager storageManager;
 	
 	public ImageServiceImpl(final ImageAssembler imageAssembler,final ImageDao imageDao,final AccountDao accountDao,
@@ -36,11 +51,14 @@ public class ImageServiceImpl implements ImageService {
 		this.storageManager = storageManager;
 	}
 	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
 	public ImageDto findImageByUuid(final String imageId){
 		Validate.notNull(imageId,"imageId cannot be null");
 		return imageAssembler.domainToDto(imageDao.findByUuid(imageId));
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ImageDto> findImageByAccountId(final Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
@@ -110,6 +128,24 @@ public class ImageServiceImpl implements ImageService {
 	public ImageDto findById(Integer imageId){
 		Validate.notNull(imageId,"imageId cannot be null");
 		return this.imageAssembler.domainToDto(imageDao.findById(imageId));
+	}
+
+	@Override
+	public ImageDto crop(final ImageDto imageToCrop) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ImageDto resize(final ImageDto imageToResize) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ImageDto rotate(final ImageDto imageToRotate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

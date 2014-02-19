@@ -5,22 +5,26 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import com.contento3.security.permission.model.Permission;
-import org.hibernate.annotations.Cascade;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.contento3.account.model.Account;
+import com.contento3.security.permission.model.Permission;
 @Entity
 @Table( name="ROLE" , schema ="PLATFORM_USERS" )
 
 public class Role {
-	@Id
+	
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="ROLE_ID")
 	private Integer roleid;
 
@@ -30,10 +34,18 @@ public class Role {
 	@Column(name="DESCRIPTION")
 	private String description;
 
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany
+	@JoinTable(name="GROUP_ROLE",
+		joinColumns={@JoinColumn(name="GROUP_ID",unique=true)},
+		inverseJoinColumns={@JoinColumn(name="ROLE_ID",unique=true)})
+	private Collection<Role> roles;
+
 	/**
 	 * Permissions associated to role
 	 */
-	@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany
 	@JoinTable(name= "ROLE_PERMISSION",
 	joinColumns={
 			@JoinColumn(name="ROLE_ID",unique= true)},

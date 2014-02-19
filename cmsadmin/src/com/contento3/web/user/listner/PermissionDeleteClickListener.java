@@ -2,6 +2,7 @@ package com.contento3.web.user.listner;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.service.Service;
 import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.permission.service.PermissionService;
@@ -48,15 +49,13 @@ public class PermissionDeleteClickListener extends EntityDeleteClickListener<Per
 	}	
 	private void deletePermission(Object id){
 		try {
-			PermissionDto dtoToDelete = ((PermissionService) getService()).findById(getDtoToDelete().getId());
+			final PermissionDto dtoToDelete = ((PermissionService) getService()).findById(getDtoToDelete().getId());
 			((PermissionService) getService()).delete(dtoToDelete);
 			getTable().removeItem(id);
 			getTable().setPageLength(getTable().getPageLength()-1);
-			Notification.show(getDtoToDelete().getId()+" Permission deleted succesfully");
-		} catch (Exception e) {
-			String description= "Permission " + getDtoToDelete().getId() + " cannot be deleted.";
-			Notification.show("Delete Failed",description,Notification.TYPE_WARNING_MESSAGE);
-			e.printStackTrace();
+			Notification.show("Permission with id "+getDtoToDelete().getId()+" ["+dtoToDelete.getName()+"] deleted succesfully",Notification.Type.TRAY_NOTIFICATION);
+		} catch (final EntityCannotBeDeletedException e) {
+			Notification.show("Delete failed for permission with id "+ getDtoToDelete().getId() + " " +getDtoToDelete().getName(),Notification.Type.TRAY_NOTIFICATION);
 		}
     	
 	}

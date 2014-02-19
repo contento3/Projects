@@ -196,9 +196,9 @@ public class ImageAddListener extends CustomComponent implements ClickListener,
 	    imageLayout.addComponent(root);
 	    
 	     if(this.caption.equals("Edit")){
-	    	 	imagePanelContent.setHeight("170");
-	    	 	imagePanelContent.setWidth("160");
-	    	 	imagePanelContent.addComponent(loadImage(imageDto));
+//	    	 	imagePanelContent.setHeight("170");
+//	    	 	imagePanelContent.setWidth("160");
+	    	 	imagePanelContent.addComponent(loadImage(imageDto,null,null));
 				altTextField.setValue(this.imageDto.getAltText());
 				imageNameField.setValue(this.imageDto.getName());
 				imageLibrayCombo.setValue(this.imageDto.getImageLibraryDto().getId());
@@ -246,9 +246,9 @@ public class ImageAddListener extends CustomComponent implements ClickListener,
      * @param imageDto
      * @return
      */
-	public Embedded loadImage(final ImageDto imageDto) {
+	public Embedded loadImage(final ImageDto imageDto,final Integer width,final Integer height) {
 		final ImageLoader imageLoader = new ImageLoader();
-		final Embedded embedded = imageLoader.loadImage(imageDto.getImage(), 125, 125);
+		final Embedded embedded = imageLoader.loadImage(imageDto.getImage(), width, height);
 		return embedded;
 	}
 	
