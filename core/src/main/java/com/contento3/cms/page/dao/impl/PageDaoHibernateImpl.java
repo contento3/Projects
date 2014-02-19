@@ -118,4 +118,31 @@ implements PageDao {
 		
 		return criteria.list();
 	}
+
+	@Override
+	public Collection<Page> findPagesByCategory(Collection<Integer> categoryId,
+			Integer accountId, Integer siteId) {
+		
+		// account id is available for future use, we might need 
+		// multiple sites with same navigation than account id will be 
+		// useful...
+		Validate.notNull(categoryId,"categoryIds cannot be null");
+		Validate.notNull(siteId,"siteIds cannot be null");
+		
+		Criteria criteria = this.getSession()
+		.createCriteria(Page.class)
+		.addOrder(Order.desc("title"));
+		
+		if (! CollectionUtils.isEmpty(categoryId)){
+			criteria.createCriteria("categories","c")
+			.add(Restrictions.in("c.categoryId", categoryId));
+		}
+		
+		if ( siteId == null ){
+			criteria.createCriteria("site","s")
+			.add(Restrictions.eq("s.siteId", siteId));
+		}
+		
+		return criteria.list();
+	}
 }

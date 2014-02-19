@@ -33,6 +33,9 @@ public class Template {
 	@Column(name = "TEMPLATE_NAME")
 	private String templateName;
 	
+	@Column(name = "TEMPLATE_KEY")
+	private String templateKey;
+	
 	@Column(name = "TEMPLATE_TEXT")
 	private String templateText;
 
@@ -89,6 +92,14 @@ public class Template {
 
 	public void setTemplateName(final String templateName) {
 		this.templateName = templateName;
+	}
+
+	public String getTemplateKey() {
+		return templateKey;
+	}
+
+	public void setTemplateKey(String templateKey) {
+		this.templateKey = templateKey;
 	}
 
 	public String getTemplateText() {
