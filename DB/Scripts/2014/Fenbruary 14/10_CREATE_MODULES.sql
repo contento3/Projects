@@ -1,4 +1,6 @@
-CREATE TABLE `modules` (
+CREATE DATABASE `modules` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+CREATE TABLE `modules`.`modules` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(250) NOT NULL,
   `DESCRIPTION` varchar(5000) DEFAULT NULL,
