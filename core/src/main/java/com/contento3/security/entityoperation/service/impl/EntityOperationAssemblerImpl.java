@@ -24,7 +24,7 @@ public class EntityOperationAssemblerImpl implements EntityOperationAssembler{
 	public EntityOperationDto domainToDto(EntityOperation domain) {
 		// TODO Auto-generated method stub
 		EntityOperationDto dto = new EntityOperationDto();
-		dto.setEntityOperationId(domain.getEntityId());
+		dto.setEntityOperationId(domain.getEntityOperationId());
 		dto.setEntityName(domain.getEntityOperationName());
 		return dto;
 	}

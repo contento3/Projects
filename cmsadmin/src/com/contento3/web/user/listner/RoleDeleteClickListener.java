@@ -2,6 +2,7 @@ package com.contento3.web.user.listner;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.service.Service;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
@@ -49,15 +50,14 @@ public class RoleDeleteClickListener extends EntityDeleteClickListener<RoleDto>{
 	
 	private void deleteRole(Object id){
 		try {
-			RoleDto dtoToDelete = ((RoleService) getService()).findRoleByName(getDtoToDelete().getName());
+			RoleDto dtoToDelete = ((RoleService) getService()).findRoleById(getDtoToDelete().getId());
 			((RoleService) getService()).delete(dtoToDelete);
 			getTable().removeItem(id);
 			getTable().setPageLength(getTable().getPageLength()-1);
 			Notification.show(getDtoToDelete().getName()+" role deleted succesfully");
-		} catch (Exception e) {
-			String description= "User " + getDtoToDelete().getName() + " cannot be deleted as users are associated with the role.";
-			Notification.show("Delete Failed",description,Notification.Type.WARNING_MESSAGE);
-			e.printStackTrace();
+		} catch (final EntityCannotBeDeletedException e) {
+			String description= "Role " + getDtoToDelete().getName() + " cannot be deleted.";
+			Notification.show(description,Notification.Type.TRAY_NOTIFICATION);
 		}
     	
 	}

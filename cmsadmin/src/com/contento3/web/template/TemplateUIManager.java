@@ -515,7 +515,7 @@ public class TemplateUIManager implements UIManager{
                     //getting codeMirrorUri from templateconfig.properties
                     final CachedTypedProperties templateConfigProperty = CachedTypedProperties.getInstance("templateconfig.properties");
                 StringBuffer urlStr = new StringBuffer();
-                urlStr.append(templateConfigProperty.getProperty("codeMirrorUri")+"/cms/jsp/codemirror");
+                urlStr.append(templateConfigProperty.getProperty("codeMirrorUri")+"/cms/jsp/codemirror.html");
                 System.out.println(urlStr);
                 if (null != templateId){
                         templateDto = templateService.findTemplateById(templateId);

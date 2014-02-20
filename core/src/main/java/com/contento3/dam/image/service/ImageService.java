@@ -46,7 +46,7 @@ public interface ImageService extends StorableService<ImageDto> {
 	 * @param imageId
 	 * @return
 	 */
-	Collection<ImageDto> findImagesByLibrary(final Integer libraryId);
+	Collection<ImageDto> findImagesByLibrary(Integer libraryId);
 
 	
     /**
@@ -69,4 +69,24 @@ public interface ImageService extends StorableService<ImageDto> {
 	 */
 	ImageDto findById(Integer imageId);
 
+	/**
+	 * Used to crop the image
+	 * @param imageToCrop
+	 * @return
+	 */
+	ImageDto crop(ImageDto imageToCrop);
+	
+	/**
+	 * Used to resize the image
+	 * @param imageToResize
+	 * @return
+	 */
+	ImageDto resize(ImageDto imageToResize);
+	
+	/**
+	 * Used to rotate the image
+	 * @param imageToRotate
+	 * @return
+	 */
+	ImageDto rotate(ImageDto imageToRotate);
 }

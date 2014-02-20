@@ -12,11 +12,9 @@ import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -26,9 +24,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class ImageEditListner extends  CustomComponent
+public class ImageDeleteListner extends  CustomComponent
 implements Window.CloseListener,Button.ClickListener{
 	
 	private static final long serialVersionUID = 1L;
@@ -65,7 +66,7 @@ implements Window.CloseListener,Button.ClickListener{
 	
 	boolean isModalWindowClosable = true;
 	 
-	public ImageEditListner(final SpringContextHelper helper,final ImageDto imageDto ) {
+	public ImageDeleteListner(final SpringContextHelper helper,final ImageDto imageDto ) {
 		this.helper = helper;
 		this.imageService = (ImageService)helper.getBean("imageService");
 		this.imageLibraryService = (ImageLibraryService) helper.getBean("imageLibraryService");

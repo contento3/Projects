@@ -143,7 +143,7 @@ public class GroupUIManager implements UIManager {
 	 * Render group table to screen
 	 */
 	private void renderGroupTable(final VerticalLayout verticl) {
-		try{
+		try {
 			final AbstractTableBuilder tableBuilder = new GroupTableBuilder(contextHelper,groupTable);
 			tableBuilder.build((Collection)groupService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
 			verticl.addComponent(groupTable);

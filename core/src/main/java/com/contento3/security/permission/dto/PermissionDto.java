@@ -1,10 +1,12 @@
 package com.contento3.security.permission.dto;
 
+import org.apache.shiro.authz.Permission;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.entity.dto.EntityDto;
 import com.contento3.security.entityoperation.dto.EntityOperationDto;
 
-public class PermissionDto extends Dto{
+public class PermissionDto extends Dto implements org.apache.shiro.authz.Permission {
 	private Integer permissionId;
 	private EntityDto entity;
 	private EntityOperationDto entityOperation;
@@ -18,7 +20,7 @@ public class PermissionDto extends Dto{
 	@Override
 	public String getName()
 	{
-		return (entityOperation.getName()+"\t"+entity.getName());
+		return (entity.getName()+":"+entityOperation.getName());
 	}
 	
 	public EntityDto getEntity()
@@ -41,6 +43,11 @@ public class PermissionDto extends Dto{
 	public void setEntityOperation(EntityOperationDto entityOperation)
 	{
 		this.entityOperation = entityOperation ;
+	}
+
+	@Override
+	public boolean implies(Permission arg0) {
+		return false;
 	}
 }
  

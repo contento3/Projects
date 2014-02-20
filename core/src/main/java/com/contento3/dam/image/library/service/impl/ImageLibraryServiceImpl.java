@@ -1,21 +1,27 @@
 package com.contento3.dam.image.library.service.impl;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import com.contento3.common.dao.GenericDao;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.dam.content.library.dao.ContentStorageLibraryMappingDao;
 import com.contento3.dam.content.library.model.ContentStorageLibraryMapping;
 import com.contento3.dam.content.storage.Storage;
 import com.contento3.dam.content.storage.exception.InvalidStorageException;
+import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.library.dao.ImageLibraryDao;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.model.ImageLibrary;
 import com.contento3.dam.image.library.service.ImageLibraryAssembler;
 import com.contento3.dam.image.library.service.ImageLibraryService;
+import com.contento3.dam.image.model.Image;
 import com.contento3.dam.storagetype.dao.StorageTypeDao;
 import com.contento3.dam.storagetype.model.StorageType;
 import com.contento3.storage.manager.StorageManager;
@@ -23,6 +29,8 @@ import com.contento3.storage.provider.StorageProviderFactory;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class ImageLibraryServiceImpl implements ImageLibraryService  {
+
+	private Map<String,GenericDao<?,Integer>> contentDaos;
 
 	private ImageLibraryDao imageLibraryDao;
 
@@ -109,15 +117,24 @@ public class ImageLibraryServiceImpl implements ImageLibraryService  {
 	}
 
 	@Override
-	public void delete(final ImageLibraryDto dtoToDelete) {
+	public void delete(final ImageLibraryDto dtoToDelete) throws EntityCannotBeDeletedException {
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
-		if (dtoToDelete.getContentType().equals("IMAGE")){
+		final ContentStorageLibraryMapping cslm = contentStorageLibraryMappingDao.findByLibraryId(dtoToDelete.getId(), dtoToDelete.getAccountDto().getAccountId());
+
+		if (cslm.getContentType().equals("IMAGE")){
+			final ImageDao imageDao = (ImageDao)contentDaos.get("IMAGE");
+			final Collection<Image> images = imageDao.findImagesByLibrary(dtoToDelete.getId());
 			
+			if (!CollectionUtils.isEmpty(images)){
+				throw new EntityCannotBeDeletedException("Content Library for image cannot be deleted");
+			}
+			contentStorageLibraryMappingDao.delete(cslm);
 		}
 		
-		final ContentStorageLibraryMapping contentStorageLibraryMapping = contentStorageLibraryMappingDao.findByLibraryId(dtoToDelete.getId(), dtoToDelete.getAccountDto().getAccountId());
-		contentStorageLibraryMappingDao.delete(contentStorageLibraryMapping);
-		imageLibraryDao.delete(contentStorageLibraryMapping.getLibrary());
+		imageLibraryDao.delete(cslm.getLibrary());
 	}
 
+	public void setContentDaos(final Map<String,GenericDao<?,Integer>> contentDaos ){
+		this.contentDaos = contentDaos;
+	}
 }

@@ -19,7 +19,7 @@ public interface SaltedHibernateUserService extends SimpleService<SaltedHibernat
 	 * @param name
 	 * @return
 	 */
-	SaltedHibernateUserDto findUserById(final Integer name);
+	SaltedHibernateUserDto findUserById(final Integer id);
 
 	/**
 	 * Find user by name

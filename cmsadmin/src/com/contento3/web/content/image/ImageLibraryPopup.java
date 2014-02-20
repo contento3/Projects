@@ -118,6 +118,7 @@ public class ImageLibraryPopup extends CustomComponent implements Window.CloseLi
         final HorizontalLayout nameDataLayout = new HorizontalLayout();
         nameDataLayout.setSpacing(true);
         final TextField nameTextField  = new TextField();
+        nameTextField.setColumns(20);
         nameTextField.setCaption("Name");
         nameDataLayout.setSpacing(true);
         nameDataLayout.addComponent(nameTextField);

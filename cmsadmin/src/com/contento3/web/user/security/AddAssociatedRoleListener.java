@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.common.dto.Dto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.security.role.dto.RoleDto;
@@ -15,6 +16,7 @@ import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
 public class AddAssociatedRoleListener extends EntityListener implements ClickListener {
@@ -88,7 +90,11 @@ public class AddAssociatedRoleListener extends EntityListener implements ClickLi
 		     	 }//end if
 			}//end outer for
 		
-			groupService.update(group);	
+			try {
+				groupService.update(group);
+			} catch (final EntityAlreadyFoundException e) {
+				Notification.show("Group with name "+group.getGroupName()+" already exists.");
+			}	
 			tableBuilder.rebuild((Collection)group.getRoles());
 		}	
 	}
