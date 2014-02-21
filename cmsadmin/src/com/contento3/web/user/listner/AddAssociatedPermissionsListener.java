@@ -3,24 +3,28 @@ package com.contento3.web.user.listner;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import com.contento3.common.dto.Dto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.security.permission.dto.PermissionDto;
+import com.contento3.security.permission.service.PermissionService;
+import com.contento3.security.role.dto.RoleDto;
+import com.contento3.security.role.service.RoleService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.contento3.security.permission.service.*;
-import com.contento3.security.role.dto.RoleDto;
-import com.contento3.security.role.service.RoleService;
-import com.contento3.security.permission.dto.*;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class AddAssociatedPermissionsListener extends EntityListener implements ClickListener{
-	/**
-	 * 
-	 */
+
+	private static final Logger LOGGER = Logger.getLogger(AddAssociatedPermissionsListener.class);
+
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -111,7 +115,11 @@ public class AddAssociatedPermissionsListener extends EntityListener implements 
 		     	 }//end if
 			}//end outer for
 		
-			roleService.update(role);	
+			try {
+				roleService.update(role);
+			} catch (EntityAlreadyFoundException e) {
+				Notification.show("Role cannot be updated",Notification.Type.TRAY_NOTIFICATION);
+			}	
 			associatedPermissionTable.rebuild((Collection) role.getPermissions());
 		}	
 	}

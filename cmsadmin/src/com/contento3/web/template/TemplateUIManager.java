@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.vaadin.blog.JsLabel;
 import org.vaadin.peter.contextmenu.ContextMenu;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
@@ -508,6 +509,8 @@ public class TemplateUIManager implements UIManager{
         
         
         private void renderTemplate(final Integer templateId){
+        	
+        		
                 final VerticalLayout createNewTemplate = new VerticalLayout();
                 URL url = null;
                 TemplateDto templateDto=null;

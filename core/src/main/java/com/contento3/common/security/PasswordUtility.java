@@ -21,4 +21,14 @@ public class PasswordUtility {
 		info.setSalt(salt);
 		return info;
 	}
+
+	public static String getEncryptedPassword(final String salt,final String plainPassword){
+		final ByteSource originalPassword = ByteSource.Util.bytes(plainPassword);
+		
+		final Hash hash = new Sha256Hash(originalPassword, salt, 1);
+		final String finalHash = hash.toString();
+		return finalHash;
+	}
+
+	
 }

@@ -116,9 +116,22 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@RequiresPermissions("USER:UPDATE")
 	@Override
-	public void update(SaltedHibernateUserDto dtoToUpdate) {
-		Validate.notNull(dtoToUpdate,"dtoToUpdate cannot be null");
-		userDao.update( userAssembler.dtoToDomain(dtoToUpdate) );
+	public void update(SaltedHibernateUserDto dtoToUpdate) throws EntityAlreadyFoundException {
+		Validate.notNull(dtoToUpdate,"UserDto cannot be null");
+		
+		final SaltedHibernateUser userExist = userDao.findUserByAccountId(dtoToUpdate.getAccount().getAccountId(),dtoToUpdate.getUserName());
+		final String newPassword = PasswordUtility.getEncryptedPassword(userExist.getSalt(),dtoToUpdate.getPassword());
+
+		if (null!=userExist && !userExist.getUserId().equals(dtoToUpdate.getId())) {
+			throw new EntityAlreadyFoundException("User with username "+dtoToUpdate.getUserName()+" already exist");
+		}
+
+		if (null!=userExist && !userExist.getPassword().equals(newPassword)){
+			dtoToUpdate.setPassword(newPassword);
+		}
+		
+		userDao.update(userAssembler.dtoToDomain(dtoToUpdate));
+		userDao.flush();
 	}
 	
 }

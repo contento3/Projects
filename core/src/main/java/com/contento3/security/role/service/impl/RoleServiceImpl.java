@@ -2,6 +2,7 @@ package com.contento3.security.role.service.impl;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.Validate;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
+import com.contento3.security.group.model.Group;
 import com.contento3.security.role.dao.RoleDao;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
@@ -44,7 +46,7 @@ public class RoleServiceImpl implements RoleService{
 		roleDao.delete(roleAssembler.dtoToDomain(dtoToDelete,new Role()));
 	}
 	
-	@RequiresPermissions("ROLE:VIEW")
+	@RequiresPermissions("ROLE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<RoleDto> findRolesByAccountId(Integer accountId) {
@@ -61,8 +63,17 @@ public class RoleServiceImpl implements RoleService{
 	@RequiresPermissions("ROLE:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public void update(RoleDto dtoToUpdate) {
-		roleDao.update(roleAssembler.dtoToDomain(dtoToUpdate,new Role()));
+	public void update(RoleDto dtoToUpdate) throws EntityAlreadyFoundException {
+		Validate.notNull(dtoToUpdate,"roleDto cannot be null");
+		Role role = roleDao.findById(dtoToUpdate.getRoleId());
+		if (null!=role && !role.getRoleId().equals(role.getRoleId())){
+			throw new EntityAlreadyFoundException("Group with same name already exist");
+		}
+		else if (null==role) {
+			role = new Role();
+		}
+		
+		roleDao.update(roleAssembler.dtoToDomain(dtoToUpdate,role));
 	}
 
 	@RequiresPermissions("ROLE:VIEW")
