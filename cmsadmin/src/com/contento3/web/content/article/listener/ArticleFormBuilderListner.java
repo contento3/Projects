@@ -21,6 +21,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
@@ -33,7 +34,10 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class ArticleFormBuilderListner implements ClickListener{
+	
 	private static final long serialVersionUID = 1L;
+	private final static String BUTTON_NAME_PUBLISHED = "Published";
+	private final static String BUTTON_NAME_UNPUBLISHED = "Unpublished";
 
 	/**
 	 * Used to get service beans from spring context.
@@ -91,6 +95,11 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 * required to be displayed on article screen.
 	 */
 	private ArticleForm articleForm;
+	
+	/**
+	 * Article that is to be edited
+	 */
+	private ArticleDto article;
 
 	Tab articleTab;
 
@@ -135,9 +144,8 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 * @return
 	 */
 	public Component renderEditScreen(final Integer editId){
-        buildArticleUI("Edit",editId);
-		
-      final ArticleDto article = this.articleService.findById(editId);
+		article = this.articleService.findById(editId);
+		buildArticleUI("Edit",editId);
 		articleForm.getArticleHeading().setValue(article.getHead());
 		articleForm.getArticleTeaser().setValue(article.getTeaser());
 		articleForm.getBodyTextField().setValue(article.getBody());
@@ -146,6 +154,50 @@ public class ArticleFormBuilderListner implements ClickListener{
 		articleForm.getSeoFriendlyURL().setValue(article.getSeoFriendlyUrl());
 		return formLayout;
 	}
+	
+	
+	private Button createPublishedButton() {
+		
+		Button btnPublished = new Button();
+		if (article.getStatus() == 0) {
+			btnPublished.setCaption(BUTTON_NAME_PUBLISHED);
+		} else {
+			btnPublished.setCaption(BUTTON_NAME_UNPUBLISHED);
+		}
+		btnPublished.addClickListener(publishedListener());
+		return btnPublished;
+	}
+	
+	/**
+	 * Listener for publish button
+	 * @return
+	 */
+	private ClickListener publishedListener() {
+	
+		ClickListener listener = new ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+
+				if(article != null) {
+					if( event.getButton().getCaption().equals(BUTTON_NAME_PUBLISHED) ) {
+						article.setStatus(1); // set status publishes
+						event.getButton().setCaption(BUTTON_NAME_UNPUBLISHED);
+						
+					} else {
+						article.setStatus(0);
+						event.getButton().setCaption(BUTTON_NAME_PUBLISHED);
+					}
+					articleService.update(article);
+				}
+			}
+		};
+		
+		return listener;
+	}
+	
 	
 	/**
 	 * setting formLayout for showing edit & add article screen
@@ -160,6 +212,12 @@ public class ArticleFormBuilderListner implements ClickListener{
 		parentLayout = new HorizontalLayout();
 		parentLayout.setHeight(100,Unit.PERCENTAGE);
 		parentLayout.setWidth(100,Unit.PERCENTAGE);
+		
+		
+		
+		formLayout.addComponent(createPublishedButton());
+		
+		
 		parentLayout.addComponent(formLayout);
 		
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));

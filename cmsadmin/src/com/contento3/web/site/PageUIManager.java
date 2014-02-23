@@ -200,8 +200,7 @@ public class PageUIManager {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-			
-				System.out.println("Button Pressed");
+
 				if(siteDto != null) {
 					if( event.getButton().getCaption().equals(BUTTON_NAME_PUBLISHED) ) {
 						siteDto.setStatus(1); // set status publishes
