@@ -4,6 +4,8 @@ package com.contento3.cms.article.dto;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.Column;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.contento3.account.dto.AccountDto;
@@ -87,6 +89,21 @@ public class ArticleDto extends Dto {
 	 * Associated images to article
 	 */
 	private Collection<ArticleImageDto> associateImagesDtos;
+	
+	/**
+	 * Published/Unpublished Status for Article
+	 */
+	private Integer status;
+
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 
 
 	public Integer getIsVisible() {

@@ -54,6 +54,11 @@ public InputStream getResourceAsStream(final TemplateProcessingParameters templa
 	
     try {
 
+    	if(site.getSiteId() == null) {
+    		 return new ByteArrayInputStream(new String("Site not found").getBytes());
+    	}
+    	
+    	
     	//Look for site default page if the reource name starts with "/"
     	if (resourceName.equals("/")){
     		final PageDto pageDto = pageService.findById(site.getDefaultPageId());
@@ -66,7 +71,7 @@ public InputStream getResourceAsStream(final TemplateProcessingParameters templa
     	if (null==dto){
     		dto = templateLoader.loadErrorTemplate("SIMPLE", resourceName,siteId);
     	}
-   		
+   	
         return 	new ByteArrayInputStream(dto.getContent().getBytes());
 
     } catch (final Exception e) {

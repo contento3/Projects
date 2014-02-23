@@ -105,37 +105,37 @@ public class ArticleServiceImpl implements ArticleService {
 	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<ArticleDto> findByAccountId(Integer accountId) {
+	public Collection<ArticleDto> findByAccountId(Integer accountId, boolean isPublished) {
 		Validate.notNull(accountId,"accountId cannot be null");
-		return articleAssembler.domainsToDtos(articleDao.findByAccountId(accountId));
+		return articleAssembler.domainsToDtos(articleDao.findByAccountId(accountId, isPublished));
 	}
 	
 	@RequiresPermissions("ARTICLE:VIEW")
 	@Override
-	public Collection<ArticleDto> findBySearch(String header, String catagory) {
+	public Collection<ArticleDto> findBySearch(String header, String catagory, boolean isPublished) {
 		Validate.notNull(header,"header cannot be null");
 		Validate.notNull(catagory,"catagory cannot be null");
 		
-		return articleAssembler.domainsToDtos(articleDao.findBySearch(header,catagory));
+		return articleAssembler.domainsToDtos(articleDao.findBySearch(header,catagory, isPublished));
 	}
 	
 	
 	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<ArticleDto> findLatestArticle(int count) {
+	public Collection<ArticleDto> findLatestArticle(int count, boolean isPublished) {
 		Validate.notNull(count,"count cannot be null");
 		
-		return articleAssembler.domainsToDtos(articleDao.findLatestArticle(count));
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticle(count, isPublished));
 	}
 
 		
 	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public ArticleDto findByUuid(String uuid) {
+	public ArticleDto findByUuid(String uuid, boolean isPublished) {
 		Validate.notNull(uuid,"uuid cannot be null");
-		return articleAssembler.domainToDto(articleDao.findByUuid(uuid));
+		return articleAssembler.domainToDto(articleDao.findByUuid(uuid, isPublished));
 	}
 	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
@@ -150,11 +150,11 @@ public class ArticleServiceImpl implements ArticleService {
 	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer count, Integer start) {
+	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer count, Integer start, boolean isPublished) {
 		// TODO Auto-generated method stub
 		Validate.notNull(siteId,"siteId cannot be null");
 		//Validate.notNull(count,"count cannot be null");
-		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count,start));
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count,start, isPublished));
 	}
 	@RequiresPermissions("ARTICLE:DELETE")
 	@Override
@@ -176,20 +176,20 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     @Override
     public Collection<ArticleDto> findLatestArticleByCategory(
-		final Collection<Integer> categoryIds, final Integer siteId, Integer numberOfArticles, Integer start) {
+		final Collection<Integer> categoryIds, final Integer siteId, Integer numberOfArticles, Integer start, boolean isPublished) {
 		Validate.notNull(categoryIds,"categoryIds collection cannot be null");
 //		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
 		Validate.notNull(siteId,"siteId cannot be null");
 		
-		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryIds, numberOfArticles, siteId, start));
+		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryIds, numberOfArticles, siteId, start, isPublished));
 	}
 
 	@Override
-	public ArticleDto findArticleByIdAndSiteId(Integer id, Integer siteId) {
+	public ArticleDto findArticleByIdAndSiteId(Integer id, Integer siteId, boolean isPublished) {
 		Validate.notNull(id,"id cannot be null");
 		Validate.notNull(siteId,"siteId cannot be null");
 		
-		Article article = articleDao.findArticleByIdAndSiteId(id, siteId);
+		Article article = articleDao.findArticleByIdAndSiteId(id, siteId, isPublished);
 		ArticleDto articleDto = null;
 		if (article!=null){
 			articleDto = articleAssembler.domainToDto(article);

@@ -7070,15 +7070,3 @@ body .contento3.v-app .v-app-loading {
 	margin-left: 45%;
 	height: 150px;
 }
-
-.contento3 .v-tabsheet-tabs .v-icon {
-	position: relative;
-	bottom: 4px;
-	right: 4px;
-}
-
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	.v-tabsheet-tabs .v-icon {
-		bottom: 8px !important;
-	}
-}
