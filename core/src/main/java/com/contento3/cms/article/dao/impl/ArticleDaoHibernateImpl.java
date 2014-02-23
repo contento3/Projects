@@ -109,12 +109,14 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 			Validate.notNull(categoryIds,"categoryIds cannot be null");
 			Validate.notNull(siteId,"siteId cannot be null");
 //			Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
-			
+			if(start == null){
+				start = 0;
+			}
 		final Criteria criteria = this.getSession()
 			.createCriteria(Article.class)
 		    //.addOrder(Order.desc("dateCreated"))
 		    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-		    .setFirstResult(0)
+		    .setFirstResult(start)
 		    .add(Restrictions.eq("isVisible", 1))
 		    .createAlias("site", "s")
 		    .add(Restrictions.eq("s.siteId", siteId));
