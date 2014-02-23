@@ -39,7 +39,7 @@ public interface GroupService extends StorableService<GroupDto> {
 	 * @param groupDto
 	 */
 	Collection<GroupDto> findByUserId(Integer id);
-	void update(final GroupDto groupDto);
+	void update(final GroupDto groupDto) throws EntityAlreadyFoundException;
 	/**
 	 * Delete group 
 	 * @param id

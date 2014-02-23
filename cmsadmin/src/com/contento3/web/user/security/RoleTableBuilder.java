@@ -52,7 +52,7 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 		//adding delete button item  into list
 		final Button deleteLink = new Button();
 		deleteLink.setCaption("Delete");
-		deleteLink.setData((role.getName()));
+		deleteLink.setData((role.getId()));
 		deleteLink.addStyleName("delete");
 		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
 		item.getItemProperty("delete").setValue(deleteLink);

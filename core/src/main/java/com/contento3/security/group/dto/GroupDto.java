@@ -5,7 +5,6 @@ import java.util.Collection;
 import com.contento3.account.dto.AccountDto;
 import com.contento3.common.dto.Dto;
 import com.contento3.security.role.dto.RoleDto;
-import com.contento3.security.role.model.Role;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
 public class GroupDto extends Dto {

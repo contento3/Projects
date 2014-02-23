@@ -2,6 +2,7 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
+import com.contento3.common.dto.Dto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
@@ -135,7 +136,8 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	  @SuppressWarnings({ "rawtypes", "unchecked" })
 	  private Table renderAssociatedUserTable(final Integer groupId){
 		  userTable.setPageLength(25);
-		  tableBuilder.build((Collection)groupService.findById(groupId).getMembers());
+		  Collection<Dto> userDto = (Collection)groupService.findById(groupId).getMembers();
+		  tableBuilder.build(userDto);
 		return userTable;
 	  }
 	  

@@ -7,6 +7,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.thymeleaf.Arguments;
 import org.thymeleaf.Configuration;
+import org.thymeleaf.Template;
+import org.thymeleaf.TemplateProcessingParameters;
+import org.thymeleaf.dom.Document;
 import org.thymeleaf.dom.Element;
 import org.thymeleaf.dom.Node;
 import org.thymeleaf.dom.Text;
@@ -14,6 +17,7 @@ import org.thymeleaf.processor.element.AbstractMarkupSubstitutionElementProcesso
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
+import org.w3c.dom.NodeList;
 
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
@@ -84,20 +88,34 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 	@Override
 	protected List<Node> getMarkupSubstitutes(final Arguments arguments,
 			final Element element) {
-
+		String DefaultTemplate = "default";
+		String templateName = parseString(arguments,element,"templateName");
+		if(templateName == null){
+			templateName = DefaultTemplate;
+		}
+		
 		final List<Node> nodes = new ArrayList<Node>();
-		String repo = arguments.getTemplateName();
-		//First check the mandatory fields i.e. id, if id is not present then its siteId that needs to be present.
+		Template template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/site1/"+templateName, arguments.getContext()));
+		Document doc = template.getDocument();
+		if(doc.getFirstElementChild() == null)
+	    {
+			template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/site1/"+DefaultTemplate, arguments.getContext()));
+			doc = template.getDocument();
+			nodes.add((Node)doc.getFirstElementChild());
+	    }
+		else{
+			nodes.add((Node)doc.getFirstElementChild());
+		}
+
+	    return nodes;
+	    //First check the mandatory fields i.e. id, if id is not present then its siteId that needs to be present.
 		//If both are not available then this tag is not a valid one.
-//		Template template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/site1/testin", arguments.getContext()));
-//		Template template2 = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/test/testing", arguments.getContext()));
-		final Integer id = element.getAttributeValue("id")!=null? Integer.parseInt(element.getAttributeValue("id")):null;
-//		 List<Node> doc = template.getDocument().getChildren();
-//		  Element eElement = (Element) doc.get(0);
+		
+	    /*final Integer id = element.getAttributeValue("id")!=null? Integer.parseInt(element.getAttributeValue("id")):null;
 	    final String uuid = parseString(arguments,element,"uuid");
 //	    DOMUtils.extractFragmentByElementAndAttributeValue(doc, "div", arg2, arg3) 
 		final String seoKeyword = element.getAttributeValue("seoKeyword");
-
+		
 		final Integer siteId = parseInteger(arguments,element,"siteId");
 		
 		String wrapperTag = parseString(arguments,element,"wrapperTag");
@@ -160,7 +178,7 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 				LOGGER.info(String.format("Something went wrong while you tried using the tag <article:simple> on line number %d in %s template",element.getLineNumber(),arguments.getTemplateName()));
 			}
 		}
-        return nodes;
+        return nodes;*/
 	}
 
 	private String parseString(final Arguments arguments,final Element element,final String attributeName){

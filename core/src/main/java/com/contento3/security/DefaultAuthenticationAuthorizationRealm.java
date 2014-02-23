@@ -16,21 +16,25 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.SimpleByteSource;
 
-import com.contento3.security.entity.model.PermissionEntity;
-import com.contento3.security.entityoperation.model.EntityOperation;
-import com.contento3.security.group.dao.GroupDao;
+import com.contento3.security.entity.dto.EntityDto;
+import com.contento3.security.entityoperation.dto.EntityOperationDto;
+import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.model.Group;
+import com.contento3.security.group.service.GroupService;
+import com.contento3.security.permission.dto.PermissionDto;
+import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
-import com.contento3.security.user.dao.SaltedHibernateUserDao;
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.model.SaltedHibernateUser;
+import com.contento3.security.user.service.SaltedHibernateUserService;
 
 public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 
 	private static final Logger LOGGER = Logger.getLogger(DefaultAuthenticationAuthorizationRealm.class);
 
-	private transient SaltedHibernateUserDao saltedHibernateUserDao;
+	private transient SaltedHibernateUserService saltedHibernateUserService;
 	
-	private transient GroupDao groupDao;
+	private transient GroupService groupService;
 	
 	/**
 	 * This is called when the users logs in.
@@ -39,9 +43,9 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken token) {
 		final UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 		
-		SaltedHibernateUser user;
+		SaltedHibernateUserDto user;
 		try {
-			user = saltedHibernateUserDao.findByUsername(upToken.getUsername());
+			user = saltedHibernateUserService.findUserByUsername(upToken.getUsername());
 		} catch (Exception idEx) {
 				throw new AuthenticationException(idEx);
 		}
@@ -63,10 +67,10 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(final PrincipalCollection principals) {
 		
-		final SaltedHibernateUser userr = (SaltedHibernateUser) principals.fromRealm(getName()).iterator().next();
-	    final Integer userId= userr.getUserId();
-		final SaltedHibernateUser user = saltedHibernateUserDao.findById(userId);
-		final Collection<Group> groups = (Collection<Group>) groupDao.findByUserId(userId);
+		final SaltedHibernateUserDto userr = (SaltedHibernateUserDto) principals.fromRealm(getName()).iterator().next();
+	    final Integer userId= userr.getId();
+		final SaltedHibernateUserDto user = saltedHibernateUserService.findUserById(userId);
+		final Collection<GroupDto> groups = (Collection<GroupDto>) groupService.findByUserId(userId);
 		
 		if(groups != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -88,34 +92,35 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 		return roleNames;
 	}
 	
-	private Collection<String> fetchPermissions(final Collection<Group> groups)
+	private Collection<String> fetchPermissions(final Collection<GroupDto> groups)
 	{
 		Collection<String> permissions = new ArrayList<String>();
-		PermissionEntity entity;
+		EntityDto entity;
 
-		EntityOperation entityOperation;
-		for(Group group: groups)
+		EntityOperationDto entityOperation;
+		for(GroupDto group: groups)
 		{
-		      final Collection<Role> groupRoles = group.getRoles();	
-		      for(Role role: groupRoles)
+		      final Collection<RoleDto> groupRoles = group.getRoles();	
+		      for(RoleDto role: groupRoles)
 				{
-					final Collection<com.contento3.security.permission.model.Permission> tempPermissions = role.getPermissions();
-					for(com.contento3.security.permission.model.Permission permission: tempPermissions)
+					final Collection<PermissionDto> tempPermissions = role.getPermissions();
+					for(PermissionDto permission: tempPermissions)
 					{
 						entity= permission.getEntity();
 						entityOperation = permission.getEntityOperation();
-						permissions.add(entity.getEntityName()+":"+entityOperation.getEntityOperationName());
+						permissions.add(entity.getName()+":"+entityOperation.getName());
 					}
 				}
 		}
 		return permissions;
 	}
 	
-	public void setSaltedHibernateUserDao(final SaltedHibernateUserDao saltedHibernateUserDao){
-		this.saltedHibernateUserDao = saltedHibernateUserDao;
+	public void setSaltedHibernateUserService(final SaltedHibernateUserService saltedHibernateUserService){
+		this.saltedHibernateUserService = saltedHibernateUserService;
 	}
-	public void setGroupDao(final GroupDao groupDao){
-		this.groupDao = groupDao;
+	
+	public void setGroupService(final GroupService groupService){
+		this.groupService = groupService;
 	}
 	
 	@Override

@@ -15,14 +15,12 @@ public class AddImageButtonListener implements ClickListener {
 
 	public AddImageButtonListener(TabSheet tabSheet,
 			ImageMgmtUIManager imageMgmtUIManager) {
-		// TODO Auto-generated constructor stub
 		this.tabSheet = tabSheet;
 		this.imageMgmtUIManager = imageMgmtUIManager;
 	}
 
 	@Override
 	public void click(ClickEvent event) {
-		// TODO Auto-generated method stub
 		VerticalLayout newArticleLayout = new VerticalLayout();
 		Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Create new image"),new ExternalResource("images/content-mgmt.png"));
 		createNew.setClosable(true);

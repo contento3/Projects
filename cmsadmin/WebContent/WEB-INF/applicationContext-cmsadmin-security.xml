@@ -45,8 +45,8 @@
 	<!-- Define the Shiro Realm implementation you want to use to connect to your back-end -->
 	<!-- security datasource: -->
 	<beans:bean id="authenticationAuthorizationRealm" class="com.contento3.security.DefaultAuthenticationAuthorizationRealm">
-		<beans:property name="saltedHibernateUserDao" ref="saltedHibernateUserDao" />	
-		<beans:property name="groupDao" ref="groupDao" />
+		<beans:property name="saltedHibernateUserService" ref="saltedHibernateUserService" />	
+		<beans:property name="groupService" ref="groupService" />
 		<beans:property name="credentialsMatcher" ref="hashMatcher" />	
 	</beans:bean>
 

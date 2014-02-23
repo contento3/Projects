@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.common.dto.Dto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
@@ -15,6 +16,7 @@ import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -116,7 +118,11 @@ public class AddAssociatedUsersListener extends EntityListener implements ClickL
 		     	 }//end if
 			}//end outer for
 		
-			groupService.update(group);	
+			try {
+				groupService.update(group);
+			} catch (final EntityAlreadyFoundException e) {
+				Notification.show("Group with name "+group.getGroupName()+" already exists.");
+			}	
 			asscoiatedUserTable.rebuild((Collection) group.getMembers());
 		}	
 	}

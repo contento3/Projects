@@ -241,8 +241,12 @@ public class GroupPopup extends CustomComponent implements Window.CloseListener,
 		final GroupDto groupDto = groupService.findById(editId);
 			groupDto.setGroupName(textField.getValue().toString());
 			groupDto.setDescription(descriptionArea.getValue().toString());
-			groupService.update(groupDto);
-			Notification.show(groupDto.getGroupName()+" group edit succesfully");
+			try {
+				groupService.update(groupDto);
+				Notification.show(groupDto.getGroupName()+" group edit succesfully");
+			} catch (final EntityAlreadyFoundException e) {
+				Notification.show("Group with name "+groupDto.getGroupName()+" already exists.");
+			}
 		}catch(AuthorizationException ex){}
 			resetTable();
     }

@@ -2,6 +2,7 @@ package com.contento3.web;
 
 import java.util.Collection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -46,10 +47,9 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.LoginForm;
-import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.CloseHandler;
 import com.vaadin.ui.TabSheet.Tab;
@@ -82,7 +82,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	SiteMainAreaRenderer siteMainRenderer;
 	LayoutManagerRenderer layoutManagerRenderer;
 	SpringContextHelper helper;
-	//UriFragmentUtility uri;
 	UIManager uiMgr;
 	
 	Subject subject;
@@ -100,24 +99,42 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	
     final TabSheet uiTabsheet = new TabSheet();
 
-	CMSMainWindow(final SpringContextHelper helper){ //change
+    Boolean isDemo=false;
+    
+	CMSMainWindow(final SpringContextHelper helper,final Boolean isDemo){ //change
 		this.helper = helper;
 		this.logoutButton = new Button("Log Out");
 		logoutButton.addStyleName("link");
         this.userService = (SaltedHibernateUserService)helper.getBean("saltedHibernateUserService");
+        this.isDemo = isDemo;
 		buildLogin();
 	}
 	
 	@SuppressWarnings("deprecation")
 	public void buildLogin(){
 		final VerticalLayout appRootLayout = new VerticalLayout();
-		LoginForm login = new LoginForm();
-		login.setHeight(180,Unit.PIXELS);
-		login.setWidth(145,Unit.PIXELS);
 		
+		final VerticalLayout loginLayout = new VerticalLayout();
+		loginLayout.setHeight(175,Unit.PIXELS);
+		loginLayout.setWidth(145,Unit.PIXELS);
 		
+		final TextField usernameTxtFld = new TextField();
+		usernameTxtFld.setCaption("Username");
 		
-	    ImageLoader imageLoader = new ImageLoader();
+		final PasswordField passwordTxtFld = new PasswordField();
+		passwordTxtFld.setCaption("Password");
+		
+		loginLayout.addComponent(usernameTxtFld);
+		loginLayout.addComponent(passwordTxtFld);
+
+		//If its the demo account
+		//Set the demo username and password
+		if (isDemo){
+			usernameTxtFld.setValue("demo");
+			passwordTxtFld.setValue("guest123");
+		}
+		
+		ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
 	    embedded.setHeight(75,Unit.PIXELS);
 	    embedded.setWidth(200,Unit.PIXELS);
@@ -126,49 +143,58 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
 	    appRootLayout.setSpacing(true);
 	    
-	    appRootLayout.addComponent(login);
-	    appRootLayout.setComponentAlignment(login,Alignment.MIDDLE_CENTER);
+	    appRootLayout.addComponent(loginLayout);
+	    appRootLayout.setComponentAlignment(loginLayout,Alignment.MIDDLE_CENTER);
 
 		appRootLayout.setSizeFull();
 		this.addComponent(appRootLayout);
 		this.setComponentAlignment(appRootLayout, Alignment.MIDDLE_CENTER);
 		
-		
-		login.addLoginListener(new LoginForm.LoginListener() {
+		final Button loginButton = new Button();
+		loginButton.setCaption("Login");
+		loginLayout.addComponent(loginButton);
+
+		loginButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
 
-			public void onLogin(LoginEvent event) {
-            	final String username = event.getLoginParameter("username");
-            	final String password = event.getLoginParameter("password");
-            	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
-
-        		subject = SecurityUtils.getSubject();
-				try{
-					subject.login(token);
-					subject.getSession().setAttribute("userName", username);
-					LOGGER.info("User with username ["+username+"] logged in successfully");
-					
-					final SaltedHibernateUserDto user = userService.findUserByUsername(username);
-					VaadinSession.getCurrent().getSession().setAttribute("accountId",user.getAccount().getAccountId());
-					buildUI();
-				}
-				catch(IncorrectCredentialsException ice){
-					LOGGER.error("Username or password for username ["+username+"] is not valid");
-					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
-				}
-				catch(CredentialsException ice){
-					LOGGER.error("CredentialsException,Error occured while authentication user with username: "+username);
-					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
-				}
-				catch(AuthenticationException ae){
-					LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
-					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
-				}
-				catch(Exception e){
-					LOGGER.error("Error occured while authenticating user",e);
-					Notification.show("Something wrong with the server while you tried login.",Type.ERROR_MESSAGE);
-				}
-            }
+			public void buttonClick(ClickEvent event) {
+            	final String username = usernameTxtFld.getValue();
+            	final String password = passwordTxtFld.getValue();
+            	
+            	if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
+        			Notification.show("Username or password fields are empty",Type.WARNING_MESSAGE);
+            	}
+            	else {
+	            	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+	        		subject = SecurityUtils.getSubject();
+	
+	        		try{
+						subject.login(token);
+						subject.getSession().setAttribute("userName", username);
+						LOGGER.info("User with username ["+username+"] logged in successfully");
+						
+						final SaltedHibernateUserDto user = userService.findUserByUsername(username);
+						VaadinSession.getCurrent().getSession().setAttribute("accountId",user.getAccount().getAccountId());
+						buildUI();
+					}
+					catch(final IncorrectCredentialsException ice){
+						LOGGER.error("Username or password for username ["+username+"] is not valid");
+						Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+					}
+					catch(final CredentialsException ice){
+						LOGGER.error("CredentialsException,Error occured while authentication user with username: "+username);
+						Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+					}
+					catch(final AuthenticationException ae){
+						LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
+						Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+					}
+					catch(final Exception e){
+						LOGGER.error("Error occured while authenticating user",e);
+						Notification.show("Something wrong with the server while you tried login.",Type.ERROR_MESSAGE);
+					}
+	            }
+			}	
         });
 		
 		logoutButton.addClickListener(new Button.ClickListener()
