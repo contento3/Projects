@@ -57,7 +57,7 @@ public class CMSHome extends UI
 		}
 			
         final CMSMainWindow main = new CMSMainWindow(helper,isDemo);
-        VerticalLayout view = new VerticalLayout();
+        final VerticalLayout view = new VerticalLayout();
         view.addComponent(main);
         view.setComponentAlignment(main, Alignment.BOTTOM_CENTER);
         setContent(view); 

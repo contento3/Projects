@@ -76,7 +76,7 @@ public class TemplateServiceImpl implements TemplateService {
         @Override
         public Collection<TemplateDto> findTemplateByDirectoryName(final Integer directoryName) {
                 Validate.notNull(directoryName,"directoryName cannot be null");
-                Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
+                final Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
                 return templateAssembler.domainsToDtos(templateList);
         }
         
@@ -217,6 +217,10 @@ public class TemplateServiceImpl implements TemplateService {
                         template = new Template();
                 }
                 
+                if (templateDirectory.isGlobal()){
+                	templateDto.setGlobal(true);
+                }
+                	
                 template = templateAssembler.dtoToDomain(templateDto,template);
                 template.setDirectory(templateDirectory);
                 template.setTemplateType(templateType);
@@ -227,8 +231,6 @@ public class TemplateServiceImpl implements TemplateService {
         @Override
         public void delete(final TemplateDto dtoToDelete) {
                 Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
-                // TODO Auto-generated method stub
-                
         }
 
         @Override

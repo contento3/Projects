@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
@@ -86,7 +85,7 @@ public class ArticleSaveListener implements ClickListener{
 		// header or body cannot be null
 		if(articleDto.getHead().isEmpty() || articleDto.getBody().isEmpty()){
 			
-			Notification.show(unsaveNotification);
+			Notification.show(unsaveNotification,Notification.Type.TRAY_NOTIFICATION);
 		}
 		else{
 			try
@@ -109,7 +108,7 @@ public class ArticleSaveListener implements ClickListener{
 			articleDto.setDateCreated(new Date());
 			articleDto.setAccount(accountService.findAccountById(accountId));
 			articleService.create(articleDto);
-			Notification.show(saveNotification);
+			Notification.show(saveNotification,Notification.Type.TRAY_NOTIFICATION);
 			resetTable();
 		}
 		else{

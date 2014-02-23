@@ -265,12 +265,12 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 			}
 		} );
 	    
-	    HorizontalLayout horizTop = new HorizontalLayout();
+	    final HorizontalLayout horizTop = new HorizontalLayout();
 	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);
 	    appRootLayout.addComponent(vert);
 
 	    
-	    ImageLoader imageLoader = new ImageLoader();
+	    final ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
 		embedded.setHeight(21, Unit.PIXELS);
 		embedded.setWidth(70, Unit.PIXELS);
