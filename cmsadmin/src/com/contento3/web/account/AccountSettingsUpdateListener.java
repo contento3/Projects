@@ -5,6 +5,7 @@ import org.apache.shiro.crypto.hash.Hash;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 
 import com.contento3.account.service.AccountService;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.common.helper.SessionHelper;
@@ -81,8 +82,12 @@ public class AccountSettingsUpdateListener implements Button.ClickListener {
 			userDto.setPassword(hashedPswd.toString());
 		}
 				
-		userService.update(userDto);
-		Notification.show(userDto.getFirstName() + ", you have changed your information successfully.");
+		try {
+			userService.update(userDto);
+			Notification.show("User Account",userDto.getFirstName() + ", you have changed your information successfully.",Notification.Type.TRAY_NOTIFICATION);
+		} catch (final EntityAlreadyFoundException e) {
+			Notification.show("User Account","User with username "+userDto.getFirstName() + ",already exist.",Notification.Type.TRAY_NOTIFICATION);
+		}
 	}
 
 }
