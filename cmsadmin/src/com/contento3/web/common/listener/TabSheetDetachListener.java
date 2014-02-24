@@ -15,7 +15,7 @@ public class TabSheetDetachListener implements DetachListener, ComponentDetachLi
 	@Override
 	public void detach(DetachEvent event) {
 		event.getSource();
-		System.out.print("hello");
+
 		final SpringContextHelper helper = new SpringContextHelper(UI.getCurrent());
 
 		SitesDashBoard sitesDashBoard = new SitesDashBoard((TabSheet)event.getSource(),helper);
@@ -26,7 +26,6 @@ public class TabSheetDetachListener implements DetachListener, ComponentDetachLi
 	@Override
 	public void componentDetachedFromContainer(ComponentDetachEvent event) {
 		Component component = event.getDetachedComponent();
-		System.out.print("hello component");
 		final SpringContextHelper helper = new SpringContextHelper(UI.getCurrent());
 
 		SitesDashBoard sitesDashBoard = new SitesDashBoard((TabSheet)event.getComponent(),helper);

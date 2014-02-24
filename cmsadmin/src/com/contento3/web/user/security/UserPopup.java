@@ -340,16 +340,22 @@ public class UserPopup extends CustomComponent implements Window.CloseListener,B
      * @param textField
      */
 	private void handleEditUser(final TextField username,final TextField emailField,final TextField firstName,final TextField lastName,final String editId,final PasswordField password){
+		
+		SaltedHibernateUserDto userDto=null;
 		try
 		{
-		final SaltedHibernateUserDto userDto = userService.findUserByUsername(editId);
-		userDto.setUserName(username.getValue().toString());
-		userDto.setPassword(password.getValue().toString());
-		//userService.update(userDto);
-		Notification.show(userDto.getName()+" user edit succesfully");
-	}
-	catch(AuthorizationException ex){}
-		resetTable();
+			userDto = userService.findUserByUsername(editId);
+			userDto.setUserName(username.getValue().toString());
+			userDto.setPassword(password.getValue().toString());
+			userService.update(userDto);
+			Notification.show(userDto.getName()+" user edit succesfully");
+		}
+		catch(final EntityAlreadyFoundException ex){
+			Notification.show("User with name "+userDto.getName()+" already exists",Notification.Type.TRAY_NOTIFICATION);
+		}
+		catch(final AuthorizationException ex){
+			resetTable();
+		}	
     }
 	
 	/**

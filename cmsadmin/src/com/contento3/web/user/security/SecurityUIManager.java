@@ -1,13 +1,13 @@
 package com.contento3.web.user.security;
 
 import com.contento3.cms.constant.NavigationConstant;
+import com.contento3.common.security.PermissionsHelper;
 import com.contento3.web.UIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Window;
 
 public class SecurityUIManager implements UIManager {
 
@@ -56,20 +56,20 @@ public class SecurityUIManager implements UIManager {
 	@Override
 	public Component render(final String command,final HierarchicalContainer hwContainer) {
 		
-		if (command.equals(NavigationConstant.SECURITY)){
+		if (PermissionsHelper.isPermitted("SECURITY:NAVIGATION") && command.equals(NavigationConstant.SECURITY)){
 			//Add the group screen tab and also add the child items
 			renderUserNavigationItem(hwContainer);
 		}
-		else if (command.equals(NavigationConstant.USER_GRP_MGMT)){
+		else if (PermissionsHelper.isPermitted("GROUP:NAVIGATION") && command.equals(NavigationConstant.USER_GRP_MGMT)){
 			uiTabSheet = (TabSheet) renderElementUI("Group");
 		}
-		else if (command.equals(NavigationConstant.USER_MANAGER)){
+		else if (PermissionsHelper.isPermitted("USER:NAVIGATION") && command.equals(NavigationConstant.USER_MANAGER)){
 			uiTabSheet = (TabSheet) renderElementUI("User");
 		}
-		else if (command.equals(NavigationConstant.USR_ROLE_MGMT)){
+		else if (PermissionsHelper.isPermitted("ROLE:NAVIGATION") && command.equals(NavigationConstant.USR_ROLE_MGMT)){
 			uiTabSheet = (TabSheet) renderElementUI("Role");
 		}
-		else if (command.equals(NavigationConstant.USR_PRMSN_MGMT)){
+		else if (PermissionsHelper.isPermitted("PERMISSION:NAVIGATION") && command.equals(NavigationConstant.USR_PRMSN_MGMT)){
 			uiTabSheet = (TabSheet) renderElementUI("Permission");
 		}
 		return uiTabSheet;
@@ -77,11 +77,17 @@ public class SecurityUIManager implements UIManager {
 	
 	public void renderUserNavigationItem(final HierarchicalContainer hwContainer){
 		for (String navigationItem : navigationItems){
-			Item item = hwContainer.addItem(navigationItem);
-			if (null != item){
-				item.getItemProperty("name").setValue(navigationItem);
-				hwContainer.setParent(navigationItem, NavigationConstant.SECURITY);
-				hwContainer.setChildrenAllowed(navigationItem, false);
+			if ((navigationItem.equals(NavigationConstant.USER_GRP_MGMT) && PermissionsHelper.isPermitted("GROUP:NAVIGATION")) ||
+				(navigationItem.equals(NavigationConstant.USER_MANAGER) && PermissionsHelper.isPermitted("USER:NAVIGATION"))  ||
+				(navigationItem.equals(NavigationConstant.USR_ROLE_MGMT) && PermissionsHelper.isPermitted("ROLE:NAVIGATION"))  ||
+				(navigationItem.equals(NavigationConstant.USR_PRMSN_MGMT) && PermissionsHelper.isPermitted("PERMISSION:NAVIGATION")))
+			{
+				Item item = hwContainer.addItem(navigationItem);
+				if (null != item){
+					item.getItemProperty("name").setValue(navigationItem);
+					hwContainer.setParent(navigationItem, NavigationConstant.SECURITY);
+					hwContainer.setChildrenAllowed(navigationItem, false);
+				}
 			}
 		}
 	}

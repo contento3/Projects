@@ -222,11 +222,16 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		roleDto.setRoleName(rolename.getValue().toString());
 		roleDto.setRoleDesc(roledesc.getValue().toString());
 		roleService.update(roleDto);
-		
-		Notification.show(roleDto.getName()+" role edit succesfully");
-		}catch(AuthorizationException ex){}
+		Notification.show(roleDto.getName()+" role edit succesfully",Notification.Type.TRAY_NOTIFICATION);
+		}catch(AuthorizationException ex){
+			Notification.show("You are not allowed to perform this operation.",Notification.Type.TRAY_NOTIFICATION);
+		}
+		catch(final EntityAlreadyFoundException ex){
+			Notification.show("Role cannot be updated as the role already exist.",Notification.Type.TRAY_NOTIFICATION);
+		}
 		resetTable();
     }
+	
 	@SuppressWarnings("rawtypes")
 	private void resetTable(){
 		try

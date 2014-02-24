@@ -76,7 +76,7 @@ public class TemplateServiceImpl implements TemplateService {
         @Override
         public Collection<TemplateDto> findTemplateByDirectoryName(final Integer directoryName) {
                 Validate.notNull(directoryName,"directoryName cannot be null");
-                Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
+                final Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
                 return templateAssembler.domainsToDtos(templateList);
         }
         
@@ -107,6 +107,20 @@ public class TemplateServiceImpl implements TemplateService {
                 }
                 
                 return templateAssembler.domainToDto(originalTemplate,new TemplateDto());
+        }
+
+        @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+        @Override
+        public TemplateDto findTemplateByKeyAndAccount(String templateKey,Integer accountId) throws ResourceNotFoundException {
+                Validate.notNull(templateKey,"templateKey cannot be null");
+                Validate.notNull(accountId,"accountId cannot be null");
+                //split(templateKey);
+                Template template = templateDao.findTemplateByKeyAndAccount(templateKey, "text/freemarker", accountId);
+                
+                if (template == null){
+                        throw new ResourceNotFoundException();
+                }
+                return templateAssembler.domainToDto(template,new TemplateDto());
         }
 
         @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
@@ -217,6 +231,10 @@ public class TemplateServiceImpl implements TemplateService {
                         template = new Template();
                 }
                 
+                if (templateDirectory.isGlobal()){
+                	templateDto.setGlobal(true);
+                }
+                	
                 template = templateAssembler.dtoToDomain(templateDto,template);
                 template.setDirectory(templateDirectory);
                 template.setTemplateType(templateType);
@@ -227,8 +245,6 @@ public class TemplateServiceImpl implements TemplateService {
         @Override
         public void delete(final TemplateDto dtoToDelete) {
                 Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
-                // TODO Auto-generated method stub
-                
         }
 
         @Override

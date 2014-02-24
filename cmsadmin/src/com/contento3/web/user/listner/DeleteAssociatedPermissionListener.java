@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.common.dto.Dto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.permission.service.PermissionService;
 import com.contento3.security.role.dto.RoleDto;
@@ -14,6 +15,7 @@ import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -115,7 +117,11 @@ public class DeleteAssociatedPermissionListener extends EntityListener implement
 			}//end outer for
 		
 			role.getPermissions().removeAll(itemsToDelete);
- 		 	roleService.update(role);	
+ 		 	try {
+				roleService.update(role);
+			} 	catch(final EntityAlreadyFoundException ex){
+				Notification.show("Role cannot be updated as the role already exist.",Notification.Type.TRAY_NOTIFICATION);
+			}
 			asscoiatedPermissionTable.rebuild((Collection) role.getPermissions()); //refresh previous popup table
 		}	
 	}

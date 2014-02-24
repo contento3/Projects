@@ -14,6 +14,7 @@ import com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl;
 import com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest;
 import com.contento3.thymeleaf.dialect.helper.ArticleUtility;
 import com.contento3.thymeleaf.dialect.helper.CategoryUtility;
+import com.contento3.thymeleaf.dialect.helper.NavigationTemplateHelper;
 
 public class NavigationDialect extends AbstractDialect implements IExpressionEnhancingDialect  {
 
@@ -50,6 +51,7 @@ public class NavigationDialect extends AbstractDialect implements IExpressionEnh
 		HashMap<String,Object> expressionobjects = new HashMap<String,Object>();
 		expressionobjects.put("CategoryUtility", new CategoryUtility());
 		expressionobjects.put("ArticleUtility", new ArticleUtility());
+		expressionobjects.put("NavigationUtility", new NavigationTemplateHelper());
         return expressionobjects;
 	}
 }

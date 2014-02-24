@@ -77,7 +77,7 @@ public class GroupUIManager implements UIManager {
 	public Component render(final String command) {
 	
 		this.uiTabSheet.setHeight(100, Unit.PERCENTAGE);
-		Tab groupTab = uiTabSheet.addTab(verticalLayout, "Group Management",new ExternalResource("images/security.png"));
+		Tab groupTab = uiTabSheet.addTab(verticalLayout, "User Groups",new ExternalResource("images/security.png"));
 		groupTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
