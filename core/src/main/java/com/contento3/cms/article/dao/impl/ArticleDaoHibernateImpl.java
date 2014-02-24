@@ -105,7 +105,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Article> findLatestArticleByCategory(final Collection<Integer> categoryIds,
-		final Integer numberOfArticles,final Integer siteId, final Integer start, final boolean isPublished) {
+		final Integer numberOfArticles,final Integer siteId, Integer start, final boolean isPublished) {
 			Validate.notNull(categoryIds,"categoryIds cannot be null");
 			Validate.notNull(siteId,"siteId cannot be null");
 //			Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");

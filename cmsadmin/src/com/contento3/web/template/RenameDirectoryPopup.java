@@ -3,7 +3,7 @@ package com.contento3.web.template;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.data.Item;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.TextField;
@@ -61,8 +61,8 @@ public class RenameDirectoryPopup extends Window implements Window.CloseListener
 			this.setPositionX(200);
 			this.setPositionY(100);
 
-			this.setHeight(10,Unit.PERCENTAGE);
-			this.setWidth(23,Unit.PERCENTAGE);
+			this.setHeight(28,Unit.PERCENTAGE);
+			this.setWidth(15,Unit.PERCENTAGE);
 	        
 	        /* Listen for close events for the window. */
 			this.addCloseListener(this);
@@ -70,10 +70,15 @@ public class RenameDirectoryPopup extends Window implements Window.CloseListener
 	        this.setCaption("Rename directory");
 	        
 	        final VerticalLayout popupMainLayout = new VerticalLayout();
+	        popupMainLayout.setSpacing(true);
+	        popupMainLayout.setMargin(true);
+
 	        textField.setCaption("Directory Name:");
+	        textField.setColumns(12);
 	        textField.setValue(dirToUpdate.getDirectoryName());
 	        popupMainLayout.addComponent(textField);
 	        popupMainLayout.addComponent(updateButton);
+	        popupMainLayout.setComponentAlignment(updateButton,Alignment.BOTTOM_RIGHT);
 	        this.setContent(popupMainLayout);
 	    }
 
@@ -85,9 +90,6 @@ public class RenameDirectoryPopup extends Window implements Window.CloseListener
 		  	if (!isModalWindowClosable){
 		       /* Windows are managed by the application object. */
 		  		UI.getCurrent().removeWindow(this);
-		        
-		        /* Return to initial state. */
-		  	//	openbutton.setEnabled(true);
 		   	}
 	    }
 

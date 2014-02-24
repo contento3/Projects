@@ -150,6 +150,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
         
         popupWindow.setContent(popupMainLayout);
         popupWindow.setResizable(false);
+        
         /* Allow opening only one window at a time. */
         openbutton.setEnabled(false);
 
@@ -176,7 +177,6 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
         }
         else
         {
-        
         	roleButton.setCaption("Add");
         	popupWindow.setCaption("Add new role");
         	roleButton.addClickListener(new ClickListener() {
@@ -187,7 +187,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 				{
 					handleNewRole(roleNameTxtFld,roledescTxtFld,roleidTxtFld);
 				}
-				catch(AuthorizationException ex){}
+				catch(final AuthorizationException ex){}
 			}
         	});
         }
@@ -205,16 +205,17 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 			final AccountDto accountDto = accountService.findAccountById((Integer)SessionHelper.loadAttribute("accountId"));
 			roleDto.setAccount(accountDto);
 			roleService.create(roleDto);
-		} catch (EntityAlreadyFoundException e) {
+		} catch (final EntityAlreadyFoundException e) {
 			Notification.show("Role already exists", Notification.Type.ERROR_MESSAGE);
 		}
-		catch (EntityNotCreatedException e) {
+		catch (final EntityNotCreatedException e) {
 			Notification.show("Role not created", Notification.Type.ERROR_MESSAGE);
 		}
 		catch(AuthorizationException ex){}
 		Notification.show(roleDto.getName()+" role created succesfully");
 		resetTable();
     }
+	
 	private void handleEditRole(final TextField rolename,final TextArea roledesc,final TextField roleid,final Integer editId){
 		try
 		{
@@ -223,7 +224,7 @@ public class RolePopup extends CustomComponent implements Window.CloseListener,B
 		roleDto.setRoleDesc(roledesc.getValue().toString());
 		roleService.update(roleDto);
 		Notification.show(roleDto.getName()+" role edit succesfully",Notification.Type.TRAY_NOTIFICATION);
-		}catch(AuthorizationException ex){
+		}catch(final AuthorizationException ex){
 			Notification.show("You are not allowed to perform this operation.",Notification.Type.TRAY_NOTIFICATION);
 		}
 		catch(final EntityAlreadyFoundException ex){
