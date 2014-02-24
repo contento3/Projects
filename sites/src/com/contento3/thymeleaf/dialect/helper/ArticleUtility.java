@@ -45,9 +45,9 @@ public class ArticleUtility {
 		};
 		Collection<ArticleDto> articleList;
 		if(catId != 0){
-			articleList = this.articleService.findLatestArticleByCategory(list, siteId, count, start) ;
+			articleList = this.articleService.findLatestArticleByCategory(list, siteId, count, start, true) ;
 		}else{
-			articleList = this.articleService.findLatestArticleBySiteId(siteId, count, start) ;
+			articleList = this.articleService.findLatestArticleBySiteId(siteId, count, start, true) ;
 		}
        return articleList;
 	}
@@ -74,9 +74,9 @@ public class ArticleUtility {
 		};
 		Collection<ArticleDto> articleList;
 		if(categoryId != 0){
-			articleList = this.articleService.findLatestArticleByCategory(categoryIds, siteId, null, 0) ;
+			articleList = this.articleService.findLatestArticleByCategory(categoryIds, siteId, null, 0, true) ;
 		}else{
-			articleList = this.articleService.findLatestArticleBySiteId(siteId, null, 0) ;
+			articleList = this.articleService.findLatestArticleBySiteId(siteId, null, 0, true) ;
 		}
 		final Integer totalArticle = articleList.size();
 		final Integer totalPages = totalArticle/count; 

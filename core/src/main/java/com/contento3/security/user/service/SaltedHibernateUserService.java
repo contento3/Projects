@@ -2,6 +2,7 @@ package com.contento3.security.user.service;
 
 import java.util.Collection;
 
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.SimpleService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
@@ -32,6 +33,7 @@ public interface SaltedHibernateUserService extends SimpleService<SaltedHibernat
 	 * Updates the SalterHibernateUserDto
 	 * @param SalterHibernateUserDto
 	 * @return void
+	 * @throws EntityAlreadyFoundException 
 	 */
-	public void update(SaltedHibernateUserDto dtoToUpdate);
+	public void update(SaltedHibernateUserDto dtoToUpdate) throws EntityAlreadyFoundException;
 }

@@ -11,8 +11,8 @@ public class RoleDto extends Dto{
 	
 	private String roleName;
 	
-
 	private String roledesc;
+	
 	private Integer roleId;
 
 	/**
@@ -24,7 +24,7 @@ public class RoleDto extends Dto{
 		return permissions;
 	}
 
-	public void setPermissions(Collection<PermissionDto> permissions) {
+	public void setPermissions(final Collection<PermissionDto> permissions) {
 		this.permissions = permissions;
 	}
 

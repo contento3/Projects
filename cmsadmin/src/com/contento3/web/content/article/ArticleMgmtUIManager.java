@@ -215,7 +215,7 @@ public class ArticleMgmtUIManager implements UIManager {
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
 		try
 		{
-			Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId);
+			Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId, false);
 			tableBuilder.build((Collection)articles);
 		} 
 		catch(AuthorizationException ex)
@@ -244,7 +244,7 @@ public class ArticleMgmtUIManager implements UIManager {
 				this.tabSheet,this.articleTable);
 		try
 		{
-			Collection<ArticleDto> articles = this.articleService.findBySearch(header, catagory);
+			Collection<ArticleDto> articles = this.articleService.findBySearch(header, catagory, false);
 			reBuiltTable.rebuild((Collection)articles);
 		}
 		catch(final AuthorizationException ex){

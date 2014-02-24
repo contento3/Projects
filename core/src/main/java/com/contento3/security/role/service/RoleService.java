@@ -1,6 +1,7 @@
 package com.contento3.security.role.service;
 import java.util.Collection;
 
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.SimpleService;
 import com.contento3.security.role.dto.RoleDto;
 public interface RoleService extends SimpleService<RoleDto> {
@@ -27,8 +28,9 @@ public interface RoleService extends SimpleService<RoleDto> {
 	/**
 	 * Update group item 
 	 * @param groupDto
+	 * @throws EntityAlreadyFoundException 
 	 */
-	void update(final RoleDto roleDto);
+	void update(final RoleDto roleDto) throws EntityAlreadyFoundException;
 	
 	/**
 	 * Finds role by Id

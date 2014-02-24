@@ -135,8 +135,6 @@ public class DocumentMgmtUIManager implements UIManager {
 		
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		//com.contento3.security.permission.model.Permission permission =  permissionDao.findById(17);
-		Subject currentUser = SecurityUtils.getSubject();
 		try
 		{
 			listeners.add(new AddDocumentButtonListener(this.contextHelper,this.tabSheet,this.documentTable));

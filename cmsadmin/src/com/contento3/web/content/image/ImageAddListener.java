@@ -121,7 +121,6 @@ public class ImageAddListener extends CustomComponent implements ClickListener,
 	
 	private VerticalLayout imagePanelContent;
 	
-
 	public ImageAddListener (final TabSheet tabSheet,final SpringContextHelper helper){
 		this.helper = helper;
 		this.tabSheet = tabSheet;

@@ -10,6 +10,7 @@ import org.apache.shiro.authc.CredentialsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.vaadin.aceeditor.AceEditor;
 
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -73,6 +74,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
     private static final Action[] CONTENT_ACTIONS = new Action[] { ACTION_ADD_CONTENT_TYPE,ACTION_ADD_CONTENT };
 
+    private static final String[] NAVIGATION_CONSTANT = new String[] {NavigationConstant.DASHBOARD,NavigationConstant.SITES,NavigationConstant.CATEGORY_MGMT,NavigationConstant.TEMPLATE,NavigationConstant.MODULES,NavigationConstant.CONTENT_MANAGER,NavigationConstant.SECURITY,NavigationConstant.TEMPLATE};
     private Button logoutButton;
     public Button accountButton;
     
@@ -110,7 +112,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		buildLogin();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void buildLogin(){
 		final VerticalLayout appRootLayout = new VerticalLayout();
 		
@@ -264,12 +265,12 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 			}
 		} );
 	    
-	    HorizontalLayout horizTop = new HorizontalLayout();
+	    final HorizontalLayout horizTop = new HorizontalLayout();
 	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);
 	    appRootLayout.addComponent(vert);
 
 	    
-	    ImageLoader imageLoader = new ImageLoader();
+	    final ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
 		embedded.setHeight(21, Unit.PIXELS);
 		embedded.setWidth(70, Unit.PIXELS);
@@ -359,54 +360,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         
         root.addContainerProperty("icon", Resource.class, null);
         root.setItemIconPropertyId("icon");
-
-        
-        Item dashboard = hwContainer.addItem(NavigationConstant.DASHBOARD);
-        dashboard.getItemProperty("name").setValue(NavigationConstant.DASHBOARD);
-        root.setItemIcon(dashboard, new ExternalResource("images/home-icon.png"));
-        dashboard.getItemProperty("icon").setValue(new ExternalResource("images/home-icon.png"));
-
-        Item item0 = hwContainer.addItem("Sites");
-        root.setItemIcon(item0, new ExternalResource("images/site.png"));
-        item0.getItemProperty("name").setValue("Sites");
-        item0.getItemProperty("id").setValue(new Integer(-1));
-        item0.getItemProperty("icon").setValue(new ExternalResource("images/site.png"));
-
-        Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
-        contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
-        root.setItemIcon(contentMgmt, new ExternalResource("images/content.png"));
-        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content.png"));
-
-        Item category = hwContainer.addItem(NavigationConstant.CATEGORY_MGMT);
-        category.getItemProperty("name").setValue(NavigationConstant.CATEGORY_MGMT);
-        root.setItemIcon(category, new ExternalResource("images/category.png"));
-        category.getItemProperty("icon").setValue(new ExternalResource("images/category.png"));
-        
-        Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
-        globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
-        root.setItemIcon(globalConfig, new ExternalResource("images/configuration.png"));
-        globalConfig.getItemProperty("icon").setValue(new ExternalResource("images/configuration.png"));
-        
-        Item template = hwContainer.addItem("Template");
-        template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
-        root.setItemIcon(template, new ExternalResource("images/template.png"));
-        template.getItemProperty("icon").setValue(new ExternalResource("images/template.png"));
-        
-        
-        Item modules = hwContainer.addItem("Modules");
-        modules.getItemProperty("name").setValue(NavigationConstant.MODULES);
-        root.setItemIcon(modules, new ExternalResource("images/module-icon.png"));
-        modules.getItemProperty("icon").setValue(new ExternalResource("images/module-icon.png"));
-
-        // DO NOT REMOVE THIS -- The functionality regarding layout management will be developed soon        
-        // Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
-        // layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
-
-        Item userMgmtItem = hwContainer.addItem(NavigationConstant.SECURITY);
-        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.SECURITY);
-        root.setItemIcon(userMgmtItem, new ExternalResource("images/security.png"));
-        userMgmtItem.getItemProperty("icon").setValue(new ExternalResource("images/security.png"));
-
+        createNavigation(hwContainer);
         Item childItem = null;
 
         hLayout.addComponent(root);
@@ -530,6 +484,56 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     	return null;
     }
 
+    private void createNavigation(final HierarchicalContainer hwContainer){
+    	
+    	if (SecurityUtils.getSubject().isPermitted("DASHBOARD:NAVIGATION")){
+    		createNavigationItem(hwContainer,NavigationConstant.DASHBOARD,"images/home-icon.png");
+    	}
+    	
+        if (SecurityUtils.getSubject().isPermitted("SITE:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.SITES,"images/site.png");
+        }
+        
+        if (SecurityUtils.getSubject().isPermitted("CATEGORY:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.CATEGORY_MGMT,"images/category.png");
+        }
+        
+        // DO NOT REMOVE THIS
+        //TOBE USED LATER      
+        //if (SecurityUtils.getSubject().isPermitted("GLOBAL_CONFIG:NAVIGATION")){
+        //createNavigationItem(hwContainer,NavigationConstant.GLOBAL_CONFIG,"images/configuration.png");
+    	//}
+    
+        if (SecurityUtils.getSubject().isPermitted("CONTENT:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.CONTENT_MANAGER,"images/content.png");
+        }
+        
+        if (SecurityUtils.getSubject().isPermitted("TEMPLATE:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.TEMPLATE,"images/template.png");
+        }
+        
+        if (SecurityUtils.getSubject().isPermitted("MODULE:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.MODULES,"images/module-icon.png");
+        }
+      
+        // DO NOT REMOVE THIS -- The functionality regarding layout management will be developed soon        
+        // Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
+        // layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
+        
+        if (SecurityUtils.getSubject().isPermitted("SECURITY:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.SECURITY,"images/security.png");
+        }
+    }
+    
+    private void createNavigationItem(final HierarchicalContainer hwContainer,final String navigationConstant,final String imagePath){
+        final Item item = hwContainer.addItem(navigationConstant);
+        item.getItemProperty("name").setValue(navigationConstant);
+        root.setItemIcon(item, new ExternalResource(imagePath));
+        item.getItemProperty("icon").setValue(new ExternalResource(imagePath));
+    }
+    
+    
+    
     /*
      * Used to handle events after the user clicks the 
      * context menu from the left navigation menu.
@@ -538,25 +542,13 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     	//If the user right clicks the 'Site' and then click 'Create new site'
     	//Then a new site creation screen needs to be rendered
     	if (action.equals(ACTION_ADD_SITE)) {
-		//	UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
-
     		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.NEWSITE));
-    		//SiteService siteService = (SiteService) helper.getBean("siteService");
     	}
     }
 
     @Override
     public void attach() {
         super.attach(); // Must call.
-//CHAGNED          WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
-//CHANGED          HttpSession session = ctx.getHttpSession();
-          //if (!session.isNew()){
-        //	  session.setMaxInactiveInterval(50000*60);
-         // }
-         // else {
-        //	  session.setMaxInactiveInterval(0);
-        //  }
-    	 //CHANGED session.setAttribute("accountId", new Integer("1"));
     }
 
 }

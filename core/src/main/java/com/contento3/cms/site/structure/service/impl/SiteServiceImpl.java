@@ -75,7 +75,7 @@ public class SiteServiceImpl implements SiteService {
 		return siteAssembler.domainToDto(siteDao.findById(siteId));
 	}
 
-	@RequiresPermissions("SITE:VIEW")
+	//@RequiresPermissions("SITE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public SiteDto findSiteByDomain(String domain, boolean isPublished){
