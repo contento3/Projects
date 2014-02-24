@@ -62,6 +62,7 @@
 			     <value>com.contento3.cms.article.model.ArticleImage</value>
 			     <value>com.contento3.site.user.model.User</value>
 			     <value>com.contento3.dam.content.library.model.ContentStorageLibraryMapping</value>
+			     <value>com.contento3.cms.seo.model.MetaTag</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -272,6 +273,12 @@
 	<!-- StorageTypeDao -->
 	<bean id="storageTypeDao"
 		class="com.contento3.dam.storagetype.dao.impl.StorageTypeHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
+	<!-- MetaTagDao -->
+	<bean id="metaTagDao"
+		class="com.contento3.cms.seo.dao.impl.MetaTagDAOHibernateImpl">
 		<property name="sessionFactory" ref="cmsSessionFactory" />
 	</bean>
 </beans>

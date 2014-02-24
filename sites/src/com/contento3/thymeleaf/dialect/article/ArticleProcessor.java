@@ -88,18 +88,18 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 	@Override
 	protected List<Node> getMarkupSubstitutes(final Arguments arguments,
 			final Element element) {
-		String DefaultTemplate = "default";
-		String templateName = parseString(arguments,element,"templateName");
-		if(templateName == null){
-			templateName = DefaultTemplate;
+		String DefaultTemplateKey = "default";
+		String templateKey = parseString(arguments,element,"templateKey");
+		if(templateKey == null){
+			templateKey = DefaultTemplateKey;
 		}
 		
 		final List<Node> nodes = new ArrayList<Node>();
-		Template template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/site1/"+templateName, arguments.getContext()));
+		Template template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template_key/"+templateKey, arguments.getContext()));
 		Document doc = template.getDocument();
 		if(doc.getFirstElementChild() == null)
 	    {
-			template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/site1/"+DefaultTemplate, arguments.getContext()));
+			template = arguments.getTemplateRepository().getTemplate(new TemplateProcessingParameters(arguments.getConfiguration(), "/template/site1/"+DefaultTemplateKey, arguments.getContext()));
 			doc = template.getDocument();
 			nodes.add((Node)doc.getFirstElementChild());
 	    }
@@ -108,78 +108,7 @@ public class ArticleProcessor extends AbstractMarkupSubstitutionElementProcessor
 		}
 
 	    return nodes;
-	    //First check the mandatory fields i.e. id, if id is not present then its siteId that needs to be present.
-		//If both are not available then this tag is not a valid one.
-		
-	    /*final Integer id = element.getAttributeValue("id")!=null? Integer.parseInt(element.getAttributeValue("id")):null;
-	    final String uuid = parseString(arguments,element,"uuid");
-//	    DOMUtils.extractFragmentByElementAndAttributeValue(doc, "div", arg2, arg3) 
-		final String seoKeyword = element.getAttributeValue("seoKeyword");
-		
-		final Integer siteId = parseInteger(arguments,element,"siteId");
-		
-		String wrapperTag = parseString(arguments,element,"wrapperTag");
-		
-		if ((null==id && null==uuid && null==seoKeyword) && null==siteId){
-			LOGGER.info(String.format("<article:simple> tag must atleast have id or siteId to display the article content.Currently,id is %s and siteId is %s on line number %d",id,siteId,element.getLineNumber()));
-		}
-		else {
-			try {
-		        //Check if the values for these are passed or not.Otherwise use the default values.
-				String type = element.getAttributeValue("type");
-		
-				Boolean isLinked = element.getAttributeValue("isLinked")==null ? true : Boolean.parseBoolean(element.getAttributeValue("isLinked"));
-				Boolean includeImage = Boolean.parseBoolean(element.getAttributeValue("includeImage"));
-				Integer count = element.getAttributeValue("count")==null ? null:Integer.parseInt(element.getAttributeValue("count"));
-				
-				if (null==type){
-					type = FULL;
-				}
-				
-				if (null==includeImage)
-					includeImage = true;
-				
-				//Count only works when we have multiple articles.
-				//So this does not apply when we try to fetch an article using its id.
-				if (null!=siteId && null==count){
-					count = 5;
-				}
-				
-				Collection <ArticleDto> articleList = new ArrayList<ArticleDto>();
-				
-				//CategoryIds 
-				final String categoryIds = element.getAttributeValue("categoryIds");
-				Element container = null;
-				
-				if (siteId!=null){
-					articleList = fetchArticles(siteId,categoryIds,count);
-				}
-				else if (id!=null || uuid!=null || seoKeyword!=null){
-					ArticleDto articleDto = null;
-					if (id!=null){
-						articleDto = fetchSingle(id);
-					}
-					else if (uuid!=null){
-						articleDto = fetchSingleByUuid(uuid);
-					}
-					else if (seoKeyword!=null){
-						//TODO Need some more research
-					}
-					if (null!=articleDto){
-						articleList.add(articleDto);
-					}
-				}
-				
-
-				container = buildDOMForArticles(articleList,includeImage,type,isLinked,wrapperTag);
-				nodes.add(container);
-			}
-			catch(Exception e){
-				LOGGER.info(String.format("Something went wrong while you tried using the tag <article:simple> on line number %d in %s template",element.getLineNumber(),arguments.getTemplateName()));
-			}
-		}
-        return nodes;*/
-	}
+	   }
 
 	private String parseString(final Arguments arguments,final Element element,final String attributeName){
 		String parsedAttribute = null;

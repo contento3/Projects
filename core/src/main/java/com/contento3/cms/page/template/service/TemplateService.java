@@ -34,6 +34,8 @@ public interface TemplateService extends SimpleService<TemplateDto>{
 	void updateTemplate(TemplateDto templateDto) throws EntityAlreadyFoundException;
 
 	TemplateDto findTemplateByPathAndAccount(String templatePath,Integer accountId) throws Exception;
+	
+	TemplateDto findTemplateByKeyAndAccount(String templateKey,Integer accountId) throws Exception;
 
 	TemplateDto findTemplateByNameAndSiteId(String templateName,Integer siteId) throws Exception;
 

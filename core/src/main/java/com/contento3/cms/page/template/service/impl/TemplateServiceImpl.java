@@ -111,6 +111,20 @@ public class TemplateServiceImpl implements TemplateService {
 
         @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
         @Override
+        public TemplateDto findTemplateByKeyAndAccount(String templateKey,Integer accountId) throws ResourceNotFoundException {
+                Validate.notNull(templateKey,"templateKey cannot be null");
+                Validate.notNull(accountId,"accountId cannot be null");
+                //split(templateKey);
+                Template template = templateDao.findTemplateByKeyAndAccount(templateKey, "text/freemarker", accountId);
+                
+                if (template == null){
+                        throw new ResourceNotFoundException();
+                }
+                return templateAssembler.domainToDto(template,new TemplateDto());
+        }
+
+        @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+        @Override
         public TemplateDto findTemplateByNameAndSiteId(String templatePath,Integer siteId) throws ResourceNotFoundException {
                 Validate.notNull(siteId,"siteId cannot be null");
                 Validate.notNull(siteDao,"siteDao cannot be null");

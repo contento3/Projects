@@ -20,4 +20,7 @@ public interface TemplateDao extends GenericDao<Template,Integer> {
 
         Collection<Template> findTemplateByDirectoryId(Integer id);
 
+		Template findTemplateByKeyAndAccount(String templateKey,
+				String contentType, Integer accountId);
+
 }

@@ -1,65 +1,46 @@
-package com.contento3.cms.seo.model;
-
-import javax.persistence.*;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+package com.contento3.cms.seo.dto;
 
 import com.contento3.cms.site.structure.model.Site;
+import com.contento3.common.dto.Dto;
 
-/**
- * Meta tags for site and pages
- * @author XINEX
- */
-@Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name ="META_TAGS")
-public class MetaTag {
+public class MetaTagDto extends Dto {
 
 	/**
 	 * Primary key for Meta Tag
 	 */
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column (name = "META_TAG_ID")
 	private Integer metaTagId;
 	
 	/**
 	 * Attribute of meta tag
 	 */
-	@Column (name = "ATTRIBUTE")
 	private String attribute;
 	
 	/**
 	 * Attribute value 
 	 */
-	@Column (name = "ATTRIBUTE_VALUE")
 	private String attributeValue;
 	
 	/**
 	 * Content value for attribute
 	 */
-	@Column (name = "ATTRIBUTE_CONTENT_VALUE")
 	private String attributeContent;
 	
 	/**
 	 * Level of meta tag
 	 */
-	@Column (name = "LEVEL")
 	private String level;
 	
 	/**
 	 *Is associated to Meta tag
 	 */
-	@Column (name = "ASSOCIATED_ID")
 	private Integer associatedId;
 	
 	/**
 	 * Accociated site to Meta tag
 	 */
-	@OneToOne
-	@JoinColumn (name = "SITE_ID")
 	private Site site;
-
+	
+	
 	public Integer getMetaTagId() {
 		return metaTagId;
 	}
@@ -107,7 +88,7 @@ public class MetaTag {
 	public void setAssociatedId(final Integer associatedId) {
 		this.associatedId = associatedId;
 	}
-	
+
 	public Site getSite() {
 		return site;
 	}
@@ -115,5 +96,5 @@ public class MetaTag {
 	public void setSite(final Site site) {
 		this.site = site;
 	}
-	
+
 }
