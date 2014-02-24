@@ -62,7 +62,11 @@ public class TemplateLoaderImpl implements TemplateLoader {
 				 dto = findTemplate(pagePath,siteId);
 			}
 			else if (resourceType.equals(TEMPLATE)) {
-				 dto = findDirectTemplate(resourceName,siteId);
+				if(resourceName.startsWith("/template_key") || resourceName.startsWith("template_key") ){
+					dto = findDirectTemplateByKey(resourceName,siteId);
+				}else{
+					dto = findDirectTemplate(resourceName,siteId);
+				}
 			}
 			else if (resourceType.equals(ARTICLE)) {
 				 dto = findArticleDetailTemplate(siteId);
@@ -90,7 +94,7 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		else if (resourceName.equals(SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS.getValue())) {
 			return SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS.toString();
 		}
-		else if (resourceName.startsWith("/template") || resourceName.startsWith("template")) {
+		else if (resourceName.startsWith("/template") || resourceName.startsWith("template") || resourceName.startsWith("/template_key") || resourceName.startsWith("template_key") ) {
 			return TEMPLATE;
 		}
 		else return PAGE;
@@ -128,6 +132,26 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		return dto;
 	}
 
+
+	/**
+	 * This method returns thymeleaf template in result of provided 
+	 * key for the column template_key 
+	 * 
+	 * @param resourceName
+	 * @param siteId
+	 * @return
+	 * @throws Exception 
+	 */
+	private TemplateContentDto findDirectTemplateByKey(String templatePath,
+			Integer siteId) throws Exception {
+		TemplateContentDto dto=null;
+		final String[] templateKey = templatePath.split("template_key/");
+		final SiteDto site = siteService.findSiteById(siteId);
+		final TemplateDto template = templateService.findTemplateByKeyAndAccount(templateKey[1], site.getAccountDto().getAccountId());
+		dto = new TemplateContentDto();
+		dto.setContent(template.getTemplateText());
+		return dto;
+	}
 	private TemplateContentDto findTemplate(String path,Integer siteId) throws IOException {
 		TemplateContentDto dto=null;
 

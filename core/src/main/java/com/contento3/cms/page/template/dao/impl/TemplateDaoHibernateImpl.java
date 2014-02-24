@@ -1,6 +1,7 @@
 package com.contento3.cms.page.template.dao.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
@@ -155,5 +156,32 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
                 
                 return template;
         }
+
+		@Override
+		public Template findTemplateByKeyAndAccount(String templateKey,
+				String contentType, Integer accountId) {
+
+			Validate.notNull(templateKey,"templateKey cannot be null");
+            Validate.notNull(contentType,"contentType cannot be null");
+            Validate.notNull(accountId,"accountId cannot be null");
+            
+            final Criteria criteria = this.getSession()
+            .createCriteria(Template.class,"template")
+            .setCacheable(true)
+            .setCacheRegion(CACHE_REGION)
+            .add(Restrictions
+            .eq("template.templateKey", templateKey));
+            
+            Criteria templateTypeCriteria = criteria
+            .createCriteria("templateType").add(Restrictions
+            .eq("contentType", contentType));
+            
+            Criteria accountCriteria = criteria
+            .createCriteria("account").add(Restrictions
+                            .eq("accountId", accountId));
+                    
+            List list = criteria.list();
+            return (Template)list.get(0);
+		}
 
 }
