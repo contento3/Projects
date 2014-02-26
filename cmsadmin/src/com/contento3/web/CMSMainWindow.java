@@ -121,9 +121,11 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		
 		final TextField usernameTxtFld = new TextField();
 		usernameTxtFld.setCaption("Username");
+		usernameTxtFld.setTabIndex(1);
 		
 		final PasswordField passwordTxtFld = new PasswordField();
 		passwordTxtFld.setCaption("Password");
+		passwordTxtFld.setTabIndex(2);
 		
 		loginLayout.addComponent(usernameTxtFld);
 		loginLayout.addComponent(passwordTxtFld);
@@ -153,6 +155,8 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		
 		final Button loginButton = new Button();
 		loginButton.setCaption("Login");
+		loginButton.focus();
+		loginButton.setTabIndex(3);
 		loginLayout.addComponent(loginButton);
 
 		loginButton.addClickListener(new Button.ClickListener() {
@@ -163,7 +167,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
             	final String password = passwordTxtFld.getValue();
             	
             	if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
-        			Notification.show("Username or password fields are empty",Type.WARNING_MESSAGE);
+        			Notification.show("Login failed","Username or password fields are empty",Type.TRAY_NOTIFICATION);
             	}
             	else {
 	            	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
@@ -180,15 +184,15 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 					}
 					catch(final IncorrectCredentialsException ice){
 						LOGGER.error("Username or password for username ["+username+"] is not valid");
-						Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
 					}
 					catch(final CredentialsException ice){
 						LOGGER.error("CredentialsException,Error occured while authentication user with username: "+username);
-						Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
 					}
 					catch(final AuthenticationException ae){
 						LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
-						Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
+						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
 					}
 					catch(final Exception e){
 						LOGGER.error("Error occured while authenticating user",e);
@@ -505,11 +509,11 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     	//}
     
         if (SecurityUtils.getSubject().isPermitted("CONTENT:NAVIGATION")){
-        	createNavigationItem(hwContainer,NavigationConstant.CONTENT_MANAGER,"images/content.png");
+        	createNavigationItem(hwContainer,NavigationConstant.CONTENT_MANAGER,"images/content-icon-16.png");
         }
         
         if (SecurityUtils.getSubject().isPermitted("TEMPLATE:NAVIGATION")){
-        	createNavigationItem(hwContainer,NavigationConstant.TEMPLATE,"images/template.png");
+        	createNavigationItem(hwContainer,NavigationConstant.TEMPLATE,"images/add-template-16.png");
         }
         
         if (SecurityUtils.getSubject().isPermitted("MODULE:NAVIGATION")){
