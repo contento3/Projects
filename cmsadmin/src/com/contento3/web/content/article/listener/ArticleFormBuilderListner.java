@@ -10,6 +10,7 @@ import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
+import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
@@ -36,8 +37,8 @@ import com.vaadin.ui.Window;
 public class ArticleFormBuilderListner implements ClickListener{
 	
 	private static final long serialVersionUID = 1L;
-	private final static String BUTTON_NAME_PUBLISHED = "Published";
-	private final static String BUTTON_NAME_UNPUBLISHED = "Unpublished";
+	private final static String BUTTON_NAME_PUBLISHED = "Publish";
+	private final static String BUTTON_NAME_UNPUBLISHED = "Unpublish";
 
 	/**
 	 * Used to get service beans from spring context.
@@ -213,11 +214,13 @@ public class ArticleFormBuilderListner implements ClickListener{
 		parentLayout.setHeight(100,Unit.PERCENTAGE);
 		parentLayout.setWidth(100,Unit.PERCENTAGE);
 		
-		
-		
-		formLayout.addComponent(createPublishedButton());
-		
-		
+		Button btnPublish = createPublishedButton();
+		HorizontalLayout layoutForButton = new HorizontalLayout();
+		layoutForButton.setWidth(100, Unit.PERCENTAGE);
+		layoutForButton.addComponent(btnPublish);
+		layoutForButton.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
+		layoutForButton.setSpacing(false);
+		formLayout.addComponent(layoutForButton);
 		parentLayout.addComponent(formLayout);
 		
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));
