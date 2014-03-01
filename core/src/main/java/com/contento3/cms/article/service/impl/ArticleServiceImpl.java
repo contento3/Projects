@@ -181,6 +181,7 @@ public class ArticleServiceImpl implements ArticleService {
 //		Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
 		Validate.notNull(siteId,"siteId cannot be null");
 		
+		
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryIds, numberOfArticles, siteId, start));
 	}
 

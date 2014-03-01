@@ -201,6 +201,7 @@ public class TemplateUIManager implements UIManager{
                         private static final long serialVersionUID = 1L;
                         public void click(ClickEvent event) {
                                 try {
+                                	
                                 renderFolderTab(selectedDirectoryId);
                                 }
                                 catch(Exception e){
@@ -221,10 +222,28 @@ public class TemplateUIManager implements UIManager{
                         }
                 });
                 
+                //////////////
+                final Embedded addTeCat = imageLoader.loadEmbeddedImageByPath("images/addcategory.png");
+                addTeCat.setDescription("Add template category");
+
+                addTeCat.addClickListener(new ClickListener() {
+                            private static final long serialVersionUID = 1L;
+                            public void click(ClickEvent event) {
+                            	System.out.println("i am hereee");
+                            	
+                            	UI.getCurrent().addWindow(new NewDirectoryPopup(helper));
+                            
+                            }
+                    });
+                
+                
+                
+                ////////////
                 HorizontalLayout buttonLayout = new HorizontalLayout();
                 buttonLayout.addComponent(iconTemplate);
                 buttonLayout.addComponent(deleteIcon);
                 buttonLayout.addComponent(iconDirectory);
+                buttonLayout.addComponent(addTeCat);
 
                 buttonLayout.setHeight(100,Unit.PERCENTAGE);
                 buttonLayout.setSpacing(true);
@@ -539,7 +558,7 @@ public class TemplateUIManager implements UIManager{
                     
                 }
                 else {
-                        //This is a new template to be created we need to get the directory which was selected.
+                        //This is a new template to be d we need to get the directory which was selected.
                         if (null == selectedDirectoryId){
                                 if(root.getItemIds().isEmpty()){
                                         Notification.show(String.format("Please Create template directory to create a new template."),Notification.Type.WARNING_MESSAGE);

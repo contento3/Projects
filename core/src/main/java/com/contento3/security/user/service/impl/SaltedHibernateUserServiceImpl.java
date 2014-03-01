@@ -99,7 +99,7 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		return userAssembler.domainToDto(userDao.findById(userId));
 	}
 	
-	@RequiresPermissions("USER:VIEW_LISTING")
+	//@RequiresPermissions("USER:VIEW_LISTING")
 	@Override
 	public SaltedHibernateUserDto findUserByUsername(final String username) {
 		Validate.notNull(username,"username cannot be null");
