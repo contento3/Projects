@@ -12,27 +12,24 @@ public class RoleAssemblerImpl implements RoleAssembler{
 	private AccountAssembler accountAssembler;
 	private PermissionAssembler permissionAssembler;
 	RoleAssemblerImpl(final AccountAssembler accountAssembler, final PermissionAssembler permissionAssembler)
- {
-	 this.accountAssembler = accountAssembler;
-	 this.permissionAssembler=permissionAssembler;
- }
+	{
+		this.accountAssembler = accountAssembler;
+		this.permissionAssembler=permissionAssembler;
+	}
+	
 	@Override
-	public Role dtoToDomain(RoleDto dto) {
-		// TODO Auto-generated method stub
-		Role domain = new Role();
+	public Role dtoToDomain(final RoleDto dto,final Role domain) {
 		domain.setRoleId(dto.getId());
 		domain.setRoleName(dto.getName());
 		domain.setDescription(dto.getRoleDesc());
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		domain.setPermissions(permissionAssembler.dtosToDomains(dto.getPermissions()));
 		return domain;
-		
 	}
 
 	@Override
-	public RoleDto domainToDto(Role domain) {
-		// TODO Auto-generated method stub
-		RoleDto dto = new RoleDto();
+	public RoleDto domainToDto(final Role domain,final RoleDto dto) {
+		
 		dto.setRoleId(domain.getRoleId());
 		dto.setRoleDesc(domain.getDescription());
 		dto.setRoleName(domain.getRoleName());
@@ -43,37 +40,20 @@ public class RoleAssemblerImpl implements RoleAssembler{
 
 	@Override
 	public Collection<RoleDto> domainsToDtos(Collection<Role> domains) {
-		// TODO Auto-generated method stub
-		Collection<RoleDto> dtos = new ArrayList<RoleDto>();
+		final Collection<RoleDto> dtos = new ArrayList<RoleDto>();
 		for(Role domain:domains){
-			dtos.add(domainToDto(domain));
+			dtos.add(domainToDto(domain,new RoleDto()));
 		}
 		return dtos;
 	}
 
 	@Override
 	public Collection<Role> dtosToDomains(Collection<RoleDto> dtos) {
-		// TODO Auto-generated method stub
-		Collection<Role> domains = new ArrayList<Role>();
+		final Collection<Role> domains = new ArrayList<Role>();
 		for(RoleDto dto:dtos){
-			domains.add(dtoToDomain(dto));
+			domains.add(dtoToDomain(dto,new Role()));
 		}
-		
 		return domains;
 	}
-	/*@Override
-	/*public Role dtoToDomain(RoleDto dto, Role domain) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-	@Override
-	public Role dtoToDomain(RoleDto dto, Role domain) {
-		// TODO Auto-generated method stub
-		domain.setRoleId(dto.getId());
-		domain.setRoleName(dto.getName());
-		domain.setDescription(dto.getRoleDesc());
-		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
-		domain.setPermissions(permissionAssembler.dtosToDomains(dto.getPermissions()));
-		return domain;
-	}
+
 }

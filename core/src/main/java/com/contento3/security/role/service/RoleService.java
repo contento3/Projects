@@ -1,6 +1,7 @@
 package com.contento3.security.role.service;
 import java.util.Collection;
 
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.SimpleService;
 import com.contento3.security.role.dto.RoleDto;
 public interface RoleService extends SimpleService<RoleDto> {
@@ -19,15 +20,6 @@ public interface RoleService extends SimpleService<RoleDto> {
 	RoleDto findRoleByName(final String name);
 
 	/**
-	 * Updates the SalterHibernateUserDto
-	 * @param SalterHibernateUserDto
-	 * @return void
-	 */
-	Collection <RoleDto> findAllRoles();
-	
-
-	//Integer create(final RoleDto roleDto);
-	/**
 	 * return group whose id match
 	 * @param id
 	 * @return
@@ -36,6 +28,14 @@ public interface RoleService extends SimpleService<RoleDto> {
 	/**
 	 * Update group item 
 	 * @param groupDto
+	 * @throws EntityAlreadyFoundException 
 	 */
-	void update(final RoleDto roleDto);
+	void update(final RoleDto roleDto) throws EntityAlreadyFoundException;
+	
+	/**
+	 * Finds role by Id
+	 * @param Id Primary key roleId
+	 * @return RoleDto
+	 */
+	RoleDto findRoleById(Integer Id);
 }

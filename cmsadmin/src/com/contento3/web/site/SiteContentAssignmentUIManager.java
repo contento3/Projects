@@ -126,8 +126,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("Articles");
 		GenricEntityPicker contentPicker;
-		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
-		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null,null));
+		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false));
+		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null,null, false));
 		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);
 		contentPicker.setCaption("Assign Content to Site");
 		contentPicker.build();
@@ -141,7 +141,7 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			try {
 				for(String name : selectedItems ){
 					Integer articleId = Integer.parseInt(name);
-					articleDto = articleService.findArticleByIdAndSiteId(articleId,siteDto.getSiteId());
+					articleDto = articleService.findArticleByIdAndSiteId(articleId,siteDto.getSiteId(), false);
 					if (articleDto==null){
 						articleDto = articleService.findById(articleId);
 						articleDto.getSite().add(siteDto);

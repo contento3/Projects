@@ -5,13 +5,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 
+import org.apache.log4j.Logger;
 import org.imgscalr.Scalr;
 
 import com.vaadin.server.ExternalResource;
@@ -24,6 +21,8 @@ import com.vaadin.ui.Embedded;
  *
  */
 public class ImageLoader {
+
+	private static final Logger LOGGER = Logger.getLogger(ImageLoader.class);
 
 	/**
 	 * Load the page based on the path value 
@@ -46,33 +45,29 @@ public class ImageLoader {
 	 * @param height
 	 * @return
 	 */
-	public Embedded loadImage(final byte[] imageBytes,final Integer width,final Integer height) {
+	public Embedded loadImage(final byte[] imageBytes,final Integer height,final Integer width) {
 		StreamResource.StreamSource imageSource = new StreamResource.StreamSource() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public InputStream getStream() {
-				final BufferedImage thumbnail;
+				BufferedImage thumbnail;
 				InputStream bigInputStream = null;
 				try {
 					final ByteArrayInputStream in = new ByteArrayInputStream(imageBytes);
-					final ImageReader imageReader;
-			        final Object source = in; // File or InputStream, it seems file is OK
-			        final ImageInputStream iis = ImageIO.createImageInputStream(source);
-					final Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
+					thumbnail = ImageIO.read(in);
 
-					if ( imageReaders.hasNext() ) {
-					    imageReader = (ImageReader)imageReaders.next();
-					    imageReader.setInput(iis, true);
-					    final ImageReadParam param = imageReader.getDefaultReadParam();
-						final BufferedImage bImageFromConvert = imageReader.read(0, param);
-						thumbnail = Scalr.resize(bImageFromConvert,width,height);
-						final ByteArrayOutputStream os = new ByteArrayOutputStream();
-						ImageIO.write(thumbnail, "gif", os);
-						bigInputStream = new ByteArrayInputStream(os.toByteArray());
+					if (null!=width && null!=height)
+					{	
+						thumbnail = Scalr.resize(thumbnail,width,height);
 					}
+					
+					final ByteArrayOutputStream os = new ByteArrayOutputStream();
+					ImageIO.write(thumbnail, "gif", os);
+					bigInputStream = new ByteArrayInputStream(os.toByteArray());
 				}
-				catch(IOException ioe){
+				catch(final IOException ioe){
+					LOGGER.fatal("Unable to load an image for display in cms",ioe);
 				}
 			return bigInputStream;
 			}

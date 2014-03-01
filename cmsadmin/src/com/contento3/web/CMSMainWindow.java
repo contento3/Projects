@@ -2,6 +2,7 @@ package com.contento3.web;
 
 import java.util.Collection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -9,6 +10,7 @@ import org.apache.shiro.authc.CredentialsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.vaadin.aceeditor.AceEditor;
 
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -46,10 +48,9 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.LoginForm;
-import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.CloseHandler;
 import com.vaadin.ui.TabSheet.Tab;
@@ -73,6 +74,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
     private static final Action[] CONTENT_ACTIONS = new Action[] { ACTION_ADD_CONTENT_TYPE,ACTION_ADD_CONTENT };
 
+    private static final String[] NAVIGATION_CONSTANT = new String[] {NavigationConstant.DASHBOARD,NavigationConstant.SITES,NavigationConstant.CATEGORY_MGMT,NavigationConstant.TEMPLATE,NavigationConstant.MODULES,NavigationConstant.CONTENT_MANAGER,NavigationConstant.SECURITY,NavigationConstant.TEMPLATE};
     private Button logoutButton;
     public Button accountButton;
     
@@ -82,7 +84,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	SiteMainAreaRenderer siteMainRenderer;
 	LayoutManagerRenderer layoutManagerRenderer;
 	SpringContextHelper helper;
-	//UriFragmentUtility uri;
 	UIManager uiMgr;
 	
 	Subject subject;
@@ -100,24 +101,43 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 	
     final TabSheet uiTabsheet = new TabSheet();
 
-	CMSMainWindow(final SpringContextHelper helper){ //change
+    Boolean isDemo=false;
+    
+	CMSMainWindow(final SpringContextHelper helper,final Boolean isDemo){ //change
 		this.helper = helper;
 		this.logoutButton = new Button("Log Out");
 		logoutButton.addStyleName("link");
         this.userService = (SaltedHibernateUserService)helper.getBean("saltedHibernateUserService");
+        this.isDemo = isDemo;
 		buildLogin();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void buildLogin(){
 		final VerticalLayout appRootLayout = new VerticalLayout();
-		LoginForm login = new LoginForm();
-		login.setHeight(180,Unit.PIXELS);
-		login.setWidth(145,Unit.PIXELS);
 		
+		final VerticalLayout loginLayout = new VerticalLayout();
+		loginLayout.setHeight(175,Unit.PIXELS);
+		loginLayout.setWidth(145,Unit.PIXELS);
 		
+		final TextField usernameTxtFld = new TextField();
+		usernameTxtFld.setCaption("Username");
+		usernameTxtFld.setTabIndex(1);
 		
-	    ImageLoader imageLoader = new ImageLoader();
+		final PasswordField passwordTxtFld = new PasswordField();
+		passwordTxtFld.setCaption("Password");
+		passwordTxtFld.setTabIndex(2);
+		
+		loginLayout.addComponent(usernameTxtFld);
+		loginLayout.addComponent(passwordTxtFld);
+
+		//If its the demo account
+		//Set the demo username and password
+		if (isDemo){
+			usernameTxtFld.setValue("demo");
+			passwordTxtFld.setValue("guest123");
+		}
+		
+		ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
 	    embedded.setHeight(75,Unit.PIXELS);
 	    embedded.setWidth(200,Unit.PIXELS);
@@ -126,49 +146,60 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
 	    appRootLayout.setSpacing(true);
 	    
-	    appRootLayout.addComponent(login);
-	    appRootLayout.setComponentAlignment(login,Alignment.MIDDLE_CENTER);
+	    appRootLayout.addComponent(loginLayout);
+	    appRootLayout.setComponentAlignment(loginLayout,Alignment.MIDDLE_CENTER);
 
 		appRootLayout.setSizeFull();
 		this.addComponent(appRootLayout);
 		this.setComponentAlignment(appRootLayout, Alignment.MIDDLE_CENTER);
 		
-		
-		login.addLoginListener(new LoginForm.LoginListener() {
+		final Button loginButton = new Button();
+		loginButton.setCaption("Login");
+		loginButton.focus();
+		loginButton.setTabIndex(3);
+		loginLayout.addComponent(loginButton);
+
+		loginButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
 
-			public void onLogin(LoginEvent event) {
-            	final String username = event.getLoginParameter("username");
-            	final String password = event.getLoginParameter("password");
-            	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
-
-        		subject = SecurityUtils.getSubject();
-				try{
-					subject.login(token);
-					subject.getSession().setAttribute("userName", username);
-					LOGGER.info("User with username ["+username+"] logged in successfully");
-					
-					final SaltedHibernateUserDto user = userService.findUserByUsername(username);
-					VaadinSession.getCurrent().getSession().setAttribute("accountId",user.getAccount().getAccountId());
-					buildUI();
-				}
-				catch(IncorrectCredentialsException ice){
-					LOGGER.error("Username or password for username ["+username+"] is not valid");
-					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
-				}
-				catch(CredentialsException ice){
-					LOGGER.error("CredentialsException,Error occured while authentication user with username: "+username);
-					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
-				}
-				catch(AuthenticationException ae){
-					LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
-					Notification.show("Invalid username or password.",Type.WARNING_MESSAGE);
-				}
-				catch(Exception e){
-					LOGGER.error("Error occured while authenticating user",e);
-					Notification.show("Something wrong with the server while you tried login.",Type.ERROR_MESSAGE);
-				}
-            }
+			public void buttonClick(ClickEvent event) {
+            	final String username = usernameTxtFld.getValue();
+            	final String password = passwordTxtFld.getValue();
+            	
+            	if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
+        			Notification.show("Login failed","Username or password fields are empty",Type.TRAY_NOTIFICATION);
+            	}
+            	else {
+	            	final UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+	        		subject = SecurityUtils.getSubject();
+	
+	        		try{
+						subject.login(token);
+						subject.getSession().setAttribute("userName", username);
+						LOGGER.info("User with username ["+username+"] logged in successfully");
+						
+						final SaltedHibernateUserDto user = userService.findUserByUsername(username);
+						VaadinSession.getCurrent().getSession().setAttribute("accountId",user.getAccount().getAccountId());
+						buildUI();
+					}
+					catch(final IncorrectCredentialsException ice){
+						LOGGER.error("Username or password for username ["+username+"] is not valid");
+						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
+					}
+					catch(final CredentialsException ice){
+						LOGGER.error("CredentialsException,Error occured while authentication user with username: "+username);
+						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
+					}
+					catch(final AuthenticationException ae){
+						LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
+						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
+					}
+					catch(final Exception e){
+						LOGGER.error("Error occured while authenticating user",e);
+						Notification.show("Something wrong with the server while you tried login.",Type.ERROR_MESSAGE);
+					}
+	            }
+			}	
         });
 		
 		logoutButton.addClickListener(new Button.ClickListener()
@@ -238,12 +269,12 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 			}
 		} );
 	    
-	    HorizontalLayout horizTop = new HorizontalLayout();
+	    final HorizontalLayout horizTop = new HorizontalLayout();
 	    horizTop.setStyleName(Reindeer.LAYOUT_WHITE);
 	    appRootLayout.addComponent(vert);
 
 	    
-	    ImageLoader imageLoader = new ImageLoader();
+	    final ImageLoader imageLoader = new ImageLoader();
 	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
 		embedded.setHeight(21, Unit.PIXELS);
 		embedded.setWidth(70, Unit.PIXELS);
@@ -333,54 +364,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         
         root.addContainerProperty("icon", Resource.class, null);
         root.setItemIconPropertyId("icon");
-
-        
-        Item dashboard = hwContainer.addItem(NavigationConstant.DASHBOARD);
-        dashboard.getItemProperty("name").setValue(NavigationConstant.DASHBOARD);
-        root.setItemIcon(dashboard, new ExternalResource("images/home-icon.png"));
-        dashboard.getItemProperty("icon").setValue(new ExternalResource("images/home-icon.png"));
-
-        Item item0 = hwContainer.addItem("Sites");
-        root.setItemIcon(item0, new ExternalResource("images/site.png"));
-        item0.getItemProperty("name").setValue("Sites");
-        item0.getItemProperty("id").setValue(new Integer(-1));
-        item0.getItemProperty("icon").setValue(new ExternalResource("images/site.png"));
-
-        Item contentMgmt = hwContainer.addItem(NavigationConstant.CONTENT_MANAGER);
-        contentMgmt.getItemProperty("name").setValue(NavigationConstant.CONTENT_MANAGER);
-        root.setItemIcon(contentMgmt, new ExternalResource("images/content.png"));
-        contentMgmt.getItemProperty("icon").setValue(new ExternalResource("images/content.png"));
-
-        Item category = hwContainer.addItem(NavigationConstant.CATEGORY_MGMT);
-        category.getItemProperty("name").setValue(NavigationConstant.CATEGORY_MGMT);
-        root.setItemIcon(category, new ExternalResource("images/category.png"));
-        category.getItemProperty("icon").setValue(new ExternalResource("images/category.png"));
-        
-        Item globalConfig = hwContainer.addItem(NavigationConstant.GLOBAL_CONFIG);
-        globalConfig.getItemProperty("name").setValue(NavigationConstant.GLOBAL_CONFIG);
-        root.setItemIcon(globalConfig, new ExternalResource("images/configuration.png"));
-        globalConfig.getItemProperty("icon").setValue(new ExternalResource("images/configuration.png"));
-        
-        Item template = hwContainer.addItem("Template");
-        template.getItemProperty("name").setValue(NavigationConstant.TEMPLATE);
-        root.setItemIcon(template, new ExternalResource("images/template.png"));
-        template.getItemProperty("icon").setValue(new ExternalResource("images/template.png"));
-        
-        
-        Item modules = hwContainer.addItem("Modules");
-        modules.getItemProperty("name").setValue(NavigationConstant.MODULES);
-        root.setItemIcon(modules, new ExternalResource("images/module-icon.png"));
-        modules.getItemProperty("icon").setValue(new ExternalResource("images/module-icon.png"));
-
-        // DO NOT REMOVE THIS -- The functionality regarding layout management will be developed soon        
-        // Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
-        // layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
-
-        Item userMgmtItem = hwContainer.addItem(NavigationConstant.SECURITY);
-        userMgmtItem.getItemProperty("name").setValue(NavigationConstant.SECURITY);
-        root.setItemIcon(userMgmtItem, new ExternalResource("images/security.png"));
-        userMgmtItem.getItemProperty("icon").setValue(new ExternalResource("images/security.png"));
-
+        createNavigation(hwContainer);
         Item childItem = null;
 
         hLayout.addComponent(root);
@@ -504,6 +488,56 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     	return null;
     }
 
+    private void createNavigation(final HierarchicalContainer hwContainer){
+    	
+    	if (SecurityUtils.getSubject().isPermitted("DASHBOARD:NAVIGATION")){
+    		createNavigationItem(hwContainer,NavigationConstant.DASHBOARD,"images/home-icon.png");
+    	}
+    	
+        if (SecurityUtils.getSubject().isPermitted("SITE:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.SITES,"images/site.png");
+        }
+        
+        if (SecurityUtils.getSubject().isPermitted("CATEGORY:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.CATEGORY_MGMT,"images/category.png");
+        }
+        
+        // DO NOT REMOVE THIS
+        //TOBE USED LATER      
+        //if (SecurityUtils.getSubject().isPermitted("GLOBAL_CONFIG:NAVIGATION")){
+        //createNavigationItem(hwContainer,NavigationConstant.GLOBAL_CONFIG,"images/configuration.png");
+    	//}
+    
+        if (SecurityUtils.getSubject().isPermitted("CONTENT:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.CONTENT_MANAGER,"images/content-icon-16.png");
+        }
+        
+        if (SecurityUtils.getSubject().isPermitted("TEMPLATE:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.TEMPLATE,"images/add-template-16.png");
+        }
+        
+        if (SecurityUtils.getSubject().isPermitted("MODULE:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.MODULES,"images/module-icon.png");
+        }
+      
+        // DO NOT REMOVE THIS -- The functionality regarding layout management will be developed soon        
+        // Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
+        // layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
+        
+        if (SecurityUtils.getSubject().isPermitted("SECURITY:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.SECURITY,"images/security.png");
+        }
+    }
+    
+    private void createNavigationItem(final HierarchicalContainer hwContainer,final String navigationConstant,final String imagePath){
+        final Item item = hwContainer.addItem(navigationConstant);
+        item.getItemProperty("name").setValue(navigationConstant);
+        root.setItemIcon(item, new ExternalResource(imagePath));
+        item.getItemProperty("icon").setValue(new ExternalResource(imagePath));
+    }
+    
+    
+    
     /*
      * Used to handle events after the user clicks the 
      * context menu from the left navigation menu.
@@ -512,25 +546,13 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
     	//If the user right clicks the 'Site' and then click 'Create new site'
     	//Then a new site creation screen needs to be rendered
     	if (action.equals(ACTION_ADD_SITE)) {
-		//	UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper,getWindow());
-
     		horiz.setSecondComponent(siteUIMgr.render(SiteUIManager.NEWSITE));
-    		//SiteService siteService = (SiteService) helper.getBean("siteService");
     	}
     }
 
     @Override
     public void attach() {
         super.attach(); // Must call.
-//CHAGNED          WebApplicationContext ctx = ((WebApplicationContext) this.getApplication().getContext());
-//CHANGED          HttpSession session = ctx.getHttpSession();
-          //if (!session.isNew()){
-        //	  session.setMaxInactiveInterval(50000*60);
-         // }
-         // else {
-        //	  session.setMaxInactiveInterval(0);
-        //  }
-    	 //CHANGED session.setAttribute("accountId", new Integer("1"));
     }
 
 }

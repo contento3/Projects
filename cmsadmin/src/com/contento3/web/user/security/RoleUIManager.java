@@ -62,13 +62,10 @@ public class RoleUIManager implements UIManager {
 	
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public Component render(String command) {
-		// TODO Auto-generated method stub
 		this.uiTabSheet.setHeight(100, Unit.PERCENTAGE);
 		Tab userTab = uiTabSheet.addTab(verticalLayout, "Role Management",new ExternalResource("images/security.png"));
 		userTab.setClosable(true);
@@ -81,7 +78,6 @@ public class RoleUIManager implements UIManager {
 
 	@Override
 	public Component render(String command, Integer entityFilterId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -132,6 +128,5 @@ public class RoleUIManager implements UIManager {
 			
 		}
 		verticl.addComponent(roleTable);
-		
 	}
 }

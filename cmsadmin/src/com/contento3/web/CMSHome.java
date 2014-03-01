@@ -50,8 +50,14 @@ public class CMSHome extends UI
 	protected void init(VaadinRequest request) {
 		final SpringContextHelper helper = new SpringContextHelper(this);
 		
-        final CMSMainWindow main = new CMSMainWindow(helper);
-        VerticalLayout view = new VerticalLayout();
+		Boolean isDemo = false;
+		final String dmParam = request.getParameter("dm");
+		if (null!=dmParam && dmParam.equalsIgnoreCase("yes")){
+			isDemo = true;
+		}
+			
+        final CMSMainWindow main = new CMSMainWindow(helper,isDemo);
+        final VerticalLayout view = new VerticalLayout();
         view.addComponent(main);
         view.setComponentAlignment(main, Alignment.BOTTOM_CENTER);
         setContent(view); 

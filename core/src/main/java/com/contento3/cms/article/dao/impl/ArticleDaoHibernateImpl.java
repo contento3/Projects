@@ -1,7 +1,6 @@
 package com.contento3.cms.article.dao.impl;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
@@ -11,32 +10,34 @@ import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.article.dao.ArticleDao;
 import com.contento3.cms.article.model.Article;
-import com.contento3.cms.page.category.model.Category;
-import com.contento3.cms.page.template.model.Template;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
 public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<Article, Integer> implements ArticleDao{
-		
+	
+	private final static String FIELD_STATUS = "status"; 
+	
 	public ArticleDaoHibernateImpl(){
 		super(Article.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Article> findByAccountId(final Integer accountId) {
+	public Collection<Article> findByAccountId(final Integer accountId, final boolean  isPublished) {
 		Validate.notNull(accountId,"accountId cannot be null");
 
 		final Criteria criteria = this.getSession()
 		.createCriteria(Article.class)
 		.add(Restrictions.eq("account.accountId", accountId))
 		.add(Restrictions.eq("isVisible", 1));
+		
+		filterCriteriaByStatus(criteria, isPublished);
+		
 		return criteria.list();
 	}
 
-
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Article> findLatestArticle(final Integer count) {
+	public Collection<Article> findLatestArticle(final Integer count, final boolean isPublished) {
 		Validate.notNull(count,"count cannot be null");
 
 		final Criteria criteria = this.getSession()
@@ -46,18 +47,22 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		.add(Restrictions.eq("Count", count))
 		.setFirstResult(0).setMaxResults(count);
 		
+		filterCriteriaByStatus(criteria, isPublished);
+		
 		return criteria.list();
 	}
 	
 
 	@Override
-	public Article findByUuid(final String uuid) {
+	public Article findByUuid(final String uuid, final boolean isPublished) {
 		Validate.notNull(uuid,"uuid cannot be null");
 
 		final Criteria criteria = this.getSession()
 				.createCriteria(Article.class)
 				.add(Restrictions.eq("uuid", uuid))
 				.add(Restrictions.eq("isVisible", 1));
+		
+		filterCriteriaByStatus(criteria, isPublished);
 		Article article = null;
 		if (!CollectionUtils.isEmpty(criteria.list())) {
 			article = (Article) criteria.list().get(0);
@@ -74,7 +79,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Article> findLatestArticleBySiteId(final Integer siteId,final Integer count, Integer start) {
+	public Collection<Article> findLatestArticleBySiteId(final Integer siteId, final Integer count, Integer start, final boolean isPublished) {
 		Validate.notNull(siteId,"siteId cannot be null");
 		if (start == null){
 			start = 0;
@@ -88,6 +93,8 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 				.createCriteria("site")
 				.add(Restrictions.eq("siteId", siteId));
 		
+		filterCriteriaByStatus(criteria, isPublished);
+		
 		if(count!=null){
 			criteria.setMaxResults(count);
 		}
@@ -98,19 +105,23 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Article> findLatestArticleByCategory(final Collection<Integer> categoryIds,
-		final Integer numberOfArticles,final Integer siteId, final Integer start) {
+		final Integer numberOfArticles,final Integer siteId, Integer start, final boolean isPublished) {
 			Validate.notNull(categoryIds,"categoryIds cannot be null");
 			Validate.notNull(siteId,"siteId cannot be null");
 //			Validate.notNull(numberOfArticles,"numberOfArticles cannot be null");
-			
+			if(start == null){
+				start = 0;
+			}
 		final Criteria criteria = this.getSession()
 			.createCriteria(Article.class)
 		    //.addOrder(Order.desc("dateCreated"))
 		    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-		    .setFirstResult(0)
+		    .setFirstResult(start)
 		    .add(Restrictions.eq("isVisible", 1))
 		    .createAlias("site", "s")
 		    .add(Restrictions.eq("s.siteId", siteId));
+		
+		filterCriteriaByStatus(criteria, isPublished);
 
 			if (! CollectionUtils.isEmpty(categoryIds)){
 				criteria.createCriteria("categories","c")
@@ -123,7 +134,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	}
 
 	@Override
-	public Article findArticleByIdAndSiteId(final Integer articleId,final Integer siteId) {
+	public Article findArticleByIdAndSiteId(final Integer articleId,final Integer siteId, final boolean isPublished) {
 			Validate.notNull(articleId,"articleId cannot be null");
 			Validate.notNull(siteId,"siteId cannot be null");
 
@@ -134,6 +145,8 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 			.createAlias("site", "s")
 			.add(Restrictions.eq("s.siteId", siteId));
 		
+		filterCriteriaByStatus(criteria, isPublished);
+		
 		Article article = null;
 		if (!CollectionUtils.isEmpty(criteria.list())) {
 			article = (Article) criteria.list().get(0);
@@ -143,7 +156,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	}
 
 	@Override
-	public Collection<Article> findBySearch(String header, String catagory) {
+	public Collection<Article> findBySearch(String header, String catagory, final boolean isPublished) {
 	
 		final Criteria criteria = this.getSession()
 				.createCriteria(Article.class);
@@ -154,6 +167,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 				}
 				criteria.add(Restrictions.eq("isVisible",1));
 	
+				filterCriteriaByStatus(criteria, isPublished);
 				
 				if(!catagory.isEmpty()){
 				
@@ -165,6 +179,12 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		return criteria.list();
 	}
 
+	private void filterCriteriaByStatus(final Criteria criteria , final boolean isPublished) {
+		
+		if(isPublished) {
+			criteria.add(Restrictions.eq(FIELD_STATUS, 1));
+		}		
+	}
 	
 }
 

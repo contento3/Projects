@@ -180,7 +180,7 @@ public class PageUIManager {
 	 */
 	private String getButtonTitle() {
 		
-		if(siteDto.getStatus() == 0) {
+		if(siteDto.getStatus() == null || siteDto.getStatus() == 0) {
 			return BUTTON_NAME_PUBLISHED;
 		} else {
 			return BUTTON_NAME_UNPUBLISHED;
@@ -200,8 +200,7 @@ public class PageUIManager {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-			
-				System.out.println("Button Pressed");
+
 				if(siteDto != null) {
 					if( event.getButton().getCaption().equals(BUTTON_NAME_PUBLISHED) ) {
 						siteDto.setStatus(1); // set status publishes

@@ -93,6 +93,10 @@
 		<constructor-arg ref="siteAssembler" />
 		<constructor-arg ref="imageLibraryAssembler" />
 	</bean>
+	
+	<bean id="metaTagAssembler" 
+		class="com.contento3.cms.seo.service.impl.MetaTagAssemblerImpl">
+	</bean>
 
 
 
@@ -254,6 +258,12 @@
 		<constructor-arg ref="contentStorageLibraryMappingDao" />
 		<constructor-arg ref="storageProviderFactory" />
 		<constructor-arg ref="storageManager" />
+		<property name="contentDaos">
+			<map>
+   				<entry key="IMAGE" value-ref="imageDao" />
+			</map>
+		</property>	
+		
 	</bean>
 
 
@@ -369,5 +379,12 @@
 		class="com.contento3.dam.storagetype.service.impl.StorageTypeServiceImpl">
 		<constructor-arg ref="storageTypeAssembler" />
 		<constructor-arg ref="storageTypeDao" />
+	</bean>
+	
+	<!-- MetaTagService -->
+	<bean id="metaTagService"
+		class="com.contento3.cms.seo.service.impl.MetaTagServiceImpl">
+		<constructor-arg ref="metaTagAssembler" />
+		<constructor-arg ref="metaTagDao" />
 	</bean>
 </beans>

@@ -90,4 +90,12 @@ public interface PageService {
 	 * @return {@link Collection} of PageDto
 	 */
 	 Collection <PageDto> findNavigablePagesBySiteId(Integer siteId);
+	 
+	 /**
+		 * Returns the {@link Collection} of {@link PageDto} by categoryIdsCollection
+		 * @param categoryId
+		 * @param accountId
+		 * @return {@link Collection} of PageDto
+		 */
+	Collection <PageDto> findPagesByCategory(Collection<Integer> categoryIds,Integer siteId, Integer accountId);
 }

@@ -10,24 +10,27 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	/**
 	 * Returns the collection of Article for a given accountId provided
 	 * @param accountId id for a site
+	 * @param isPublished TODO
 	 * @return
 	 */
 
-	Collection<ArticleDto> findByAccountId(Integer accountId);
+	Collection<ArticleDto> findByAccountId(Integer accountId, boolean isPublished);
 	/**
 	 * Returns the Article for a given count
+	 * @param isPublished TODO
 	 * @param count 
 	 * @return 	  
 	 */
 	
-	Collection<ArticleDto> findBySearch(String header, String catagory);
+	Collection<ArticleDto> findBySearch(String header, String catagory, boolean isPublished);
 	/**
 	 * used to search article by header name or catagory
 	 * @param count
+	 * @param isPublished TODO
 	 * @return
 	 */
 	
-	Collection<ArticleDto> findLatestArticle(int count);
+	Collection<ArticleDto> findLatestArticle(int count, boolean isPublished);
 	/**
 	 * used to create new article
 	 * @param articleDto
@@ -42,9 +45,10 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	/**
 	 * return article
 	 * @param uuid
+	 * @param isPublished TODO
 	 * @return
 	 */
-	ArticleDto findByUuid(String uuid);
+	ArticleDto findByUuid(String uuid, boolean isPublished);
 	
 	/**
 	 * find article by id
@@ -56,18 +60,20 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	/**
 	 * find latest article by site id
 	 * @param siteId
+	 * @param isPublished TODO
 	 * @return
 	 */
-	Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer limit, Integer start);
+	Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer limit, Integer start, boolean isPublished);
 	
 	/**
 	 * Finds a {@link Collection} of Article for a site for a given category.
+	 * @param siteId
+	 * @param isPublished TODO
 	 * @param categoryName
 	 * @param numberOfArticles
-	 * @param siteId
 	 * @return
 	 */
-	Collection<ArticleDto> findLatestArticleByCategory(Collection<Integer> categoryIds,Integer siteId, Integer limit, Integer start);
+	Collection<ArticleDto> findLatestArticleByCategory(Collection<Integer> categoryIds,Integer siteId, Integer limit, Integer start, boolean isPublished);
 
 	/**
 	 * Add associated images to article
@@ -75,8 +81,7 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	 */
 	void updateAssociateImages(ArticleDto article);
 	
-	ArticleDto findArticleByIdAndSiteId(Integer id,Integer siteId);
+	ArticleDto findArticleByIdAndSiteId(Integer id,Integer siteId, boolean isPublished);
 
-	
-	
+
 }

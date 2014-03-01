@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.common.dto.Dto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.group.dto.GroupDto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.security.role.dto.RoleDto;
@@ -14,6 +15,7 @@ import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -114,7 +116,11 @@ public class DeleteAssociatedRoleListener extends EntityListener implements Clic
 			}//end outer for
 		
 			group.getRoles().removeAll(itemsToDelete);
- 		 	groupService.update(group);	
+ 		 	try {
+				groupService.update(group);
+			} catch (final EntityAlreadyFoundException e) {
+				Notification.show("Group with name "+group.getGroupName()+" already exists.");
+			}	
 			asscoiatedRoleTable.rebuild((Collection) group.getRoles()); //refresh previous popup table
 		}	
 	}

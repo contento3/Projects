@@ -2,9 +2,7 @@ package com.contento3.thymeleaf.dialect.navigation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
 import org.thymeleaf.Arguments;
@@ -16,13 +14,9 @@ import org.thymeleaf.processor.element.AbstractMarkupSubstitutionElementProcesso
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
-import org.w3c.dom.events.UIEvent;
 
-import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.service.PageService;
-import com.sun.org.apache.xalan.internal.xsltc.DOM;
 
 public class NavigationProcessor extends AbstractMarkupSubstitutionElementProcessor {
 

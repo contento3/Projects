@@ -31,9 +31,6 @@ import com.vaadin.ui.Window.CloseEvent;
 public class ImageEditListner extends  CustomComponent
 implements Window.CloseListener,Button.ClickListener{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

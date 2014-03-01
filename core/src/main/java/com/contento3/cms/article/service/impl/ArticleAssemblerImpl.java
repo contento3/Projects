@@ -48,6 +48,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		domain.setSite(siteAssembler.dtosToDomains(dto.getSite()));
 		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
 		domain.setCategories(categoryAssembler.dtosToDomains(dto.getCategoryDtos()));
+		domain.setStatus(dto.getStatus());
 		return domain;
 	}
 
@@ -70,6 +71,7 @@ public class ArticleAssemblerImpl implements ArticleAssembler {
 		dto.setSite(siteAssembler.domainsToDtos(domain.getSite()));
 		dto.setAccount(accountAssembler.domainToDto(domain.getAccount()));
 		dto.setCategoryDtos(categoryAssembler.domainsToDtos(domain.getCategories()));
+		dto.setStatus(domain.getStatus());
 		return dto;
 	}
 
