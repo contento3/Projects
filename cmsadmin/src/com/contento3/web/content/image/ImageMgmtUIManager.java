@@ -63,6 +63,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	private static final Logger LOGGER = Logger.getLogger(ImageMgmtUIManager.class);
 	
 	private static final long serialVersionUID = 5131819177752243660L;
+	private final static String MSG_FILE_TYPE_NOT_SUPPORTED = "File type not supported.";
 	
 	/**
 	 * Helper to load the spring context
@@ -527,6 +528,7 @@ public class ImageMgmtUIManager extends CustomComponent
 					    	else if (imageDto!=null){
 					    	 imageDto.setAltText(altTextField.getValue().toString());
 					         imageDto.setImage(bFile);
+					       
 					         imageDto.setName(imageNameField.getValue().toString());
 					
 					         //Get accountId from the session
@@ -534,6 +536,7 @@ public class ImageMgmtUIManager extends CustomComponent
 					         accountDto.setAccountId(accountId);
 					         imageDto.setAccountDto(accountDto);
 					         imageDto.setFile(file);
+					       
 					         final ImageService imageService = (ImageService)helper.getBean("imageService");
 					         
 					         //set imageLibrary to imageDto
@@ -571,7 +574,6 @@ public class ImageMgmtUIManager extends CustomComponent
         return imageLayout;
 	}
 	   
-    
     /**
      * Callback method to begin receiving the upload.
      * @param filename
@@ -591,11 +593,28 @@ public class ImageMgmtUIManager extends CustomComponent
         return fos; // Return the output stream to write to
     }
     
+    private boolean validateImage(String mimeType) {
+    	boolean isSupported = false;
+    	try {
+			final CachedTypedProperties typeProperties = CachedTypedProperties.getInstance("imageType.properties");
+			isSupported = typeProperties.containsValue(mimeType);
+  
+    	} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+    	return isSupported;
+    }
+     
     // This is called if the upload is finished.
     public void uploadSucceeded(Upload.SucceededEvent event) {
-        // Log the upload on screen.
+       
+    	if(!validateImage(event.getMIMEType())) {
+        	Notification.show(MSG_FILE_TYPE_NOT_SUPPORTED, Notification.Type.TRAY_NOTIFICATION);
+    	} else {
+    	// Log the upload on screen.
         root.setContent(new Label(String.format("File %s of type ' %s ' uploaded.",event.getFilename(),event.getMIMEType())));
         imageResource = new FileResource(file);
+        
         imagePanel.setContent(new Embedded("", imageResource));
         imageResource.setCacheTime(0);
         
@@ -630,6 +649,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	    imageResource = new FileResource(file);
 	    imagePanel.setContent(new Embedded("", imageResource));
 	    imageResource.setCacheTime(0);
+    	}
 	}
 
     /**
@@ -721,7 +741,6 @@ public class ImageMgmtUIManager extends CustomComponent
 			displayImages(images);
 		}
 	}
-	
 	
 	/**
 	 *On Delete handler
