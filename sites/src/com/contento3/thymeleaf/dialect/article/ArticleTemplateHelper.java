@@ -1,4 +1,4 @@
-package com.contento3.thymeleaf.dialect.helper;
+package com.contento3.thymeleaf.dialect.article;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import org.springframework.web.context.ContextLoader;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 
-public class ArticleUtility {
+public class ArticleTemplateHelper {
     /**
      * Format a Joda DateTime using the given pattern.
      *
@@ -85,7 +85,7 @@ public class ArticleUtility {
 		else 
 			return totalPages+1;
 	}
-	public ArticleUtility() {
+	public ArticleTemplateHelper() {
 		ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
 		this.articleService = (ArticleService) ctx.getBean("articleService");
 	}

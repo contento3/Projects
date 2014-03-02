@@ -1,4 +1,4 @@
-package com.contento3.thymeleaf.dialect.helper;
+package com.contento3.thymeleaf.dialect.navigation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
