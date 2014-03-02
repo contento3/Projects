@@ -77,7 +77,7 @@ public class UserUIManager implements UIManager {
 	@Override
 	public Component render(String command) {
 		this.uiTabSheet.setHeight(100, Unit.PERCENTAGE);
-		Tab userTab = uiTabSheet.addTab(verticalLayout, "User Management",new ExternalResource("images/security.png"));
+		Tab userTab = uiTabSheet.addTab(verticalLayout, "User Management",new ExternalResource("images/user.png"));
 		userTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
