@@ -30,6 +30,7 @@ import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.image.listener.AddImageButtonListener;
 import com.contento3.web.content.image.listener.AddLibraryButtonListener;
+import com.contento3.web.content.image.listener.DeleteListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
@@ -57,7 +58,7 @@ import com.vaadin.ui.VerticalLayout;
 public class ImageMgmtUIManager extends CustomComponent 
 			implements Upload.SucceededListener,
 											Upload.FailedListener,
-											Upload.Receiver,UIManager{
+											Upload.Receiver,UIManager, DeleteListener{
 
 	private static final Logger LOGGER = Logger.getLogger(ImageMgmtUIManager.class);
 	
@@ -187,7 +188,7 @@ public class ImageMgmtUIManager extends CustomComponent
 			HierarchicalContainer treeItemContainer) {
 		return null;
 	}
-    
+
 	/**
 	 * Render image management related components
 	 */
@@ -352,7 +353,7 @@ public class ImageMgmtUIManager extends CustomComponent
 
     	final VerticalLayout imageInfoLayout = new VerticalLayout();
 
-
+    	//Edit image button
     	final Button editImageDetail = new Button("Edit Image");
     	editImageDetail.setStyleName("link");
     	editImageDetail.addClickListener(new ClickListener() {
@@ -369,10 +370,17 @@ public class ImageMgmtUIManager extends CustomComponent
 		});
     	
     	imageInfoLayout.setSpacing(true);
-    	
     	imageInfoLayout.addComponent(editImageDetail);
     	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
-
+    	
+    	//Delete image button
+    	Button btnDelete = new Button("Delete Image");
+    	btnDelete.setStyleName("link");
+    	btnDelete.addClickListener(new ImageDeleteListner(helper, dto, this));
+    	
+    	imageInfoLayout.addComponent(btnDelete);
+    	imageInfoLayout.setComponentAlignment(btnDelete, Alignment.MIDDLE_CENTER);
+    	
     	final Panel mainPanel = new Panel();
     	final VerticalLayout mainPanelLayout = new VerticalLayout();
     	
@@ -667,7 +675,7 @@ public class ImageMgmtUIManager extends CustomComponent
 	    	final Button editImageDetail = new Button("Edit Image",new ImageEditListner(helper,dto));
 	    	editImageDetail.setStyleName("link");
 
-	    	final Button imageDelete = new Button("Delete Image",new ImageDeleteListner(helper,dto));
+	    	final Button imageDelete = new Button("Delete Image",new ImageDeleteListner(helper, dto, this));
 	    	imageDelete.setStyleName("link");
 
 	    	imageInfoLayout.setSpacing(true);
@@ -700,6 +708,29 @@ public class ImageMgmtUIManager extends CustomComponent
 		return embedded;
 	}
 
+	/**
+	 * Refresh Image panel
+	 */
+	private void refreshImagePanel() {
+		
+		imagePanlelayout.removeAllComponents(); // remove items from CSSlayout which contains panels of image
+		Object id = imageLibrayCombo.getValue();
+		if(id != null){
+			int libraryId = Integer.parseInt(id.toString());
+			Collection<ImageDto> images = imageService.findImagesByLibrary(libraryId);
+			displayImages(images);
+		}
+	}
 	
+	
+	/**
+	 *On Delete handler
+	 */
+	@Override
+	public void onDelete() {
+		
+		refreshImagePanel();
+	}
+
 
 }

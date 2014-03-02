@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.cms.article.dao.ArticleImageDao;
 import com.contento3.cms.article.dto.ArticleImageDto;
+import com.contento3.cms.article.model.ArticleImage;
 import com.contento3.cms.article.service.ArticleImageAssembler;
 import com.contento3.cms.article.service.ArticleImageService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -73,6 +74,12 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		Validate.notNull(articleId,"articleId cannot null");
 		Validate.notNull(scopeId,"scopeId cannot null");
 		return this.articleImageAssembler.domainsToDtos(this.articleImageDao.findAsscArticleImageByArticleIdAndScopeId(articleId,scopeId));
+	}
+	
+	@Override
+	public Collection<ArticleImageDto> findArticleImageByImageId(Integer imageId) {
+		Validate.notNull(imageId,"imageId cannot null");
+		return this.articleImageAssembler.domainsToDtos(this.articleImageDao.findArticleImageByImageId(imageId));
 	}
 
 }

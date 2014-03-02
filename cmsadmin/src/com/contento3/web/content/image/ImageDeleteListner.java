@@ -1,48 +1,24 @@
 package com.contento3.web.content.image;
 
 import java.util.Collection;
-
 import org.apache.shiro.authz.AuthorizationException;
-
-import com.contento3.account.dto.AccountDto;
+import org.vaadin.dialogs.ConfirmDialog;
+import com.contento3.cms.article.dto.ArticleImageDto;
+import com.contento3.cms.article.service.ArticleImageService;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.dam.image.dto.ImageDto;
-import com.contento3.dam.image.library.dto.ImageLibraryDto;
-import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.dam.image.service.ImageService;
-import com.contento3.web.common.helper.ComboDataLoader;
-import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.image.listener.DeleteListener;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 
-public class ImageDeleteListner extends  CustomComponent
-implements Window.CloseListener,Button.ClickListener{
+public class ImageDeleteListner implements ClickListener {
+
 	
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Helper to load the spring context
-	 */
-    private SpringContextHelper helper;
-	
-	/**
-	 * The window to be opened
-	 */
-	private Window popupWindow;
 
 	/**
 	 * ImageService for image related operations
@@ -50,9 +26,9 @@ implements Window.CloseListener,Button.ClickListener{
 	private ImageService imageService;
 	  
 	/**
-	 * ImageLibraryService for imageLibrary related operations
+	 * ArticleService for article related operations
 	 */
-    private ImageLibraryService imageLibraryService;
+    private ArticleImageService articleImageService;
     
 	/**
 	 * image to be edit
@@ -60,150 +36,56 @@ implements Window.CloseListener,Button.ClickListener{
 	private ImageDto imageDto;
 	
 	/**
-	 * Button for opening the window
+	 * Delete Listener
 	 */
-	private Button openbutton; 
+	private DeleteListener deleteListener;
 	
-	boolean isModalWindowClosable = true;
-	 
-	public ImageDeleteListner(final SpringContextHelper helper,final ImageDto imageDto ) {
-		this.helper = helper;
-		this.imageService = (ImageService)helper.getBean("imageService");
-		this.imageLibraryService = (ImageLibraryService) helper.getBean("imageLibraryService");
-		this.imageDto = imageDto;
+	
+	public ImageDeleteListner(final SpringContextHelper helper,final ImageDto imageDto, final DeleteListener listener) {
 		
-		 // The component contains a button that opens the window.
-        final VerticalLayout layout = new VerticalLayout();
-        openbutton = new Button("Edit Image");
-        layout.addComponent(openbutton);
-        setCompositionRoot(layout);
+		this.imageService = (ImageService)helper.getBean("imageService");
+		this.articleImageService = (ArticleImageService) helper.getBean("articleImageService");
+		this.imageDto = imageDto;
+		this.deleteListener = listener;
 	}
 
-    /** Handle the clicks for the two buttons. */
-    public void openButtonClick(Button.ClickEvent event) {
-    	   /* Create a new window. */
-        final Button saveButton = new Button();
-        saveButton.setCaption("Save");
-		popupWindow = new Window();
-    	
-		popupWindow.setPositionX(200);
-    	popupWindow.setPositionY(100);
-
-    	popupWindow.setHeight(30,Unit.PERCENTAGE);
-    	popupWindow.setWidth(22,Unit.PERCENTAGE);
-       
-    	/* Add the window inside the main window. */
-        UI.getCurrent().addWindow(popupWindow);
-        
-        /* Listen for close events for the window. */
-        popupWindow.addCloseListener(this);
-        popupWindow.setModal(true);
-        
-        final VerticalLayout popupMainLayout = new VerticalLayout();
-        popupMainLayout.setSpacing(true);
-        final HorizontalLayout altDataLayout = new HorizontalLayout();
-        altDataLayout.setSizeFull();
-        final Label altLabel = new Label("Alt text");
-        final TextField altTextField  = new TextField();
-        altTextField.setValue(imageDto.getAltText());
-        altDataLayout.setSpacing(true);
-        altDataLayout.addComponent(altLabel);
-        altDataLayout.addComponent(altTextField);
-        altDataLayout.setComponentAlignment(altLabel, Alignment.BOTTOM_RIGHT);
-        altDataLayout.setComponentAlignment(altTextField, Alignment.MIDDLE_CENTER);
-        popupMainLayout.addComponent(altDataLayout);
-        
-        final HorizontalLayout nameDataLayout = new HorizontalLayout();
-        nameDataLayout.setSizeFull();
-        final Label nameLabel = new Label("Image name");
-        final TextField nameTextField  = new TextField();
-        nameTextField.setValue(imageDto.getName());
-        nameDataLayout.setSpacing(true);
-        nameDataLayout.addComponent(nameLabel);
-        nameDataLayout.addComponent(nameTextField);
-        nameDataLayout.setComponentAlignment(nameLabel, Alignment.BOTTOM_RIGHT);
-        nameDataLayout.setComponentAlignment(nameTextField, Alignment.MIDDLE_CENTER);
-        popupMainLayout.addComponent(nameDataLayout);
-     
-        final HorizontalLayout imageLibraryDataLayout = new HorizontalLayout();
-        imageLibraryDataLayout.setSpacing(true);
-        final Label libraryLabel = new Label("Select library");
-        
-        //Get accountId from the session
-        final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
-        Collection<ImageLibraryDto> imageLibraryDto = this.imageLibraryService.findImageLibraryByAccountId(accountId);
-		final ComboDataLoader comboDataLoader = new ComboDataLoader();
-		final ComboBox imageLibrayCombo = new ComboBox();
-		imageLibrayCombo.setContainerDataSource(comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
-		imageLibrayCombo.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-		imageLibrayCombo.setItemCaptionPropertyId("name");
-		imageLibrayCombo.setValue(imageDto.getImageLibraryDto().getId());
-		imageLibraryDataLayout.setSpacing(true);
-		imageLibraryDataLayout.addComponent(libraryLabel);
-		imageLibraryDataLayout.addComponent(imageLibrayCombo);
-		imageLibraryDataLayout.setComponentAlignment(libraryLabel, Alignment.BOTTOM_RIGHT);
-		popupMainLayout.addComponent(imageLibraryDataLayout);
-		
-		saveButton.addClickListener(new ClickListener() {
-			
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				try{
-				
-				imageDto.setAltText(altTextField.getValue().toString());
-				imageDto.setName(nameTextField.getValue().toString());
-				//set imageLibrary to imageDto
-	            if(imageLibrayCombo.getValue()!=null){
-	            	imageDto.setImageLibraryDto(imageLibraryService
-	            			.findImageLibraryById(Integer
-	            					.parseInt(imageLibrayCombo.getValue()
-	            							.toString())));
-	            }
-
-	            final AccountDto accountDto = new AccountDto();
-	            accountDto.setAccountId(accountId);
-				imageDto.setAccountDto(accountDto);
-	            imageService.update(imageDto);
-	    		Notification.show(imageDto.getName() +" updated succesfully");
-	    		UI.getCurrent().removeWindow(popupWindow);
-		        openbutton.setEnabled(true);}catch(AuthorizationException ex){}
-			}
-		});
-		
-        final HorizontalLayout addButtonLayout = new HorizontalLayout();
-        popupMainLayout.addComponent(addButtonLayout);
-        addButtonLayout.addComponent(saveButton);
-        addButtonLayout.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
-        popupWindow.setCaption("Edit image");
-        popupWindow.setContent(popupMainLayout);
-        popupWindow.setResizable(false);
-        /* Allow opening only one window at a time. */
-        openbutton.setEnabled(false);
-    }
-    
-	  /** Handle Close button click and close the window. */
-    public void closeButtonClick(Button.ClickEvent event) {
-    	if (!isModalWindowClosable){
-        /* Windows are managed by the application object. */
-        UI.getCurrent().removeWindow(popupWindow);
-        
-        /* Return to initial state. */
-        openbutton.setEnabled(true);
-    	}
-    }
-
-    /** In case the window is closed otherwise. */
-    public void windowClose(CloseEvent e) {
-        /* Return to initial state. */
-        openbutton.setEnabled(true);
-    }
-
+	
 	@Override
 	public void buttonClick(ClickEvent event) {
-		this.openButtonClick(event);		
+		
+		ConfirmDialog.show(UI.getCurrent(), "Please Confirm"," Are you really sure to delete?",
+		        "Yes", "Cancel", new ConfirmDialog.Listener() {
+
+			private static final long serialVersionUID = 1L;
+		
+
+			public void onClose(ConfirmDialog dialog) {
+                if (dialog.isConfirmed()) {
+                    // Confirmed to continue
+                	try
+                	{
+                		Collection<ArticleImageDto> dtos = articleImageService.findArticleImageByImageId(imageDto.getId());
+                		
+                		if(dtos != null && dtos.size() > 0) {
+                			Notification.show("Image", imageDto.getName() +" cannot be deleted.", Notification.Type.TRAY_NOTIFICATION);
+                		} else {
+                			imageService.delete(imageDto);
+                			Notification.show("Image", imageDto.getName() +" deleted.", Notification.Type.TRAY_NOTIFICATION);
+                			deleteListener.onDelete();
+                		}	
+                	}catch(AuthorizationException ex){
+                		Notification.show("You are not permitted to delete articles");
+                	} catch (EntityCannotBeDeletedException e) {
+                		Notification.show("Image", imageDto.getName() +" cannot be deleted.", Notification.Type.TRAY_NOTIFICATION);
+					}
+                } else {
+                    // User did not confirm
+                    
+                }
+            }
+        });
+    	
+		
 	}
 
 }

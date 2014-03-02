@@ -53,4 +53,18 @@ public class ArticleImageDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<ArticleImage> findArticleImageByImageId(Integer imageId) {
+		
+		Validate.notNull(imageId,"imageId cannot be null");
+
+		final Criteria criteria = this.getSession()
+				.createCriteria(ArticleImage.class)
+				.add(Restrictions.eq("primaryKey.image.imageId", imageId));
+		return criteria.list();
+	}
+	
+	
+
 }
