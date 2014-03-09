@@ -1,6 +1,6 @@
 package com.contento3.cms.seo.dto;
 
-import com.contento3.cms.site.structure.model.Site;
+import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.dto.Dto;
 
 public class MetaTagDto extends Dto {
@@ -38,7 +38,7 @@ public class MetaTagDto extends Dto {
 	/**
 	 * Accociated site to Meta tag
 	 */
-	private Site site;
+	private SiteDto site;
 	
 	
 	public Integer getMetaTagId() {
@@ -89,11 +89,11 @@ public class MetaTagDto extends Dto {
 		this.associatedId = associatedId;
 	}
 
-	public Site getSite() {
+	public SiteDto getSite() {
 		return site;
 	}
 
-	public void setSite(final Site site) {
+	public void setSite(final SiteDto site) {
 		this.site = site;
 	}
 

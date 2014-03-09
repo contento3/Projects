@@ -2,11 +2,19 @@ package com.contento3.cms.seo.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import com.contento3.cms.seo.dto.MetaTagDto;
 import com.contento3.cms.seo.model.MetaTag;
 import com.contento3.cms.seo.service.MetaTagAssembler;
+import com.contento3.cms.site.structure.service.SiteAssembler;
 
 public class MetaTagAssemblerImpl implements MetaTagAssembler {
+	
+	final SiteAssembler siteAssembler;
+	
+	public MetaTagAssemblerImpl(final SiteAssembler siteAssembler) {
+		this.siteAssembler =  siteAssembler;
+	}
 
 	public MetaTag dtoToDomain(final MetaTagDto dto) {
 		
@@ -17,7 +25,7 @@ public class MetaTagAssemblerImpl implements MetaTagAssembler {
 		domain.setAttributeContent(dto.getAttributeContent());
 		domain.setLevel(dto.getLevel());
 		domain.setAssociatedId(dto.getAssociatedId());
-		domain.setSite(dto.getSite());
+		domain.setSite(siteAssembler.dtoToDomain(dto.getSite()));
 		return domain;
 	}
 	
@@ -30,11 +38,11 @@ public class MetaTagAssemblerImpl implements MetaTagAssembler {
 		dto.setAttributeContent(domain.getAttributeContent());
 		dto.setLevel(domain.getLevel());
 		dto.setAssociatedId(domain.getAssociatedId());
-		dto.setSite(domain.getSite());
+		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
 		return dto;
 	}
 	
-	public Collection<MetaTagDto> domainsToDtos(final Collection<MetaTag> domains){
+	public Collection<MetaTagDto> domainsToDtos(final Collection<MetaTag> domains) {
 		
 		Collection<MetaTagDto> dtos = new ArrayList<MetaTagDto>();
 		for (MetaTag tag : domains){

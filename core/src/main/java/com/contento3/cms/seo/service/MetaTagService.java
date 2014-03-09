@@ -1,5 +1,7 @@
 package com.contento3.cms.seo.service;
 
+import java.util.Collection;
+
 import com.contento3.cms.seo.dto.MetaTagDto;
 
 public interface MetaTagService {
@@ -17,5 +19,19 @@ public interface MetaTagService {
 	 * @param metaTagDto
 	 */
 	public void update(final MetaTagDto metaTagDto);
+	
+	/**
+	 * Returns Meta tags by siteId
+	 * @param siteId
+	 * @return
+	 */
+	public Collection<MetaTagDto> findBySiteId(Integer siteId);
+	
+	/**
+	 * Return MetaTag Dto
+	 * @param id
+	 * @return
+	 */
+	public MetaTagDto findByID(Integer id);
 
 }
