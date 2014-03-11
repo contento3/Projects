@@ -191,9 +191,9 @@ public class SEOUIManager implements ClickListener  {
 	 * @param id
 	 */
 	private void refreshTableData(Integer id) {
-		MetaTagDto dto = metaTagService.findByID(id);
-		tableBuilder.addItem(dto);
-		tableBuilder.increaseTablePageSize();
+
+		Collection<MetaTagDto> dtos = metaTagService.findBySiteId(siteId);
+		tableBuilder.rebuild((Collection)dtos);
 	}
 
 	/**
