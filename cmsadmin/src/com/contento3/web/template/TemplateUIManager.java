@@ -250,6 +250,8 @@ public class TemplateUIManager implements UIManager {
 			private static final long serialVersionUID = 1L;
 
 			public void click(ClickEvent event) {
+				UI.getCurrent()
+				.addWindow(new DeleteTemplatePopup(helper, null));
 			}
 		});
 
