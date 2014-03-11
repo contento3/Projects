@@ -71,4 +71,8 @@ public class SEOTableBuilder extends AbstractTableBuilder {
 		Item item = container.addItem("-1");
 		item.getItemProperty(TABLE_COLUMN_ATTRIBUTE).setValue("No record found.");
 	}
+	
+	public void increaseTablePageSize() {
+		super.table.setPageLength(table.getPageLength() + 1);
+	}
 }

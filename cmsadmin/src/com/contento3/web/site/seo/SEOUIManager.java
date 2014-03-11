@@ -79,6 +79,11 @@ public class SEOUIManager implements ClickListener  {
 		this.metaTagService = (MetaTagService) helper.getBean("metaTagService");
 	}
 	
+	/**
+	 * Show SEO setting screen
+	 * @param tabSheet
+	 * @param siteId
+	 */
 	public void renderSEOSettingsManager(final TabSheet tabSheet,final Integer siteId) {
 		
 		this.siteId = siteId;
@@ -94,6 +99,9 @@ public class SEOUIManager implements ClickListener  {
 		addUIComponents();
 	}
 
+	/**
+	 * Add UI components to screen
+	 */
 	private void addUIComponents() {
 
 		seoParentLayout.addComponent(createScreenHeading());	
@@ -102,6 +110,10 @@ public class SEOUIManager implements ClickListener  {
 		seoParentLayout.addComponent(createAddingAttributeSection());
 	}
 
+	/**
+	 * Create Heading 
+	 * @return
+	 */
 	private Label createScreenHeading() {
 		
 		final Label heading = new Label(SCREEN_HEADING);
@@ -109,6 +121,10 @@ public class SEOUIManager implements ClickListener  {
 		return heading;
 	}
 	
+	/**
+	 * Create table
+	 * @return
+	 */
 	private Table createTableForSeo() {
 		
 		Collection<MetaTagDto> tags = metaTagService.findBySiteId(siteId);
@@ -133,7 +149,9 @@ public class SEOUIManager implements ClickListener  {
 		grid.addComponent(label, 0, 0);
 		
 		attributeCombo = new ComboBox();
-		attributeCombo.setValue(new String("test"));
+		attributeCombo.addItem("Test");
+		attributeCombo.addItem("Test 1");
+		attributeCombo.addItem("Test 2");
 		attributeCombo.setWidth(100, Unit.PERCENTAGE);
 		grid.addComponent(attributeCombo, 1, 0);
 		
@@ -168,17 +186,25 @@ public class SEOUIManager implements ClickListener  {
 		return horizLayout;
 	}
 	
-	private void refreshTableData() {
-		//MetaTagDto dto = metaTagService.findByID(id)
-		//tableBuilder.addItem(dto);
+	/**
+	 * Refresh table rows
+	 * @param id
+	 */
+	private void refreshTableData(Integer id) {
+		MetaTagDto dto = metaTagService.findByID(id);
+		tableBuilder.addItem(dto);
+		tableBuilder.increaseTablePageSize();
 	}
 
+	/**
+	 * Button click handler
+	 */
 	@Override
 	public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
 		
-		String attribute = "test"; 
+		String attribute = ""; 
 		if(attributeCombo.getValue() != null) { 
-			attributeCombo.getValue().toString();
+			attribute = attributeCombo.getValue().toString();
 		}
 		String attributeValue = valuField.getValue();
 		String contentValue = valuField.getValue();
@@ -190,12 +216,17 @@ public class SEOUIManager implements ClickListener  {
 			dto.setAttribute(attribute);
 			dto.setAttributeValue(attributeValue);
 			dto.setAttributeContent(contentValue);
+			
 			SiteService siteService = (SiteService) contextHelper.getBean("siteService");
 			SiteDto site = siteService.findSiteById(siteId);
 			dto.setSite(site);
-			metaTagService.create(dto);
-			Notification.show("", MSG_CREATE_ATTRIBUTE, Type.ERROR_MESSAGE);
-			//refreshTableData();
+			
+			dto.setAssociatedId(site.getSiteId()); // must be dynamic
+			dto.setLevel("1"); //must be dynamic
+			
+			int id = metaTagService.create(dto);
+			Notification.show("", MSG_CREATE_ATTRIBUTE, Type.TRAY_NOTIFICATION);
+			refreshTableData(id);
 		}
 	}
 
