@@ -94,11 +94,9 @@
 		<constructor-arg ref="imageLibraryAssembler" />
 	</bean>
 	
-	<bean id="metaTagAssembler" 
-		class="com.contento3.cms.seo.service.impl.MetaTagAssemblerImpl">
+	<bean id="metaTagAssembler" class="com.contento3.cms.seo.service.impl.MetaTagAssemblerImpl">
+		<constructor-arg ref="siteAssembler" />
 	</bean>
-
-
 
 	<bean id="templateService"
 		class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">
@@ -174,16 +172,30 @@
 		<constructor-arg ref="pageSectionTypeService" />
 	</bean>
 
+	<bean id="templateCategoryDao" class="com.contento3.cms.page.templatecategory.dao.impl.TemplateCategoryDaoHibernateImpl">
+	<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
 	<bean id="categoryAssembler"
 		class="com.contento3.cms.page.category.service.impl.CategoryAssemblerImpl">
 	</bean>
-
-	<bean id="categoryService"
-		class="com.contento3.cms.page.category.service.impl.CategoryServiceImpl">
+	<bean id="templateCategoryAssembler" class="com.contento3.cms.page.templatecategory.service.impl.TemplateCateggoryAssemblerImpl">
+	</bean>
+	
+	<bean id="categoryService" class="com.contento3.cms.page.category.service.impl.CategoryServiceImpl">
 		<constructor-arg ref="categoryAssembler" />
 		<constructor-arg ref="categoryDao" />
 		<constructor-arg ref="accountDAO" />
 	</bean>
+
+	<bean id="templateCategoryService" class="com.contento3.cms.page.templatecategory.service.impl.TemplateCategoryServiceImpl">
+		<constructor-arg ref="templateCategoryAssembler" />
+		<constructor-arg ref="templateCategoryDao" />
+	</bean>
+	
+	
+	
+	
 
 	<bean id="siteDomainAssembler"
 		class="com.contento3.cms.site.structure.domain.service.impl.SiteDomainAssemblerImpl">

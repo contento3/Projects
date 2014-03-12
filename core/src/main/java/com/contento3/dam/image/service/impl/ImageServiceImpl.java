@@ -121,6 +121,7 @@ public class ImageServiceImpl implements ImageService {
 	public void delete(ImageDto dtoToDelete) {
 		// TODO Auto-generated method stub
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
+		imageDao.delete(imageAssembler.dtoToDomain(dtoToDelete));
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)

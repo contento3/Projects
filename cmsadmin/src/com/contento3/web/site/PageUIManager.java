@@ -33,6 +33,7 @@ import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.AddPageButtonClickListener;
+import com.contento3.web.site.seo.SEOUIManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
@@ -60,8 +61,8 @@ import com.vaadin.ui.VerticalLayout;
 public class PageUIManager {
 
 	private static final Logger LOGGER = Logger.getLogger(PageUIManager.class);
-	private final static String BUTTON_NAME_PUBLISHED = "Published";
-	private final static String BUTTON_NAME_UNPUBLISHED = "Unpublished";
+	private final static String BUTTON_NAME_PUBLISHED = "Publish";
+	private final static String BUTTON_NAME_UNPUBLISHED = "Unpublish";
 
 	/**
 	 * Site Service to find site related information
@@ -82,6 +83,11 @@ public class PageUIManager {
 	 * IndexedContainer used to contain data
 	 */
 	private final IndexedContainer container = new IndexedContainer();
+	
+	/**
+	 * UI Manager that renders page related screens
+	 */
+	private SEOUIManager seoUIManager;
 
 	private PageDto newPageDtoWithLayout;
 
@@ -116,17 +122,20 @@ public class PageUIManager {
 		siteDto = siteService.findSiteById(siteId);
 		HorizontalLayout horizLayout = new HorizontalLayout();
 		
-		final Label subHeadingLbl = new Label("Site pages");
+		final Label subHeadingLbl = new Label("Site page");
 		subHeadingLbl.setStyleName("screenSubHeading");
 		horizLayout.addComponent(subHeadingLbl);
 		
+		HorizontalLayout layoutForBtns = new HorizontalLayout();
+		layoutForBtns.setSpacing(true);
 		// published/unpublished button
 		final Button btnPublish = new Button(getButtonTitle()); 
 		btnPublish.addClickListener(publishedListener());
-		horizLayout.addComponent(btnPublish);
-		horizLayout.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
+		layoutForBtns.addComponent(btnPublish);
+		
 		horizLayout.setWidth(100, Unit.PERCENTAGE);
-	
+		horizLayout.addComponent(layoutForBtns);
+		horizLayout.setComponentAlignment(layoutForBtns, Alignment.TOP_RIGHT);
 		pageLayout.addComponent(horizLayout);
 		pageLayout.setSpacing(true);
 		pageLayout.addComponent(new HorizontalRuler());
@@ -173,7 +182,7 @@ public class PageUIManager {
 
 		return pagesTab;
 	}
-	
+
 	/**
 	 * Get Title for published/Unpublished button
 	 * @return Button name 

@@ -1,4 +1,4 @@
-package com.contento3.thymeleaf.dialect.helper;
+package com.contento3.thymeleaf.dialect.category;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,7 @@ import com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest;
 import com.contento3.site.template.model.TemplateModelMap;
 import com.contento3.site.template.model.TemplateModelMapImpl;
 
-public class CategoryUtility {
+public class CategoryTemplateHelper {
     /**
      * Format a Joda DateTime using the given pattern.
      *
@@ -43,7 +43,7 @@ public class CategoryUtility {
 //            html += "</ul>";
             return categoryList;
     }
-	public CategoryUtility() {
+	public CategoryTemplateHelper() {
 		ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
 		this.categoryService = (CategoryService) ctx.getBean("categoryService");
 	}

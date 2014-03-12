@@ -17,7 +17,9 @@ import com.contento3.web.common.helper.TextFieldRendererHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.ContentAssignerEventListener;
 import com.contento3.web.site.listener.CreatePageEventListener;
+import com.contento3.web.site.listener.SEOSettingsEventListener;
 import com.contento3.web.site.listener.SiteConfigurationEventListener;
+import com.contento3.web.site.seo.SEOUIManager;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
@@ -132,19 +134,20 @@ public class SiteUIManager implements UIManager {
 		pageUIManager = new PageUIManager(siteService,pageService,contextHelper);
 		SiteContentAssignmentUIManager siteContentUIManager = new SiteContentAssignmentUIManager(uiTabSheet,contextHelper);
 
-		GridLayout grid = new GridLayout(1, 3);
+		GridLayout grid = new GridLayout(1, 4);
 		grid.addStyleName("bordertest");
 		
+		siteConfigUIManager = new SiteConfigUIManager(pageService,siteService,contextHelper);
+		SEOUIManager seoUIManager = new SEOUIManager(contextHelper);
 		
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		siteConfigUIManager = new SiteConfigUIManager(pageService,siteService,contextHelper);
 		listeners.add(new CreatePageEventListener(pageUIManager,uiTabSheet,siteId));
 		listeners.add(new SiteConfigurationEventListener(siteConfigUIManager, uiTabSheet, siteId));
 		listeners.add(new ContentAssignerEventListener(siteContentUIManager, siteId));
+		listeners.add(new SEOSettingsEventListener(seoUIManager, uiTabSheet, siteId));
 		
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(grid,"site",listeners);
 		builder.build();
-
 		
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
 		final VerticalLayout veticalLayout = new VerticalLayout();
@@ -228,9 +231,9 @@ public class SiteUIManager implements UIManager {
 				siteContentUIManager.render(siteId);
 			}
 		});
-
+		
 	}
-
+	
 	/**
 	 * Used to render a screen (tab) for creating a new site
 	 */

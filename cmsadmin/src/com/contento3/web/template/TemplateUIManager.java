@@ -231,7 +231,18 @@ public class TemplateUIManager implements UIManager {
 				}
 			}
 		});
+		final Embedded addTeCat = imageLoader.loadEmbeddedImageByPath("images/addcategory.png");
+        addTeCat.setDescription("Add template category");
 
+        addTeCat.addClickListener(new ClickListener() {
+                    private static final long serialVersionUID = 1L;
+                    public void click(ClickEvent event) {
+                    	System.out.println("i am hereee");
+                    	
+                    	UI.getCurrent().addWindow(new NewDirectoryPopup(helper));
+                    
+                    }
+            });	
 		final Embedded deleteIcon = imageLoader
 				.loadEmbeddedImageByPath("images/delete_template.png");
 		deleteIcon.setDescription("Delete template");
@@ -239,6 +250,8 @@ public class TemplateUIManager implements UIManager {
 			private static final long serialVersionUID = 1L;
 
 			public void click(ClickEvent event) {
+				UI.getCurrent()
+				.addWindow(new DeleteTemplatePopup(helper, null));
 			}
 		});
 
@@ -246,6 +259,7 @@ public class TemplateUIManager implements UIManager {
 		buttonLayout.addComponent(iconTemplate);
 		buttonLayout.addComponent(deleteIcon);
 		buttonLayout.addComponent(iconDirectory);
+		buttonLayout.addComponent(addTeCat);
 		buttonLayout.setHeight(100, Unit.PERCENTAGE);
 		buttonLayout.setSpacing(true);
 		buttonLayout.setWidth(175, Unit.PIXELS);

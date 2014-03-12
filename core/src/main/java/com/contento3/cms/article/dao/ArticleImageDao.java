@@ -25,5 +25,12 @@ public interface ArticleImageDao extends GenericDao<ArticleImage, Integer> {
 
 	Collection<ArticleImage> findAsscArticleImageByArticleIdAndScopeId(
 			Integer articleId, Integer scopeId);
+	
+	/**
+	 * Return collection of article by imageId
+	 * @param imageId
+	 * @return
+	 */
+	Collection<ArticleImage> findArticleImageByImageId(Integer imageId);
 
 }

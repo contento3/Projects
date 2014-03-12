@@ -1,5 +1,7 @@
 package com.contento3.cms.seo.service.impl;
 
+import java.util.Collection;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,4 +35,18 @@ public class MetaTagServiceImpl implements MetaTagService {
 		
 		metaTagDao.update(metaTagAssembler.dtoToDomain(metaTagDto));
 	}
+
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public Collection<MetaTagDto> findBySiteId(Integer siteId) {
+
+		return metaTagAssembler.domainsToDtos(metaTagDao.findBySiteId(siteId));
+	}
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public MetaTagDto findByID(Integer id) {
+		return metaTagAssembler.domainToDto(metaTagDao.findById(id));
+	}
+
 }

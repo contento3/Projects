@@ -15,12 +15,12 @@ public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
 	/**
 	 * Table to be build
 	 */
-	final Table table;
+	protected final Table table;
 
 	/**
 	 * Container to contain the table data
 	 */
-	Container container = new IndexedContainer();
+	protected Container container = new IndexedContainer();
 
 	public AbstractTableBuilder (final Table table){
 		this.table = table;
