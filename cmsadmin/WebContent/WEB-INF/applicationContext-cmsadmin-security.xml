@@ -80,13 +80,6 @@
 	</beans:bean>
     
 	
-	<beans:bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-           <beans:property name="driverClassName" value="${driver}"/>
-           <beans:property name="url" value="${dburlPlatformUser}"/>
-           <beans:property name="username" value="${dbuserPlatformUser}"/>
-           <beans:property name="password" value="${dbpasswordPlatformUser}"/>	
-	</beans:bean>
-	
 	<!-- 
 	<http auto-config='true'>
 		<intercept-url  pattern="/home/**" access="ROLE_USER" />
