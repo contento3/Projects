@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.catalina.ha.backend.CollectedInfo;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.ContextLoader;
