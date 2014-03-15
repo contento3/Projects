@@ -128,6 +128,11 @@ public class PageTemplateServiceImpl implements PageTemplateService {
 		PageTemplate pageTemplatePresent = dao.findById(pk);
 		dao.delete(pageTemplatePresent);
 	}
+	@Override
+	public Collection<PageTemplateDto> findByTemplateId(Integer templateId) {
+		Validate.notNull(templateId,"templateId cannot be null");
+		return assembler.domainsToDtos(dao.findByTemplateId(templateId));
+	}
 	
 	
 
