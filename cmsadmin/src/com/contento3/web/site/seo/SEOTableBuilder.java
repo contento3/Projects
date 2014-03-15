@@ -66,9 +66,8 @@ public class SEOTableBuilder extends AbstractTableBuilder {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void buildEmptyTable(Container container) {
-
-		super.buildEmptyTable(container);
 		Item item = container.addItem("-1");
 		item.getItemProperty(TABLE_COLUMN_ATTRIBUTE).setValue("No record found.");
 	}
+	
 }

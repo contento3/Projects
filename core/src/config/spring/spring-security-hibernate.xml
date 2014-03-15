@@ -7,6 +7,19 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+
+	<bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+		<constructor-arg ref="encryptor" />
+		<property name="location" value="classpath:/config/spring/db.properties" />
+	</bean>
+
+	<bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+           <property name="driverClassName" value="${driver}"/>
+           <property name="url" value="${dburlPlatformUser}"/>
+           <property name="username" value="${dbuserPlatformUser}"/>
+           <property name="password" value="${dbpasswordPlatformUser}"/>	
+	</bean>
+	
 	<bean id="cmsSecuritySessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="jdbcdataSource" />

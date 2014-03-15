@@ -3,6 +3,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<beans:bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+		<beans:constructor-arg ref="encryptor" />
+			<beans:property name="location" value="classpath:/config/spring/db.properties" />
+	</beans:bean>
 
 	<beans:bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
     	<beans:property name="securityManager" ref="securityManager"/>
@@ -35,7 +39,7 @@
 
 	<beans:bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
     <!-- Single realm app.  If you have multiple realms, use the 'realms' property instead. -->
-    <beans:property name="realm" ref="authenticationAuthorizationRealm"/>
+    <beans:property name="realm" ref="siteAuthenticationAuthorizationRealm"/>
     <!-- By default the servlet container sessions will be used.  Uncomment this line
          to use shiro's native sessions (see the JavaDoc for more): -->
     <!-- <beans:property name="sessionMode" value="native"/>-->
@@ -52,8 +56,7 @@
 <!--editted above   -->
 	<!-- Define the Shiro Realm implementation you want to use to connect to your back-end -->
 	<!-- security datasource: -->
-	<beans:bean id="authenticationAuthorizationRealm" class="com.contento3.site.security.SiteUserAuthorisationAuthenticationRealm">
-		<beans:property name="saltedHibernateUserDao" ref="saltedHibernateUserDao" />	
+	<beans:bean id="siteAuthenticationAuthorizationRealm" class="com.contento3.site.security.SiteUserAuthorisationAuthenticationRealm">
 		<beans:property name="permissionDao" ref="permissionDao" />
 		<beans:property name="credentialsMatcher" ref="allowAllMatcher" />	
 	</beans:bean>
@@ -75,20 +78,6 @@
     		<beans:property name="passwordService" ref="passwordService" />	
 	</beans:bean> 
     
-	<beans:bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
-		<beans:constructor-arg ref="encryptor" />
-		<beans:property name="location" value="classpath:/config/spring/db.properties" />
-	</beans:bean>
-    
-	
-	<beans:bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-           <beans:property name="driverClassName" value="${driver}"/>
-           <beans:property name="url" value="${dburlPlatformUser}"/>
-           <beans:property name="username" value="${dbuserPlatformUser}"/>
-           <beans:property name="password" value="${dbpasswordPlatformUser}"/>	
-	</beans:bean>
-	
-
 	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"/>
 
 
@@ -100,12 +89,6 @@
 	<beans:bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
 		<beans:property name="config" ref="environmentConfig" />
 	</beans:bean>
-
-	<beans:bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
-		<beans:constructor-arg ref="encryptor" />
-			<beans:property name="location" value="classpath:/config/spring/db.properties" />
-	</beans:bean>
-
 
 	<beans:bean id="crmDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
            <beans:property name="driverClassName" value="${driver}"/>

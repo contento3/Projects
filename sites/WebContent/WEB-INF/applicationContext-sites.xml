@@ -11,8 +11,8 @@
 	http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <import resource="classpath:/config/spring/applicationContext.xml"/>
     <import resource="applicationContext-site-security.xml"/>
+    <import resource="classpath:/config/spring/applicationContext.xml"/>
     <import resource="applicationContext-template-service.xml"/>
 
 </beans>	

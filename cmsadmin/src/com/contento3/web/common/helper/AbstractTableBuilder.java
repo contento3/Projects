@@ -15,7 +15,7 @@ public abstract class AbstractTableBuilder implements TableBuilder<Table,Dto> {
 	/**
 	 * Table to be build
 	 */
-	final Table table;
+	protected final Table table;
 
 	/**
 	 * Container to contain the table data
