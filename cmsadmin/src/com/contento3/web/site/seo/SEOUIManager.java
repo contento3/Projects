@@ -1,5 +1,7 @@
 package com.contento3.web.site.seo;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import org.vaadin.dialogs.ConfirmDialog;
@@ -11,6 +13,9 @@ import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.seo.listener.SEOListener;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -176,6 +181,20 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 		attributeCombo = new ComboBox();
 		setComboxValues();
 		attributeCombo.setWidth(100, Unit.PERCENTAGE);
+		attributeCombo.addValueChangeListener(new Property.ValueChangeListener() { // for charset content field disabled
+	
+			private static final long serialVersionUID = 1L;
+			public void valueChange(ValueChangeEvent event) {
+				contentValuField.setEnabled(true);
+				if(event.getProperty() != null && event.getProperty().getValue() != null) {
+					String value = event.getProperty().getValue().toString();
+					if(value.equals(ATTRIBUTE_COMBOX_VALUES[1])) {
+						contentValuField.setEnabled(false);		
+					} 
+				}
+			}
+		});
+		attributeCombo.setImmediate(true);
 		grid.addComponent(attributeCombo, 1, 1);
 		
 		label = new Label();
@@ -226,13 +245,14 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 	public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
 		
 		String attribute = ""; 
+		String contentValue = "";
 		if(attributeCombo.getValue() != null) { 
 			attribute = attributeCombo.getValue().toString();
 		}
 		String attributeValue = valueField.getValue();
-		String contentValue = valueField.getValue();
+		contentValue = contentValuField.getValue();
 		
-		if(attribute.equals("") || attributeValue.equals("") || contentValue.equals("")) {
+		if( (attribute.equals("") || attributeValue.equals("") )) { 
 			Notification.show("", "One or more field is empty.", Type.ERROR_MESSAGE);
 		
 		} else {
@@ -240,6 +260,7 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 			MetaTagDto dto = new MetaTagDto();
 			dto.setAttribute(attribute);
 			dto.setAttributeValue(attributeValue);
+			contentValue = (contentValue == null) ?  "" : contentValue;
 			dto.setAttributeContent(contentValue);
 			
 			SiteService siteService = (SiteService) contextHelper.getBean("siteService");
