@@ -30,7 +30,10 @@ import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.image.listener.AddImageButtonListener;
 import com.contento3.web.content.image.listener.AddLibraryButtonListener;
+import com.contento3.web.content.image.listener.CropImageListener;
 import com.contento3.web.content.image.listener.DeleteListener;
+import com.contento3.web.content.image.listener.ResizeImageListener;
+import com.contento3.web.content.image.listener.RotateImageListener;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
@@ -229,8 +232,8 @@ public class ImageMgmtUIManager extends CustomComponent
         final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
 		Collection<ImageLibraryDto> imageLibraryDto = imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
-	    final ComboBox imageLibrayCombo = new ComboBox("Select library",
-				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
+	    final ComboBox imageLibrayCombo = new ComboBox("See library",
+				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
 	    imageLibrayCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
 		HorizontalLayout horiz = new HorizontalLayout();
@@ -273,7 +276,6 @@ public class ImageMgmtUIManager extends CustomComponent
 
 						final Collection<ImageLibraryDto> imageLibraryDto = imageLibraryService.findImageLibraryByAccountId(accountId);
 					    imageLibrayCombo.setContainerDataSource(comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
-
 						Notification.show("Library " + imageLibrary.getName()+ " deleted successfully.",Notification.Type.TRAY_NOTIFICATION);
 					} catch (final EntityCannotBeDeletedException e) {
 						Notification.show("Library " + imageLibrary.getName()+" cannot be deleted.",Notification.Type.TRAY_NOTIFICATION);
@@ -315,7 +317,7 @@ public class ImageMgmtUIManager extends CustomComponent
 			list.add(dto);
 		}
 		
-        // Layout where we will display items (changing when we click next page).
+      // Layout where we will display items (changing when we click next page).
 //        final CssLayout itemsArea = new CssLayout();
 		imagePanlelayout.setSizeUndefined();
         
@@ -457,7 +459,28 @@ public class ImageMgmtUIManager extends CustomComponent
 
 		imageInfoLayout.addComponent(imageNameField);
 		imageInfoLayout.addComponent(altTextField);
+		 ////*******************///////////************/////////////////////***********************//////  
+       
 		
+	       final HorizontalLayout editImageToolbar = new HorizontalLayout(); 
+	        editImageToolbar.setSizeFull();
+	        final GridLayout toolbarGridLayout = new GridLayout(1,3);
+			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+			listeners.add(new CropImageListener());
+			listeners.add(new ResizeImageListener());
+			listeners.add(new RotateImageListener());			
+			
+			final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"editImgMgmt",listeners);
+			builder.build();
+		
+			editImageToolbar.setSpacing(true);
+			editImageToolbar.setHeight("125");
+			editImageToolbar.setWidth("120");
+			editImageToolbar.addComponent(toolbarGridLayout);
+			editImageToolbar.setComponentAlignment(toolbarGridLayout, Alignment.BOTTOM_RIGHT);
+			imageInfoLayout.addComponent(editImageToolbar);
+		
+			
 		final HorizontalLayout imageUploadLayout = new HorizontalLayout();
 		imageUploadLayout.addComponent(imageLibrayCombo);
 		imageUploadLayout.addComponent(upload);
@@ -702,11 +725,11 @@ public class ImageMgmtUIManager extends CustomComponent
 	    	
 	    	imageInfoLayout.addComponent(editImageDetail);
 	    	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
-
+	    				
 	    	final Panel mainPanel = new Panel();
 	    	mainPanel.setContent(imageLayout);
 	    	mainPanel.setContent(imageInfoLayout);
-
+	    		
 	    	mainPanel.setHeight("150");
 	    	mainPanel.setWidth("180");
 	    	mainPanel.addStyleName("csslayoutinnercomponent");

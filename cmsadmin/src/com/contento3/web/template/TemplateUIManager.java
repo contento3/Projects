@@ -21,6 +21,7 @@ import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.cms.page.templatecategory.service.TemplateCategoryService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.ScreenHeader;
@@ -68,6 +69,8 @@ import com.vaadin.ui.VerticalLayout;
 
 public class TemplateUIManager implements UIManager {
 
+	TemplateCategoryService templateCategoryService;
+	
 	private static final String CONTEXT_ITEM_RENAME = "Rename directory";
 
 	private static final String CONTEXT_ITEM_CREATE = "Create new directory";
@@ -611,7 +614,7 @@ public class TemplateUIManager implements UIManager {
 
 	private void createTemplateUI(final TemplateDto templateDto,
 			final TemplateDirectoryDto selectedDirectory) {
-		final TemplateForm form = new TemplateForm();
+		final TemplateForm form = new TemplateForm(this.helper, templateCategoryService);
 		final VerticalLayout createNewTemplate = new VerticalLayout();
 
 		final VerticalLayout templateEditorLayout = new VerticalLayout();
