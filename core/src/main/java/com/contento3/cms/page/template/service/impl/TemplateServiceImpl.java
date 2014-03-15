@@ -245,6 +245,7 @@ public class TemplateServiceImpl implements TemplateService {
         @Override
         public void delete(final TemplateDto dtoToDelete) {
                 Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
+                templateDao.delete(templateAssembler.dtoToDomain(dtoToDelete, new Template()));
         }
 
         @Override

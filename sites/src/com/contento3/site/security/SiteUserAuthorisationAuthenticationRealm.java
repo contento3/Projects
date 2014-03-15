@@ -30,8 +30,6 @@ public class SiteUserAuthorisationAuthenticationRealm extends AuthorizingRealm {
 
 	private static final Logger LOGGER = Logger.getLogger(DefaultAuthenticationAuthorizationRealm.class);
 
-	private transient SaltedHibernateUserDao saltedHibernateUserDao;
-	
 	private transient GroupDao groupDao;
 	
 	private transient PermissionDao permissionDao;
@@ -112,9 +110,7 @@ public class SiteUserAuthorisationAuthenticationRealm extends AuthorizingRealm {
 		return permissions;
 	}
 	
-	public void setSaltedHibernateUserDao(final SaltedHibernateUserDao saltedHibernateUserDao){
-		this.saltedHibernateUserDao = saltedHibernateUserDao;
-	}
+
 	public void setPermissionDao(final PermissionDao permissionDao){
 		this.permissionDao = permissionDao;
 	}

@@ -39,6 +39,14 @@ public interface ImageDao extends GenericDao<Image,Integer>{
 	 */
 	Collection<Image> findImagesByLibrary(Integer libraryId);
 
+	
+	/**
+	 * Return a {@link java.util.Collection} of image by library and accountid
+	 * @param imageId
+	 * @return
+	 */
+	Collection<Image> findImagesByLibraryAndAccount(Integer libraryId, Integer accountId);
+
 	/**
 	 * Returns the {@link com.contento3.dam.image.model.Image} 
 	 * for a particular uuid

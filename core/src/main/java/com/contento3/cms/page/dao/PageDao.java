@@ -5,7 +5,11 @@ import java.util.Collection;
 import com.contento3.cms.page.model.Page;
 import com.contento3.common.dao.GenericDao;
 
-
+/**
+ * 
+ * @author Yawar
+ *
+ */
 public interface PageDao extends GenericDao<Page,Integer> {
 
 	/**

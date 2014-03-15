@@ -100,7 +100,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 		VerticalLayout contentLayout = new VerticalLayout();
 		contentLayout.addComponent(accordion);
         mywindow.setContent(contentLayout);
-        closebutton = new Button("Add template",this);
+        closebutton = new Button("Add template");
         
         
         final TextField templateOrdrTxtFld = new TextField();

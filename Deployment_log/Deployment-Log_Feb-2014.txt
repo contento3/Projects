@@ -1,0 +1,17 @@
+26th Feb,2013
+==================================================================
+branch:develop 944dc34fd3e21deaa5e817a6860b0324cef3b440
+database: feb 2014,12_ALTER_Template_table
+project deployed:cmsadmin,sites
+Notes:
+1. Bug fixes
+2. Template mgmt ui improvements, Ace Editor incorporated
+3. Security setups
+4. Initial security implementation
+5. Sites project: Template system <article> tag with paging
+6. Image mgmt screen improvement,image size mgmt on cmsadmin side
+7. Content library improvements
+8. Module db 
+9. Key based template mechanism
+
+

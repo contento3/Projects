@@ -94,11 +94,9 @@
 		<constructor-arg ref="imageLibraryAssembler" />
 	</bean>
 	
-	<bean id="metaTagAssembler" 
-		class="com.contento3.cms.seo.service.impl.MetaTagAssemblerImpl">
+	<bean id="metaTagAssembler" class="com.contento3.cms.seo.service.impl.MetaTagAssemblerImpl">
+		<constructor-arg ref="siteAssembler" />
 	</bean>
-
-
 
 	<bean id="templateService"
 		class="com.contento3.cms.page.template.service.impl.TemplateServiceImpl">

@@ -89,4 +89,15 @@ public interface ImageService extends StorableService<ImageDto> {
 	 * @return
 	 */
 	ImageDto rotate(ImageDto imageToRotate);
+	
+	/**
+	 * Returns collection of images by filtering using accountId and libraryId 
+	 * @param libraryId
+	 * @param accountId
+	 * @return
+	 */
+	Collection<ImageDto> findImagesByLibraryAndAccountId(Integer libraryId, Integer accountId);
 }
+
+
+

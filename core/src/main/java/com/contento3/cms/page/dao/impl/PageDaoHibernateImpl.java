@@ -14,6 +14,11 @@ import com.contento3.cms.page.dao.PageDao;
 import com.contento3.cms.page.model.Page;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
+/**
+ * 
+ * @author Yawar
+ *
+ */
 public class PageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Page,Integer>
 implements PageDao {
 

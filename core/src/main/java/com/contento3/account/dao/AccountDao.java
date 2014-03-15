@@ -12,5 +12,10 @@ import com.contento3.common.dao.GenericDao;
  */
 public interface AccountDao extends GenericDao<Account,Integer> {
 
-	Collection<Account> findAccountBySiteId(final Integer siteId);
+	/**
+	 * Finds account by siteId
+	 * @param siteId Unique Id of site
+	 * @return Collection<Account>
+	 */
+	Collection<Account> findAccountBySiteId(Integer siteId);
 }

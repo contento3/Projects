@@ -13,10 +13,10 @@ import org.thymeleaf.processor.IProcessor;
 import com.contento3.thymeleaf.dialect.article.ArticleTemplateHelper;
 import com.contento3.thymeleaf.dialect.category.CategoryTemplateHelper;
 import com.contento3.thymeleaf.dialect.navigation.NavigationTemplateHelper;
+import com.contento3.thymeleaf.dialect.slider.SliderTemplateHelper;
 
 public class SetupDialect extends AbstractDialect implements IExpressionEnhancingDialect {
 
-//	private ArticleProcessor articleProcessor;
 	
 	/*
 	 * Default prefix: this is the prefix that will be used for this dialect
@@ -46,6 +46,7 @@ public class SetupDialect extends AbstractDialect implements IExpressionEnhancin
 		expressionobjects.put("CategoryUtility", new CategoryTemplateHelper());
 		expressionobjects.put("ArticleUtility", new ArticleTemplateHelper());
 		expressionobjects.put("NavigationUtility", new NavigationTemplateHelper());
+		expressionobjects.put("SliderUtility", new SliderTemplateHelper());
         return expressionobjects;
 	}
 }

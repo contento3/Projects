@@ -23,8 +23,14 @@ public class PageServiceImpl implements PageService {
 	
 	private static final Logger LOGGER = Logger.getLogger(PageServiceImpl.class);
 	
-	
+	/**
+	 * 
+	 */
 	private PageAssembler pageAssembler;
+
+	/**
+	 * 
+	 */
 	private PageDao pageDao;
 
 	public PageServiceImpl(final PageDao pageDao,final PageAssembler pageAssembler){

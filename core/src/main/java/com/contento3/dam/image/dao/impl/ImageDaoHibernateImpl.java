@@ -102,5 +102,21 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 
 		return image;
 	}
+
+	@Override
+	public Collection<Image> findImagesByLibraryAndAccount(Integer libraryId,
+			Integer accountId) {
+		Validate.notNull(libraryId,"libraryId cannot be null");
+		Validate.notNull(accountId,"accountId cannot be null");
+		
+		Criteria criteria = this.getSession()
+								.createCriteria(Image.class)
+								.createCriteria("imageLibrary")
+								.add(Restrictions.eq("id",libraryId))
+								.createCriteria("account")
+								.add(Restrictions
+								.eq("accountId", accountId));
+		return criteria.list();
+	}
 	
 }

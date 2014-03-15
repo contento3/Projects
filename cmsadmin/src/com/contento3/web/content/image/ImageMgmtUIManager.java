@@ -64,7 +64,6 @@ public class ImageMgmtUIManager extends CustomComponent
 											Upload.Receiver,UIManager, DeleteListener{
 
 	private static final Logger LOGGER = Logger.getLogger(ImageMgmtUIManager.class);
-	
 	private static final long serialVersionUID = 5131819177752243660L;
 	private final static String MSG_FILE_TYPE_NOT_SUPPORTED = "File type not supported.";
 	
@@ -616,6 +615,11 @@ public class ImageMgmtUIManager extends CustomComponent
         return fos; // Return the output stream to write to
     }
     
+    /**
+     * Type validation On image uploading
+     * @param mimeType
+     * @return
+     */
     private boolean validateImage(String mimeType) {
     	boolean isSupported = false;
     	try {

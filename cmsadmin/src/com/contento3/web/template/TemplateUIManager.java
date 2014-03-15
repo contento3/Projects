@@ -113,6 +113,7 @@ public class TemplateUIManager implements UIManager {
 	 */
 	private Integer selectedDirectoryId;
 
+	private Integer selectedTreeItemId = -1;
 	/**
 	 * Used to hold the account id
 	 */
@@ -253,6 +254,14 @@ public class TemplateUIManager implements UIManager {
 			private static final long serialVersionUID = 1L;
 
 			public void click(ClickEvent event) {
+				if(selectedTreeItemId == -1){
+					Notification.show("Please Select", "Please select any template to Delete",
+							Notification.Type.TRAY_NOTIFICATION);
+					return;
+				}
+				TemplateDto templateToDelete = templateService.findTemplateById(selectedTreeItemId);
+				UI.getCurrent()
+				.addWindow(new DeleteTemplatePopup(helper, templateToDelete));
 			}
 		});
 
@@ -503,15 +512,17 @@ public class TemplateUIManager implements UIManager {
 			private static final long serialVersionUID = -4607219466099528006L;
 
 			public void itemClick(ItemClickEvent event) {
-
+				
 				root.expandItem(event.getItemId());
 				String itemId = event.getItemId().toString();
 				// Check if the itemId is for a directory
 				if (!itemId.startsWith("file:")) {
+					selectedTreeItemId = -1;
 					Item parentItem = event.getItem();
 					addChildrenToSelectedDirectory(parentItem,
 							templateDirectoryService, templateContainer);
 				} else {
+					selectedTreeItemId = new Integer(itemId.substring(5));
 					// renderTemplate(new Integer(itemId.substring(5)));
 				}
 			}

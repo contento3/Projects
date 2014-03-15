@@ -14,6 +14,8 @@ public interface PageTemplateDao extends GenericDao<PageTemplate,PageTemplatePK>
 
 	Collection<PageTemplate> findByPageId(Integer pageId);
 
+	Collection<PageTemplate> findByTemplateId(Integer templateId);
+
 	Collection<PageTemplate> findByPageAndPageSectionType(Integer pageId,
 			PageSectionTypeEnum pageSectionType);
 

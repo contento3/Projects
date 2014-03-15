@@ -16,6 +16,8 @@ public interface PageTemplateService extends StorableService<PageTemplateDto> {
 
 	Collection <PageTemplateDto> findByPageId(Integer pageId);
 
+	Collection <PageTemplateDto> findByTemplateId(Integer templateId);
+
 	PageTemplatePK create(PageTemplateDto dto) throws EntityAlreadyFoundException;
 	
 	/**

@@ -149,4 +149,12 @@ public class ImageServiceImpl implements ImageService {
 		return null;
 	}
 
+	@Override
+	public Collection<ImageDto> findImagesByLibraryAndAccountId(
+			Integer libraryId, Integer accountId) {
+		Validate.notNull(libraryId,"libraryId cannot be null");
+		Validate.notNull(accountId,"accountId cannot be null");
+		return imageAssembler.domainsToDtos(imageDao.findImagesByLibraryAndAccount(libraryId, accountId));
+	}
+
 }

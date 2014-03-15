@@ -52,6 +52,12 @@ public class ArticleTemplateHelper {
        return articleList;
 	}
 	
+	public ArticleDto getArticleById(final Integer accountId, final Integer siteId, final Integer articleId) {
+		ArticleDto article;
+		article = this.articleService.findById(articleId) ;
+       return article ;
+	}
+	
 	/**
 	 * 
 	 * @param accountId

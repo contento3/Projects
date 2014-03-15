@@ -64,4 +64,16 @@ public class PageTemplateDaoHibernateImpl extends GenericDaoSpringHibernateTempl
 		return criteria.list();
 	}
 
+	@Override
+	public Collection<PageTemplate> findByTemplateId(Integer templateId) {
+		Validate.notNull(templateId,"templateId cannot be null");
+		
+		Criteria criteria = this.getSession()
+		.createCriteria(PageTemplate.class)
+		.add(Restrictions
+		.eq("primaryKey.template.templateId", templateId));
+
+		return criteria.list();
+	}
+
 }
