@@ -209,10 +209,11 @@ public class TemplateUIManager implements UIManager {
 				.loadEmbeddedImageByPath("images/template.png");
 		iconTemplate.setDescription("Add template");
 		iconTemplate.addClickListener(new ClickListener() {
-
+				
 			private static final long serialVersionUID = 1L;
 
 			public void click(ClickEvent event) {
+				System.out.println("hello");
 				renderTemplate(null);
 			}
 		});
@@ -590,6 +591,7 @@ public class TemplateUIManager implements UIManager {
 	}
 
 	private void renderTemplate(final Integer templateId) {
+		
 		try {
 			TemplateDto templateDto = null;
 			if (null != templateId) {
@@ -625,6 +627,8 @@ public class TemplateUIManager implements UIManager {
 
 	private void createTemplateUI(final TemplateDto templateDto,
 			final TemplateDirectoryDto selectedDirectory) {
+		templateCategoryService = (TemplateCategoryService) helper.getBean("templateCategoryService");
+
 		final TemplateForm form = new TemplateForm(this.helper, templateCategoryService);
 		final VerticalLayout createNewTemplate = new VerticalLayout();
 
@@ -636,7 +640,7 @@ public class TemplateUIManager implements UIManager {
 		final HorizontalLayout mainLayout = new HorizontalLayout();
 
 		mainLayout.addComponent(createNewTemplate);
-
+			
 		final GridLayout toolbarGridLayout = new GridLayout(1, 1);
 		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 
@@ -660,7 +664,7 @@ public class TemplateUIManager implements UIManager {
 
 		templateEditorLayout.setSpacing(true);
 		templateEditorLayout.setMargin(true);
-
+			
 		templateEditorLayout.setWidth(100, Unit.PERCENTAGE);
 		templateEditorLayout.setHeight(100, Unit.PERCENTAGE);
 		templateEditorLayout.setSpacing(false);

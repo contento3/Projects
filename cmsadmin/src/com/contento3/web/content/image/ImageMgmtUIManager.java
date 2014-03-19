@@ -232,7 +232,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		Collection<ImageLibraryDto> imageLibraryDto = imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 	    final ComboBox imageLibrayCombo = new ComboBox("See library",
-				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
+		comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
 	    imageLibrayCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
 		HorizontalLayout horiz = new HorizontalLayout();
