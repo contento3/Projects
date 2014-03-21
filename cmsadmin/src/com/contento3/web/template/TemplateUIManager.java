@@ -7,7 +7,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.AuthorizationException;
+import org.springframework.util.CollectionUtils;
 import org.vaadin.aceeditor.AceEditor;
+import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.peter.contextmenu.ContextMenu;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
@@ -17,11 +19,14 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuOpenedOnTreeItemEvent
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
+import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
+import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
@@ -252,13 +257,47 @@ public class TemplateUIManager implements UIManager {
 
 			public void click(ClickEvent event) {
 				if(selectedTreeItemId == -1){
-					Notification.show("Please Select", "Please select any template to Delete",
+					Notification.show("Delete Template", "Please select any template to Delete",
 							Notification.Type.TRAY_NOTIFICATION);
 					return;
 				}
-				TemplateDto templateToDelete = templateService.findTemplateById(selectedTreeItemId);
-				UI.getCurrent()
-				.addWindow(new DeleteTemplatePopup(helper, templateToDelete));
+				final TemplateDto templateToDelete = templateService.findTemplateById(selectedTreeItemId);
+				ConfirmDialog.show(UI.getCurrent(), " Are you really sure to delete?",
+		        new ConfirmDialog.Listener() {
+
+					private static final long serialVersionUID = 1L;
+					private PageTemplateService pageTemplateService;
+					private TemplateService templateService;
+					
+					
+					public void onClose(ConfirmDialog dialog) {
+		                if (dialog.isConfirmed()) {
+		                	// Confirmed to continue
+		                	try {
+		                		this.pageTemplateService = (PageTemplateService) helper.getBean("pageTemplateService");
+		                		this.templateService = (TemplateService) helper.getBean("templateService");
+		                		    		
+		                		Collection<PageTemplateDto> pageTemplateResult = pageTemplateService.findByTemplateId(templateToDelete.getTemplateId());
+		    					if(!CollectionUtils.isEmpty(pageTemplateResult)){
+		    						Notification.show("Delete Template", "This template is assigned to " + pageTemplateResult.size() + " page(s), please release it before deleting", Notification.Type.TRAY_NOTIFICATION);
+		    					}
+		    					else
+		    					{	
+	    							templateService.delete(templateToDelete);
+	    							Notification.show("Template Deleted Successfully", "Delete Template", Notification.Type.TRAY_NOTIFICATION);
+	    						}		    		
+							} catch (EntityCannotBeDeletedException e) {
+								e.printStackTrace();
+								Notification.show("Error in deleting Template", "some error occured during deleting template, try some later time", Notification.Type.TRAY_NOTIFICATION);
+							}
+		                	
+		                } else {
+		                    // User did not confirm
+		                    
+		                }
+		            }
+		        });
+
 			}
 		});
 
