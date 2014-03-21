@@ -29,13 +29,13 @@ public class SiteInterceptor extends HandlerInterceptorAdapter {
 		    final WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
 		    final SiteService siteService = (SiteService)context.getBean("siteService");
 			
+		    //TODO Change to a system user
         	final UsernamePasswordToken token = new UsernamePasswordToken("guest123","guest123");
-
-		    Subject subject =   SecurityUtils.getSubject();
-		    subject.login(token);
+		    final Subject subject =   SecurityUtils.getSubject();
+		    if (!subject.isAuthenticated()){
+		    	subject.login(token);
+		    }
 		    
-		    
-		    //subject.login(arg0)
 		    SiteDto site=null;
 		    String domainName = DomainUtil.fetchDomain(request);
 		    if( !domainName.equals("localhost") ){
