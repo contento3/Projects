@@ -202,7 +202,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 						LOGGER.error("Error occured while authenticating user",e);
 						Notification.show("Something wrong with the server while you tried login.",Type.ERROR_MESSAGE);
 					}
-	            }
+	           }
 			}	
         });
 		
@@ -494,17 +494,17 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
     private void createNavigation(final HierarchicalContainer hwContainer){
     	
-    	if (SecurityUtils.getSubject().isPermitted("DASHBOARD:NAVIGATION")){
+ //   	if (SecurityUtils.getSubject().isPermitted("DASHBOARD:NAVIGATION")){
     		createNavigationItem(hwContainer,NavigationConstant.DASHBOARD,"images/home-icon.png");
-    	}
+   // 	}
     	
-        if (SecurityUtils.getSubject().isPermitted("SITE:NAVIGATION")){
+  //      if (SecurityUtils.getSubject().isPermitted("SITE:NAVIGATION")){
         	createNavigationItem(hwContainer,NavigationConstant.SITES,"images/site.png");
-        }
+  //      }
         
-        if (SecurityUtils.getSubject().isPermitted("CATEGORY:NAVIGATION")){
+  //      if (SecurityUtils.getSubject().isPermitted("CATEGORY:NAVIGATION")){
         	createNavigationItem(hwContainer,NavigationConstant.CATEGORY_MGMT,"images/category.png");
-        }
+   //     }
         
         // DO NOT REMOVE THIS
         //TOBE USED LATER      
@@ -512,25 +512,25 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
         //createNavigationItem(hwContainer,NavigationConstant.GLOBAL_CONFIG,"images/configuration.png");
     	//}
     
-        if (SecurityUtils.getSubject().isPermitted("CONTENT:NAVIGATION")){
+  //      if (SecurityUtils.getSubject().isPermitted("CONTENT:NAVIGATION")){
         	createNavigationItem(hwContainer,NavigationConstant.CONTENT_MANAGER,"images/content-icon-16.png");
-        }
+   //     }
         
-        if (SecurityUtils.getSubject().isPermitted("TEMPLATE:NAVIGATION")){
+    //    if (SecurityUtils.getSubject().isPermitted("TEMPLATE:NAVIGATION")){
         	createNavigationItem(hwContainer,NavigationConstant.TEMPLATE,"images/add-template-16.png");
-        }
+    //    }
         
-        if (SecurityUtils.getSubject().isPermitted("MODULE:NAVIGATION")){
+     //   if (SecurityUtils.getSubject().isPermitted("MODULE:NAVIGATION")){
         	createNavigationItem(hwContainer,NavigationConstant.MODULES,"images/module-icon.png");
-        }
+    //    }
       
         // DO NOT REMOVE THIS -- The functionality regarding layout management will be developed soon        
         // Item layoutManager = hwContainer.addItem(NavigationConstant.LAYOUT_MANAGER);
         // layoutManager.getItemProperty("name").setValue(NavigationConstant.LAYOUT_MANAGER);
         
-        if (SecurityUtils.getSubject().isPermitted("SECURITY:NAVIGATION")){
+  //      if (SecurityUtils.getSubject().isPermitted("SECURITY:NAVIGATION")){
         	createNavigationItem(hwContainer,NavigationConstant.SECURITY,"images/security.png");
-        }
+      //  }
     }
     
     private void createNavigationItem(final HierarchicalContainer hwContainer,final String navigationConstant,final String imagePath){

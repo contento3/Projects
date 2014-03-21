@@ -25,6 +25,7 @@ import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.cms.page.templatecategory.service.TemplateCategoryService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.web.UIManager;
@@ -73,6 +74,8 @@ import com.vaadin.ui.VerticalLayout;
 
 public class TemplateUIManager implements UIManager {
 
+	TemplateCategoryService templateCategoryService;
+	
 	private static final String CONTEXT_ITEM_RENAME = "Rename directory";
 
 	private static final String CONTEXT_ITEM_CREATE = "Create new directory";
@@ -211,10 +214,11 @@ public class TemplateUIManager implements UIManager {
 				.loadEmbeddedImageByPath("images/template.png");
 		iconTemplate.setDescription("Add template");
 		iconTemplate.addClickListener(new ClickListener() {
-
+				
 			private static final long serialVersionUID = 1L;
 
 			public void click(ClickEvent event) {
+				System.out.println("hello");
 				renderTemplate(null);
 			}
 		});
@@ -626,6 +630,7 @@ public class TemplateUIManager implements UIManager {
 	}
 
 	private void renderTemplate(final Integer templateId) {
+		
 		try {
 			TemplateDto templateDto = null;
 			if (null != templateId) {
@@ -661,7 +666,9 @@ public class TemplateUIManager implements UIManager {
 
 	private void createTemplateUI(final TemplateDto templateDto,
 			final TemplateDirectoryDto selectedDirectory) {
-		final TemplateForm form = new TemplateForm();
+		templateCategoryService = (TemplateCategoryService) helper.getBean("templateCategoryService");
+
+		final TemplateForm form = new TemplateForm(this.helper, templateCategoryService);
 		final VerticalLayout createNewTemplate = new VerticalLayout();
 
 		final VerticalLayout templateEditorLayout = new VerticalLayout();
@@ -672,7 +679,7 @@ public class TemplateUIManager implements UIManager {
 		final HorizontalLayout mainLayout = new HorizontalLayout();
 
 		mainLayout.addComponent(createNewTemplate);
-
+			
 		final GridLayout toolbarGridLayout = new GridLayout(1, 1);
 		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 
@@ -696,7 +703,7 @@ public class TemplateUIManager implements UIManager {
 
 		templateEditorLayout.setSpacing(true);
 		templateEditorLayout.setMargin(true);
-
+			
 		templateEditorLayout.setWidth(100, Unit.PERCENTAGE);
 		templateEditorLayout.setHeight(100, Unit.PERCENTAGE);
 		templateEditorLayout.setSpacing(false);
