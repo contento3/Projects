@@ -21,6 +21,12 @@ public interface MetaTagService {
 	public void update(final MetaTagDto metaTagDto);
 	
 	/**
+	 * Delete tag
+	 * @param dto
+	 */
+	public void delete(final MetaTagDto dto);
+	
+	/**
 	 * Returns Meta tags by siteId
 	 * @param siteId
 	 * @return

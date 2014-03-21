@@ -38,15 +38,21 @@ public class MetaTagServiceImpl implements MetaTagService {
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<MetaTagDto> findBySiteId(Integer siteId) {
+	public Collection<MetaTagDto> findBySiteId(final Integer siteId) {
 
 		return metaTagAssembler.domainsToDtos(metaTagDao.findBySiteId(siteId));
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public MetaTagDto findByID(Integer id) {
+	public MetaTagDto findByID(final Integer id) {
 		return metaTagAssembler.domainToDto(metaTagDao.findById(id));
+	}
+
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void delete(final MetaTagDto dto) {
+		metaTagDao.delete(metaTagAssembler.dtoToDomain(dto));
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.contento3.web.content.image;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.shiro.authz.AuthorizationException;
 
@@ -10,8 +12,14 @@ import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.common.helper.ComboDataLoader;
+import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.image.listener.AddImageButtonListener;
+import com.contento3.web.content.image.listener.CropImageListener;
+import com.contento3.web.content.image.listener.ResizeImageListener;
+import com.contento3.web.content.image.listener.RotateImageListener;
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -19,9 +27,11 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -65,7 +75,7 @@ implements Window.CloseListener,Button.ClickListener{
 	
 	boolean isModalWindowClosable = true;
 	 
-	public ImageEditListner(final SpringContextHelper helper,final ImageDto imageDto ) {
+	public ImageEditListner(final SpringContextHelper helper,final ImageDto imageDto) {
 		this.helper = helper;
 		this.imageService = (ImageService)helper.getBean("imageService");
 		this.imageLibraryService = (ImageLibraryService) helper.getBean("imageLibraryService");
@@ -124,6 +134,29 @@ implements Window.CloseListener,Button.ClickListener{
         nameDataLayout.setComponentAlignment(nameTextField, Alignment.MIDDLE_CENTER);
         popupMainLayout.addComponent(nameDataLayout);
      
+      
+//      ///////////////////////////////////////////////////////////////////////  
+//        
+//       final HorizontalLayout editImageToolbar = new HorizontalLayout(); 
+//        editImageToolbar.setSizeFull();
+//        final GridLayout toolbarGridLayout = new GridLayout(1,3);
+//		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+//		listeners.add(new CropImageListener());
+//		listeners.add(new ResizeImageListener());
+//		listeners.add(new RotateImageListener());			
+//		
+//		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"editImgMgmt",listeners);
+//		builder.build();
+//	
+//		editImageToolbar.setSpacing(true);	
+//		editImageToolbar.addComponent(editImageToolbar);
+//		editImageToolbar.setComponentAlignment(toolbarGridLayout, Alignment.BOTTOM_RIGHT);
+//		popupMainLayout.addComponent(toolbarGridLayout);
+//	
+//		
+		
+//		editImageToolbar.setWidth(100,Unit.PERCENTAGE);
+		
         final HorizontalLayout imageLibraryDataLayout = new HorizontalLayout();
         imageLibraryDataLayout.setSpacing(true);
         final Label libraryLabel = new Label("Select library");
@@ -140,6 +173,7 @@ implements Window.CloseListener,Button.ClickListener{
 		imageLibraryDataLayout.setSpacing(true);
 		imageLibraryDataLayout.addComponent(libraryLabel);
 		imageLibraryDataLayout.addComponent(imageLibrayCombo);
+		
 		imageLibraryDataLayout.setComponentAlignment(libraryLabel, Alignment.BOTTOM_RIGHT);
 		popupMainLayout.addComponent(imageLibraryDataLayout);
 		
