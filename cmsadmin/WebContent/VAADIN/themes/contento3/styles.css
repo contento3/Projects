@@ -7070,19 +7070,3 @@ body .contento3.v-app .v-app-loading {
 	margin-left: 45%;
 	height: 150px;
 }
-
-.contento3 .v-accordion-item-caption .v-icon {
-	margin-top: -10px !important;
-}
-
-.contento3 .v-tabsheet-tabs .v-icon {
-	position: relative !important;
-	bottom: 3px !important;
-	right: 4px !important;
-}
-
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	.v-tabsheet-tabs .v-icon {
-		bottom: 7px !important;
-	}
-}
