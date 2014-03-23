@@ -12,6 +12,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.vaadin.pagingcomponent.ComponentsManager;
+import org.vaadin.pagingcomponent.PagingComponent;
+import org.vaadin.pagingcomponent.builder.ElementsBuilder;
+import org.vaadin.pagingcomponent.button.ButtonPageNavigator;
+import org.vaadin.pagingcomponent.customizer.style.StyleCustomizer;
+import org.vaadin.pagingcomponent.listener.impl.SimplePagingComponentListener;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -317,18 +323,68 @@ public class ImageMgmtUIManager extends CustomComponent
 		}
 		
       // Layout where we will display items (changing when we click next page).
-//        final CssLayout itemsArea = new CssLayout();
+        final CssLayout itemsArea = new CssLayout();
 		imagePanlelayout.setSizeUndefined();
+		
+		
+		// This customizer allow to add style for each buttons page
+		StyleCustomizer styler = new StyleCustomizer() {
+		                        
+		        @Override
+		        public void styleButtonPageNormal(ButtonPageNavigator button, int pageNumber) {
+		                button.setPage(pageNumber);
+		                button.removeStyleName("styleRed");
+		        }
+
+		        @Override
+		        public void styleButtonPageCurrentPage(ButtonPageNavigator button, int pageNumber) {
+		                button.setPage(pageNumber, "[" + pageNumber + "]"); // Set caption of the button with the page number between brackets. 
+		                button.addStyleName("styleRed");
+		                button.focus();
+		        }
+
+		        @Override
+		        public void styleTheOthersElements(ComponentsManager manager, ElementsBuilder builder) {
+		                // if the number of pages is less than 2, the other buttons are not created.
+		                if (manager.getNumberTotalOfPages() < 2) {
+		                    return;
+		                }
+
+		                // Allow to hide these buttons when the first page is selected          
+		                boolean visible = !manager.isFirstPage();
+		                builder.getButtonFirst().setVisible(visible);
+		                builder.getButtonPrevious().setVisible(visible);
+		                builder.getFirstSeparator().setVisible(visible);
+		                                
+		                // Allow to hide these buttons when the last page is selected
+		                visible = !manager.isLastPage();
+		                builder.getButtonLast().setVisible(visible);
+		                builder.getButtonNext().setVisible(visible);
+		                builder.getLastSeparator().setVisible(visible);
+		        }
+
+		};
+		
         
         try {
 
 			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("paging.properties");
 			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
 			
-			for(ImageDto dto: images){
-				imagePanlelayout.addComponent(addImagesToPanel(dto));
-			}
-//	        imagePanlelayout.addComponent(itemsArea);
+			PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage, 5, list, styler,  new SimplePagingComponentListener<ImageDto>(itemsArea) {
+
+				private static final long serialVersionUID = 1L;
+				@Override
+				protected Component displayItem(int index, ImageDto item) {
+					return new Label("Label "+index);//addImagesToPanel(item);	
+				}
+			});
+
+//			for(ImageDto dto: images){
+//				itemsArea.addComponent(addImagesToPanel(dto));
+//			}
+	        imagePanlelayout.addComponent(itemsArea);
+	        imagePanlelayout.addComponent(pagingComponent);
 		} catch (ClassNotFoundException e) {
 			
 			e.printStackTrace();
