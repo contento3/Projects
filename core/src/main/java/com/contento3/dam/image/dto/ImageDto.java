@@ -9,7 +9,7 @@ import com.contento3.common.dto.Dto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 
 
-public class ImageDto extends Dto{
+public class ImageDto extends Dto {
 
 	private String imageUuid;
 	
@@ -43,7 +43,13 @@ public class ImageDto extends Dto{
 		if (v instanceof ImageDto) {
 			ImageDto ptr = (ImageDto) v;
 			retVal = ptr.id.longValue() == this.id;
-		}
+		}  else if(v instanceof Dto) {
+	    	  final Dto dto = (Dto)v;
+	    	  if (dto.getId() == this.getId())
+	    		  retVal = true;
+	    	  else 
+	    		  retVal = false;	  
+	    }
 
 		return retVal;
 	}
@@ -126,5 +132,5 @@ public class ImageDto extends Dto{
 	public void setFile(final File file) {
 		this.file = file;
 	}
-
+	
 }

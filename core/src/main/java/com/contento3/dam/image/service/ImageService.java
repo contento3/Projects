@@ -39,7 +39,17 @@ public interface ImageService extends StorableService<ImageDto> {
 	 * @param count
 	 * @return
 	 */
-	Collection<ImageDto> findLatestImagesBySiteId(Integer imageId,Integer count);
+	Collection<ImageDto> findLatestImagesBySiteId(Integer siteId,Integer count);
+	
+	/**
+	 * Returns image by siteId
+	 * @param imageId TODO
+	 * @param siteId
+	 * @param count
+	 * @return
+	 */
+	ImageDto findImageByIdAndSiteId(Integer imageId, Integer siteId);
+	
 	
 	/**
 	 * Return a {@link java.util.Collection} of image by library
