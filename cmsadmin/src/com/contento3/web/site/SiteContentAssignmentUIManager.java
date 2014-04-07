@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.type.ImageType;
 
 import com.contento3.account.dto.AccountDto;
-import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.site.structure.dto.SiteDto;

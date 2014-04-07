@@ -42,7 +42,8 @@ public class CategoryServiceImpl implements CategoryService {
 		this.categoryDao=categoryDao;
 		this.categoryAssembler=categoryAssembler;
 		this.accountDao = accountDao;
-	}//end CategoryServiceImpl()
+	}
+	
 	@RequiresPermissions("CATEGORY:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -65,13 +66,15 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		category.setAccount(account);
 		return categoryDao.persist(category);
-	}//end create()
+	}
+	
 	@RequiresPermissions("CATEGORY:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Integer create(final CategoryDto categoryDto)  {
 		throw new IllegalArgumentException("This method is not implemented");
-	}//end create()
+	}
+	
 	@RequiresPermissions("CATEGORY:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -81,8 +84,9 @@ public class CategoryServiceImpl implements CategoryService {
 		final Category category = categoryDao.findCategoryByName(categoryName,accountId);
 		final CategoryDto categoryDto = categoryAssembler.domainToDto(category);
 		return categoryDto;
-	}//end findCategoryByName()
-	@RequiresPermissions("CATEGORY:VIEW")
+	}
+	
+	@RequiresPermissions("CATEGORY:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findNullParentIdCategory(final Integer accountId){
@@ -90,8 +94,9 @@ public class CategoryServiceImpl implements CategoryService {
 		Collection<Category> categories = categoryDao.findNullParentIdCategory(accountId);
 		Collection<CategoryDto> categoryDtos = categoryAssembler.domainsToDtos(categories);
 		return categoryDtos;
-	}//end findNullParentIdCategory()
-	@RequiresPermissions("CATEGORY:VIEW")
+	}
+	
+	@RequiresPermissions("CATEGORY:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findChildCategories(final Integer parentId,final Integer accountId){
@@ -100,7 +105,7 @@ public class CategoryServiceImpl implements CategoryService {
 		Collection<Category> categories = categoryDao.findChildCategories(parentId,accountId);
 		Collection<CategoryDto> categoryDtos = categoryAssembler.domainsToDtos(categories);
 		return categoryDtos;
-	}//end findChildCategories()
+	}
 
 	@RequiresPermissions("CATEGORY:EDIT")
 	@Transactional(readOnly = false)
@@ -118,13 +123,15 @@ public class CategoryServiceImpl implements CategoryService {
 		 category.setAccount(accountDao.findById(categoryDto.getAccountId()));
 		 categoryDao.update(category);
 	}
-	@RequiresPermissions("CATEGORY:VIEW")
+	
+	@RequiresPermissions("CATEGORY:VIEW_LISTING")
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<CategoryDto> findByAccountId(final Integer accountId){
 		Validate.notNull(accountId,"accountId cannot be null");
 		return categoryAssembler.domainsToDtos(categoryDao.findAll()); //MARK BROKEN FUNCTIONALITY
 	}
+	
 	@RequiresPermissions("CATEGORY:VIEW")
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
@@ -132,6 +139,7 @@ public class CategoryServiceImpl implements CategoryService {
 		Validate.notNull(id,"id cannot be null");
 		return categoryAssembler.domainToDto(categoryDao.findById(id));
 	}
+	
 	@RequiresPermissions("CATEGORY:DELETE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -146,5 +154,4 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 	}
 
-
-}//end CategoryServiceImpl class
+}

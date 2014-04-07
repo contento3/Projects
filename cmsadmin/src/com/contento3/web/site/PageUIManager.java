@@ -33,6 +33,7 @@ import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.AddPageButtonClickListener;
+import com.contento3.web.site.listener.SEOSettingsEventListener;
 import com.contento3.web.site.seo.SEOUIManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -313,9 +314,19 @@ public class PageUIManager {
 		pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
+
+		int gridRows = 1;
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddPageButtonClickListener(contextHelper,titleTxt,uriTxt,checkbox1,siteDto,pageLayoutCombo,pageLayoutService, pageId,newPageDtoWithLayout,pagesTab,newPageParentlayout,this));
+		
+		if (null != pageId) {
+	
+			SEOUIManager seoUIManager = new SEOUIManager(contextHelper);
+			listeners.add(new SEOSettingsEventListener(seoUIManager, pagesTab, siteId, pageId));
+			gridRows = 2;
+		}
+
+		GridLayout toolbarGridLayout = new GridLayout(1, gridRows);
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
 		builder.build();
 
