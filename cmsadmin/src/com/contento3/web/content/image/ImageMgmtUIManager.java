@@ -417,7 +417,6 @@ public class ImageMgmtUIManager extends CustomComponent
     	imageInfoLayout.addComponent(lblName);
     	imageInfoLayout.setComponentAlignment(lblName, Alignment.MIDDLE_CENTER);
     	
-
     	//Edit image button
     	final Button editImageDetail = new Button("Edit Image");
     	editImageDetail.setStyleName("link");
