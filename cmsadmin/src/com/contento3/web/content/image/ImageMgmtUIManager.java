@@ -71,7 +71,7 @@ public class ImageMgmtUIManager extends CustomComponent
 
 	private static final Logger LOGGER = Logger.getLogger(ImageMgmtUIManager.class);
 	private static final long serialVersionUID = 5131819177752243660L;
-	private final static String MSG_FILE_TYPE_NOT_SUPPORTED = "File type not supported.";
+	private final static String MSG_FILE_TYPE_NOT_SUPPORTED = "Files with %s are not supported for upload.";
 	
 	/**
 	 * Helper to load the spring context
@@ -238,7 +238,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		Collection<ImageLibraryDto> imageLibraryDto = imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 	    final ComboBox imageLibrayCombo = new ComboBox("See library",
-				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
+		comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
 	    imageLibrayCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
 		HorizontalLayout horiz = new HorizontalLayout();
@@ -326,69 +326,69 @@ public class ImageMgmtUIManager extends CustomComponent
         final CssLayout itemsArea = new CssLayout();
 		imagePanlelayout.setSizeUndefined();
 		
-		
-		// This customizer allow to add style for each buttons page
-		StyleCustomizer styler = new StyleCustomizer() {
-		                        
-		        @Override
-		        public void styleButtonPageNormal(ButtonPageNavigator button, int pageNumber) {
-		                button.setPage(pageNumber);
-		                button.removeStyleName("styleRed");
-		        }
+//		
+//		// This customizer allow to add style for each buttons page
+//		StyleCustomizer styler = new StyleCustomizer() {
+//		                        
+//		        @Override
+//		        public void styleButtonPageNormal(ButtonPageNavigator button, int pageNumber) {
+//		                button.setPage(pageNumber);
+//		                button.removeStyleName("styleRed");
+//		        }
+//
+//		        @Override
+//		        public void styleButtonPageCurrentPage(ButtonPageNavigator button, int pageNumber) {
+//		                button.setPage(pageNumber, "[" + pageNumber + "]"); // Set caption of the button with the page number between brackets. 
+//		                button.addStyleName("styleRed");
+//		                button.focus();
+//		        }
+//
+//		        @Override
+//		        public void styleTheOthersElements(ComponentsManager manager, ElementsBuilder builder) {
+//		                // if the number of pages is less than 2, the other buttons are not created.
+//		                if (manager.getNumberTotalOfPages() < 2) {
+//		                    return;
+//		                }
+//
+//		                // Allow to hide these buttons when the first page is selected          
+//		                boolean visible = !manager.isFirstPage();
+//		                builder.getButtonFirst().setVisible(visible);
+//		                builder.getButtonPrevious().setVisible(visible);
+//		                builder.getFirstSeparator().setVisible(visible);
+//		                                
+//		                // Allow to hide these buttons when the last page is selected
+//		                visible = !manager.isLastPage();
+//		                builder.getButtonLast().setVisible(visible);
+//		                builder.getButtonNext().setVisible(visible);
+//		                builder.getLastSeparator().setVisible(visible);
+//		        }
+//
+//		};
+//		
+//        
+//        try {
+//
+//			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("paging.properties");
+//			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
+//			
+//			PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage, 5, list, styler,  new SimplePagingComponentListener<ImageDto>(itemsArea) {
+//
+//				private static final long serialVersionUID = 1L;
+//				@Override
+//				protected Component displayItem(int index, ImageDto item) {
+//					return new Label("Label "+index);//addImagesToPanel(item);	
+//				}
+//			});
 
-		        @Override
-		        public void styleButtonPageCurrentPage(ButtonPageNavigator button, int pageNumber) {
-		                button.setPage(pageNumber, "[" + pageNumber + "]"); // Set caption of the button with the page number between brackets. 
-		                button.addStyleName("styleRed");
-		                button.focus();
-		        }
-
-		        @Override
-		        public void styleTheOthersElements(ComponentsManager manager, ElementsBuilder builder) {
-		                // if the number of pages is less than 2, the other buttons are not created.
-		                if (manager.getNumberTotalOfPages() < 2) {
-		                    return;
-		                }
-
-		                // Allow to hide these buttons when the first page is selected          
-		                boolean visible = !manager.isFirstPage();
-		                builder.getButtonFirst().setVisible(visible);
-		                builder.getButtonPrevious().setVisible(visible);
-		                builder.getFirstSeparator().setVisible(visible);
-		                                
-		                // Allow to hide these buttons when the last page is selected
-		                visible = !manager.isLastPage();
-		                builder.getButtonLast().setVisible(visible);
-		                builder.getButtonNext().setVisible(visible);
-		                builder.getLastSeparator().setVisible(visible);
-		        }
-
-		};
-		
-        
-        try {
-
-			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("paging.properties");
-			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
-			
-			PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage, 5, list, styler,  new SimplePagingComponentListener<ImageDto>(itemsArea) {
-
-				private static final long serialVersionUID = 1L;
-				@Override
-				protected Component displayItem(int index, ImageDto item) {
-					return new Label("Label "+index);//addImagesToPanel(item);	
-				}
-			});
-
-//			for(ImageDto dto: images){
-//				itemsArea.addComponent(addImagesToPanel(dto));
-//			}
+			for(ImageDto dto: images){
+				itemsArea.addComponent(addImagesToPanel(dto));
+			}
 	        imagePanlelayout.addComponent(itemsArea);
-	        imagePanlelayout.addComponent(pagingComponent);
-		} catch (ClassNotFoundException e) {
-			
-			e.printStackTrace();
-		}
+	     //   imagePanlelayout.addComponent(pagingComponent);
+//		} catch (ClassNotFoundException e) {
+//			
+//			e.printStackTrace();
+//		}
         
         
        
@@ -410,6 +410,13 @@ public class ImageMgmtUIManager extends CustomComponent
     	imageLayout.setComponentAlignment(embedded, Alignment.MIDDLE_CENTER);
 
     	final VerticalLayout imageInfoLayout = new VerticalLayout();
+    	imageInfoLayout.setSpacing(true);
+
+    	final Label lblName = new Label(dto.getName());
+    	lblName.setSizeUndefined();
+    	imageInfoLayout.addComponent(lblName);
+    	imageInfoLayout.setComponentAlignment(lblName, Alignment.MIDDLE_CENTER);
+    	
 
     	//Edit image button
     	final Button editImageDetail = new Button("Edit Image");
@@ -427,7 +434,6 @@ public class ImageMgmtUIManager extends CustomComponent
 			}
 		});
     	
-    	imageInfoLayout.setSpacing(true);
     	imageInfoLayout.addComponent(editImageDetail);
     	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
     	
@@ -692,7 +698,9 @@ public class ImageMgmtUIManager extends CustomComponent
     public void uploadSucceeded(Upload.SucceededEvent event) {
        
     	if(!validateImage(event.getMIMEType())) {
-        	Notification.show(MSG_FILE_TYPE_NOT_SUPPORTED, Notification.Type.TRAY_NOTIFICATION);
+    		String fileExtension = event.getMIMEType().substring(event.getMIMEType().indexOf("/") + 1);
+    		String msg = String.format(MSG_FILE_TYPE_NOT_SUPPORTED, fileExtension);
+        	Notification.show(msg, Notification.Type.TRAY_NOTIFICATION);
     	} else {
     	// Log the upload on screen.
         root.setContent(new Label(String.format("File %s of type ' %s ' uploaded.",event.getFilename(),event.getMIMEType())));
