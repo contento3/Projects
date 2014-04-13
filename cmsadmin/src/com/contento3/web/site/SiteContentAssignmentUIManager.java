@@ -2,6 +2,7 @@ package com.contento3.web.site;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -16,9 +17,11 @@ import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
+import com.contento3.web.common.helper.GenricEntityTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.image.ImageViewPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.SiteContentAssignerClickEvent;
 import com.vaadin.server.Sizeable.Unit;
@@ -137,10 +140,11 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	}
 
 	private String selectedType;
+	private HashMap<Integer, ImageDto> images;
 	
 	@Override
 	public void buttonClick(ClickEvent event) {
-		
+
 		Object contentType = contentTypeComboBox.getValue();
 		if(contentType != null) {
 			Collection<Dto> dtos = null;
@@ -156,8 +160,18 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 				
 				selectedType = CONTENT_TYPE_IMAGE;
 				listOfColumns.add("Images");
-				dtos = populateGenericDtoFromImageDto(imageService.findImageByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
+				listOfColumns.add(GenricEntityTableBuilder.COLUNM_VIEW);
+				
+				Collection<ImageDto> imageList = imageService.findImageByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+				dtos = populateGenericDtoFromImageDto(imageList);
 				assignedDtos = populateGenericDtoFromImageDto(imageService.findLatestImagesBySiteId(siteDto.getSiteId(), 10));
+				
+				images = new HashMap<Integer, ImageDto>(imageList.size());
+				
+				for (ImageDto dto : imageList) {
+					images.put(dto.getId(), dto);
+				}
+
 			}
 			
 			GenricEntityPicker contentPicker;
@@ -177,6 +191,22 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			} else if(selectedType.equals(CONTENT_TYPE_IMAGE)) {
 				updateListForImage(selectedItems);
 			}
+		}
+	}
+	
+	/**
+	 * Button click handler for EntityPicker pop-up
+	 */
+	@Override
+	public void entityButtonClickListener(ClickEvent event) {
+
+		super.entityButtonClickListener(event);
+		if( event.getButton().getCaption().equals(GenricEntityTableBuilder.COLUNM_VIEW) ) {
+			
+			Object id =  event.getButton().getData();
+			ImageDto dto = images.get(id);
+			ImageViewPopup popup = ImageViewPopup.getInstance();
+			popup.show(dto);
 		}
 	}
 	
