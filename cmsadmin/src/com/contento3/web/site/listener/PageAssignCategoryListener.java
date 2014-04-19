@@ -86,10 +86,7 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 			PageDto page=null;
 			try {
 				page = pageService.findById(pageId);
-			} catch (PageNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
 			for(String name : selectedItems ){
 				CategoryDto category = categoryService.findById(Integer.parseInt(name));
 				// validation
@@ -97,19 +94,20 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 				 for(CategoryDto dto:page.getCategories()){
 					 if(dto.getName().equals(category.getName()))
 		     			 isAddable = false;
-				 }//end inner for
+				 }
 				 if(isAddable){
 					 page.getCategories().add(category);
-		     	 }//end if
-			}//end outer for
-			
-			try {
+		     	 }
+			}
 				pageService.update(page);
+				Notification.show("Category assigned successfully.", Notification.Type.TRAY_NOTIFICATION);
 			} catch (EntityAlreadyFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (PageCannotCreateException e) {
 				Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+			} catch (PageNotFoundException e) {
+				e.printStackTrace();
 			}
 		}
 		
