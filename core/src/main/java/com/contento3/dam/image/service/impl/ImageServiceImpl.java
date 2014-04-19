@@ -72,7 +72,7 @@ public class ImageServiceImpl implements ImageService {
 		Validate.notNull(accountId,"accountId cannot be null");
 		final Image image = imageDao.findByNameAndAccountId(name, accountId);
 		if (null==image){
-			throw new EntityNotFoundException("Image with name ["+name+"]"+"not found");
+			throw new EntityNotFoundException("Image with name [" + name + "]" + " not found");
 		}
 		
 		return imageAssembler.domainToDto(image);

@@ -23,6 +23,7 @@ import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
@@ -227,11 +228,14 @@ public class ImageMgmtUIManager extends CustomComponent
 		horizLayout.addComponent(verticall);
 		horizLayout.setWidth(100,Unit.PERCENTAGE);
 		
-		/* Button to add library */
-		
 		mainLayout.addComponent(horizLayout);
 		horizLayout.setSpacing(true);
 		
+		HorizontalLayout horiz = new HorizontalLayout();
+		
+		final TextField searchField = new TextField("Image name");
+		horiz.addComponent(searchField);
+	
 		/* image library combo*/
 		//Get accountId from the session
         final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
@@ -241,7 +245,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
 	    imageLibrayCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
-		HorizontalLayout horiz = new HorizontalLayout();
+
 		horiz.setSpacing(true);
 		horiz.addComponent(imageLibrayCombo);
 	    
@@ -255,14 +259,23 @@ public class ImageMgmtUIManager extends CustomComponent
 			@Override
 			public void buttonClick(final ClickEvent event) {
 				imagePanlelayout.removeAllComponents(); // remove items from CSSlayout which contains panels of image
+			
+				String imgName = searchField.getValue();
 				Object id = imageLibrayCombo.getValue();
-				if(id != null){
+
+				if (imgName != null && !imgName.equals("")) {
+					searchImageByName(imgName, accountId);
+				} else if (id != null) {
 					int libraryId = Integer.parseInt(id.toString());
-					Collection<ImageDto> images = imageService.findImagesByLibrary(libraryId);
+					Collection<ImageDto> images = imageService
+							.findImagesByLibrary(libraryId);
 					displayImages(images);
-				}else{
-					Notification.show("Please select library from the list to search.",Notification.Type.TRAY_NOTIFICATION);
+				} else {
+					Notification
+							.show("Please provide image name or select library from the list to search.",
+									Notification.Type.TRAY_NOTIFICATION);
 				}
+
 			}
 		});
 
@@ -308,6 +321,29 @@ public class ImageMgmtUIManager extends CustomComponent
 	    horizLayout.setExpandRatio(toolbarGridLayout, 1);
 	    horizLayout.setExpandRatio(verticall, 8);
 	}
+	
+	/**
+	 * Display search image by name
+	 * @param imgName
+	 * @param accountId
+	 */
+	private void searchImageByName(String imgName, int accountId) {
+		
+		try {
+			imgName = imgName.trim();
+			ImageDto imgDto = 	imageService.findImageByNameAndAccountId(imgName, accountId);
+			if( imgDto == null) {
+				
+			} else {
+				Collection<ImageDto> images = new ArrayList<ImageDto>();
+				images.add(imgDto);
+				displayImages(images);
+			}
+		} catch (EntityNotFoundException e) {
+			Notification.show(e.getMessage(),Notification.Type.TRAY_NOTIFICATION);	
+		}
+	}
+	
 	
 	/**
 	 * Display images associated to library
