@@ -1,17 +1,15 @@
 package com.contento3.thymeleaf.dialect.setup;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.thymeleaf.context.IProcessingContext;
 import org.thymeleaf.dialect.AbstractDialect;
 import org.thymeleaf.dialect.IExpressionEnhancingDialect;
-import org.thymeleaf.processor.IProcessor;
 
 import com.contento3.thymeleaf.dialect.article.ArticleTemplateHelper;
 import com.contento3.thymeleaf.dialect.category.CategoryTemplateHelper;
+import com.contento3.thymeleaf.dialect.image.ImageTemplateHelper;
 import com.contento3.thymeleaf.dialect.navigation.NavigationTemplateHelper;
 import com.contento3.thymeleaf.dialect.slider.SliderTemplateHelper;
 
@@ -27,12 +25,6 @@ public class SetupDialect extends AbstractDialect implements IExpressionEnhancin
 		return "setup";
 	}
 
-	 @Override
-	 public Set<IProcessor> getProcessors() {
-//		 final Set<IProcessor> processors = new HashSet<IProcessor>();
-//	     processors.add(articleProcessor);
-	     return null;
-	 }
 
 	@Override
 	public boolean isLenient() {
@@ -47,6 +39,7 @@ public class SetupDialect extends AbstractDialect implements IExpressionEnhancin
 		expressionobjects.put("ArticleUtility", new ArticleTemplateHelper());
 		expressionobjects.put("NavigationUtility", new NavigationTemplateHelper());
 		expressionobjects.put("SliderUtility", new SliderTemplateHelper());
-        return expressionobjects;
+		expressionobjects.put("ImageUtility", new ImageTemplateHelper());
+		return expressionobjects;
 	}
 }

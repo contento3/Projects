@@ -6,6 +6,7 @@ import java.io.StringReader;
 
 import org.apache.log4j.Logger;
 
+import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.site.template.assembler.Assembler;
@@ -70,7 +71,7 @@ public class FreemarkerTemplateLoader implements TemplateLoader {
 			if (pathSplitter.length==2){
 				try {
 					siteId = Integer.parseInt(pathSplitter[1].split("_")[0]);
-					dto = pageAssembler.assemble(siteId,String.format("/%s",pathSplitter[0]));
+					dto=pageAssembler.assemble(new PageDto());
 				} catch (PageNotFoundException e) {
 					throw new IOException("Requested page not found",e);
 				}

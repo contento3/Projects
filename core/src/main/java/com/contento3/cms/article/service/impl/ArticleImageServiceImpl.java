@@ -43,6 +43,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		Validate.notNull(dtoToDelete,"dtoToDelete to delete is not null");
 		this.articleImageDao.delete(articleImageAssembler.dtoToDomain(dtoToDelete));
 	}
+	
 	@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:VIEW")
 	@Transactional(readOnly=true,propagation=Propagation.REQUIRES_NEW)
 	@Override
@@ -51,6 +52,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		Validate.notNull(imageId,"imageId cannot null");
 		return this.articleImageAssembler.domainsToDtos(this.articleImageDao.findAsscArticleImageById(articleId, imageId));
 	}
+	
 	@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:VIEW")
 	@Override
 	public Collection<ArticleImageDto> findAsscArticleImageByArticleId(
@@ -58,7 +60,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		Validate.notNull(articleId,"articleId cannot null");
 		return this.articleImageAssembler.domainsToDtos(this.articleImageDao.findAsscArticleImageByArticleId(articleId));
 	}
-	@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:DELETE")
+	//@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:DELETE")
 	@Override
 	public void deleteAll(final Collection<ArticleImageDto> articleImageDtos) throws EntityCannotBeDeletedException {
 		Validate.notNull(articleImageDtos,"articleImageDtos cannot null");
@@ -67,7 +69,8 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 			delete ((ArticleImageDto)it.next());
 		}
 	}
-	@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:VIEW")
+	
+	//@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:VIEW")
 	@Override
 	public Collection<ArticleImageDto> findAsscArticleImageByArticleIdAndScopeId(
 			final Integer articleId,final Integer scopeId) {

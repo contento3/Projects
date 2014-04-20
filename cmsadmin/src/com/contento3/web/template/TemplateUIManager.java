@@ -344,7 +344,7 @@ public class TemplateUIManager implements UIManager {
 				new ExternalResource("images/global-template-16.png"));
 		globalTemplatesTab.setClosable(true);
 		final Collection<TemplateDirectoryDto> globalTemplateDirectoryList = templateDirectoryService
-				.findRootDirectories(true);
+				.findRootDirectories(true,accountId);
 		globalTemplateListLayout.addComponent(populateTemplateList(
 				globalTemplateDirectoryList, templateDirectoryService, true));
 
@@ -354,7 +354,7 @@ public class TemplateUIManager implements UIManager {
 		final Tab templatesTab = accordion.addTab(templateListLayout,
 				"Templates", new ExternalResource("images/add-template-16.png"));
 		final Collection<TemplateDirectoryDto> templateDirectoryList = templateDirectoryService
-				.findRootDirectories(false);
+				.findRootDirectories(false,accountId);
 		accordion.setSelectedTab(templateListLayout);
 
 		// Add the tree to the vertical layout for template list.
@@ -583,7 +583,7 @@ public class TemplateUIManager implements UIManager {
 		String name = parentItem.getItemProperty("name").getValue().toString();
 
 		Collection<TemplateDirectoryDto> templateDirectoryDtoList = templateDirectoryService
-				.findChildDirectories(selectedDirectoryId);
+				.findChildDirectories(selectedDirectoryId,accountId);
 
 		for (TemplateDirectoryDto templateDirectoryDto : templateDirectoryDtoList) {
 			Integer itemToAdd = templateDirectoryDto.getId();
@@ -634,10 +634,8 @@ public class TemplateUIManager implements UIManager {
 		try {
 			TemplateDto templateDto = null;
 			if (null != templateId) {
-				final TemplateDirectoryDto directoryDto = templateDirectoryService
-						.findById(selectedDirectoryId);
 				templateDto = templateService.findTemplateById(templateId);
-				createTemplateUI(templateDto, directoryDto);
+				createTemplateUI(templateDto, templateDto.getTemplateDirectoryDto());
 			} else {
 				// This is a new template to be created we need to get the
 				// directory which was selected.
@@ -729,10 +727,10 @@ public class TemplateUIManager implements UIManager {
 
 		form.getIsGlobal().setReadOnly(true);
 
-		form.getDirectoryId().setValue(String.valueOf(selectedDirectoryId));
+		form.getDirectoryId().setValue(String.valueOf(selectedDirectory.getId()));
 		form.getTemplatePathTxtFld().setValue(
 				"/"
-						+ buildPath(selectedDirectoryId,
+						+ buildPath(selectedDirectory.getId(),
 								selectedDirectory.getDirectoryName()));
 		form.getTemplatePathTxtFld().setReadOnly(true);
 
@@ -851,7 +849,7 @@ public class TemplateUIManager implements UIManager {
 							.findById(selectedDirectoryId);
 					directoryDto.setParent(parentDirectory);
 					final Collection<TemplateDirectoryDto> childDirectories = templateDirectoryService
-							.findChildDirectories(parentDirectory.getId());
+							.findChildDirectories(parentDirectory.getId(),accountId);
 					isSiblingWithSameName = isChildWithSameNameExist(
 							childDirectories, dirToAdd);
 				}

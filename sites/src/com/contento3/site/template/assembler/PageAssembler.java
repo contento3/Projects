@@ -49,9 +49,8 @@ public class PageAssembler implements Assembler {
 		}
 	}
 	@Override
-	public TemplateContentDto assemble(final Integer siteId,final String path) throws PageNotFoundException {
+	public TemplateContentDto assemble(final PageDto pageDto) throws PageNotFoundException {
 		
-		final PageDto pageDto = pageService.findByPathForSite(path, siteId);
 		final PageLayoutDto layoutDto = pageDto.getPageLayoutDto();
 		final TemplateContentDto templateContentDto = new TemplateContentDto();
 		
@@ -65,6 +64,7 @@ public class PageAssembler implements Assembler {
 				final PageTemplateDto dto = iterator.next();
 				final TemplateDto templateDto = templateService.findTemplateById(dto.getTemplateId());
 				templateContentDto.setContent(templateDto.getTemplateText());
+				templateContentDto.setPage(pageDto);
 			}
 		}
 		//else there is a layout attached to this page.

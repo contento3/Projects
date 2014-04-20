@@ -43,6 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
 		this.categoryAssembler=categoryAssembler;
 		this.accountDao = accountDao;
 	}//end CategoryServiceImpl()
+	
 	@RequiresPermissions("CATEGORY:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override

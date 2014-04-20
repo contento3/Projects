@@ -3740,6 +3740,10 @@ body .contento3.v-app .v-app-loading {
 	margin-top: -3px;
 }
 
+.v-accordion-item-caption .v-icon {
+	margin-top: -8px;
+}
+
 .v-ie .contento3 .v-accordion-item-caption .v-icon, .v-ff .contento3 .v-accordion-item-caption .v-icon {
 	margin-top: -6px;
 }
@@ -6200,6 +6204,11 @@ body .contento3.v-app .v-app-loading {
 	width: 16px !important;
 	height: 16px !important;
 }
+
+.v-tabsheet-tabs .v-icon {
+	margin-top: -10px;
+	margin-left: -5px;
+	}
 
 .contento3 .v-tabsheet-tabs .v-errorindicator {
 	display: inline-block;

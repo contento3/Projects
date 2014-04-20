@@ -6,6 +6,7 @@ import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
+import com.contento3.web.common.helper.SessionHelper;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
@@ -69,7 +70,7 @@ public class TemplateListingHelper {
 		Integer itemId = Integer.parseInt(parentItem.getItemProperty("id").getValue().toString());
 		String name = parentItem.getItemProperty("name").getValue().toString();
 
-		Collection <TemplateDirectoryDto> templateDirectoryDtoList = templateDirectoryService.findChildDirectories(itemId);
+		Collection <TemplateDirectoryDto> templateDirectoryDtoList = templateDirectoryService.findChildDirectories(itemId,(Integer)SessionHelper.loadAttribute("accountId"));
 
 		for (TemplateDirectoryDto templateDirectoryDto: templateDirectoryDtoList){
 				Integer itemToAdd = templateDirectoryDto.getId();

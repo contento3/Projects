@@ -13,10 +13,10 @@ import com.contento3.common.dao.GenericDao;
 
 public interface TemplateDirectoryDao extends GenericDao<TemplateDirectory,Integer> {
 
-	Collection<TemplateDirectory> findRootDirectories(boolean isGlobal);
+	Collection<TemplateDirectory> findRootDirectories(boolean isGlobal,Integer accountId);
 
-	TemplateDirectory findByName(String name, boolean isGlobal);
+	TemplateDirectory findByName(String name, boolean isGlobal,Integer accountId);
 
-	Collection<TemplateDirectory> findChildDirectories(Integer parentId);
+	Collection<TemplateDirectory> findChildDirectories(Integer parentId,Integer accountId);
 	
 }

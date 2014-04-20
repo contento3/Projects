@@ -256,7 +256,7 @@ public class TemplateServiceImpl implements TemplateService {
 
                 String [] templateParts = path.split("/");
                 String dirPath = "";
-                for (int i=0;i<templateParts.length-1;i++)
+                for (int i=1;i<templateParts.length-1;i++)
                 {
                         dirPath = dirPath + "/" + templateParts[i];
                 }        

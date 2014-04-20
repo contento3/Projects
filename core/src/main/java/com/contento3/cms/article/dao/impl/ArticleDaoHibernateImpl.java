@@ -114,7 +114,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 			}
 		final Criteria criteria = this.getSession()
 			.createCriteria(Article.class)
-		    //.addOrder(Order.desc("dateCreated"))
+		    .addOrder(Order.desc("dateCreated"))
 		    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 		    .setFirstResult(start)
 		    .add(Restrictions.eq("isVisible", 1))

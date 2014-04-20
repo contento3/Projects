@@ -11,11 +11,11 @@ public interface TemplateDirectoryService extends StorableService <TemplateDirec
 
 	TemplateDirectoryDto findById(Integer id);
 
-	TemplateDirectoryDto findByName(String name,boolean isGlobal);
+	TemplateDirectoryDto findByName(String name,boolean isGlobal,Integer accountId);
 
-	Collection<TemplateDirectoryDto> findRootDirectories(boolean isGlobal);
+	Collection<TemplateDirectoryDto> findRootDirectories(boolean isGlobal,Integer accountId);
 
-	Collection<TemplateDirectoryDto> findChildDirectories(Integer parentId);
+	Collection<TemplateDirectoryDto> findChildDirectories(Integer parentId,Integer accountId);
 
 	void update(TemplateDirectoryDto templateDirectoryDto);
 

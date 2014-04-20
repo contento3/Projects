@@ -49,7 +49,11 @@ public class StaticResourceViewResolver extends AbstractView {
 			final HttpServletResponse response) {
 		
 		final String requestURI = request.getRequestURI();
-		final String[] pageUri = requestURI.split("/image/");
+		
+		//Just in case jsession is appended by thymeleaf.Remove it first
+		final String[] jsessionIdSplit = requestURI.split(";");
+		
+		final String[] pageUri = jsessionIdSplit[0].split("/image/");
 		String resourcePath ="";
 		
 	    final String siteDomain = DomainUtil.fetchDomain(request);
@@ -68,26 +72,35 @@ public class StaticResourceViewResolver extends AbstractView {
 					 }
 					 else {
 						 byte[] image = imageDto.getImage();
-						 String[] widthAndHeightArray = request.getParameter("size").split("_");
+						 String[] widthAndHeightArray = null;
+						 
+						 if (null!=request.getParameter("size"))
+						 {
+							 widthAndHeightArray = request.getParameter("size").split("_");
+						 }
+							
 						 try {	
-							 if(widthAndHeightArray.length > 0){
+							 if(widthAndHeightArray!=null && widthAndHeightArray.length > 0){
+						
 								 Integer width = new Integer(widthAndHeightArray[0]);
 								 BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(image));
 								 if(widthAndHeightArray.length > 1){
 									 Integer height = new Integer(widthAndHeightArray[1]);
 									 bufferedImage = Scalr.resize(bufferedImage,width,height);
-								 }else{
+								 }
+								 else {
 									 bufferedImage = Scalr.resize(bufferedImage,width);
 								 }
+								
 								 final ByteArrayOutputStream os = new ByteArrayOutputStream();
 								 ImageIO.write(bufferedImage, "gif", os);	
 								 os.flush();
 								 image = os.toByteArray();
 								 os.close();
-							 }
-						 } catch (Exception e) {
+							 	}
+							 } catch (Exception e) {
 							 // TODO: handle exception
-						 }
+							 }
 						 response.getOutputStream().write(image);
 						 response.getOutputStream().close();
 					 }

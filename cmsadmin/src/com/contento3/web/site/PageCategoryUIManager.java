@@ -91,7 +91,7 @@ public class PageCategoryUIManager implements UIManager{
 			verticl.setSpacing(true);
 			verticl.setMargin(true);
 	
-			//Pop-up that adds a new domain
+			//Pop-up that adds a new category
 			final Button button = new Button("Add Category");
 			button.addClickListener(new CategoryPopup(contextHelper,categoryTable,tabSheet));
 

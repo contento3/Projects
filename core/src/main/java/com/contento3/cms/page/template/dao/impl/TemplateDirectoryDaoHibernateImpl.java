@@ -22,9 +22,10 @@ public class TemplateDirectoryDaoHibernateImpl
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<TemplateDirectory> findRootDirectories(final boolean isGlobal){
+	public Collection<TemplateDirectory> findRootDirectories(final boolean isGlobal,final Integer accountId){
 		Validate.notNull(isGlobal,"isGlobal cannot be null");
-		
+		Validate.notNull(accountId,"accountId cannot be null");
+
 		Criteria criteria = this.getSession()
 		.createCriteria(TemplateDirectory.class)
 		.setCacheable(true)
@@ -32,16 +33,19 @@ public class TemplateDirectoryDaoHibernateImpl
 		.add(Restrictions
 		.isNull("parent"))
 		.add(Restrictions
-		.eq("isGlobal", isGlobal));
+		.eq("isGlobal", isGlobal))
+		.add(Restrictions
+		.eq("account.accountId", accountId));
 
 		return criteria.list();
 	}
 
 	@Override
-	public TemplateDirectory findByName(final String name,final boolean isGlobal){
+	public TemplateDirectory findByName(final String name,final boolean isGlobal,final Integer accountId){
 		Validate.notNull(name,"name cannot be null");
 		Validate.notNull(isGlobal,"isGlobal cannot be null");
-		
+		Validate.notNull(accountId,"accountId cannot be null");
+
 		Criteria criteria = this.getSession()
 		.createCriteria(TemplateDirectory.class)
 		.setCacheable(true)
@@ -49,22 +53,27 @@ public class TemplateDirectoryDaoHibernateImpl
 		.add(Restrictions
 		.eq("directoryName", name))
 		.add(Restrictions
-		.eq("isGlobal", isGlobal));
+		.eq("isGlobal", isGlobal))
+		.add(Restrictions
+		.eq("account.accountId", accountId));
 
 		TemplateDirectory templateDirectory = (TemplateDirectory) criteria.list().get(0);
 		return templateDirectory;
 	}
 
 	@Override
-	public Collection<TemplateDirectory> findChildDirectories(final Integer parentId){
+	public Collection<TemplateDirectory> findChildDirectories(final Integer parentId,final Integer accountId){
 		Validate.notNull(parentId,"parentId cannot be null");
-		
+		Validate.notNull(accountId,"accountId cannot be null");
+
 		Criteria criteria = this.getSession()
 		.createCriteria(TemplateDirectory.class)
 		.setCacheable(true)
 		.setCacheRegion(CACHE_REGION)
 		.add(Restrictions
-		.eq("parent.id", parentId));
+		.eq("parent.id", parentId))
+		.add(Restrictions
+		.eq("account.accountId", accountId));
 
 		return criteria.list();
 	}

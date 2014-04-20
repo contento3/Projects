@@ -214,16 +214,19 @@ public class ArticleFormBuilderListner implements ClickListener{
 		parentLayout.setHeight(100,Unit.PERCENTAGE);
 		parentLayout.setWidth(100,Unit.PERCENTAGE);
 		
-		Button btnPublish = createPublishedButton();
-		HorizontalLayout layoutForButton = new HorizontalLayout();
-		layoutForButton.setWidth(100, Unit.PERCENTAGE);
-		layoutForButton.addComponent(btnPublish);
-		layoutForButton.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
-		layoutForButton.setSpacing(false);
-		formLayout.addComponent(layoutForButton);
+		if (articleId!=null){
+			final Button btnPublish = createPublishedButton();
+			HorizontalLayout layoutForButton = new HorizontalLayout();
+			layoutForButton.setWidth(100, Unit.PERCENTAGE);
+			layoutForButton.addComponent(btnPublish);
+			layoutForButton.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
+			layoutForButton.setSpacing(false);
+			formLayout.addComponent(layoutForButton);
+		}
+		
 		parentLayout.addComponent(formLayout);
 		
-		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/content-mgmt.png"));
+		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/article.png"));
 		articleTab.setClosable(true);
 
 		final GridLayout toolbarGridLayout = new GridLayout(1,5);

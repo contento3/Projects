@@ -5,8 +5,10 @@ import java.util.Collection;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.dao.PageDao;
 import com.contento3.cms.page.dto.PageDto;
@@ -122,8 +124,14 @@ public class PageServiceImpl implements PageService {
 		Validate.notNull(path,"path cannot be null");
 		Validate.notNull(siteId,"siteId cannot be null");
 		
+		//If the path has .uncached part then need to 
+		//remove before going into the dao
+		if(path.indexOf(".uncached") != -1){
+			path = path.substring(0,path.indexOf(".uncached"));
+		}
+
 		Page page = pageDao.findPageByPathAndSiteId(path, siteId);
-		
+
 		if (null==page){
 			throw new PageNotFoundException(String.format("Page not found for path [%s] for site id [%d]",path,siteId));
 		}

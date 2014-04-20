@@ -13,6 +13,11 @@
     </param-value>
   </context-param>
 
+	<filter>
+  		<filter-name>FavIconFilter</filter-name>
+  		<filter-class>com.contento3.filter.FaviconFilter</filter-class>
+  </filter>
+
   <!-- The filter-name matches name of a 'shiroFilter' bean inside applicationContext.xml -->
 	<filter>
     	<filter-name>shiroFilter</filter-name>
@@ -30,6 +35,12 @@
     	<filter-name>shiroFilter</filter-name>
     	<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+  <filter-mapping>
+  		<filter-name>FavIconFilter</filter-name>
+ 		<url-pattern>/favicon.ico</url-pattern>
+  </filter-mapping>
+
   
 
   <filter>
@@ -37,7 +48,6 @@
   	<filter-class>com.contento3.filter.DefaultPageFilter</filter-class>
   </filter>
 
- 
   <filter-mapping>
   		<filter-name>SiteDefaultPageFilter</filter-name>
  		<url-pattern>/</url-pattern>

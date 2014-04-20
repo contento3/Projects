@@ -88,40 +88,42 @@ public class ArticleSaveListener implements ClickListener{
 			Notification.show(unsaveNotification,Notification.Type.TRAY_NOTIFICATION);
 		}
 		else{
-			try
-			{
-			final Date createdDate= new Date();
-			articleDto.setDateCreated(createdDate);
-			articleDto.setLastUpdated(createdDate);
-			
-			Date date = (Date) articleForm.getPostedDatefield().getValue();
-			articleDto.setDatePosted(date);
-			articleDto.setLastUpdated(new Date());
-			articleDto.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
-			articleDto.setIsVisible(1);
-			articleForm.getPostedDatefield().getValue();
-			articleDto.setDatePosted((Date)articleForm.getPostedDatefield().getValue());
-			articleDto.setSeoFriendlyUrl(articleForm.getSeoFriendlyURL().getValue());
-			
-		//new article is creating is article id == null
-		if (null==articleId){
-			articleDto.setDateCreated(new Date());
-			articleDto.setAccount(accountService.findAccountById(accountId));
-			articleService.create(articleDto);
-			Notification.show(saveNotification,Notification.Type.TRAY_NOTIFICATION);
-			resetTable();
+				try
+				{
+					final Date createdDate= new Date();
+					articleDto.setDateCreated(createdDate);
+					articleDto.setLastUpdated(createdDate);
+					
+					Date date = (Date) articleForm.getPostedDatefield().getValue();
+					articleDto.setDatePosted(date);
+					articleDto.setLastUpdated(new Date());
+					articleDto.setExpiryDate((Date)articleForm.getExpiryDatefield().getValue());
+					articleDto.setIsVisible(1);
+					articleDto.setStatus(0);
+					articleForm.getPostedDatefield().getValue();
+					articleDto.setDatePosted((Date)articleForm.getPostedDatefield().getValue());
+					articleDto.setSeoFriendlyUrl(articleForm.getSeoFriendlyURL().getValue());
+				
+				//new article is creating is article id == null
+				if (null==articleId){
+					articleDto.setDateCreated(new Date());
+					articleDto.setAccount(accountService.findAccountById(accountId));
+					articleService.create(articleDto);
+					Notification.show(saveNotification,Notification.Type.TRAY_NOTIFICATION);
+					resetTable();
+				}
+				else {
+					articleService.update(articleDto);
+					Notification.show(updateNotification);
+					//tabSheet.removeTab(articleTab);
+					resetTable();
+					//tabSheet.removeTab(articleTab);
+				}
+			}
+			catch(final AuthorizationException ex){
+					//TODO Add log for no permission
+			}
 		}
-		else{
-			articleService.update(articleDto);
-			Notification.show(updateNotification);
-			//tabSheet.removeTab(articleTab);
-			resetTable();
-			//tabSheet.removeTab(articleTab);
-		}}
-			catch(AuthorizationException ex){Notification.show("You are not permitted to update articles");}
-		   
-	  }
-		
 	}
 	
 	/**

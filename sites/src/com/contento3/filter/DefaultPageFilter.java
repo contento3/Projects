@@ -43,7 +43,7 @@ public class DefaultPageFilter implements Filter {
 	    if (!subject.isAuthenticated()){
 	    	subject.login(token);
 	    }
-
+	    
 	    SiteDto site=null;
 	    final String domainName = DomainUtil.fetchDomain((HttpServletRequest)request);
 	    if( !domainName.equals("localhost") ){
@@ -55,7 +55,7 @@ public class DefaultPageFilter implements Filter {
 
 	    String requestURI = ((HttpServletRequest)request).getRequestURI();
 	    request.setAttribute("site", site);
-	    if (requestURI.equals("/")){
+	    if (site!=null && requestURI.equals("/")){
 	    	try {
 	    		final Integer defaultPageId = site.getDefaultPageId();
 	    		if (null!=defaultPageId)

@@ -54,18 +54,10 @@ implements PageDao {
 		.eq("uri", path));
 
 		Page page=null;
-		if (!CollectionUtils.isEmpty(criteria.list())){
+		final Collection<Page> pageList = criteria.list();
+		
+		if (!CollectionUtils.isEmpty(pageList)){
 			page = (Page)criteria.list().get(0);
-		}else if(path.indexOf(".uncached") != -1){
-			String path1 = path.substring(0,path.indexOf(".uncached"));
-			criteria = this.getSession()
-			.createCriteria(Page.class)
-			.add(Restrictions
-			.eq("site.siteId", siteId)).add(Restrictions
-			.eq("uri", path1));
-			if (!CollectionUtils.isEmpty(criteria.list())){
-				page = (Page)criteria.list().get(0);
-			}
 		}
 		
 		return page;
