@@ -57,8 +57,6 @@ public interface TemplateCategoryService extends
      * @param parentCategoryId
      * @throws EntityAlreadyFoundException 
      */
-	void update(TemplateCategoryDto templateCategoryDto, Integer parentCategroyId);
-
-	Collection<TemplateCategoryDto> findAll(); 
+	void update(TemplateCategoryDto templateCategoryDto, Integer parentCategroyId); 
 
 }

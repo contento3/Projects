@@ -58,8 +58,7 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Collection<Image> findLatestImagesBySiteId(Integer siteId,
-			Integer count) {
+	public Collection<Image> findLatestImagesBySiteId(Integer siteId, Integer count) {
 		Validate.notNull(siteId,"siteId cannot be null");
 		Validate.notNull(count ,"count cannot be null");
 		
@@ -117,6 +116,25 @@ public class ImageDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<Ima
 								.add(Restrictions
 								.eq("accountId", accountId));
 		return criteria.list();
+	}
+
+	@Override
+	public Image findImageByIdAndSiteId(Integer imageId, Integer siteId) {
+		
+		Validate.notNull(siteId,"siteId cannot be null");
+		
+		Criteria criteria = this.getSession()
+				.createCriteria(Image.class)
+				.add(Restrictions.eq("imageId", imageId))
+				.createCriteria("sites")
+				.add(Restrictions.eq("siteId", siteId));
+		Image image = null; 
+		List <Image> imageList = criteria.list();	
+		if (!CollectionUtils.isEmpty(imageList)){
+			image = imageList.get(0);
+		}
+		
+		return image;
 	}
 	
 }

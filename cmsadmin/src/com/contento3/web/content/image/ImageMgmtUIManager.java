@@ -12,11 +12,18 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.vaadin.pagingcomponent.ComponentsManager;
+import org.vaadin.pagingcomponent.PagingComponent;
+import org.vaadin.pagingcomponent.builder.ElementsBuilder;
+import org.vaadin.pagingcomponent.button.ButtonPageNavigator;
+import org.vaadin.pagingcomponent.customizer.style.StyleCustomizer;
+import org.vaadin.pagingcomponent.listener.impl.SimplePagingComponentListener;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.library.dto.ImageLibraryDto;
 import com.contento3.dam.image.library.service.ImageLibraryService;
@@ -65,7 +72,7 @@ public class ImageMgmtUIManager extends CustomComponent
 
 	private static final Logger LOGGER = Logger.getLogger(ImageMgmtUIManager.class);
 	private static final long serialVersionUID = 5131819177752243660L;
-	private final static String MSG_FILE_TYPE_NOT_SUPPORTED = "File type not supported.";
+	private final static String MSG_FILE_TYPE_NOT_SUPPORTED = "Files with %s are not supported for upload.";
 	
 	/**
 	 * Helper to load the spring context
@@ -221,11 +228,14 @@ public class ImageMgmtUIManager extends CustomComponent
 		horizLayout.addComponent(verticall);
 		horizLayout.setWidth(100,Unit.PERCENTAGE);
 		
-		/* Button to add library */
-		
 		mainLayout.addComponent(horizLayout);
 		horizLayout.setSpacing(true);
 		
+		HorizontalLayout horiz = new HorizontalLayout();
+		
+		final TextField searchField = new TextField("Image name");
+		horiz.addComponent(searchField);
+	
 		/* image library combo*/
 		//Get accountId from the session
         final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
@@ -235,7 +245,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
 	    imageLibrayCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
-		HorizontalLayout horiz = new HorizontalLayout();
+
 		horiz.setSpacing(true);
 		horiz.addComponent(imageLibrayCombo);
 	    
@@ -249,14 +259,23 @@ public class ImageMgmtUIManager extends CustomComponent
 			@Override
 			public void buttonClick(final ClickEvent event) {
 				imagePanlelayout.removeAllComponents(); // remove items from CSSlayout which contains panels of image
+			
+				String imgName = searchField.getValue();
 				Object id = imageLibrayCombo.getValue();
-				if(id != null){
+
+				if (imgName != null && !imgName.equals("")) {
+					searchImageByName(imgName, accountId);
+				} else if (id != null) {
 					int libraryId = Integer.parseInt(id.toString());
-					Collection<ImageDto> images = imageService.findImagesByLibrary(libraryId);
+					Collection<ImageDto> images = imageService
+							.findImagesByLibrary(libraryId);
 					displayImages(images);
-				}else{
-					Notification.show("Please select library from the list to search.",Notification.Type.TRAY_NOTIFICATION);
+				} else {
+					Notification
+							.show("Please provide image name or select library from the list to search.",
+									Notification.Type.TRAY_NOTIFICATION);
 				}
+
 			}
 		});
 
@@ -304,6 +323,29 @@ public class ImageMgmtUIManager extends CustomComponent
 	}
 	
 	/**
+	 * Display search image by name
+	 * @param imgName
+	 * @param accountId
+	 */
+	private void searchImageByName(String imgName, int accountId) {
+		
+		try {
+			imgName = imgName.trim();
+			ImageDto imgDto = 	imageService.findImageByNameAndAccountId(imgName, accountId);
+			if( imgDto == null) {
+				
+			} else {
+				Collection<ImageDto> images = new ArrayList<ImageDto>();
+				images.add(imgDto);
+				displayImages(images);
+			}
+		} catch (EntityNotFoundException e) {
+			Notification.show(e.getMessage(),Notification.Type.TRAY_NOTIFICATION);	
+		}
+	}
+	
+	
+	/**
 	 * Display images associated to library
 	 * @param images
 	 */
@@ -317,22 +359,72 @@ public class ImageMgmtUIManager extends CustomComponent
 		}
 		
       // Layout where we will display items (changing when we click next page).
-//        final CssLayout itemsArea = new CssLayout();
+        final CssLayout itemsArea = new CssLayout();
 		imagePanlelayout.setSizeUndefined();
-        
-        try {
+		
+//		
+//		// This customizer allow to add style for each buttons page
+//		StyleCustomizer styler = new StyleCustomizer() {
+//		                        
+//		        @Override
+//		        public void styleButtonPageNormal(ButtonPageNavigator button, int pageNumber) {
+//		                button.setPage(pageNumber);
+//		                button.removeStyleName("styleRed");
+//		        }
+//
+//		        @Override
+//		        public void styleButtonPageCurrentPage(ButtonPageNavigator button, int pageNumber) {
+//		                button.setPage(pageNumber, "[" + pageNumber + "]"); // Set caption of the button with the page number between brackets. 
+//		                button.addStyleName("styleRed");
+//		                button.focus();
+//		        }
+//
+//		        @Override
+//		        public void styleTheOthersElements(ComponentsManager manager, ElementsBuilder builder) {
+//		                // if the number of pages is less than 2, the other buttons are not created.
+//		                if (manager.getNumberTotalOfPages() < 2) {
+//		                    return;
+//		                }
+//
+//		                // Allow to hide these buttons when the first page is selected          
+//		                boolean visible = !manager.isFirstPage();
+//		                builder.getButtonFirst().setVisible(visible);
+//		                builder.getButtonPrevious().setVisible(visible);
+//		                builder.getFirstSeparator().setVisible(visible);
+//		                                
+//		                // Allow to hide these buttons when the last page is selected
+//		                visible = !manager.isLastPage();
+//		                builder.getButtonLast().setVisible(visible);
+//		                builder.getButtonNext().setVisible(visible);
+//		                builder.getLastSeparator().setVisible(visible);
+//		        }
+//
+//		};
+//		
+//        
+//        try {
+//
+//			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("paging.properties");
+//			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
+//			
+//			PagingComponent<ImageDto> pagingComponent = new PagingComponent<ImageDto>(NmbrOfImagesOnPage, 5, list, styler,  new SimplePagingComponentListener<ImageDto>(itemsArea) {
+//
+//				private static final long serialVersionUID = 1L;
+//				@Override
+//				protected Component displayItem(int index, ImageDto item) {
+//					return new Label("Label "+index);//addImagesToPanel(item);	
+//				}
+//			});
 
-			final CachedTypedProperties languageProperties = CachedTypedProperties.getInstance("paging.properties");
-			int NmbrOfImagesOnPage = languageProperties.getIntProperty("NumberOfImages");
-			
 			for(ImageDto dto: images){
-				imagePanlelayout.addComponent(addImagesToPanel(dto));
+				itemsArea.addComponent(addImagesToPanel(dto));
 			}
-//	        imagePanlelayout.addComponent(itemsArea);
-		} catch (ClassNotFoundException e) {
-			
-			e.printStackTrace();
-		}
+	        imagePanlelayout.addComponent(itemsArea);
+	     //   imagePanlelayout.addComponent(pagingComponent);
+//		} catch (ClassNotFoundException e) {
+//			
+//			e.printStackTrace();
+//		}
         
         
        
@@ -354,7 +446,13 @@ public class ImageMgmtUIManager extends CustomComponent
     	imageLayout.setComponentAlignment(embedded, Alignment.MIDDLE_CENTER);
 
     	final VerticalLayout imageInfoLayout = new VerticalLayout();
+    	imageInfoLayout.setSpacing(true);
 
+    	final Label lblName = new Label(dto.getName());
+    	lblName.setSizeUndefined();
+    	imageInfoLayout.addComponent(lblName);
+    	imageInfoLayout.setComponentAlignment(lblName, Alignment.MIDDLE_CENTER);
+    	
     	//Edit image button
     	final Button editImageDetail = new Button("Edit Image");
     	editImageDetail.setStyleName("link");
@@ -371,7 +469,6 @@ public class ImageMgmtUIManager extends CustomComponent
 			}
 		});
     	
-    	imageInfoLayout.setSpacing(true);
     	imageInfoLayout.addComponent(editImageDetail);
     	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
     	
@@ -636,7 +733,9 @@ public class ImageMgmtUIManager extends CustomComponent
     public void uploadSucceeded(Upload.SucceededEvent event) {
        
     	if(!validateImage(event.getMIMEType())) {
-        	Notification.show(MSG_FILE_TYPE_NOT_SUPPORTED, Notification.Type.TRAY_NOTIFICATION);
+    		String fileExtension = event.getMIMEType().substring(event.getMIMEType().indexOf("/") + 1);
+    		String msg = String.format(MSG_FILE_TYPE_NOT_SUPPORTED, fileExtension);
+        	Notification.show(msg, Notification.Type.TRAY_NOTIFICATION);
     	} else {
     	// Log the upload on screen.
         root.setContent(new Label(String.format("File %s of type ' %s ' uploaded.",event.getFilename(),event.getMIMEType())));

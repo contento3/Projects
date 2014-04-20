@@ -94,9 +94,4 @@ public class TemplateCategoryServiceImpl implements TemplateCategoryService {
 
 	}
 
-	@Override
-	public Collection<TemplateCategoryDto> findAll() {
-		return templateCategoryAssembler.domainsToDtos(templateCategoryDao.findAll());
-	}
-
 }

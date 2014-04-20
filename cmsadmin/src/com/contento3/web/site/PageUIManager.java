@@ -33,6 +33,8 @@ import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.AddPageButtonClickListener;
+import com.contento3.web.site.listener.PageAssignCategoryListener;
+import com.contento3.web.site.listener.SEOSettingsEventListener;
 import com.contento3.web.site.seo.SEOUIManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -302,7 +304,8 @@ public class PageUIManager {
 				.getBean("pageLayoutService");
 		siteDto = siteService.findSiteById(siteId);
 
-		Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(siteDto.getAccountDto().getAccountId());
+		int accountId = siteDto.getAccountDto().getAccountId();
+		Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
 		pageLayoutCombo = new ComboBox("Select Page Layouts",
 				comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
@@ -313,9 +316,19 @@ public class PageUIManager {
 		pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		pageLayoutCombo.setItemCaptionPropertyId("name");
 
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
+
+		int gridRows = 1;
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddPageButtonClickListener(contextHelper,titleTxt,uriTxt,checkbox1,siteDto,pageLayoutCombo,pageLayoutService, pageId,newPageDtoWithLayout,pagesTab,newPageParentlayout,this));
+		
+		if (null != pageId) {
+			gridRows = 3;
+			SEOUIManager seoUIManager = new SEOUIManager(contextHelper);
+			listeners.add(new SEOSettingsEventListener(seoUIManager, pagesTab, siteId, pageId));
+			listeners.add(new PageAssignCategoryListener(this.contextHelper, pageId, accountId));
+		}
+
+		GridLayout toolbarGridLayout = new GridLayout(1, gridRows);
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
 		builder.build();
 

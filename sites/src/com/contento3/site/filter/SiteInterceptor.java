@@ -34,12 +34,14 @@ public class SiteInterceptor extends HandlerInterceptorAdapter {
 		    final PageService pageService = (PageService)context.getBean("pageService");
 		    
 		    //TODO Change to a system user
+
         	final UsernamePasswordToken token = new UsernamePasswordToken("guest123","guest123");
-		    final Subject subject =   SecurityUtils.getSubject();
-		    if (!subject.isAuthenticated()){
-		    	subject.login(token);
-		    }
+
+		    Subject subject =   SecurityUtils.getSubject();
+		    subject.login(token);
 		    
+		    
+		    //subject.login(arg0)
 		    SiteDto site=null;
 		    String domainName = DomainUtil.fetchDomain(request);
 		    

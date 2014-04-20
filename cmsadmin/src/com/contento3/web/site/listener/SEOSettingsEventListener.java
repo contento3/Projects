@@ -27,11 +27,25 @@ public class SEOSettingsEventListener implements ClickListener {
 	 */
 	final Integer siteId;
 	
-	public SEOSettingsEventListener(final SEOUIManager uiManager, final TabSheet tabSheet,final  
+	/**
+	 * id for page
+	 */
+	private Integer pageId;
+	
+	public SEOSettingsEventListener(final SEOUIManager uiManager, final TabSheet tabSheet, final  
 			Integer siteId) {
 		this.uiTabSheet = tabSheet;
 		this.seoUiManager = uiManager;
 		this.siteId = siteId;
+		this.pageId = null;
+	}
+	
+	public SEOSettingsEventListener(final SEOUIManager uiManager, final TabSheet tabSheet, final  
+			Integer siteId, final Integer pageId) {
+		this.uiTabSheet = tabSheet;
+		this.seoUiManager = uiManager;
+		this.siteId = siteId;
+		this.pageId = pageId;
 	}
 	
 	/**
@@ -40,7 +54,7 @@ public class SEOSettingsEventListener implements ClickListener {
 	@Override
 	public void click(ClickEvent event) {
 		
-		seoUiManager.renderSEOSettingsManager(uiTabSheet, siteId);
+		seoUiManager.renderSEOSettingsManager(uiTabSheet, siteId, pageId);
 	}
 
 }

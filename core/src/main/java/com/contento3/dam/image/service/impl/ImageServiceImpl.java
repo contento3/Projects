@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
+import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.dto.ImageDto;
@@ -71,7 +72,7 @@ public class ImageServiceImpl implements ImageService {
 		Validate.notNull(accountId,"accountId cannot be null");
 		final Image image = imageDao.findByNameAndAccountId(name, accountId);
 		if (null==image){
-			throw new EntityNotFoundException("Image with name ["+name+"]"+"not found");
+			throw new EntityNotFoundException("Image with name " + name  + " not found.");
 		}
 		
 		return imageAssembler.domainToDto(image);
@@ -156,5 +157,18 @@ public class ImageServiceImpl implements ImageService {
 		Validate.notNull(accountId,"accountId cannot be null");
 		return imageAssembler.domainsToDtos(imageDao.findImagesByLibraryAndAccount(libraryId, accountId));
 	}
+
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public ImageDto findImageByIdAndSiteId(Integer imageId, Integer siteId) {
+		
+		Validate.notNull(siteId,"siteId cannot be null");
+		 Image image = imageDao.findImageByIdAndSiteId(imageId, siteId);
+		 ImageDto imageDto = null;
+			if (image != null){
+				imageDto = imageAssembler.domainToDto(image);
+			}
+		return imageDto;	
+	}	
 
 }

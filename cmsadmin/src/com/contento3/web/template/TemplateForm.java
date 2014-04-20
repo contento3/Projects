@@ -39,9 +39,8 @@ public class TemplateForm {
     private  final TextField directoryId = new TextField();
     
     public TemplateForm (final SpringContextHelper helper, TemplateCategoryService templateCategoryService){
-    	
-//    	final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
-    	Collection<TemplateCategoryDto> templateCategoryDto = (Collection<TemplateCategoryDto>) templateCategoryService.findAll();
+    	final Integer accountId = (Integer)SessionHelper.loadAttribute("temlateCategoryId");
+    	Collection<TemplateCategoryDto> templateCategoryDto = (Collection<TemplateCategoryDto>) templateCategoryService.findById(accountId);
     //	final TemplateCategoryService templateCategoryService = (TemplateCategoryService) helper.getBean("templateCategoryService"); 	
     	templateCategoryCombo = new ComboBox("Template Category",comboDataLoader.loadDataInContainer((Collection)templateCategoryDto));
     	
@@ -54,7 +53,7 @@ public class TemplateForm {
         templateKeyTxtFld.setInputPrompt("Enter temp key");
         
         templateCategoryCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
-        templateCategoryCombo.setItemCaptionPropertyId("name");
+        templateCategoryCombo.setItemCaptionPropertyId("templateCategoryName");
         templateCategoryCombo.setCaption("Temp Cat");
         templateCategoryCombo.setInputPrompt("Select templa categg");
 

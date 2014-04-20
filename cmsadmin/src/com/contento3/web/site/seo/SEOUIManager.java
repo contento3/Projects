@@ -96,6 +96,8 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 	
 	private MetaTagDto metaTagDto;
 	
+	private Integer pageId;
+	
 	public SEOUIManager(final SpringContextHelper helper) {
 		
 		this.contextHelper = helper;
@@ -107,9 +109,10 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 	 * @param tabSheet
 	 * @param siteId
 	 */
-	public void renderSEOSettingsManager(final TabSheet tabSheet,final Integer siteId) {
+	public void renderSEOSettingsManager(final TabSheet tabSheet,final Integer siteId, final Integer pageId) {
 		
 		this.siteId = siteId;
+		this.pageId = pageId;
 		seoParentLayout = new VerticalLayout();
 		seoParentLayout.setSpacing(true);
 		seoParentLayout.setMargin(true);
@@ -268,8 +271,15 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 			dto.setSite(site);
 
 			if(event.getButton().getCaption().equals(BUTTON_NAME_ADD)) { //add
-				dto.setAssociatedId(site.getSiteId()); // must be dynamic
-				dto.setLevel("site"); //must be dynamic
+				
+				if(pageId == null) {
+					dto.setAssociatedId(site.getSiteId());
+					dto.setLevel("site"); 
+				} else {
+					dto.setAssociatedId(pageId); 
+					dto.setLevel("page");
+				}
+
 				int id = metaTagService.create(dto);
 				Notification.show("", MSG_ATTRIBUTE_CREATED, Type.TRAY_NOTIFICATION);
 			} else  { //edit

@@ -2,21 +2,26 @@ package com.contento3.web.site;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.dto.Dto;
+import com.contento3.dam.image.dto.ImageDto;
+import com.contento3.dam.image.service.ImageService;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
+import com.contento3.web.common.helper.GenricEntityTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
-import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.image.ImageViewPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.SiteContentAssignerClickEvent;
 import com.vaadin.server.Sizeable.Unit;
@@ -41,6 +46,11 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = Logger.getLogger(SiteContentAssignmentUIManager.class);
+	
+	private final static String CONTENT_TYPE_ARTICLE ="Article";
+	private final static String CONTENT_TYPE_IMAGE ="Image";
+	private final static String CONTENT_TYPE_VIDEO ="Video";
+	private final static String CONTENT_TYPE_DOCUMENT ="Document";
 
 	private final TabSheet tabSheet;
 
@@ -59,22 +69,30 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	private SiteService siteService;
 	
 	private ArticleService articleService;
+	
+	private ImageService imageService;
 
 	private SiteDto siteDto = null;
 	
 	private Collection<Dto> assignedDtos;
 	
+	private ComboBox contentTypeComboBox;
+	
 	public SiteContentAssignmentUIManager(TabSheet uiTabSheet,
 			SpringContextHelper contextHelper) {
+		
 		tabSheet = uiTabSheet;
 		this.contextHelper = contextHelper;
-		this.siteService = (SiteService)contextHelper.getBean("siteService");
-		this.articleService = (ArticleService)contextHelper.getBean("articleService");
+		this.siteService = (SiteService) contextHelper.getBean("siteService");
+		this.articleService = (ArticleService) contextHelper.getBean("articleService");
+		this.imageService = (ImageService) contextHelper.getBean("imageService");
 	}
 
+
 	public Component render(final Integer siteId){
+		
 		siteDto = siteService.findSiteById(siteId);
-		final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Assign Content to Site : "+siteDto.getSiteName());
+		//final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Assign Content to Site : "+siteDto.getSiteName());
 		verticalLayout.setSpacing(true);
 		verticalLayout.setMargin(true);
 
@@ -86,12 +104,12 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		//Pop-up that adds a new domain
 		final FormLayout formLayout = new FormLayout();
 		final Collection<String> contentTypeValue = new ArrayList<String>();
-		contentTypeValue.add("Article");
-		contentTypeValue.add("Image");
-		contentTypeValue.add("Video");
-		contentTypeValue.add("Document");
+		contentTypeValue.add(CONTENT_TYPE_ARTICLE);
+		contentTypeValue.add(CONTENT_TYPE_IMAGE);
+		contentTypeValue.add(CONTENT_TYPE_VIDEO);
+		contentTypeValue.add(CONTENT_TYPE_DOCUMENT);
 		
-		final ComboBox contentTypeComboBox = new ComboBox("Content Type",contentTypeValue);
+		contentTypeComboBox = new ComboBox("Content Type",contentTypeValue);
 		contentTypeComboBox.setImmediate(true);
 		formLayout.addComponent(contentTypeComboBox);
 		
@@ -121,51 +139,137 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		return tabSheet;
 	}
 
+	private String selectedType;
+	private HashMap<Integer, ImageDto> images;
+	
 	@Override
 	public void buttonClick(ClickEvent event) {
-		Collection<String> listOfColumns = new ArrayList<String>();
-		listOfColumns.add("Articles");
-		GenricEntityPicker contentPicker;
-		Collection<Dto> dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false));
-		assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null,null, false));
-		contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);
-		contentPicker.setCaption("Assign Content to Site");
-		contentPicker.build();
+
+		Object contentType = contentTypeComboBox.getValue();
+		if(contentType != null) {
+			Collection<Dto> dtos = null;
+			Collection<String> listOfColumns = new ArrayList<String>();
+			
+			if( contentType.toString().equals(CONTENT_TYPE_ARTICLE) ) {
+				
+				selectedType = CONTENT_TYPE_ARTICLE;
+				listOfColumns.add("Articles");
+				dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false));
+				assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null,null, false));
+			} else if( contentType.toString().equals(CONTENT_TYPE_IMAGE) ) {
+				
+				selectedType = CONTENT_TYPE_IMAGE;
+				listOfColumns.add("Images");
+				listOfColumns.add(GenricEntityTableBuilder.COLUNM_VIEW);
+				
+				Collection<ImageDto> imageList = imageService.findImageByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+				dtos = populateGenericDtoFromImageDto(imageList);
+				assignedDtos = populateGenericDtoFromImageDto(imageService.findLatestImagesBySiteId(siteDto.getSiteId(), 10));
+				
+				images = new HashMap<Integer, ImageDto>(imageList.size());
+				
+				for (ImageDto dto : imageList) {
+					images.put(dto.getId(), dto);
+				}
+
+			}
+			
+			GenricEntityPicker contentPicker;
+			contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);
+			contentPicker.setCaption("Assign Content to Site");
+			contentPicker.build();
+		}
 	}
 	
 	@Override
-	public void updateList(){
+	public void updateList() {
+		
 		Collection<String> selectedItems =(Collection<String>) this.verticalLayoutForPopup.getData();
 		if(selectedItems != null){
-			ArticleDto articleDto = null;
-			try {
-				for(String name : selectedItems ){
-					Integer articleId = Integer.parseInt(name);
-					articleDto = articleService.findArticleByIdAndSiteId(articleId,siteDto.getSiteId(), false);
-					if (articleDto==null){
-						articleDto = articleService.findById(articleId);
-						articleDto.getSite().add(siteDto);
-						articleService.update(articleDto);
-					}
-					else if (assignedDtos.contains(((Dto)articleDto))){
-						assignedDtos.remove(((Dto)articleDto));
-					}
-				}//end outer for
-				removeAssignedContentDtos(assignedDtos);
-				Notification.show("Articles saved successfully for site" + siteDto.getSiteName(), Notification.Type.TRAY_NOTIFICATION);
+			if(selectedType.equals(CONTENT_TYPE_ARTICLE)) {
+				updateListForArticle(selectedItems);
+			} else if(selectedType.equals(CONTENT_TYPE_IMAGE)) {
+				updateListForImage(selectedItems);
 			}
-			catch (Exception e) {
-				LOGGER.error("Unable to assign article to site" + siteDto.getSiteName());
-				Notification.show("Unable to associate article with head" + articleDto .getHead()+ " for site" + siteDto.getSiteName(), Notification.Type.ERROR_MESSAGE);
+		}
+	}
+	
+	/**
+	 * Button click handler for EntityPicker pop-up
+	 */
+	@Override
+	public void entityButtonClickListener(ClickEvent event) {
+
+		super.entityButtonClickListener(event);
+		if( event.getButton().getCaption().equals(GenricEntityTableBuilder.COLUNM_VIEW) ) {
+			
+			Object id =  event.getButton().getData();
+			ImageDto dto = images.get(id);
+			ImageViewPopup popup = ImageViewPopup.getInstance();
+			popup.show(dto);
+		}
+	}
+	
+	private void updateListForImage(Collection<String> selectedItems) {
+		
+		ImageDto imageDto = null;
+		AccountDto accountDto = new AccountDto();
+		accountDto.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+		for (String item : selectedItems) {
+			Integer id = Integer.parseInt(item);
+			imageDto = imageService.findImageByIdAndSiteId(id, siteDto.getSiteId());
+			if(imageDto == null) {
+				imageDto = imageService.findById(id);
+				imageDto.getSiteDto().add(siteDto);
+				imageDto.setAccountDto(accountDto);
+				imageService.update(imageDto);
+			} else if (assignedDtos.contains(((Dto)imageDto))) {
+				assignedDtos.remove(((Dto)imageDto));
 			}
-		}//end if
+		} 
+		removeAssignedContentDtos(assignedDtos);
+		Notification.show("Images saved successfully for site" + siteDto.getSiteName(), Notification.Type.TRAY_NOTIFICATION);
+	}
+	
+	private void updateListForArticle(Collection<String> selectedItems) {
+		
+		ArticleDto articleDto = null;
+		try {
+			for(String name : selectedItems ){
+				Integer articleId = Integer.parseInt(name);
+				articleDto = articleService.findArticleByIdAndSiteId(articleId,siteDto.getSiteId(), false);
+				if (articleDto==null){
+					articleDto = articleService.findById(articleId);
+					articleDto.getSite().add(siteDto);
+					articleService.update(articleDto);
+				}
+				else if (assignedDtos.contains(((Dto)articleDto))) {
+					assignedDtos.remove(((Dto)articleDto));
+				}
+			}//end outer for
+			removeAssignedContentDtos(assignedDtos);
+			Notification.show("Articles saved successfully for site" + siteDto.getSiteName(), Notification.Type.TRAY_NOTIFICATION);
+		}
+		catch (Exception e) {
+			LOGGER.error("Unable to assign article to site" + siteDto.getSiteName());
+			Notification.show("Unable to associate article with head" + articleDto .getHead()+ " for site" + siteDto.getSiteName(), Notification.Type.ERROR_MESSAGE);
+		}
 	}
 
 	private void removeAssignedContentDtos(Collection<Dto> dtos){
 		for(Dto dto:dtos ){
-			ArticleDto articleDto = articleService.findById(dto.getId());
-			articleDto.getSite().clear();
-			articleService.update(articleDto);
+			if(selectedType.equals(CONTENT_TYPE_ARTICLE)) {
+				ArticleDto articleDto = articleService.findById(dto.getId());
+				articleDto.getSite().clear();
+				articleService.update(articleDto);
+			} else if(selectedType.equals(CONTENT_TYPE_IMAGE)) {
+				ImageDto imageDto = imageService.findById(dto.getId());
+				imageDto.getSiteDto().clear();
+				AccountDto account = new AccountDto();
+				account.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+				imageDto.setAccountDto(account);
+				imageService.update(imageDto);
+			}
 		}
 	}
 	
@@ -173,6 +277,15 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		Collection <Dto> dtos = new ArrayList<Dto>();
 		for (ArticleDto articleDto : articleDtos){
 			Dto dto = new Dto(articleDto.getId(),articleDto.getHead());
+			dtos.add(dto);
+		}
+		return dtos;
+	}
+	
+	private Collection<Dto> populateGenericDtoFromImageDto(final Collection <ImageDto> imageDtos){
+		Collection <Dto> dtos = new ArrayList<Dto>();
+		for (ImageDto imageDto : imageDtos){
+			Dto dto = new Dto(imageDto.getId(),imageDto.getName());
 			dtos.add(dto);
 		}
 		return dtos;

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -15,6 +16,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.contento3.account.model.Account;
+import com.contento3.dam.image.library.model.ImageLibrary;
 import com.contento3.dam.storagetype.model.StorageType;
 
 /**
@@ -57,6 +59,21 @@ public class Document implements Serializable{
 	@JoinColumn(name = "DOCUMENT_TYPE_ID")
 	private DocumentType documentType;
 	
+	/**
+	 * Library associated with document
+	 */
+	@ManyToOne
+	@JoinColumn(name = "LIBRARY_ID")
+	private ImageLibrary contentLibrary;
+	
+	public ImageLibrary getContentLibrary() {
+		return contentLibrary;
+	}
+
+	public void setContentLibrary(ImageLibrary contentLibrary) {
+		this.contentLibrary = contentLibrary;
+	}
+
 	public Integer getDocumentId() {
 		return documentId;
 	}

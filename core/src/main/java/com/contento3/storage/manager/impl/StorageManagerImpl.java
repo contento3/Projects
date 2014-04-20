@@ -36,7 +36,7 @@ public class StorageManagerImpl implements StorageManager {
 		if (storageType.equals(StorageProviderEnum.DATABASE.toString())){
 			isSavedSuccessful = dbProvider.store(buildStorageProviderContext(storable.getFile(),accountId,mapping.getContentType(),storable));
 		}
-		//Otherwise the bytes of file needs to be stored in the storage and other metadata into the db.
+		//Otherwise the byttes of file needs to be stored in the storage and other metadata into the db.
 		//So first need to store in the storage and then save the row in the db
 		//We need to make sure that we dont save the actual bytes into the db now.
 		else {

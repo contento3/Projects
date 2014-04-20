@@ -33,6 +33,16 @@ public interface ImageDao extends GenericDao<Image,Integer>{
 	Collection<Image> findLatestImagesBySiteId(Integer siteId,Integer count);
 	
 	/**
+	 * return image by site id  
+	 * @param imageId TODO
+	 * @param siteId
+	 * @param count
+	 * @return
+	 */
+	
+	Image findImageByIdAndSiteId(Integer imageId, Integer siteId);
+	
+	/**
 	 * Return a {@link java.util.Collection} of image by library
 	 * @param imageId
 	 * @return

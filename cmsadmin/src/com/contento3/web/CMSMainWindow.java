@@ -32,7 +32,6 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.UriFragmentChangedEvent;
@@ -134,8 +133,9 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
 		//If its the demo account
 		//Set the demo username and password
+		isDemo = true;
 		if (isDemo){
-			usernameTxtFld.setValue("demo");
+			usernameTxtFld.setValue("guest123");
 			passwordTxtFld.setValue("guest123");
 		}
 		
@@ -157,10 +157,10 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		
 		final Button loginButton = new Button();
 		loginButton.setCaption("Login");
+		loginButton.focus();
 		loginButton.setTabIndex(3);
-		loginButton.setClickShortcut(KeyCode.ENTER);
 		loginLayout.addComponent(loginButton);
-		
+
 		loginButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
 

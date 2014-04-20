@@ -1,5 +1,7 @@
 package com.contento3.web.common.helper;
 
+import com.vaadin.ui.Button.ClickEvent;
+
 public class EntityListener {
 
 	/**
@@ -21,5 +23,10 @@ public class EntityListener {
 	public void updateList(){
 	}
 	
+	/**
+	 * used in extended class to handle items button click listener
+	 */
+	public void entityButtonClickListener(ClickEvent event) {
+	}
 	
 }

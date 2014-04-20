@@ -25,6 +25,7 @@ import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
+import com.contento3.security.user.model.SaltedHibernateUser;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 
 public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
@@ -68,6 +69,7 @@ public class DefaultAuthenticationAuthorizationRealm extends AuthorizingRealm {
 		
 		final SaltedHibernateUserDto userr = (SaltedHibernateUserDto) principals.fromRealm(getName()).iterator().next();
 	    final Integer userId= userr.getId();
+		final SaltedHibernateUserDto user = saltedHibernateUserService.findUserById(userId);
 		final Collection<GroupDto> groups = (Collection<GroupDto>) groupService.findByUserId(userId);
 		
 		if(groups != null) {

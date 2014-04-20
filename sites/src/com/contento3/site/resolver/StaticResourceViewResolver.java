@@ -3,7 +3,6 @@ package com.contento3.site.resolver;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -23,8 +22,6 @@ import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 import com.contento3.util.DomainUtil;
-import com.mchange.lang.ArrayUtils;
-import com.mysql.jdbc.Util;
 
 public class StaticResourceViewResolver extends AbstractView {
 	private static final Logger LOGGER = Logger.getLogger(StaticResourceViewResolver.class);
@@ -104,7 +101,7 @@ public class StaticResourceViewResolver extends AbstractView {
 						 response.getOutputStream().write(image);
 						 response.getOutputStream().close();
 					 }
-	    		 }
+				}
 				else {
 						final TemplateDto templateDto = templateService.findTemplateByNameAndAccount(request.getRequestURI(),accountDto.getAccountId());
 			    		if (requestURI.contains("js/")){
