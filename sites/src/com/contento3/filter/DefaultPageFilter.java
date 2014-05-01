@@ -11,6 +11,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -35,6 +38,12 @@ public class DefaultPageFilter implements Filter {
 	    final SiteService siteService = (SiteService)context.getBean("siteService");
 	    final PageService pageService = (PageService)context.getBean("pageService");
 	    
+    	final UsernamePasswordToken token = new UsernamePasswordToken("guest123","guest123");
+	    final Subject subject =   SecurityUtils.getSubject();
+	    if (!subject.isAuthenticated()){
+	    	subject.login(token);
+	    }
+	    
 	    SiteDto site=null;
 	    final String domainName = DomainUtil.fetchDomain((HttpServletRequest)request);
 	    if( !domainName.equals("localhost") ){
@@ -46,7 +55,7 @@ public class DefaultPageFilter implements Filter {
 
 	    String requestURI = ((HttpServletRequest)request).getRequestURI();
 	    request.setAttribute("site", site);
-	    if (requestURI.equals("/")){
+	    if (site!=null && requestURI.equals("/")){
 	    	try {
 	    		final Integer defaultPageId = site.getDefaultPageId();
 	    		if (null!=defaultPageId)

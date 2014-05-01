@@ -88,7 +88,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 		TemplateDirectoryService templateDirectoryService = (TemplateDirectoryService)helper.getBean("templateDirectoryService");
 		TemplateService templateService = (TemplateService)helper.getBean("templateService");
 
-		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false);
+		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false,(Integer)SessionHelper.loadAttribute("accountId"));
 
 		final TemplateListingHelper templateListingHelper = new TemplateListingHelper();
 		

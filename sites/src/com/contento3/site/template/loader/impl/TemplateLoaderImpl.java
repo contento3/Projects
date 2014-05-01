@@ -4,14 +4,15 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
-import com.contento3.cms.page.template.model.Template;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.common.exception.EntityNotFoundException;
+import com.contento3.site.page.PageResourceUtil;
 import com.contento3.site.template.assembler.Assembler;
 import com.contento3.site.template.dto.TemplateContentDto;
 import com.contento3.site.template.loader.TemplateLoader;
@@ -32,13 +33,6 @@ public class TemplateLoaderImpl implements TemplateLoader {
 	
 	private TemplateService templateService; 
 	
-	private static final String PAGE = "page";
-	private static final String ARTICLE = "article";
-	private static final String BLOG = "blog";
-	private static final String STORY = "story";
-	private static final String UNKNOWN = "unknown";
-	private static final String TEMPLATE = "template";
-
 	public TemplateLoaderImpl(final Assembler assembler,final SiteService siteService,final TemplateService templateService){
 		this.assembler = assembler;
 		this.siteService = siteService;
@@ -46,29 +40,39 @@ public class TemplateLoaderImpl implements TemplateLoader {
 	}
 
 	@Override
-	public TemplateContentDto load(final String resourceName, final Integer siteId) {
+	public TemplateContentDto load(final String resourceName, final Integer siteId,final PageDto pageDto) {
 		TemplateContentDto dto = null;
 		try {
 			final String resourceType = fetchTemplateResourceType(resourceName);
-			if (resourceType.equals(PAGE)){
-				String[] pageUri = resourceName.split("page/");
-				String pagePath = "";
-				if (resourceName.contains("page/")) {
-					pagePath = pageUri[1];
-				} else {
-					pagePath = pageUri[0];
-				}
+			if (resourceType.equals(PageResourceUtil.PAGE)){
+//				String[] pageUri = resourceName.split("page/");
+//				String pagePath = "";
+//				if (resourceName.contains("page/")) {
+//					pagePath = pageUri[1];
+//				} else {
+//					pagePath = pageUri[0];
+//					
+//					//Split it further to see for any category in the url
+//					pagePath = pagePath.split("/")[1];
+//				}
 
-				 dto = findTemplate(pagePath,siteId);
+				 dto = findTemplate(pageDto);
 			}
-			else if (resourceType.equals(TEMPLATE)) {
+			else if (resourceType.equals(PageResourceUtil.TEMPLATE)) {
 				if(resourceName.startsWith("/template_key") || resourceName.startsWith("template_key") ){
-					dto = findDirectTemplateByKey(resourceName,siteId);
+					dto = findDirectTemplateByKey(resourceName,siteId,"template_key/");
 				}else{
-					dto = findDirectTemplate(resourceName,siteId);
+					dto = findDirectTemplate(resourceName,siteId,"/template");
 				}
 			}
-			else if (resourceType.equals(ARTICLE)) {
+			else if (resourceType.equals(PageResourceUtil.GLOBAL_TEMPLATE)) {
+				if(resourceName.startsWith("/global_template_key") || resourceName.startsWith("global_template_key") ){
+					dto = findDirectTemplateByKey(resourceName,siteId,"global_template_key/");
+				}else{
+					dto = findDirectTemplate(resourceName,siteId,"/global_template");
+				}
+			}
+			else if (resourceType.equals(PageResourceUtil.ARTICLE)) {
 				 dto = findArticleDetailTemplate(siteId);
 			}
 			else {
@@ -89,15 +93,18 @@ public class TemplateLoaderImpl implements TemplateLoader {
 	 */
 	private String fetchTemplateResourceType(final String resourceName){
 		if (resourceName.startsWith("article/") || resourceName.startsWith("blog/") || resourceName.startsWith("story/")){
-			return ARTICLE;
+			return PageResourceUtil.ARTICLE;
 		}
 		else if (resourceName.equals(SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS.getValue())) {
 			return SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS.toString();
 		}
 		else if (resourceName.startsWith("/template") || resourceName.startsWith("template") || resourceName.startsWith("/template_key") || resourceName.startsWith("template_key") ) {
-			return TEMPLATE;
+			return PageResourceUtil.TEMPLATE;
 		}
-		else return PAGE;
+		else if (resourceName.startsWith("/global_template") || resourceName.startsWith("global_template") || resourceName.startsWith("/global_template_key") || resourceName.startsWith("global_template_key") ) {
+			return PageResourceUtil.GLOBAL_TEMPLATE;
+		}
+		else return PageResourceUtil.PAGE;
 	}
 	
 	/**
@@ -122,9 +129,9 @@ public class TemplateLoaderImpl implements TemplateLoader {
 		return dto;
 	}
 
-	private TemplateContentDto findDirectTemplate(String templatePath,Integer siteId) throws Exception  {
+	private TemplateContentDto findDirectTemplate(String templatePath,Integer siteId,final String splitter) throws Exception  {
 		TemplateContentDto dto=null;
-		final String[] templateName = templatePath.split("template/");
+		final String[] templateName = templatePath.split(splitter,0);
 		final SiteDto site = siteService.findSiteById(siteId);
 		final TemplateDto template = templateService.findTemplateByPathAndAccount(templateName[1], site.getAccountDto().getAccountId());
 		dto = new TemplateContentDto();
@@ -143,16 +150,17 @@ public class TemplateLoaderImpl implements TemplateLoader {
 	 * @throws Exception 
 	 */
 	private TemplateContentDto findDirectTemplateByKey(String templatePath,
-			Integer siteId) throws Exception {
+			Integer siteId,final String splitter) throws Exception {
 		TemplateContentDto dto=null;
-		final String[] templateKey = templatePath.split("template_key/");
+		final String[] templateKey = templatePath.split(splitter);
 		final SiteDto site = siteService.findSiteById(siteId);
 		final TemplateDto template = templateService.findTemplateByKeyAndAccount(templateKey[1], site.getAccountDto().getAccountId());
 		dto = new TemplateContentDto();
 		dto.setContent(template.getTemplateText());
 		return dto;
 	}
-	private TemplateContentDto findTemplate(String path,Integer siteId) throws IOException {
+	
+	private TemplateContentDto findTemplate(final PageDto pageDto) throws IOException {
 		TemplateContentDto dto=null;
 
 		 //Otherwise its an actual page
@@ -173,8 +181,7 @@ public class TemplateLoaderImpl implements TemplateLoader {
 			//2. siteid
 	
 				try {
-					path = path.startsWith("/")?path : String.format("/%s",path);
-					dto = assembler.assemble(siteId,path);
+					dto = assembler.assemble(pageDto);
 				} catch (PageNotFoundException e) {
 					throw new IOException("Requested page not found",e);
 				}

@@ -50,7 +50,8 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 		associatedContentScopeDao.delete(associatedContentScopeAssembler.dtoToDomain(dtoToDelete));
 
 	}
-	@RequiresPermissions("ASSOCIATED_CONTENT:VIEW")
+	
+	//@RequiresPermissions("ASSOCIATED_CONTENT:VIEW")
 	@Override
 	public 	Collection<AssociatedContentScopeDto> getContentScopeForType(final AssociatedContentScopeTypeEnum scopeType)
 	{
@@ -58,7 +59,7 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 		return this.associatedContentScopeAssembler.domainsToDtos(this.associatedContentScopeDao.findAll());
 	}
 
-	@RequiresPermissions("ASSOCIATED_CONTENT:VIEW")
+	//@RequiresPermissions("ASSOCIATED_CONTENT:VIEW")
 	@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
 	@Override
 	public AssociatedContentScopeDto findById(Integer contentScopeId) {

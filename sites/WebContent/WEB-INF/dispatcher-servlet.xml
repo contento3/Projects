@@ -11,6 +11,11 @@
 
  <import resource="applicationContext-site-security.xml"/>
 
+  <context:component-scan base-package="com.contento3.site.controller" />
+
+ <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">    
+ </bean>  
+    
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<value>
@@ -36,7 +41,10 @@
 </mvc:interceptors> 
 
 <bean id="pageController" class="com.contento3.site.controller.PageController">
-</bean>
+		<property name="pageService" ref="pageService" />
+		<property name="siteService" ref="siteService" />
+		<property name="templateEngine" ref="templateEngine" />
+	</bean>
  
 <bean id="registrationController" class="com.contento3.site.registration.UserRegistrationController">
 	<property name="registrationService" ref="userRegistrationService" />
@@ -160,6 +168,9 @@
     </property>
   </bean>
 
+  <bean id="setupDialect" class="com.contento3.thymeleaf.dialect.setup.SetupDialect">
+  </bean>  
+
   <bean id="articleDialect" class="com.contento3.thymeleaf.dialect.article.ArticleDialect">
       <property name="articleProcessor" ref="articleProcessor" />
   </bean>  
@@ -178,12 +189,17 @@
 	      <property name="pageService" ref="pageService" />
 	</bean>  
 
+	<bean id="standardCacheManager" class="org.thymeleaf.cache.StandardCacheManager">
+	</bean>
+	
   <bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
-    <property name="templateResolver" ref="templateResolver" /> 
+    <property name="templateResolver" ref="templateResolver" />
+    <property name="cacheManager" ref="standardCacheManager"/>
     <property name="additionalDialects">
     	<set>
       		<ref local="articleDialect" />
       		<ref local="navigationDialect" />
+      		<ref local="setupDialect" />
     	</set>
   	</property>
   </bean>

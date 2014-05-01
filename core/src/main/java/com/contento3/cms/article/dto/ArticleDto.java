@@ -1,10 +1,9 @@
 package com.contento3.cms.article.dto;
 
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-
-import javax.persistence.Column;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -228,6 +227,26 @@ public class ArticleDto extends Dto {
 		this.seoFriendlyUrl = seoFriendlyUrl;
 	}
 
+	public Calendar getCalendarDatePosted(){
+		if (this.datePosted==null){
+			return null;
+		}	
+		
+		final Calendar cal = Calendar.getInstance();
+		cal.setTime(this.datePosted);
+		return cal;
+	}
+	
+	public Calendar getCalendarDateCreated(){
+		if (this.dateCreated==null){
+			return null;
+		}	
+
+		final Calendar cal = Calendar.getInstance();
+		cal.setTime(dateCreated);
+		return cal;
+	}
+	
     /*
      * (non-Javadoc)
      * @see java.lang.Object#hashCode()

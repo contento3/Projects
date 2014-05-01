@@ -2,13 +2,12 @@ package com.contento3.thymeleaf.resolver;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.support.RequestContext;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.TemplateProcessingParameters;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.util.Validate;
 
@@ -42,37 +41,38 @@ public String getName() {
     return NAME; 
 }
 
-
+	
 public InputStream getResourceAsStream(final TemplateProcessingParameters templateProcessingParameters, String resourceName) {
     Validate.notNull(resourceName, "Resource name cannot be null");
     TemplateContentDto dto = null;
 
-    final RequestContext requestContext = (RequestContext)templateProcessingParameters.getContext().getVariables().get("springRequestContext");
-	final Map<String,Object> map = requestContext.getModel();
-	final SiteDto site = (SiteDto)map.get("site");
-	Validate.notNull(site, "site cannot be null");
+    if (resourceName.equalsIgnoreCase("/favicon.ico"))
+    return null;
+    
+    final SiteDto site = (SiteDto)templateProcessingParameters.getContext().getVariables().get("site");
+    final PageDto currentPage = (PageDto)templateProcessingParameters.getContext().getVariables().get("page");
+
+    Validate.notNull(site, "site cannot be null");
 	
     try {
-
-    	if(site.getSiteId() == null) {
+    	if(site.getSiteId() == null) {	
     		 return new ByteArrayInputStream(new String("Site not found").getBytes());
     	}
-    	
-    	
-    	//Look for site default page if the reource name starts with "/"
+
+    	//Look for site default page if the resource name starts with "/"
     	if (resourceName.equals("/")){
     		final PageDto pageDto = pageService.findById(site.getDefaultPageId());
     		resourceName = pageDto.getUri();
     	}
 
     	final Integer siteId = site.getSiteId();
-    	dto = templateLoader.load(resourceName, siteId);
+    	dto = templateLoader.load(resourceName, siteId,currentPage);
 
     	if (null==dto){
     		dto = templateLoader.loadErrorTemplate("SIMPLE", resourceName,siteId);
     	}
    	
-        return 	new ByteArrayInputStream(dto.getContent().getBytes());
+    	return 	new ByteArrayInputStream(dto.getContent().getBytes());
 
     } catch (final Exception e) {
         if (logger.isDebugEnabled()) {

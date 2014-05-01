@@ -162,7 +162,8 @@ public class ArticleServiceImpl implements ArticleService {
 		// TODO Auto-generated method stub
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 	}
-	@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:EDIT")
+	
+	//@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void updateAssociateImages(final ArticleDto articleDto){

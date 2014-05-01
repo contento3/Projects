@@ -1,11 +1,16 @@
 package com.contento3.site.resolver;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.imgscalr.Scalr;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.contento3.account.dto.AccountDto;
@@ -41,7 +46,11 @@ public class StaticResourceViewResolver extends AbstractView {
 			final HttpServletResponse response) {
 		
 		final String requestURI = request.getRequestURI();
-		final String[] pageUri = requestURI.split("/image/");
+		
+		//Just in case jsession is appended by thymeleaf.Remove it first
+		final String[] jsessionIdSplit = requestURI.split(";");
+		
+		final String[] pageUri = jsessionIdSplit[0].split("/image/");
 		String resourcePath ="";
 		
 	    final String siteDomain = DomainUtil.fetchDomain(request);
@@ -59,7 +68,37 @@ public class StaticResourceViewResolver extends AbstractView {
 						LOGGER.warn(String.format("Unable to find resource for path [%s]",resourcePath));
 					 }
 					 else {
-						 response.getOutputStream().write(imageDto.getImage());
+						 byte[] image = imageDto.getImage();
+						 String[] widthAndHeightArray = null;
+						 
+						 if (null!=request.getParameter("size"))
+						 {
+							 widthAndHeightArray = request.getParameter("size").split("_");
+						 }
+							
+						 try {	
+							 if(widthAndHeightArray!=null && widthAndHeightArray.length > 0){
+						
+								 Integer width = new Integer(widthAndHeightArray[0]);
+								 BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(image));
+								 if(widthAndHeightArray.length > 1){
+									 Integer height = new Integer(widthAndHeightArray[1]);
+									 bufferedImage = Scalr.resize(bufferedImage,width,height);
+								 }
+								 else {
+									 bufferedImage = Scalr.resize(bufferedImage,width);
+								 }
+								
+								 final ByteArrayOutputStream os = new ByteArrayOutputStream();
+								 ImageIO.write(bufferedImage, "gif", os);	
+								 os.flush();
+								 image = os.toByteArray();
+								 os.close();
+							 	}
+							 } catch (Exception e) {
+							 // TODO: handle exception
+							 }
+						 response.getOutputStream().write(image);
 						 response.getOutputStream().close();
 					 }
 				}
