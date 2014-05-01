@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.ContextLoader;
 import org.thymeleaf.context.IProcessingContext;
@@ -20,10 +21,15 @@ import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.category.service.impl.CategoryServiceImpl;
 import com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest;
+import com.contento3.cms.page.service.impl.PageServiceImpl;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.site.template.model.TemplateModelMap;
 import com.contento3.site.template.model.TemplateModelMapImpl;
 
 public class CategoryTemplateHelper {
+	
+	private static final Logger LOGGER = Logger.getLogger(CategoryTemplateHelper.class);
+	
     /**
      * Format a Joda DateTime using the given pattern.
      *
@@ -32,17 +38,28 @@ public class CategoryTemplateHelper {
      * @return Formatted date string.
      */
 	CategoryService categoryService ;
-    public ArrayList<CategoryDto> showCategoryListing(final int catId,final int accountId) {
-            final Collection<CategoryDto> temp = this.categoryService.findChildCategories(catId,accountId);
-            ArrayList<CategoryDto> categoryList = new ArrayList<CategoryDto>();
-//            String html ="<ul>";
-            for (final CategoryDto categoryDto : temp) {
-//				html += "<li>" + categoryDto.getName() + "</li>";
+
+	public ArrayList<CategoryDto> showCategoryListing(final int catId,
+			final int accountId) {
+		Collection<CategoryDto> temp;
+		try {
+			temp = this.categoryService.findChildCategories(catId, accountId);
+
+			ArrayList<CategoryDto> categoryList = new ArrayList<CategoryDto>();
+			// String html ="<ul>";
+			for (final CategoryDto categoryDto : temp) {
+				// html += "<li>" + categoryDto.getName() + "</li>";
 				categoryList.add(categoryDto);
 			}
-//            html += "</ul>";
-            return categoryList;
-    }
+		
+			// html += "</ul>";
+			return categoryList;
+		} catch (EntityNotFoundException e) {
+			LOGGER.debug(e.getMessage());
+		}
+		return null;
+	}
+	
 	public CategoryTemplateHelper() {
 		ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
 		this.categoryService = (CategoryService) ctx.getBean("categoryService");

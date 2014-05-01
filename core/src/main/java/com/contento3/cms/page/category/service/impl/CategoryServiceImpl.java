@@ -16,9 +16,13 @@ import com.contento3.cms.page.category.model.Category;
 import com.contento3.cms.page.category.service.CategoryAssembler;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
+import com.contento3.common.exception.EntityNotFoundException;
 
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 public class CategoryServiceImpl implements CategoryService {
+	
+	private final static String MSG_CATEGORY_NOT_FOUND = "Category not found";
+	private final static String MSG_CATEGORIES_NOT_FOUND = "Categories not found";
 
 	/**
 	 * Data access layer for category.
@@ -78,32 +82,45 @@ public class CategoryServiceImpl implements CategoryService {
 	@RequiresPermissions("CATEGORY:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public CategoryDto findCategoryByName(final String categoryName,final Integer accountId) {
+	public CategoryDto findCategoryByName(final String categoryName,final Integer accountId) throws EntityNotFoundException {
 		Validate.notNull(categoryName,"categoryName cannot be null");
 		Validate.notNull(accountId,"accountId cannot be null");
 		final Category category = categoryDao.findCategoryByName(categoryName,accountId);
+		
+		if(category == null)
+			throw new EntityNotFoundException(MSG_CATEGORY_NOT_FOUND);
+		
 		final CategoryDto categoryDto = categoryAssembler.domainToDto(category);
+		
 		return categoryDto;
 	}
 	
 	@RequiresPermissions("CATEGORY:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<CategoryDto> findNullParentIdCategory(final Integer accountId){
+	public Collection<CategoryDto> findNullParentIdCategory(final Integer accountId) throws EntityNotFoundException {
 		Validate.notNull(accountId,"accountId cannot be null");
 		Collection<Category> categories = categoryDao.findNullParentIdCategory(accountId);
 		Collection<CategoryDto> categoryDtos = categoryAssembler.domainsToDtos(categories);
+		
+		if( categoryDtos == null) 
+			throw new EntityNotFoundException(MSG_CATEGORIES_NOT_FOUND);
+		
 		return categoryDtos;
 	}
 	
 	@RequiresPermissions("CATEGORY:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<CategoryDto> findChildCategories(final Integer parentId,final Integer accountId){
+	public Collection<CategoryDto> findChildCategories(final Integer parentId,final Integer accountId) throws EntityNotFoundException {
 		Validate.notNull(parentId,"parentId cannot be null");
 		Validate.notNull(accountId,"accountId cannot be null");
 		Collection<Category> categories = categoryDao.findChildCategories(parentId,accountId);
 		Collection<CategoryDto> categoryDtos = categoryAssembler.domainsToDtos(categories);
+		
+		if( categoryDtos == null) 
+			throw new EntityNotFoundException(MSG_CATEGORIES_NOT_FOUND);
+		
 		return categoryDtos;
 	}
 
@@ -127,17 +144,27 @@ public class CategoryServiceImpl implements CategoryService {
 	@RequiresPermissions("CATEGORY:VIEW_LISTING")
 	@Transactional(readOnly = true)
 	@Override
-	public Collection<CategoryDto> findByAccountId(final Integer accountId){
+	public Collection<CategoryDto> findByAccountId(final Integer accountId) throws EntityNotFoundException {
 		Validate.notNull(accountId,"accountId cannot be null");
-		return categoryAssembler.domainsToDtos(categoryDao.findAll()); //MARK BROKEN FUNCTIONALITY
+		Collection<CategoryDto> categories = categoryAssembler.domainsToDtos(categoryDao.findAll()); //MARK BROKEN FUNCTIONALITY
+		
+		if(categories == null) 
+			throw new EntityNotFoundException(MSG_CATEGORIES_NOT_FOUND);
+		
+		return categories;
 	}
 	
 	@RequiresPermissions("CATEGORY:VIEW")
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-	public CategoryDto findById(Integer id) {
+	public CategoryDto findById(Integer id) throws EntityNotFoundException {
 		Validate.notNull(id,"id cannot be null");
-		return categoryAssembler.domainToDto(categoryDao.findById(id));
+		CategoryDto category = categoryAssembler.domainToDto(categoryDao.findById(id));
+		
+		if(category == null) 
+			throw new EntityNotFoundException(MSG_CATEGORY_NOT_FOUND);
+		
+		return category;
 	}
 	
 	@RequiresPermissions("CATEGORY:DELETE")
