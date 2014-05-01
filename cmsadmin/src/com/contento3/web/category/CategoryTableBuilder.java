@@ -2,6 +2,7 @@ package com.contento3.web.category;
 
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
@@ -71,26 +72,35 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 		Item item = container.addItem(categoryId);
 		item.getItemProperty("category").setValue(category.getName());
 
-		Button editButton = new Button("Edit");
-		editButton.addClickListener(new CategoryPopup(contextHelper,(TreeTable)treeTable,tabSheet));
-		editButton.setStyleName(BaseTheme.BUTTON_LINK);
-		editButton.setData(categoryId);
+		if (SecurityUtils.getSubject().isPermitted("CATEGORY:EDIT")) {
+		
+			Button editButton = new Button("Edit");
+			editButton.addClickListener(new CategoryPopup(contextHelper,(TreeTable)treeTable,tabSheet));
+			editButton.setStyleName(BaseTheme.BUTTON_LINK);
+			editButton.setData(categoryId);
+			item.getItemProperty("Edit").setValue(editButton);
+		}
+		
+		if (SecurityUtils.getSubject().isPermitted("CATEGORY:DELETE")) {
 
-		Button deleteButton = new Button("Delete");
-		deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
-		deleteButton.setData(categoryId);
-		deleteButton.addClickListener(new EntityDeleteClickListener<CategoryDto>(category,categoryService,deleteButton,treeTable));
-
-		item.getItemProperty("Edit").setValue(editButton);
-		item.getItemProperty("Delete").setValue(deleteButton);
+			Button deleteButton = new Button("Delete");
+			deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
+			deleteButton.setData(categoryId);
+			deleteButton.addClickListener(new EntityDeleteClickListener<CategoryDto>(category,categoryService,deleteButton,treeTable));
+			item.getItemProperty("Delete").setValue(deleteButton);
+		}
 	}
 
 
 	@Override
 	public void buildHeader(final TreeTable treeTable,final HierarchicalContainer container) {
 		container.addContainerProperty("category", String.class, null);
-		container.addContainerProperty("Edit", Button.class, null);
-		container.addContainerProperty("Delete", Button.class, null);
+		if (SecurityUtils.getSubject().isPermitted("CATEGORY:EDIT")) {
+			container.addContainerProperty("Edit", Button.class, null);
+		}
+		if (SecurityUtils.getSubject().isPermitted("CATEGORY:DELETE")) {
+			container.addContainerProperty("Delete", Button.class, null);
+		}
 
 		treeTable.setWidth(100, Unit.PERCENTAGE);
 		treeTable.setContainerDataSource(container);

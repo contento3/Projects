@@ -3,6 +3,7 @@ package com.contento3.web.category;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
@@ -254,6 +255,8 @@ implements Window.CloseListener,Button.ClickListener {
 			resetTable();
 		} catch (EntityAlreadyFoundException e) {
 			Notification.show("Category already found.");
+		} catch (AuthorizationException ae) {
+			LOGGER.debug(ae.getMessage());
 		}
 		UI.getCurrent().removeWindow(popupWindow);
     }

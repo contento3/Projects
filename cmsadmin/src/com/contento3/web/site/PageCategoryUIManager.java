@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
@@ -107,7 +108,10 @@ public class PageCategoryUIManager implements UIManager{
 
 			GridLayout toolbarGridLayout = new GridLayout(1,1);
 			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-			listeners.add(new AddCategoryClickListener(contextHelper, categoryTable,tabSheet ));
+			
+			if (SecurityUtils.getSubject().isPermitted("CATEGORY:ADD")){
+				listeners.add(new AddCategoryClickListener(contextHelper, categoryTable,tabSheet ));
+			}
 			
 			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"category",listeners);
 			builder.build();
