@@ -34,6 +34,7 @@ public class ArticleServiceImpl implements ArticleService {
 		this.articleDao = articleDao;
 		this.articleImageAssembler = articleImageAssembler;
 	}
+
 	@RequiresPermissions("ARTICLE:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -133,7 +134,7 @@ public class ArticleServiceImpl implements ArticleService {
 	@RequiresPermissions("ARTICLE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public ArticleDto findByUuid(String uuid, boolean isPublished) {
+	public ArticleDto findByUuid(final String uuid, final Boolean isPublished) {
 		Validate.notNull(uuid,"uuid cannot be null");
 		return articleAssembler.domainToDto(articleDao.findByUuid(uuid, isPublished));
 	}
@@ -196,6 +197,12 @@ public class ArticleServiceImpl implements ArticleService {
 			articleDto = articleAssembler.domainToDto(article);
 		}
 		return articleDto;
+	}
+
+	@Override
+	public ArticleDto findById(final Integer id,final Boolean isPublished) {
+		Article article = articleDao.findById(id,isPublished);
+		return articleAssembler.domainToDto(article);
 	}
 	
 	

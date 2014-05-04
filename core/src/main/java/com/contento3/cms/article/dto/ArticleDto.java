@@ -94,6 +94,12 @@ public class ArticleDto extends Dto {
 	 */
 	private Integer status;
 
+	/**
+	 * Complete article path like
+	 * /parentcategory/childcategory/seo_friendly_article 
+	 * if there is no category then this will always be equal seo-friendly-url
+	 */
+	private String articlePath;
 
 	public Integer getStatus() {
 		return status;
@@ -282,6 +288,14 @@ public class ArticleDto extends Dto {
       }
       return isEqual;
     }
+
+	public String getArticlePath() {
+		return this.articlePath;
+	}
+
+	public void setArticlePath(String articlePath) {
+		this.articlePath = articlePath;
+	}
 
  
 }

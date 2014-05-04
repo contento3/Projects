@@ -133,7 +133,6 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 
 		//If its the demo account
 		//Set the demo username and password
-		isDemo = true;
 		if (isDemo){
 			usernameTxtFld.setValue("guest123");
 			passwordTxtFld.setValue("guest123");

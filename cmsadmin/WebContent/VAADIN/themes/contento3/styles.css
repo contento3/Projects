@@ -7079,3 +7079,8 @@ body .contento3.v-app .v-app-loading {
 	margin-left: 45%;
 	height: 150px;
 }
+
+.contento3 .horizontalForm { 
+	text-align: left;
+}
+

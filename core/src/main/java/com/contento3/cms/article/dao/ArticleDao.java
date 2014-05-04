@@ -32,7 +32,15 @@ public interface ArticleDao extends GenericDao<Article,Integer> {
 	 * @param isPublished 
 	 * @return
 	 */
-	Article findByUuid(String uuid, boolean isPublished);
+	Article findByUuid(String uuid, Boolean isPublished);
+	
+	/**
+	 * return article by their Published/unpublished status
+	 * @param id
+	 * @param isPublished 
+	 * @return
+	 */
+	Article findById(Integer id, Boolean isPublished);
 	
 	/**
 	 * find latest article by site id

@@ -207,7 +207,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 		formLayout = new VerticalLayout();
 		//formLayout.setHeight(100,Unit.PERCENTAGE);
 		formLayout.setWidth(80,Unit.PERCENTAGE);
-
+		formLayout.setHeight(2,Unit.PIXELS);
 		screenHeader = new ScreenHeader(formLayout,"Article");
 
 		parentLayout = new HorizontalLayout();

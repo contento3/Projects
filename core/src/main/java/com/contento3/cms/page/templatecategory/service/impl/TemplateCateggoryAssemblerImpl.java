@@ -16,8 +16,8 @@ public class TemplateCateggoryAssemblerImpl implements
 	@Override
 	public TemplateCategory dtoToDomain(TemplateCategoryDto dto) {
 		TemplateCategory domain = new TemplateCategory();
-		if(dto.getTemlateCategoryId()!=null)
-			domain.setTemlateCategoryId(dto.getTemlateCategoryId());
+		if(dto.getTemplateCategoryId()!=null)
+			domain.setTemlateCategoryId(dto.getTemplateCategoryId());
 		
 		domain.setTemplateCategoryName(dto.getTemplateCategoryName());
 		
@@ -32,7 +32,7 @@ public class TemplateCateggoryAssemblerImpl implements
 	@Override
 	public TemplateCategoryDto domainToDto(TemplateCategory domain) {
 		TemplateCategoryDto dto = new TemplateCategoryDto();
-		dto.setTemlateCategoryId(domain.getTemlateCategoryId());
+		dto.setTemplateCategoryId(domain.getTemlateCategoryId());
 		dto.setTemplateCategoryName(domain.getTemplateCategoryName());
 		
 		dto.setTemplateCategoryDescription(domain.getTemplateCategoryDescription());

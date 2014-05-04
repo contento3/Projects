@@ -33,9 +33,9 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		
 		dto.setAccountId(domain.getAccount().getAccountId());
 		
-//		if(domain.getParent()!=null){
-//			dto.setParent(domainToDto(domain.getParent()));
-//		}
+		if(domain.getParent()!=null){
+			dto.setParent(domainToDtoParent(domain.getParent()));
+		}
 		
 		Collection <Category> children = domain.getChild();
 		Collection <CategoryDto> categoryChildren = new ArrayList<CategoryDto>();
@@ -47,6 +47,22 @@ public class CategoryAssemblerImpl implements CategoryAssembler {
 		return dto;	
 	}//end domainToDto()
 
+	public CategoryDto domainToDtoParent(Category domain) {
+		CategoryDto dto = new CategoryDto();
+		dto.setCategoryId(domain.getCategoryId());
+		dto.setName(domain.getCategoryName());
+		
+		dto.setAccountId(domain.getAccount().getAccountId());
+		
+		if(domain.getParent()!=null){
+			dto.setParent(domainToDtoParent(domain.getParent()));
+		}
+		
+		return dto;	
+	}//end domainToDto()
+
+	
+	
 	@Override
 	public Collection<CategoryDto> domainsToDtos(Collection<Category> domains) {
 		Collection <CategoryDto> dtos = new ArrayList<CategoryDto>();

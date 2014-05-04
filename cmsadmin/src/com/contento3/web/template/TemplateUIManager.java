@@ -150,11 +150,10 @@ public class TemplateUIManager implements UIManager {
 	public TemplateUIManager(final TabSheet uiTabSheet,
 			final SpringContextHelper helper) {
 		this.helper = helper;
-		this.templateService = (TemplateService) helper
-				.getBean("templateService");
-		this.templateDirectoryService = (TemplateDirectoryService) helper
-				.getBean("templateDirectoryService");
-
+		this.templateService = (TemplateService) helper.getBean("templateService");
+		this.templateDirectoryService = (TemplateDirectoryService) helper.getBean("templateDirectoryService");
+		this.templateCategoryService = (TemplateCategoryService) helper.getBean("templateCategoryService");
+		
 		// Get accountId from the session
 		this.accountId = (Integer) SessionHelper.loadAttribute("accountId");
 		this.globalTemplateDirContainer = new HierarchicalContainer();
@@ -241,10 +240,7 @@ public class TemplateUIManager implements UIManager {
         addTeCat.addClickListener(new ClickListener() {
                     private static final long serialVersionUID = 1L;
                     public void click(ClickEvent event) {
-                    	System.out.println("i am hereee");
-                    	
-                    	UI.getCurrent().addWindow(new NewDirectoryPopup(helper));
-                    
+                    	UI.getCurrent().addWindow(new NewTemplateCategoryPopup(helper));
                     }
             });	
 		final Embedded deleteIcon = imageLoader

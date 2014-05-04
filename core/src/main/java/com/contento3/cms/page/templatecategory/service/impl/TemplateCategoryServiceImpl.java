@@ -57,27 +57,8 @@ public class TemplateCategoryServiceImpl implements TemplateCategoryService {
 	}
 
 	@Override
-	public Collection<TemplateCategoryDto> findNullParentIdCategory(Integer accountId) {
-		
-		return null;
-	}
-
-	@Override
-	public Collection<TemplateCategoryDto> findChildCategories(Integer parentId,
-			Integer accountId) {
-		
-		return null;
-	}
-
-	@Override
 	public Integer create(TemplateCategoryDto categoryDto, Integer parentId)
 			throws EntityAlreadyFoundException {
-		
-		return null;
-	}
-
-	@Override
-	public Collection<TemplateCategoryDto> findByAccountId(Integer accountId) {
 		
 		return null;
 	}
@@ -92,6 +73,11 @@ public class TemplateCategoryServiceImpl implements TemplateCategoryService {
 	public void update(TemplateCategoryDto categoryDto, Integer parentCategroyId) {
 		
 
+	}
+
+	@Override
+	public Collection<TemplateCategoryDto> findAll() {
+		return templateCategoryAssembler.domainsToDtos(templateCategoryDao.findAll());
 	}
 
 }

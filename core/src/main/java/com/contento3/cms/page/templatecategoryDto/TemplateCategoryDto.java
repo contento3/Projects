@@ -1,24 +1,45 @@
 package com.contento3.cms.page.templatecategoryDto;
 
-public class TemplateCategoryDto {
-	private Integer temlateCategoryId;
+import com.contento3.common.dto.Dto;
+
+public class TemplateCategoryDto extends Dto {
+	
+	private Integer templateCategoryId;
+	
 	private String templateCategoryName;
+	
 	private String templateCategoryDescription;
-	public Integer getTemlateCategoryId() {
-		return temlateCategoryId;
+	
+	@Override
+	public Integer getId(){
+		return this.getTemplateCategoryId();
 	}
-	public void setTemlateCategoryId(Integer temlateCategoryId) {
-		this.temlateCategoryId = temlateCategoryId;
+	
+	@Override
+	public String getName(){
+		return this.templateCategoryName;
 	}
+	
+	public Integer getTemplateCategoryId() {
+		return templateCategoryId;
+	}
+	
+	public void setTemplateCategoryId(Integer templateCategoryId) {
+		this.templateCategoryId = templateCategoryId;
+	}
+	
 	public String getTemplateCategoryName() {
 		return templateCategoryName;
 	}
+	
 	public void setTemplateCategoryName(String templateCategoryName) {
 		this.templateCategoryName = templateCategoryName;
 	}
+	
 	public String getTemplateCategoryDescription() {
 		return templateCategoryDescription;
 	}
+	
 	public void setTemplateCategoryDescription(String templateCategoryDescription) {
 		this.templateCategoryDescription = templateCategoryDescription;
 	}

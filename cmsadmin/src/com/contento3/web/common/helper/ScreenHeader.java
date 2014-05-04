@@ -17,6 +17,7 @@ public class ScreenHeader {
 	private void buildHeader(final VerticalLayout layout,final String heading){
 		final Label screenHeading = new Label(heading); 
 		screenHeading.setStyleName("screenHeading");
+		screenHeading.setSizeUndefined();
 		layout.addComponent(screenHeading);
 		//layout.addComponent(new HorizontalRuler());
 	}

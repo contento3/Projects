@@ -12,23 +12,23 @@ import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
+import com.contento3.site.page.pathbuilder.PathBuilder;
+import com.contento3.site.page.pathbuilder.context.ArticlePathBuilderContext;
+import com.contento3.site.page.pathbuilder.impl.ArticlePathBuilder;
 
 public class ArticleTemplateHelper {
-    /**
-     * Format a Joda DateTime using the given pattern.
-     *
-     * @param datetime
-     * @param pattern
-     * @return Formatted date string.
-     */
+
 	final ArticleService articleService ;
 
 	final CategoryService categoryService;
+	
+	final PathBuilder<ArticlePathBuilderContext> articlePathBuilder;
 	
 	public ArticleTemplateHelper() {
 		ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
 		this.articleService = (ArticleService) ctx.getBean("articleService");
 		this.categoryService = (CategoryService) ctx.getBean("categoryService");
+		this.articlePathBuilder = new ArticlePathBuilder();
 	}
     
 
@@ -66,13 +66,17 @@ public class ArticleTemplateHelper {
 		}else{
 			articleList = this.articleService.findLatestArticleBySiteId(siteId, count, start, true) ;
 		}
-       return articleList;
+		
+		ArticlePathBuilderContext context = new ArticlePathBuilderContext(articleList,catIds,catId);
+		articlePathBuilder.build(context);
+		
+		return articleList;
 	}
 	
 	private Collection<Integer> fetchAllCategoryIds(final Integer catId,final Collection<CategoryDto> childCategories) {
 		List <Integer> catIds = new ArrayList<Integer>();
 		
-		if (CollectionUtils.isEmpty(childCategories)){
+		if (!CollectionUtils.isEmpty(childCategories)){
 			for (CategoryDto category:childCategories){
 				catIds.add(category.getCategoryId());
 			}
@@ -85,12 +89,36 @@ public class ArticleTemplateHelper {
 	}
 
 
+	public ArticleDto getArticleByQuery(final String query) {
+		
+		String articleInfo[] = query.split("/");
+		
+		//At the moment we are expecting to get the article's 
+		//seo friendly url and uuid in the query string.
+		
+		//1. First try article by uuid 	 
+		ArticleDto article=null;
+		if (articleInfo.length==2){ //First try by uuid
+			article = this.articleService.findByUuid(articleInfo[1],true) ;
+		}
+
+		if (articleInfo.length==2 && article==null){ //Then by id
+			try {
+			article = this.articleService.findById(Integer.parseInt(articleInfo[1]),true);
+			}
+			catch (final NumberFormatException nfe){
+				//TODO add logging
+			}
+		}
+		return article;
+	}
+
 	public ArticleDto getArticleById(final Integer accountId, final Integer siteId, final Integer articleId) {
 		ArticleDto article;
-		article = this.articleService.findById(articleId) ;
+		article = this.articleService.findById(articleId);
        return article ;
 	}
-	
+
 	/**
 	 * 
 	 * @param accountId

@@ -54,7 +54,7 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 	
 
 	@Override
-	public Article findByUuid(final String uuid, final boolean isPublished) {
+	public Article findByUuid(final String uuid, final Boolean isPublished) {
 		Validate.notNull(uuid,"uuid cannot be null");
 
 		final Criteria criteria = this.getSession()
@@ -184,6 +184,25 @@ public class ArticleDaoHibernateImpl  extends GenericDaoSpringHibernateTemplate<
 		if(isPublished) {
 			criteria.add(Restrictions.eq(FIELD_STATUS, 1));
 		}		
+	}
+
+	@Override
+	public Article findById(final Integer id,final Boolean isPublished) {
+		Validate.notNull(id,"uuid cannot be null");
+
+		final Criteria criteria = this.getSession()
+				.createCriteria(Article.class)
+				.add(Restrictions.eq("articleId", id))
+				.add(Restrictions.eq("isVisible", 1));
+		
+		filterCriteriaByStatus(criteria, isPublished);
+		
+		Article article = null;
+		if (!CollectionUtils.isEmpty(criteria.list())) {
+			article = (Article) criteria.list().get(0);
+		}
+
+		return article;
 	}
 	
 }

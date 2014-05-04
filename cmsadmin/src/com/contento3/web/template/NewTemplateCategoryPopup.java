@@ -2,28 +2,23 @@ package com.contento3.web.template;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
-import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.templatecategory.service.TemplateCategoryService;
 import com.contento3.cms.page.templatecategoryDto.TemplateCategoryDto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.dam.content.storage.exception.InvalidStorageException;
 import com.contento3.web.helper.SpringContextHelper;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Window.CloseEvent;
 
-public class NewDirectoryPopup extends Window implements Window.CloseListener,Button.ClickListener{
+public class NewTemplateCategoryPopup extends Window implements Window.CloseListener,Button.ClickListener{
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -47,7 +42,6 @@ public class NewDirectoryPopup extends Window implements Window.CloseListener,Bu
 
 	final TextField textField = new TextField();
 	final TextArea  textField2 = new TextArea();
-	//final TemplateDirectoryDto dirToUpdate;
 	
 	/**
 	 * Constructor
@@ -55,10 +49,9 @@ public class NewDirectoryPopup extends Window implements Window.CloseListener,Bu
 	 * @param helper
 	 * @param table
 	 */
-		public NewDirectoryPopup(final SpringContextHelper helper) {
+		public NewTemplateCategoryPopup(final SpringContextHelper helper) {
 			this.helper = helper;
 			this.templateCategoryService = (TemplateCategoryService) this.helper.getBean("templateCategoryService");
-			
 			buildWindow();
 		}
 		
@@ -79,11 +72,13 @@ public class NewDirectoryPopup extends Window implements Window.CloseListener,Bu
 			this.addCloseListener(this);
 			
 			this.setModal(true);
-	        this.setCaption("New directory");
+	        this.setCaption("Create new category");
 	        
 	       
 	        final HorizontalLayout horiLayout = new HorizontalLayout();
 	        final VerticalLayout vertiLayout = new VerticalLayout();
+	        vertiLayout.setSpacing(true);
+	        vertiLayout.setMargin(true);
 	        textField.setCaption("Category Name:");
 	        textField.setInputPrompt("Enter category name");
 	       
@@ -96,6 +91,7 @@ public class NewDirectoryPopup extends Window implements Window.CloseListener,Bu
 	        horiLayout.addComponent(vertiLayout);
 	        horiLayout.addComponent(updateButton);
 	        this.setContent(horiLayout);
+	        
 	        
 	        updateButton.addClickListener(new com.vaadin.ui.Button.ClickListener() {
 																

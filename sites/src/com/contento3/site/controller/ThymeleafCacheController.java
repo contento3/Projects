@@ -38,12 +38,10 @@ public class ThymeleafCacheController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK) 
 	public void clearCache(@RequestParam("template") final String template){
-
 		if (template!=null){
 			templateEngine.clearTemplateCacheFor(template);
 			LOGGER.debug("Tried to clear cache for template ["+ template+"]");
 		}
-		
 	}
 
 	public void setPageService (final PageService pageService){

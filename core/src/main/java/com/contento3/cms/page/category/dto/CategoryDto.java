@@ -17,6 +17,13 @@ public class CategoryDto extends TreeDto{
 
 	private Integer accountId;
 
+	/**
+	 * Complete category path including all parents category like
+	 * 
+	 * /parent/anotherparent/category
+	 */
+	private String categoryPath; 
+	
 	public Integer getCategoryId() {
 		return categoryId;
 	}
@@ -68,6 +75,14 @@ public class CategoryDto extends TreeDto{
 			collection.add(cat);
 		}
 		return collection;
+	}
+
+	public String getCategoryPath() {
+		return categoryPath;
+	}
+
+	public void setCategoryPath(String categoryPath) {
+		this.categoryPath = categoryPath;
 	}
 
 

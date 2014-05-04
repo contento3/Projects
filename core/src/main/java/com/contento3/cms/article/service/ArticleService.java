@@ -48,7 +48,7 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	 * @param isPublished TODO
 	 * @return
 	 */
-	ArticleDto findByUuid(String uuid, boolean isPublished);
+	ArticleDto findByUuid(String uuid, Boolean isPublished);
 	
 	/**
 	 * find article by id
@@ -56,7 +56,14 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	 * @return
 	 */
 	ArticleDto findById(Integer id);
-	
+
+	/**
+	 * find article by id
+	 * @param id
+	 * @return
+	 */
+	ArticleDto findById(Integer id,Boolean isPublished);
+
 	/**
 	 * find latest article by site id
 	 * @param siteId
@@ -81,7 +88,12 @@ public interface ArticleService extends StorableService<ArticleDto>{
 	 */
 	void updateAssociateImages(ArticleDto article);
 	
+	/**
+	 * 
+	 * @param id
+	 * @param siteId
+	 * @param isPublished
+	 * @return
+	 */
 	ArticleDto findArticleByIdAndSiteId(Integer id,Integer siteId, boolean isPublished);
-
-
 }
