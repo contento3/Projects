@@ -74,7 +74,6 @@
 	-moz-opacity: 0.8;
 	-webkit-opacity: 0.8;
 	opacity: 0.8;
-	color: #666;
 	font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
 	font-size: 13px;
 }
@@ -7026,6 +7025,7 @@ body .contento3.v-app .v-app-loading {
 .contento3 .v-label-screenHeading {
 	font-size: 20px;
 	line-height: normal;
+	margin-left:0px;
 }
 
 .contento3 .v-label-screenSubHeading {

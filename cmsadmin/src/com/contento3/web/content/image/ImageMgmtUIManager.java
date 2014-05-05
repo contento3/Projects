@@ -12,12 +12,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.vaadin.pagingcomponent.ComponentsManager;
-import org.vaadin.pagingcomponent.PagingComponent;
-import org.vaadin.pagingcomponent.builder.ElementsBuilder;
-import org.vaadin.pagingcomponent.button.ButtonPageNavigator;
-import org.vaadin.pagingcomponent.customizer.style.StyleCustomizer;
-import org.vaadin.pagingcomponent.listener.impl.SimplePagingComponentListener;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -45,6 +39,7 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -54,6 +49,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -204,12 +200,14 @@ public class ImageMgmtUIManager extends CustomComponent
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void renderImageMgmntComponenets() {
+		
 		/* heading */
 		Label imageHeading = new Label("Image Manager");
 		imageHeading.setStyleName("screenHeading");
 		mainLayout.addComponent(imageHeading);
 		mainLayout.addComponent(new HorizontalRuler());
 		mainLayout.setMargin(true);
+		
 		VerticalLayout verticall= new VerticalLayout();
 
 		/* Button to add new images */
@@ -220,7 +218,6 @@ public class ImageMgmtUIManager extends CustomComponent
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new AddImageButtonListener(tabSheet, this));
 		listeners.add(new AddLibraryButtonListener(helper));
-		//listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId));
 		
 		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"imgMgmt",listeners);
 		builder.build();
@@ -234,7 +231,7 @@ public class ImageMgmtUIManager extends CustomComponent
 		HorizontalLayout horiz = new HorizontalLayout();
 		
 		final TextField searchField = new TextField("Image name");
-		horiz.addComponent(searchField);
+		//horiz.addComponent(searchField);
 	
 		/* image library combo*/
 		//Get accountId from the session
@@ -247,11 +244,28 @@ public class ImageMgmtUIManager extends CustomComponent
 		imageLibrayCombo.setItemCaptionPropertyId("name");
 
 		horiz.setSpacing(true);
-		horiz.addComponent(imageLibrayCombo);
+//		horiz.addComponent(imageLibrayCombo);
 	    
-
 	    /* search button */
 	    Button searchButton = new Button("Search");
+
+		final GridLayout searchBar = new GridLayout(3,1);
+		searchBar.setMargin(true);
+		searchBar.setSpacing(true);
+		searchBar.addStyleName("horizontalForm");
+		searchBar.setSizeFull();
+		searchBar.addComponent(searchField);
+		searchBar.addComponent(imageLibrayCombo);
+		searchBar.addComponent(searchButton);
+		searchBar.setComponentAlignment(searchButton, Alignment.MIDDLE_CENTER);
+		searchBar.setWidth(875,Unit.PIXELS);
+
+		final Panel searchPanel = new Panel();
+		searchPanel.setSizeUndefined(); 
+		searchPanel.setContent(searchBar);
+		verticall.addComponent(searchPanel);
+
+		
 		/*Search Image button listener*/
 	    searchButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -304,11 +318,9 @@ public class ImageMgmtUIManager extends CustomComponent
 			}
 		});
 
-	    horiz.addComponent(searchButton);
 	    horiz.addComponent(deleteLibraryButton);
 
 	    horiz.setComponentAlignment(deleteLibraryButton, Alignment.BOTTOM_LEFT);
-	    horiz.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
 	    verticall.addComponent(horiz);
 	    
 	    HorizontalLayout subHeadingLayout = new HorizontalLayout();
@@ -318,8 +330,8 @@ public class ImageMgmtUIManager extends CustomComponent
 	    verticall.setSpacing(true);
 	    verticall.addComponent(imagePanlelayout);
 	    horizLayout.addComponent(toolbarGridLayout);
-	    horizLayout.setExpandRatio(toolbarGridLayout, 1);
-	    horizLayout.setExpandRatio(verticall, 8);
+	    horizLayout.setExpandRatio(toolbarGridLayout, 5);
+	    horizLayout.setExpandRatio(verticall, 90);
 	}
 	
 	/**
@@ -461,11 +473,12 @@ public class ImageMgmtUIManager extends CustomComponent
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				VerticalLayout newArticleLayout = new VerticalLayout();
-				Tab createNew = tabSheet.addTab(newArticleLayout, String.format("Edit "+ dto.getName()));
+				VerticalLayout newImageLayout = new VerticalLayout();
+				
+				Tab createNew = tabSheet.addTab(newImageLayout, String.format("Edit "+ dto.getName()));
 				createNew.setClosable(true);
-				tabSheet.setSelectedTab(newArticleLayout);
-				newArticleLayout.addComponent(renderAddEditScreen("Edit",dto));
+				tabSheet.setSelectedTab(newImageLayout);
+				newImageLayout.addComponent(renderAddEditScreen("Edit",dto));
 			}
 		});
     	
@@ -505,11 +518,13 @@ public class ImageMgmtUIManager extends CustomComponent
 		root.setContent(rootContentLayout);
 		rootContentLayout.setSizeFull();
 		rootContentLayout.setHeight(100,Unit.PERCENTAGE);
+		rootContentLayout.setWidth(100,Unit.PERCENTAGE);
 		
 		this.caption = command;
 		this.imageDto = dto;
 		VerticalLayout imageLayout = new VerticalLayout();
 		imageLayout.setSpacing(true);
+		
 		altTextField = new TextField();
 		altTextField.setColumns(25);
 		altTextField.setCaption("Alt text");
@@ -541,51 +556,48 @@ public class ImageMgmtUIManager extends CustomComponent
         imagePanelContent = new VerticalLayout();
         
         imagePanel.setContent(imagePanelContent);
+        
         final Label noImgLable = new Label("No image uploaded yet");
         imagePanelContent.addComponent(noImgLable);
-        
         rootContentLayout.addComponent(imagePanel);
 
         final ScreenHeader screenHeader = new ScreenHeader(imageLayout,"Image");
-        
         imageLayout.setSpacing(true);
         imageLayout.setMargin(true);
-		final HorizontalLayout imageInfoLayout = new HorizontalLayout();
+		final FormLayout imageInfoLayout = new FormLayout();
 		imageInfoLayout.setSpacing(true);
-
+		imageInfoLayout.setStyleName("horizontalForm");
 		imageInfoLayout.addComponent(imageNameField);
 		imageInfoLayout.addComponent(altTextField);
-		 ////*******************///////////************/////////////////////***********************//////  
-       
-		
-	       final HorizontalLayout editImageToolbar = new HorizontalLayout(); 
-	        editImageToolbar.setSizeFull();
-	        final GridLayout toolbarGridLayout = new GridLayout(1,3);
-			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-			listeners.add(new CropImageListener());
-			listeners.add(new ResizeImageListener());
-			listeners.add(new RotateImageListener());			
+
+		final GridLayout toolbarGridLayout = new GridLayout(1,3);
+		toolbarGridLayout.setSizeUndefined();
+		toolbarGridLayout.setWidth(10,Unit.PIXELS);
+		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.add(new CropImageListener());
+		listeners.add(new ResizeImageListener());
+		listeners.add(new RotateImageListener());			
 			
-			final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"editImgMgmt",listeners);
-			builder.build();
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"editImgMgmt",listeners);
+		builder.build();
 		
-			editImageToolbar.setSpacing(true);
-			editImageToolbar.setHeight("125");
-			editImageToolbar.setWidth("120");
-			editImageToolbar.addComponent(toolbarGridLayout);
-			editImageToolbar.setComponentAlignment(toolbarGridLayout, Alignment.BOTTOM_RIGHT);
-			imageInfoLayout.addComponent(editImageToolbar);
-		
-			
-		final HorizontalLayout imageUploadLayout = new HorizontalLayout();
+		final FormLayout imageUploadLayout = new FormLayout();
+		imageUploadLayout.setStyleName("horizontalForm");
 		imageUploadLayout.addComponent(imageLibrayCombo);
 		imageUploadLayout.addComponent(upload);
 		imageUploadLayout.setSpacing(true);
 		
+		final HorizontalLayout contentGridDivider = new HorizontalLayout();
+		contentGridDivider.addComponent(imageLayout);
+		contentGridDivider.addComponent(toolbarGridLayout);
+		contentGridDivider.setExpandRatio(imageLayout, 93);
+		contentGridDivider.setExpandRatio(toolbarGridLayout, 6);
+		imageLayout.setWidth(100,Unit.PERCENTAGE);
 		imageLayout.addComponent(imageInfoLayout);
 		imageLayout.addComponent(imageUploadLayout);
 
 		imageLayout.addComponent(root);
+		
 		final Button saveButton = new Button("Save");
 
 	     if(this.caption.equals("Edit")){
@@ -689,8 +701,12 @@ public class ImageMgmtUIManager extends CustomComponent
 			});
 	     
 	    file = null; 
-		imageLayout.addComponent(saveButton);       
-        return imageLayout;
+	    contentGridDivider.setWidth(100,Unit.PERCENTAGE);
+	    
+	    final HorizontalLayout buttonLayout = new HorizontalLayout();
+	    buttonLayout.addComponent(saveButton);
+	    imageLayout.addComponent(buttonLayout);       
+        return contentGridDivider;
 	}
 	   
     /**

@@ -138,11 +138,6 @@ public class ArticleMgmtUIManager implements UIManager {
 	
 	private void renderArticleComponent() {
 		
-//		final VerticalLayout verticalLayout = new VerticalLayout();
-//		mainLayout.addComponent(verticalLayout);
-//		verticalLayout.setWidth(95,Unit.PERCENTAGE);
-//		verticalLayout.setHeight(400,Unit.PIXELS);
-
 		final VerticalLayout contentLayout = new VerticalLayout();
 		final Label articleHeading = new Label("Article Manager");
 		articleHeading.setStyleName("screenHeading");
@@ -167,27 +162,37 @@ public class ArticleMgmtUIManager implements UIManager {
 		VerticalLayout emptySpaceLayout = new VerticalLayout();
 		contentLayout.addComponent(emptySpaceLayout);
 
+		final FormLayout headerTxtFldLayout = new FormLayout();
 		final TextField searchHeader = new TextField("Article Head");
 		searchHeader.setInputPrompt("Article Header name");
+		searchHeader.addStyleName("horizontalForm");
+		headerTxtFldLayout.addComponent(searchHeader);
+		
+		final FormLayout txtFldLayout = new FormLayout();
 		final TextField searchCategory = new TextField("Category");
+		txtFldLayout.addStyleName("horizontalForm");
 		searchCategory.setInputPrompt("Article Category");
+		txtFldLayout.addComponent(searchCategory);
+		
 		Button searchBtn = new Button("Search");
 
-		FormLayout searchBar = new FormLayout();
+		GridLayout searchBar = new GridLayout(3,1);
+		searchBar.setMargin(true);
+		searchBar.setSpacing(true);
 		searchBar.addStyleName("horizontalForm");
 		searchBar.setSizeFull();
-		searchBar.addComponent(searchHeader);
-		searchBar.addComponent(searchCategory);
+		searchBar.addComponent(headerTxtFldLayout);
+		searchBar.addComponent(txtFldLayout);
 		searchBar.addComponent(searchBtn);
-		searchBar.setComponentAlignment(searchBtn, Alignment.BOTTOM_RIGHT);	
-		searchBar.setWidth(500,Unit.PIXELS);
+		searchBar.setComponentAlignment(searchBtn, Alignment.MIDDLE_CENTER);
+		searchBar.setWidth(800,Unit.PIXELS);
 
 		final Panel searchPanel = new Panel();
-		searchPanel.setSizeUndefined(); // Shrink to fit content
+		searchPanel.setSizeUndefined(); 
 		searchPanel.setContent(searchBar);
+		
 		contentLayout.addComponent(searchPanel);
 		searchPanel.setWidth(100,Unit.PERCENTAGE);
-		searchPanel.setHeight(50,Unit.PIXELS);
 		
 		contentLayout.setSpacing(true);
 		renderArticleTable(contentLayout);

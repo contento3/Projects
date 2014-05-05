@@ -10,7 +10,6 @@ import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 import com.contento3.account.service.AccountService;
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
-import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
@@ -26,8 +25,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -58,7 +59,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 	/**
 	 * layout when adding or editing article
 	 */
-	private VerticalLayout formLayout;
+	private FormLayout formLayout;
 	
 	/**
 	 * Article service for article related operations
@@ -204,33 +205,48 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 * setting formLayout for showing edit & add article screen
 	 */
 	private void buildArticleUI(final String command,final Integer articleId){
-		formLayout = new VerticalLayout();
-		//formLayout.setHeight(100,Unit.PERCENTAGE);
-		formLayout.setWidth(80,Unit.PERCENTAGE);
-		formLayout.setHeight(2,Unit.PIXELS);
-		screenHeader = new ScreenHeader(formLayout,"Article");
+		formLayout = new FormLayout();
+		formLayout.setSpacing(true);
+		formLayout.setWidth(20,Unit.PERCENTAGE);
+		formLayout.setSizeUndefined();
+		formLayout.addStyleName("horizontalForm");
+
+		final VerticalLayout mainFormLayout = new VerticalLayout();
+		mainFormLayout.setSpacing(true);
+		mainFormLayout.setMargin(true);
 
 		parentLayout = new HorizontalLayout();
-		parentLayout.setHeight(100,Unit.PERCENTAGE);
-		parentLayout.setWidth(100,Unit.PERCENTAGE);
+		final HorizontalLayout hl = new HorizontalLayout();
 		
+		final Label screenHeading = new Label("Article");
+		hl.addComponent(screenHeading);
+		screenHeading.setStyleName("screenHeading");
+		
+		mainFormLayout.addComponent(hl);
+		parentLayout.addComponent(mainFormLayout);
+		parentLayout.setSizeUndefinied();
+		parentLayout.setWidth(100,Unit.PERCENTAGE);
+		mainFormLayout.addComponent(formLayout);
+
 		if (articleId!=null){
 			final Button btnPublish = createPublishedButton();
 			HorizontalLayout layoutForButton = new HorizontalLayout();
+			layoutForButton.setSizeUndefined();
 			layoutForButton.setWidth(100, Unit.PERCENTAGE);
 			layoutForButton.addComponent(btnPublish);
+			
 			layoutForButton.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
 			layoutForButton.setSpacing(false);
-			formLayout.addComponent(layoutForButton);
+			hl.addComponent(layoutForButton);
+			hl.setComponentAlignment(layoutForButton, Alignment.MIDDLE_RIGHT);
+			hl.setWidth(100,Unit.PERCENTAGE);
 		}
-		
-		parentLayout.addComponent(formLayout);
 		
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/article.png"));
 		articleTab.setClosable(true);
 
 		final GridLayout toolbarGridLayout = new GridLayout(1,5);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
 		listeners.add(new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
 		listeners.add(new AssociatedCategoryClickListener(articleId,contextHelper));
@@ -241,8 +257,8 @@ public class ArticleFormBuilderListner implements ClickListener{
 		builder.build();
 
 		parentLayout.addComponent(toolbarGridLayout);
-		parentLayout.setExpandRatio(toolbarGridLayout, 1);
-		parentLayout.setExpandRatio(formLayout, 40);
+		parentLayout.setExpandRatio(toolbarGridLayout, 5);
+		parentLayout.setExpandRatio(mainFormLayout, 40);
 		parentLayout.setComponentAlignment(toolbarGridLayout, Alignment.TOP_RIGHT);
 		tabSheet.setSelectedTab(parentLayout);
 
@@ -312,6 +328,8 @@ public class ArticleFormBuilderListner implements ClickListener{
 	    datesLayout.addComponent(articleForm.getExpiryDatefield());
 	    formLayout.addComponent(datesLayout);
 	    articleForm.getBodyTextField().setConfig(articleForm.getConfig());
+	    articleForm.getBodyTextField().setCaption("Body");
+
 	    formLayout.addComponent(articleForm.getBodyTextField());
 	}
 

@@ -19,6 +19,7 @@ public class ScreenHeader {
 		screenHeading.setStyleName("screenHeading");
 		screenHeading.setSizeUndefined();
 		layout.addComponent(screenHeading);
+		layout.setSizeUndefined();
 		//layout.addComponent(new HorizontalRuler());
 	}
 }
