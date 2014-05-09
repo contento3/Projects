@@ -3,6 +3,7 @@ package com.contento3.web.content.article.listener;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.cms.article.dto.ArticleDto;
@@ -10,6 +11,7 @@ import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.common.dto.Dto;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
@@ -22,6 +24,8 @@ import com.vaadin.ui.Window;
 public class ArticleAssignCategoryListener extends EntityListener implements ClickListener {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger LOGGER = Logger.getLogger(ArticleAssignCategoryListener.class);
 
 	private final VerticalLayout mainLayout;
 	
@@ -70,7 +74,11 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
 			categoryPicker.build();
 			}
-			catch(AuthorizationException ex){Notification.show("You are not permitted to assign category to articles");}
+			catch(AuthorizationException ex) {
+				Notification.show("You are not permitted to assign category to articles");
+			} catch (EntityNotFoundException e) {
+				LOGGER.debug(e.getMessage());
+			} 
 		}else{
 			//warning message
 			Notification.show("Opening failed", "create article first", Notification.Type.WARNING_MESSAGE);
@@ -91,18 +99,27 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 			ArticleService articleService = (ArticleService) helper.getBean("articleService");
 			ArticleDto article = articleService.findById(articleId);
 			for(String name : selectedItems ){
-				CategoryDto category = categoryService.findById(Integer.parseInt(name));
-				// validation
-				 boolean isAddable = true;
-				 for(CategoryDto dto:article.getCategoryDtos()){
-					 if(dto.getName().equals(category.getName()))
-		     			 isAddable = false;
-				 }//end inner for
-				 if(isAddable){
-		     		article.getCategoryDtos().add(category);
-		     
-		     	 }//end if
-			}//end outer for
+				CategoryDto category;
+				try {
+					category = categoryService.findById(Integer.parseInt(name));
+
+					// validation
+					boolean isAddable = true;
+					for (CategoryDto dto : article.getCategoryDtos()) {
+						if (dto.getName().equals(category.getName()))
+							isAddable = false;
+					}
+					if (isAddable) {
+						article.getCategoryDtos().add(category);
+
+					}
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (EntityNotFoundException e) {
+					LOGGER.debug(e.getMessage());
+				}
+			}
 			
 			articleService.update(article);
 			Notification.show("Assigned"," successfully assigned to "+article.getHead(),

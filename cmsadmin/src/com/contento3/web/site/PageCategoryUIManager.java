@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
+import com.contento3.cms.page.service.impl.PageServiceImpl;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.category.CategoryPopup;
 import com.contento3.web.category.CategoryTableBuilder;
@@ -35,7 +40,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class PageCategoryUIManager implements UIManager{
 
-
+	private static final Logger LOGGER = Logger.getLogger(PageCategoryUIManager.class);
+	
 	/**
 	 * Helper use to load spring beans
 	 */
@@ -85,8 +91,13 @@ public class PageCategoryUIManager implements UIManager{
 			verticl.addComponent(new HorizontalRuler());
 
 			final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(this.contextHelper,this.tabSheet,this.categoryTable);
-			Collection<CategoryDto> categories=this.categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
-			tableBuilder.build((Collection)categories);
+			Collection<CategoryDto> categories;
+			try {
+				categories = this.categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
+				tableBuilder.build((Collection)categories);
+			} catch (EntityNotFoundException e) {
+				LOGGER.debug(e.getMessage());
+			}
 			verticl.addComponent(categoryTable);
 			verticl.setSpacing(true);
 			verticl.setMargin(true);
@@ -97,7 +108,10 @@ public class PageCategoryUIManager implements UIManager{
 
 			GridLayout toolbarGridLayout = new GridLayout(1,1);
 			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-			listeners.add(new AddCategoryClickListener(contextHelper, categoryTable,tabSheet ));
+			
+			if (SecurityUtils.getSubject().isPermitted("CATEGORY:ADD")){
+				listeners.add(new AddCategoryClickListener(contextHelper, categoryTable,tabSheet ));
+			}
 			
 			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"category",listeners);
 			builder.build();

@@ -224,7 +224,7 @@ public class ArticleFormBuilderListner implements ClickListener{
 		
 		mainFormLayout.addComponent(hl);
 		parentLayout.addComponent(mainFormLayout);
-		parentLayout.setSizeUndefinied();
+		parentLayout.setSizeUndefined();
 		parentLayout.setWidth(100,Unit.PERCENTAGE);
 		mainFormLayout.addComponent(formLayout);
 

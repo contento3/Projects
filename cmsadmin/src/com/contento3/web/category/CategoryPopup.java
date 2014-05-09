@@ -2,11 +2,14 @@ package com.contento3.web.category;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.web.common.helper.AbstractTreeTableBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.helper.SpringContextHelper;
@@ -36,6 +39,8 @@ import com.vaadin.ui.Window.CloseEvent;
 
 public class CategoryPopup extends CustomComponent
 implements Window.CloseListener,Button.ClickListener {
+
+	private static final Logger LOGGER = Logger.getLogger(CategoryPopup.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -132,8 +137,15 @@ implements Window.CloseListener,Button.ClickListener {
 	        categoryButton.setCaption("Save");
 	        popupWindow.setCaption("Edit Category");
 	        categoryId = (Integer)event.getButton().getData();
-	        CategoryDto categoryDto = categoryService.findById(categoryId);
-	        categoryNameTxtField.setValue(categoryDto.getName());
+	        CategoryDto categoryDto;
+	        
+			try {
+				categoryDto = categoryService.findById(categoryId);
+				  categoryNameTxtField.setValue(categoryDto.getName());
+			} catch (EntityNotFoundException e) {
+				LOGGER.debug(e.getMessage());
+			}
+	      
 	        buildTree(popupMainLayout);
 	        categoryButton.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -166,49 +178,63 @@ implements Window.CloseListener,Button.ClickListener {
         addButtonLayout.setWidth(100, Unit.PERCENTAGE);
     }
 
-    private void buildTree(final VerticalLayout parentLayout){
-		final Collection<CategoryDto> categoryDtos = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
-		HierarchicalContainer container = new HierarchicalContainer();
-		container.addContainerProperty("category", String.class, null);
-		container.addContainerProperty("select", CheckBox.class, null);
+	private void buildTree(final VerticalLayout parentLayout) {
+		Collection<CategoryDto> categoryDtos;
+		try {
+			categoryDtos = categoryService
+					.findNullParentIdCategory((Integer) SessionHelper
+							.loadAttribute("accountId"));
 
-		tree.setContainerDataSource(categoryTable.getContainerDataSource());
-		tree.setItemCaptionPropertyId("category");
+			HierarchicalContainer container = new HierarchicalContainer();
+			container.addContainerProperty("category", String.class, null);
+			container.addContainerProperty("select", CheckBox.class, null);
 
-		Integer categoryId;
-		for (CategoryDto dto : categoryDtos){
-			categoryId = dto.getCategoryId();
-			if (null==container.getItem(categoryId)){
-				Item item = container.addItem(categoryId);
-				item.getItemProperty("category").setValue(dto.getName());
-				item.getItemProperty("select").setValue(new CheckBox());
+			tree.setContainerDataSource(categoryTable.getContainerDataSource());
+			tree.setItemCaptionPropertyId("category");
 
-				final Collection <CategoryDto> children = dto.getChild();
-				if (!CollectionUtils.isEmpty(children)){
-					for(CategoryDto categoryChild : children){
-						Item childItem = container.addItem(categoryChild.getCategoryId());
-						childItem.getItemProperty("category").setValue(categoryChild.getName());
-						childItem.getItemProperty("select").setValue(new CheckBox());
+			Integer categoryId;
+			for (CategoryDto dto : categoryDtos) {
+				categoryId = dto.getCategoryId();
+				if (null == container.getItem(categoryId)) {
+					Item item = container.addItem(categoryId);
+					item.getItemProperty("category").setValue(dto.getName());
+					item.getItemProperty("select").setValue(new CheckBox());
 
-						container.setParent(categoryChild.getCategoryId(), categoryId);
-						container.setChildrenAllowed(categoryChild.getCategoryId(), true);
+					final Collection<CategoryDto> children = dto.getChild();
+					if (!CollectionUtils.isEmpty(children)) {
+						for (CategoryDto categoryChild : children) {
+							Item childItem = container.addItem(categoryChild
+									.getCategoryId());
+							childItem.getItemProperty("category").setValue(
+									categoryChild.getName());
+							childItem.getItemProperty("select").setValue(
+									new CheckBox());
+
+							container.setParent(categoryChild.getCategoryId(),
+									categoryId);
+							container.setChildrenAllowed(
+									categoryChild.getCategoryId(), true);
+						}
 					}
 				}
 			}
+		} catch (EntityNotFoundException e) {
+			LOGGER.debug(e.getMessage());
 		}
 		parentLayout.addComponent(tree);
 
-		tree.setImmediate(true);		
-        tree.addItemClickListener(new ItemClickListener() {
+		tree.setImmediate(true);
+		tree.addItemClickListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
-        	public void itemClick(ItemClickEvent event) {
-        		String itemId = event.getItemId().toString();
-        		tree.select(itemId);
-        		tree.expandItem(itemId);
-        		selectedParentCategory = Integer.valueOf(itemId);
-        	}	
-        });
-    }
+
+			public void itemClick(ItemClickEvent event) {
+				String itemId = event.getItemId().toString();
+				tree.select(itemId);
+				tree.expandItem(itemId);
+				selectedParentCategory = Integer.valueOf(itemId);
+			}
+		});
+	}
     
     /**
      * Handles adding new SiteDomain
@@ -229,6 +255,8 @@ implements Window.CloseListener,Button.ClickListener {
 			resetTable();
 		} catch (EntityAlreadyFoundException e) {
 			Notification.show("Category already found.");
+		} catch (AuthorizationException ae) {
+			LOGGER.debug(ae.getMessage());
 		}
 		UI.getCurrent().removeWindow(popupWindow);
     }
@@ -238,26 +266,37 @@ implements Window.CloseListener,Button.ClickListener {
      * @param textField
      */
 	private void handleEditCategory(final TextField categoryNameTxtField,final Integer categoryId){
-		final CategoryDto updatedCategoryDto = categoryService.findById(categoryId);
-		updatedCategoryDto.setName(categoryNameTxtField.getValue().toString());
-		updatedCategoryDto.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
-		if (selectedParentCategory>0){
-			categoryService.update(updatedCategoryDto,selectedParentCategory);
+		CategoryDto updatedCategoryDto;
+		try {
+			updatedCategoryDto = categoryService.findById(categoryId);
+	
+			updatedCategoryDto.setName(categoryNameTxtField.getValue().toString());
+			updatedCategoryDto.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+			if (selectedParentCategory>0){
+				categoryService.update(updatedCategoryDto,selectedParentCategory);
+			}
+			else {
+				categoryService.update(updatedCategoryDto,null);
+			}
+			resetTable();
+			UI.getCurrent().removeWindow(popupWindow);
+		} catch (EntityNotFoundException e) {
+			LOGGER.debug(e.getMessage());
 		}
-		else {
-			categoryService.update(updatedCategoryDto,null);
-		}
-		resetTable();
-		UI.getCurrent().removeWindow(popupWindow);
     }
 
     @SuppressWarnings("rawtypes")
 	private void resetTable(){
 		final AbstractTreeTableBuilder tableBuilder = new CategoryTableBuilder(helper,tabSheet,categoryTable);
-		final Collection<CategoryDto> updatedCategoryDto = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
-		tableBuilder.rebuild((Collection)updatedCategoryDto);
-		parentLayout.removeComponent(popupWindow);
-        openbutton.setEnabled(true);
+		Collection<CategoryDto> updatedCategoryDto;
+		try {
+			updatedCategoryDto = categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
+			tableBuilder.rebuild((Collection)updatedCategoryDto);
+			parentLayout.removeComponent(popupWindow);
+			openbutton.setEnabled(true);
+		} catch (EntityNotFoundException e) {
+			LOGGER.debug(e.getMessage());
+		}
     }
     
     /** Handle Close button click and close the window. */

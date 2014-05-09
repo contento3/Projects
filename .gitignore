@@ -2,3 +2,8 @@
 *.prefs
 /sites/.settings/org.eclipse.wst.common.project.facet.core.xml
 *.js
+*.classpath
+cmsadmin/.settings/org.eclipse.wst.common.project.facet.core.xml
+sites/.project
+sites/ivy.xml
+sites/ivysettings.xml

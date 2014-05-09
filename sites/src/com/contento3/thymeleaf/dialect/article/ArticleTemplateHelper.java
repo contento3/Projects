@@ -12,6 +12,7 @@ import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
+import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.site.page.pathbuilder.PathBuilder;
 import com.contento3.site.page.pathbuilder.context.ArticlePathBuilderContext;
 import com.contento3.site.page.pathbuilder.impl.ArticlePathBuilder;
@@ -40,8 +41,9 @@ public class ArticleTemplateHelper {
 	 * @param count
 	 * @param start
 	 * @return
+	 * @throws EntityNotFoundException 
 	 */
-	public Collection <ArticleDto> getArticleListing(final Integer accountId, final Integer siteId, final Integer catId,final Boolean includeChildCategoryArticles, final Integer count, Integer start) {
+	public Collection <ArticleDto> getArticleListing(final Integer accountId, final Integer siteId, final Integer catId,final Boolean includeChildCategoryArticles, final Integer count, Integer start) throws EntityNotFoundException {
 		if(start == null){
 			start = 1;
 		}
