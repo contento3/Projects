@@ -2,6 +2,7 @@ package com.contento3.module.email.model;
 
 import java.util.Collection;
 
+
 public class EmailInfo {
 
 	private String to;

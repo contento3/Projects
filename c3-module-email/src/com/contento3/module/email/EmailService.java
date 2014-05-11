@@ -2,12 +2,8 @@ package com.contento3.module.email;
 
 import java.io.IOException;
 
-import javax.mail.MessagingException;
-
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.amazonaws.services.simpleemail.model.Body;
 import com.amazonaws.services.simpleemail.model.Content;
@@ -15,6 +11,7 @@ import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.contento3.module.email.model.EmailInfo;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 
 
 /**
