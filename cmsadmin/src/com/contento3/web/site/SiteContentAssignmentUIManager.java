@@ -51,6 +51,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	private final static String CONTENT_TYPE_IMAGE ="Image";
 	private final static String CONTENT_TYPE_VIDEO ="Video";
 	private final static String CONTENT_TYPE_DOCUMENT ="Document";
+	private final static String PICKER_TITLE_FOR_IMAGE = "Image assignment";
+	private final static String PICKER_TITLE_FOR_ARTICLE = "Article assignment";
 
 	private final TabSheet tabSheet;
 
@@ -147,8 +149,11 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 
 		Object contentType = contentTypeComboBox.getValue();
 		if(contentType != null) {
+			
+			
 			Collection<Dto> dtos = null;
 			Collection<String> listOfColumns = new ArrayList<String>();
+			String title = "";
 			
 			if( contentType.toString().equals(CONTENT_TYPE_ARTICLE) ) {
 				
@@ -156,6 +161,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 				listOfColumns.add("Articles");
 				dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false));
 				assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null,null, false));
+				title = PICKER_TITLE_FOR_ARTICLE;
+				
 			} else if( contentType.toString().equals(CONTENT_TYPE_IMAGE) ) {
 				
 				selectedType = CONTENT_TYPE_IMAGE;
@@ -171,16 +178,18 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 				for (ImageDto dto : imageList) {
 					images.put(dto.getId(), dto);
 				}
-
+				title = PICKER_TITLE_FOR_IMAGE;
 			}
 			
 			GenricEntityPicker contentPicker;
-			contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);
-			contentPicker.setCaption("Assign Content to Site");
+			contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);			
+			contentPicker.setTitle(title);
 			contentPicker.build();
+
 		}
 	}
 	
+		
 	@Override
 	public void updateList() {
 		

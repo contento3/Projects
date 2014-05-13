@@ -107,6 +107,11 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * Height of popup
 	 */
 	String height = "40";//default height
+	
+	/**
+	 * Title for Pop-up window
+	 */
+	private String title;
 
 	/**
 	 * Constructor
@@ -180,7 +185,11 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	        popupMainLayout.addComponent(vLayout);
 	        popupWindow.setContent(popupMainLayout);
 	        popupWindow.setResizable(false);
-	    }
+	        
+	       if(title != null) 
+	    	   popupWindow.setCaption(title);
+	        
+	}
 
 	/**
 	 * Handle Close button click and close the window.
@@ -216,5 +225,9 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	public void rebuildWithNewAssignedDtos (final Collection <Dto> assignedDtos,final Collection <Dto> dtos){
 		setAssignedDtos(assignedDtos);
 		this.tableBuilder.rebuild(dtos);
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }
