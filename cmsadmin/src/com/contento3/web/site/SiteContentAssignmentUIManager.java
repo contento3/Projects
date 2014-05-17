@@ -167,6 +167,7 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 				
 				selectedType = CONTENT_TYPE_IMAGE;
 				listOfColumns.add("Images");
+				//listOfColumns.add("Library");
 				listOfColumns.add(GenricEntityTableBuilder.COLUNM_VIEW);
 				
 				Collection<ImageDto> imageList = imageService.findImageByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
@@ -182,8 +183,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			}
 			
 			GenricEntityPicker contentPicker;
-			contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);			
-			contentPicker.setTitle(title);
+			contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);	
+            this.setCaption(title);
 			contentPicker.build();
 
 		}
