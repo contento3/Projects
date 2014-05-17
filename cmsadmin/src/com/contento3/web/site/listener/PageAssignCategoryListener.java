@@ -5,13 +5,13 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
+import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageCannotCreateException;
 import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.service.PageService;
-import com.contento3.cms.page.service.impl.PageServiceImpl;
 import com.contento3.common.dto.Dto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
@@ -32,14 +32,14 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 
 	private final VerticalLayout mainLayout;
 	
-	private Integer pageId;
+	private PageDto pageDto;
 	
 	private Integer accountId;
 	
 	private SpringContextHelper helper;
 	
 	private CategoryService categoryService;
-	
+		
 	private Window mainWindow;
 	
 	/**
@@ -49,9 +49,9 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 	 * @param articleId
 	 * @param accountId
 	 */
-	public PageAssignCategoryListener(final SpringContextHelper helper,final Integer pageId,final Integer accountId){
+	public PageAssignCategoryListener(final SpringContextHelper helper, final PageDto pageDto, final Integer accountId){
 		this.accountId = accountId;
-		this.pageId = pageId;
+		this.pageDto = pageDto;
 		this.helper = helper;
 		categoryService = (CategoryService)helper.getBean("categoryService");
 		mainLayout = new VerticalLayout();
@@ -64,23 +64,34 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 	@Override
 	public void click(ClickEvent event) {
 		//validation article exist
-		if(pageId != null){
+		if(pageDto != null){
 			Collection<String> listOfColumns = new ArrayList<String>();
 			listOfColumns.add("Categories");
 			GenricEntityPicker categoryPicker;
 			Collection<Dto> dtos = null;
+			Collection<Dto> assignedDtos = null;
 			try {
 				dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
+				assignedDtos = populateGenericDtoFromCategoryDto(pageDto.getCategories());
 			} catch (EntityNotFoundException e) {
 				
 			}
 			setCaption("Add Category");
-			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
+			categoryPicker = new GenricEntityPicker(dtos, assignedDtos, listOfColumns, mainLayout, this, true);
 			categoryPicker.build();
 		}else{
 			//warning message
 			Notification.show("Opening failed", "create page first", Notification.Type.WARNING_MESSAGE);
 		}
+	}
+	
+	private Collection<Dto> populateGenericDtoFromCategoryDto(final Collection <CategoryDto> categoryDtos){
+		Collection <Dto> dtos = new ArrayList<Dto>();
+		for (CategoryDto caegoryDto : categoryDtos){
+			Dto dto = new Dto(caegoryDto.getId(),caegoryDto.getName());
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 	
 	/**
@@ -89,37 +100,28 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 	@SuppressWarnings("unchecked")
 	@Override
 	public void updateList() {
-		/* update page */
+
 		Collection<String> selectedItems =(Collection<String>) this.mainLayout.getData();
-		if(selectedItems != null){
+		
+		if(selectedItems != null) {
 			PageService pageService = (PageService) helper.getBean("pageService");
-			PageDto page=null;
-			try {
-				page = pageService.findById(pageId);
+			pageDto.getCategories().clear();
 			
-			for(String name : selectedItems ){
-				CategoryDto category = categoryService.findById(Integer.parseInt(name));
-				// validation
-				 boolean isAddable = true;
-				 for(CategoryDto dto:page.getCategories()){
-					 if(dto.getName().equals(category.getName()))
-		     			 isAddable = false;
-				 }
-				 if(isAddable){
-					 page.getCategories().add(category);
-		     	 }
-			}
-				pageService.update(page);
+			try {
+				
+				for(String name : selectedItems ){
+					
+					CategoryDto category = categoryService.findById(Integer.parseInt(name));
+					 pageDto.getCategories().add(category);
+				}
+				pageService.update(pageDto);
 				Notification.show("Category assigned successfully.", Notification.Type.TRAY_NOTIFICATION);
+			
 			} catch (EntityAlreadyFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (PageCannotCreateException e) {
 				Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
-			} catch (PageNotFoundException e) {
-				e.printStackTrace();
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (EntityNotFoundException e) {
 				LOGGER.debug(e.getMessage());

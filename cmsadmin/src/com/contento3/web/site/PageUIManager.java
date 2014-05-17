@@ -325,7 +325,7 @@ public class PageUIManager {
 			gridRows = 3;
 			SEOUIManager seoUIManager = new SEOUIManager(contextHelper);
 			listeners.add(new SEOSettingsEventListener(seoUIManager, pagesTab, siteId, pageId));
-			listeners.add(new PageAssignCategoryListener(this.contextHelper, pageId, accountId));
+			listeners.add(new PageAssignCategoryListener(this.contextHelper, pageDto, accountId));
 		}
 
 		GridLayout toolbarGridLayout = new GridLayout(1, gridRows);

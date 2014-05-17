@@ -53,6 +53,9 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 
 	final Collection<Dto> assignedDtos;
 	
+	ArrayList<Integer> alreadySelectedItems = new ArrayList<Integer>();
+
+	
 	/**
 	 * Constructor
 	 * @param dtos
@@ -73,7 +76,7 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	 * build table and add button click listener
 	 */
 	public void build() {
-	
+		
 		build(dtos);
 		Object[] obj = new Object[1];
 		obj[0] = listOfColumns.iterator().next().toString();
@@ -86,10 +89,16 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	    addButtonLayout.addComponent(saveButton);
 	    addButtonLayout.setComponentAlignment(saveButton, Alignment.BOTTOM_RIGHT);
 	    addButtonLayout.setWidth(100, Unit.PERCENTAGE);
+	    buttonlistner();
+	    
 		treeTable.setSelectable(true);
 		treeTable.setMultiSelect(true);
 		treeTable.setMultiSelectMode(MultiSelectMode.SIMPLE);
-	    buttonlistner();
+
+		for (Integer id : alreadySelectedItems) {
+			treeTable.select(id);
+		}
+
 	}
 	
 	/**
@@ -111,6 +120,7 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 	private void addItem(final HierarchicalContainer container,final TreeDto dto,final TreeDto parentItem,final TreeTable treeTable){
 		final Integer id = dto.getId();
 		addNewItem(container,dto,treeTable);
+		treeTable.setCollapsed(id, false);
 
 		if (null!=parentItem){
 			container.setParent(id,parentItem.getId());
@@ -123,8 +133,10 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 				addItem(container,childDto,dto,treeTable);
 			}
 		}
+		
 	}
 
+	
 	/**
 	 * Add new item to tree table
 	 * @param container
@@ -138,15 +150,12 @@ public class GenericTreeTableBuilder extends AbstractTreeTableBuilder {
 
 		item.getItemProperty(listOfColumns.iterator().next()).setValue(dto.getName());
 
-		if(null!=assignedDtos && assignedDtos.contains(dto)){
-			this.treeTable.select(id);
-		}
-		else {
-			this.treeTable.unselect(id);
-		}
-		
 		for(String column:listOfColumns){
 			item.getItemProperty(column).setValue(dto.getName());
+		}
+		
+		if(null!=assignedDtos && assignedDtos.contains(dto)){
+			alreadySelectedItems.add(id);
 		}
 	}
 
