@@ -55,7 +55,9 @@ public class PermissionDeleteClickListener extends EntityDeleteClickListener<Per
 			getTable().setPageLength(getTable().getPageLength()-1);
 			Notification.show("Permission with id "+getDtoToDelete().getId()+" ["+dtoToDelete.getName()+"] deleted succesfully",Notification.Type.TRAY_NOTIFICATION);
 		} catch (final EntityCannotBeDeletedException e) {
-			Notification.show("Delete failed for permission with id "+ getDtoToDelete().getId() + " " +getDtoToDelete().getName(),Notification.Type.TRAY_NOTIFICATION);
+			//Notification.show("Delete failed for permission with id "+ getDtoToDelete().getId() + " " +getDtoToDelete().getName(),Notification.Type.TRAY_NOTIFICATION);
+			Notification.show(getDtoToDelete().getName() + " cannot be deleted. " + e.getMessage(), Notification.Type.TRAY_NOTIFICATION);
+
 		}
     	
 	}

@@ -318,6 +318,7 @@
 		class="com.contento3.security.permission.service.impl.PermissionServiceImpl">
 		<constructor-arg ref="permissionDao" />
 		<constructor-arg ref="permissionAssembler" />
+		<constructor-arg ref="roleService" />
 	</bean>
 
 	<bean id="associatedContentScopeAssembler"

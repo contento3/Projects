@@ -3,6 +3,7 @@ import java.util.Collection;
 
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.service.SimpleService;
+import com.contento3.security.model.Permission;
 import com.contento3.security.role.dto.RoleDto;
 public interface RoleService extends SimpleService<RoleDto> {
 	/**
@@ -38,4 +39,12 @@ public interface RoleService extends SimpleService<RoleDto> {
 	 * @return RoleDto
 	 */
 	RoleDto findRoleById(Integer Id);
+	
+	/**
+	 * Check if permission assigned to role.
+	 * @param permissionId
+	 * @return
+	 */
+	boolean isPermissionAssigned(Integer permissionId);
+
 }

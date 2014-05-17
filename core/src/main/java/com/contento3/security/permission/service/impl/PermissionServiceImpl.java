@@ -14,16 +14,21 @@ import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.permission.model.Permission;
 import com.contento3.security.permission.service.PermissionAssembler;
 import com.contento3.security.permission.service.PermissionService;
+import com.contento3.security.role.service.RoleService;
 
 public class PermissionServiceImpl implements PermissionService{
 	
+	final static String MSG_ENTITY_CANT_DELETE = "Permission is assigned to role.";
+	
 	private PermissionDao permissionDao;
+	private RoleService roleService;
 	
 	private PermissionAssembler permissionAssembler;
-	PermissionServiceImpl(PermissionDao permissionDao, PermissionAssembler permissionAssembler)
+	PermissionServiceImpl(PermissionDao permissionDao, PermissionAssembler permissionAssembler, final RoleService roleService)
 	{
 		this.permissionDao=permissionDao;
 		this.permissionAssembler= permissionAssembler;
+		this.roleService = roleService;
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -42,11 +47,17 @@ public class PermissionServiceImpl implements PermissionService{
 		return permissionDao.persist(permission);
 	}
 	
+	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@RequiresPermissions("PERMISSION:DELETE")
 	@Override
 	public void delete(PermissionDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
+		
+		boolean isAssigned = roleService.isPermissionAssigned(dtoToDelete.getId());
+		
+		if(isAssigned) throw new EntityCannotBeDeletedException(MSG_ENTITY_CANT_DELETE);
+		
 		permissionDao.delete(permissionAssembler.dtoToDomain(dtoToDelete));
 	}
 	

@@ -11,6 +11,7 @@ import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
 import com.contento3.security.group.model.Group;
+import com.contento3.security.model.Permission;
 import com.contento3.security.role.dao.RoleDao;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
@@ -95,6 +96,15 @@ public class RoleServiceImpl implements RoleService{
 	@Override
 	public RoleDto findRoleById(final Integer Id) {
 		return roleAssembler.domainToDto(roleDao.findById(Id),new RoleDto());
+	}
+	
+	@Override
+	public boolean isPermissionAssigned(Integer permissionId) {
+		
+		Collection<Permission> permissions = roleDao.findByPermissionId(permissionId);
+		if(permissions != null && permissions.size() > 0)
+			return true;
+		return false;
 	}
 
 }
