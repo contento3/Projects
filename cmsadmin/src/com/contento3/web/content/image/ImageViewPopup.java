@@ -1,6 +1,7 @@
 package com.contento3.web.content.image;
 
 import com.contento3.dam.image.dto.ImageDto;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
@@ -51,9 +52,11 @@ public class ImageViewPopup extends Window {
         setModal(true);
         setClosable(true);
         setResizable(false);
-//        setPositionX(500);
-//        setPositionY(500);
+	    setWidth(IMAGE_WIDTH + 60, Unit.PIXELS);
+	    setHeight(IMAGE_HEIGHT + 100, Unit.PIXELS);
+
         UI.getCurrent().addWindow(this);
+
 	}
 	
 
@@ -66,6 +69,8 @@ public class ImageViewPopup extends Window {
 		try {
 			Embedded embedded = loadImage(dto, IMAGE_WIDTH, IMAGE_HEIGHT);
 			mainLayout.addComponent(embedded);
+			mainLayout.setComponentAlignment(embedded, Alignment.TOP_CENTER);
+
 		} catch(Exception e) {
 			mainLayout.addComponent(new Label(MSG_IMAGE_FAILED));
 		}
