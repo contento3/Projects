@@ -20,9 +20,9 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
 public class GenricEntityTableBuilder  extends AbstractTableBuilder {
-
-	public final static String COLUNM_VIEW = "view";
 	
+	public final static String COLUNM_VIEW 	= "view";
+
 	/**
 	 * Used to add or delete item from table
 	 */
@@ -132,36 +132,21 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		}
 		
 		item.getItemProperty("select").setValue(checkBox);
+		Object value = null;
+		
 		for(String column:listOfColumns){
-			//item.getItemProperty(column).setValue(dto.getName());
 			
-			if( column.toLowerCase().equals(COLUNM_VIEW) ){
-				item.getItemProperty(COLUNM_VIEW).setValue(createButton(COLUNM_VIEW, dto));
+			if (dto.getHashMap().containsKey(column)) {
+				value = dto.getHashMap().get(column);
 			} else {
-				item.getItemProperty(column).setValue(dto.getName());
+				value = dto.getName();
 			}
+			item.getItemProperty(column).setValue(value);
+
 		}
 	}
 
-	private Button createButton(String name, Dto dto) {
-		
-		Button btn = new Button();
-		btn.setCaption(COLUNM_VIEW);
-		btn.setData(dto.getId());
-		btn.setStyleName("link");
-		
-		btn.addClickListener(new ClickListener() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-
-				entityListener.entityButtonClickListener(event);
-			}
-		});
-		return btn;
-	}
+	
 	
 	/**
 	 * Build header for table
@@ -172,9 +157,8 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	
 		for(String column:listOfColumns){
 			
-			//container.addContainerProperty(column, String.class, null);
 			if( column.toLowerCase().equals(COLUNM_VIEW) ){
-				container.addContainerProperty(COLUNM_VIEW, Button.class, null);
+				container.addContainerProperty(column, Button.class, null);
 			} else {
 				container.addContainerProperty(column, String.class, null);
 			}

@@ -1,5 +1,7 @@
 package com.contento3.common.dto;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 
@@ -9,6 +11,8 @@ public class Dto {
 	
 	private String name;
 	
+	private HashMap<String, Object> hashMap;
+	
 	public Dto(){
 		
 	}
@@ -16,6 +20,7 @@ public class Dto {
 	public Dto (Integer id,String name){
 		this.id = id;
 		this.name = name;
+		this.hashMap = new HashMap<String, Object>();
 	}
 	
 	public Integer getId(){
@@ -62,6 +67,10 @@ public class Dto {
       }
       return isEqual;
     }
+
+	public HashMap<String, Object> getHashMap() {
+		return hashMap;
+	}
 
 
 	
