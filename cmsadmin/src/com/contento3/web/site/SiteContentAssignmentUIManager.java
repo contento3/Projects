@@ -21,6 +21,7 @@ import com.contento3.web.common.helper.GenricEntityTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.ContentPicker;
 import com.contento3.web.content.image.ImageViewPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.SiteContentAssignerClickEvent;
@@ -178,8 +179,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			}
 			
 			GenricEntityPicker contentPicker;
-			contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);	
-            this.setCaption(title);
+			contentPicker = new ContentPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);	
+			this.setCaption(title);
 			contentPicker.build();
 
 		}
@@ -282,7 +283,7 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		return dtos;
 	}
 	
-private Button createButton(String name, Dto dto) {
+	private Button createButton(String name, Dto dto) {
 		
 		Button btn = new Button();
 		btn.setCaption(name);

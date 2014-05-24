@@ -180,4 +180,15 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 	public void setAssignedDto (final Collection <Dto> assignedDto){
 		this.assignedDtos = assignedDto;
 	}
+	
+	/**
+	 * Sort table
+	 */
+	public void sort() {
+	
+		Object[] obj = new Object[1];
+		obj[0] = listOfColumns.iterator().next().toString();
+		((IndexedContainer) container).sort(obj, new boolean[] { true });
+	}
+	
 }
