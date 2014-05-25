@@ -17,6 +17,8 @@ import com.vaadin.ui.themes.BaseTheme;
 
 public class DocumentTableBuilder extends AbstractTableBuilder {
 
+	private final static String BUTTON_NAME_DOWNLOAD = "Download";
+
 	/**
 	 * Helper to get the spring bean
 	 */
@@ -56,25 +58,31 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void assignDataToTable(final Dto dto, final Table documentTable, final Container documentContainer) {
 		DocumentDto documentDto = (DocumentDto) dto;
-		Item item = documentContainer.addItem(documentDto.getDocumentId());
+		Integer id = documentDto.getDocumentId();
+		Item item = documentContainer.addItem(id);
 		item.getItemProperty("documents").setValue(documentDto.getDocumentTitle());
 		
-
-		Button editLink = new Button();
-		editLink.setCaption("Edit");
-		editLink.setData(documentDto.getDocumentId());
-		editLink.addStyleName("edit");
-		editLink.setStyleName(BaseTheme.BUTTON_LINK);
+		Button editLink = createLinkButton("Edit", id);
 		editLink.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,documentTable));
 		item.getItemProperty("edit").setValue(editLink);
-		
-		Button deleteLink = new Button();
-		deleteLink.setCaption("Delete");
-		deleteLink.setData(documentDto.getDocumentId());
-		deleteLink.addStyleName("delete");
-		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+
+		Button deleteLink = createLinkButton("Delete", id);
 		item.getItemProperty("delete").setValue(deleteLink);
 		deleteLink.addClickListener(new DocumentDeleteListener(documentDto, documentService, deleteLink, documentTable));
+	
+		Button btnDownload = createLinkButton(BUTTON_NAME_DOWNLOAD, id);
+		//btnDownload.addClickListener(listener);
+		item.getItemProperty(BUTTON_NAME_DOWNLOAD).setValue(btnDownload);
+	}
+		
+	private Button createLinkButton(final String caption, final Integer id) {
+		
+		Button linkButton = new Button();
+		linkButton.setCaption(caption);
+		linkButton.setData(id);
+		linkButton.addStyleName(caption.toLowerCase());
+		linkButton.setStyleName(BaseTheme.BUTTON_LINK);
+		return linkButton;
 	}
 
 	/**
@@ -85,6 +93,7 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 		documentContainer.addContainerProperty("documents", String.class, null);
 		documentContainer.addContainerProperty("edit", Button.class, null);
 		documentContainer.addContainerProperty("delete", Button.class, null);
+		documentContainer.addContainerProperty(BUTTON_NAME_DOWNLOAD, Button.class, null);
 		documentTable.setWidth(100, Unit.PERCENTAGE);
 		documentTable.setContainerDataSource(documentContainer);
 	}
