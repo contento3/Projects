@@ -31,13 +31,13 @@ public abstract class AbstractTreeTableBuilder implements TableBuilder<TreeTable
 	public TreeTable build(final Collection<Dto> dtos) {
 		buildHeader(treeTable,container);
 		if (!CollectionUtils.isEmpty(dtos)) {
+			treeTable.setPageLength(dtos.size());
+			
 			for (Dto dto : dtos) {
 				assignDataToTable(dto, treeTable,container);
 			}
-			treeTable.setPageLength(dtos.size());
 		}
 		else{
-			//tree.setPageLength(1);
 			buildEmptyTable(container);
 		}
 		return treeTable;

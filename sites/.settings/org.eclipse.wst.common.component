@@ -6,6 +6,12 @@
         <dependent-module archiveName="core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="c3-module-email-marketing.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/c3-module-email-marketing/c3-module-email-marketing">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="c3-module-email.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/c3-module-email/c3-module-email">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/sites/WEB-INF/classes"/>
         <property name="context-root" value="/"/>
     </wb-module>

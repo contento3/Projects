@@ -90,7 +90,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 
 		Collection <TemplateDirectoryDto> templateDirectoryList =  templateDirectoryService.findRootDirectories(false,(Integer)SessionHelper.loadAttribute("accountId"));
 
-		final TemplateListingHelper templateListingHelper = new TemplateListingHelper();
+		final TemplateListingHelper templateListingHelper = new TemplateListingHelper(helper);
 		
 		//Add the tree to the vertical layout for template list.
 		templateListLayout.addComponent(templateListingHelper.populateTemplateList(templateDirectoryList,templateService,templateDirectoryService));
@@ -148,7 +148,7 @@ public class PageTemplateAssignmentPopup extends CustomComponent
 						isModalWindowClosable = true;
 					} catch (EntityAlreadyFoundException e) {
 						LOGGER.warn(String.format("PageTemplate with templateId [%d],pageId [%d], sectionTypeId[%d]",dto.getTemplateId(),dto.getPageId(),dto.getSectionTypeId()));
-						Notification.show("Selected template is already associated to the page)",Notification.TYPE_WARNING_MESSAGE);
+						Notification.show("Selected template is already associated to the page)",Notification.Type.WARNING_MESSAGE);
 						isModalWindowClosable = false;
 					}
 				}	

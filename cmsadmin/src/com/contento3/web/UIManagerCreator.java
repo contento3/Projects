@@ -1,7 +1,8 @@
 package com.contento3.web;
 
 import com.contento3.web.content.ContentUIManager;
-import com.contento3.web.content.article.ArticleMgmtUIManager;
+import com.contento3.web.email.marketing.NewsletterUIManager;
+import com.contento3.web.email.marketing.SubscriptionUIManager;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.layout.LayoutUIManager;
 import com.contento3.web.site.PageCategoryUIManager;
@@ -51,6 +52,20 @@ public class UIManagerCreator {
 		}
 			return null;
 	}
-	
+
+	public static UIManager createUIManager(final Manager manager,final SpringContextHelper helper){
+	    UIManager uiMgr = null;
+	    
+		if (manager.equals(Manager.Newsletter)){
+
+			final NewsletterUIManager newsletterUIMgr = new NewsletterUIManager(helper);
+			return newsletterUIMgr;
+		}
+		else if (manager.equals(Manager.Subscription)){
+			final SubscriptionUIManager subscrptionUIMgr = new SubscriptionUIManager(helper);
+			return subscrptionUIMgr;
+		}
+		return null;
+	}
 }
 

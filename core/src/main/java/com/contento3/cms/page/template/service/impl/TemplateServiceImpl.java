@@ -74,9 +74,9 @@ public class TemplateServiceImpl implements TemplateService {
 
         @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
         @Override
-        public Collection<TemplateDto> findTemplateByDirectoryName(final Integer directoryName) {
-                Validate.notNull(directoryName,"directoryName cannot be null");
-                final Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryName);
+        public Collection<TemplateDto> findTemplateByDirectoryId(final Integer directoryId) {
+                Validate.notNull(directoryId,"directoryId cannot be null");
+                final Collection<Template> templateList = templateDao.findTemplateByDirectoryId(directoryId);
                 return templateAssembler.domainsToDtos(templateList);
         }
         

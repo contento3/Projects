@@ -121,6 +121,7 @@
 		class="com.contento3.cms.page.template.service.impl.TemplateDirectoryServiceImpl">
 		<constructor-arg ref="templateDirectoryAssembler" />
 		<constructor-arg ref="templateDirectoryDAO" />
+		<property name="templateDao" ref="templateDAO" />		
 	</bean>
 
 

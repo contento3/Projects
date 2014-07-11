@@ -12,7 +12,9 @@ public enum Manager {
 	Article("article"),
 	Document("article"),
 	Image("article"),
-	Dashboard("dashboard");
+	Dashboard("dashboard"),
+	Newsletter("newsletter"),
+	Subscription("subscription");
 	
 	private String managerName;
 	

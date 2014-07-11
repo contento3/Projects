@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -14,17 +13,14 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.SimpleByteSource;
 
 import com.contento3.security.DefaultAuthenticationAuthorizationRealm;
-import com.contento3.security.permission.dao.PermissionDao;
 import com.contento3.security.entity.model.PermissionEntity;
 import com.contento3.security.entityoperation.model.EntityOperation;
 import com.contento3.security.group.dao.GroupDao;
 import com.contento3.security.group.model.Group;
+import com.contento3.security.permission.dao.PermissionDao;
 import com.contento3.security.role.model.Role;
-import com.contento3.security.user.dao.SaltedHibernateUserDao;
-import com.contento3.security.user.model.SaltedHibernateUser;
 
 public class SiteUserAuthorisationAuthenticationRealm extends AuthorizingRealm {
 

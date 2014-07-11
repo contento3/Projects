@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springmodules.org/schema/ehcache http://www.springmodules.org/schema/cache/springmodules-ehcache.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config />
+    
+    <bean id="environmentConfig" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+<property name="algorithm" value="PBEWithMD5AndDES" />
+<property name="passwordEnvName" value="PEV" />
+</bean>
+
+
+<bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+<property name="config" ref="environmentConfig" />
+</bean>
+
+<bean class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+<constructor-arg ref="encryptor" />
+<property name="location" value="classpath:/config/spring/db.properties" />
+</bean>
+
+
+	<bean id="cmsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	           <property name="driverClassName" value="${driver}"/>
+	           <property name="url" value="${dburlEmail}"/>
+	           <property name="username" value="${dbuserEmail}"/>
+	           <property name="password" value="${dbpasswordEmail}"/>
+	</bean>
+
+	<bean id="emailMarketingSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="cmsDataSource" />
+		<property name="annotatedClasses">
+			<list>
+				 <value>com.c3.email.marketing.newsletter.model.Newsletter</value>
+				 <value>com.c3.email.marketing.subscription.model.Subscriber</value>
+				 <value>com.c3.email.marketing.subscription.model.Subscription</value>
+				 <value>com.contento3.cms.page.template.model.Template</value>
+				 <value>com.contento3.account.model.Account</value>
+				 <value>com.contento3.security.user.model.SaltedHibernateUser</value>
+				 <value>com.contento3.cms.page.template.model.TemplateDirectory</value>
+				 <value>com.contento3.cms.page.templatecategory.model.TemplateCategory</value>
+				 <value>com.contento3.cms.page.template.model.TemplateType</value>
+				 
+			</list>
+		</property>	
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
+				
+				<prop key="hibernate.c3p0.min_size">2 </prop>
+	            <prop key="hibernate.c3p0.max_size" >5</prop>
+	            <prop key="hibernate.c3p0.timeout">600</prop>
+	            <prop key="hibernate.c3p0.max_statements">0</prop>
+	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
+	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
+	            
+			</props>
+		</property>	</bean>
+
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="emailMarketingSessionFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+   	<bean id="contentStorageLibraryMappingDao" class="com.contento3.dam.content.library.dao.impl.ContentStorageLibraryMappingDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+  
+ 	<bean id="siteDAO"
+		class="com.contento3.cms.site.structure.dao.impl.SiteDAOHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="pageLayoutTypeDAO"
+		class="com.contento3.cms.page.layout.dao.impl.PageLayoutTypeDAOHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="pageDAO"
+		class="com.contento3.cms.page.dao.impl.PageDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="pageSectionDAO"
+		class="com.contento3.cms.page.section.dao.impl.PageSectionDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="pageLayoutDAO"
+		class="com.contento3.cms.page.layout.dao.impl.PageLayoutDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="accountDAO"
+		class="com.contento3.account.dao.impl.AccountDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="pageSectionTypeDAO"
+		class="com.contento3.cms.page.section.dao.impl.PageSectionTypeHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="templateDAO"
+		class="com.contento3.cms.page.template.dao.impl.TemplateDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="pageTemplateDAO"
+		class="com.contento3.cms.page.template.dao.impl.PageTemplateDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="templateTypeDAO" class="com.contento3.cms.page.template.dao.impl.TemplateTypeDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="templateDirectoryDAO" class="com.contento3.cms.page.template.dao.impl.TemplateDirectoryDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+ 	<bean id="imageDao" class="com.contento3.dam.image.dao.impl.ImageDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
+	<bean id="documentDAO"
+		class="com.contento3.dam.document.dao.impl.DocumentDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+	
+	<bean id="documentTypeDAO"
+		class="com.contento3.dam.document.dao.impl.DocumentTypeDaoHibernateImpl">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+ 
+	<aop:aspectj-autoproxy>
+	<!-- 	<aop:include name="applicationLogger" /> -->
+	    <aop:include name="cacheMonitor" /> 
+	</aop:aspectj-autoproxy>
+ 
+	<bean id="applicationLogger" class="com.contento3.common.aspect.ApplicationLogger" />
+	
+	<!-- 
+	<bean id="cacheAspect" class="com.contento3.common.aspect.CacheAspect">
+		<property name="cache" ref="contentTypeCache"></property>
+	</bean>
+	 -->
+	
+	<bean id="cacheMonitor" class="com.contento3.common.aspect.CacheMonitor">
+		<property name="sessionFactory" ref="cmsSessionFactory" />
+	</bean>
+
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:/config/spring/ehcache.xml" />
+	</bean>
+
+	<!-- NewsletterDao -->
+	<bean id="newsletterDao"
+		class="com.c3.email.marketing.newsletter.dao.impl.NewsletterDaoHibernateImpl">
+		<property name="sessionFactory" ref="emailMarketingSessionFactory" />
+	</bean>
+
+	<!-- SubscriptionDao -->
+	<bean id="subscriptionDao"
+		class="com.c3.email.marketing.subscription.dao.impl.SubscriptionDaoHibernateImpl">
+		<property name="sessionFactory" ref="emailMarketingSessionFactory" />
+	</bean>
+
+	<!-- SubscriberDao -->
+	<bean id="subscriberDao"
+		class="com.c3.email.marketing.subscription.dao.impl.SubscriberDaoHibernateImpl">
+		<property name="sessionFactory" ref="emailMarketingSessionFactory" />
+	</bean>
+
+</beans>	

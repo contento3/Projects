@@ -1,18 +1,25 @@
 package com.contento3.web.site.listener;
 
+import org.vaadin.dialogs.ConfirmDialog;
+
+import com.amazonaws.services.simpleemail.model.NotificationType;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.service.Service;
-import com.contento3.common.service.StorableService;
+import com.contento3.dam.document.service.DocumentService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
 
 
-
+/**
+ * Generic entity class to delete the entity from the table listing.
+ * @author hamakhaa
+ *
+ * @param <T>
+ */
 public class EntityDeleteClickListener<T>  implements ClickListener {
 
 	private static final long serialVersionUID = 3126526402867446357L;
@@ -51,22 +58,24 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 	 */
 	private final Service<T> service;
 
+	private String confirmationMessage;
+	
 	public final Service<T> getService() {
 		return service;
 	}
 
-	public EntityDeleteClickListener(final T dtoToDelete,final Service<T> service,final Button deleteLink,final Table table){
+	public EntityDeleteClickListener(final T dtoToDelete,final Service<T> service,final Button deleteLink,final Table table,final String message){
 		this.dtoToDelete = dtoToDelete;
 		this.table = table;
 		this.deleteLink = deleteLink;
 		this.service = service;
+		this.confirmationMessage = message;
 	}
 
+	public EntityDeleteClickListener(final T dtoToDelete,final Service<T> service,final Button deleteLink,final Table table){
+		this(dtoToDelete,service,deleteLink,table,"Are you sure you want to delete?");
+	}
 
-
-	Window main = new Window();
-	
-	
 	@Override
 	public void buttonClick(ClickEvent event) {
 			
@@ -80,34 +89,28 @@ public class EntityDeleteClickListener<T>  implements ClickListener {
 	 */
 	protected void deleteEntity(final T dtoToDelete) {
 		final Object id = deleteLink.getData();
-		UI.getCurrent().addWindow((new YesNoDialog(
-				"Confirmation","Do you really want to delete template ?", "Yes", "No",
-				new YesNoDialog.YesNoDialogCallback() {
-					
-					@Override
-					public void response(boolean ok) {
-						
-				if(ok)					
-				{
-					try {
-						service.delete(dtoToDelete);
-						table.removeItem(id);
-						table.setPageLength(table.getPageLength()-1);			
-					    Notification.show("successfully unassigned");
-					    } 
-					catch (EntityCannotBeDeletedException e)
-					    {						
-					    Notification.show("Unable to delete entity");
-				        }
-				}
-				
-			}
-		}
-		)		));
-			
+		ConfirmDialog.show(UI.getCurrent(), confirmationMessage,
+		        new ConfirmDialog.Listener() {
+					private static final long serialVersionUID = 1L;
+					public void onClose(ConfirmDialog dialog) 
+					{
+		                if (dialog.isConfirmed()) {
+		                	try {
+		                		service.delete(dtoToDelete);
+		                		table.removeItem(id);
+		                		table.setPageLength(table.getPageLength()-1);			
+		                		Notification.show("Deleted", "Successfully deleted",Notification.Type.TRAY_NOTIFICATION);
+		                	} 
+		                	catch (final EntityCannotBeDeletedException e)
+		                	{						
+		                		Notification.show("Unable to delete entity",Notification.Type.TRAY_NOTIFICATION);
+		                	}
+		                }
+					}
+				}	
+		);
 	}
-	
-				
+
 }
 	
 	

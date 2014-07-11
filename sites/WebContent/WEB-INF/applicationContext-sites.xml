@@ -15,4 +15,8 @@
     <import resource="classpath:/config/spring/applicationContext.xml"/>
     <import resource="applicationContext-template-service.xml"/>
 
+
+	<!--Modules-->
+	<import resource="classpath:/config/spring/applicationContext-emailMarketing.xml"/>
+
 </beans>	

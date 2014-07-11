@@ -24,4 +24,10 @@ public class NavigationConstant {
 
 	public static final String DASHBOARD = "Dashboard"; 
 
+	
+	
+	//Items for email marketing module
+	public static final String NEWSLETTER = "Newsletter";
+	public static final String SUBSCRIPTION_LIST = "Subscribers";
+	
 }

@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 
 @Entity
@@ -26,22 +27,24 @@ public class Account implements Serializable {
 	@Column(name = "account_name")
 	private String name;
 	
+	@Type(type = "true_false")
 	@Column(name="IS_ENABLED")
-	private boolean isEnabled;
+	private boolean enabled;
 
 	
 //	private String description;
 	
 	public boolean isEnabled() {
-		return isEnabled;
+		return enabled;
 	}
-	public void setEnabled(boolean isEnabled) {
-		this.isEnabled = isEnabled;
+	
+	public void setEnabled(final boolean enabled) {
+		this.enabled = enabled;
 	}
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 	/*public String getDescription() {

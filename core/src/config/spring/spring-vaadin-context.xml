@@ -31,6 +31,14 @@
 	<constructor-arg type="com.olive.web.Manager" value="Category" />
 </bean> 
 
+<bean id="newsletter" factory-method="createUIManager" class="com.olive.web.UIManagerCreator">
+	<constructor-arg type="com.olive.web.Manager" value="Template" />
+</bean> 
+
+<bean id="subscription" factory-method="createUIManager" class="com.olive.web.UIManagerCreator">
+	<constructor-arg type="com.olive.web.Manager" value="Template" />
+</bean> 
+
 <!-- 	<bean id="siteMgr"  class="com.olive.web.site.SiteUIManager"/>
 	<bean id="layoutMgr"  class="com.olive.web.layout.LayoutUIManager"/>
 	<bean id="moduleMgr"  class="com.olive.web.module.ModuleUIManager"/> -->

@@ -3,6 +3,7 @@ package com.contento3.cms.page.template.service;
 import java.util.Collection;
 
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.service.StorableService;
 
 public interface TemplateDirectoryService extends StorableService <TemplateDirectoryDto>{
@@ -19,4 +20,7 @@ public interface TemplateDirectoryService extends StorableService <TemplateDirec
 
 	void update(TemplateDirectoryDto templateDirectoryDto);
 
+	void move (Integer directoryToMoveId,Integer destinationParentId);
+	
+	void delete (Integer id) throws EntityCannotBeDeletedException;
 }

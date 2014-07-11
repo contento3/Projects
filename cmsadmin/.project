@@ -5,6 +5,8 @@
 	<projects>
 		<project>Servers</project>
 		<project>core</project>
+		<project>c3-module-email-marketing</project>
+		<project>c3-module-email</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

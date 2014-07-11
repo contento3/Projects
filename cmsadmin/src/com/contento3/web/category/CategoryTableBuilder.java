@@ -48,6 +48,8 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 	public void assignDataToTable(final Dto dto,final TreeTable treeTable,final HierarchicalContainer container) {
 		final CategoryDto category = (CategoryDto) dto;
 		addItem(container,category,null,treeTable);
+		treeTable.setCollapsed(dto.getId(), false);
+		treeTable.setPageLength(container.size());
 	}
 
 	private void addItem(final HierarchicalContainer container,final CategoryDto category,final CategoryDto parentCategory,final TreeTable treeTable){

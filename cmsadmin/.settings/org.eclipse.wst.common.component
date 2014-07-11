@@ -1,8 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="cmsadmin">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <dependent-module archiveName="core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="c3-module-email-marketing.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/c3-module-email-marketing/c3-module-email-marketing">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="c3-module-email.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/c3-module-email/c3-module-email">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/cmsadmin/WEB-INF/classes"/>

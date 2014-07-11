@@ -35,7 +35,7 @@ public class DocumentDeleteListener extends EntityDeleteClickListener<DocumentDt
 		final Object id = getDeleteLink().getData();
 		final String name = (String) getTable().getContainerProperty(id,"documents").getValue();
 		if(getDtoToDelete().getDocumentTitle().equals(name)){
-			ConfirmDialog.show(UI.getCurrent(), " Are you really sure to delete?",
+			ConfirmDialog.show(UI.getCurrent(), "Are you really sure to delete?",
 			        new ConfirmDialog.Listener() {
 
 						private static final long serialVersionUID = 1L;

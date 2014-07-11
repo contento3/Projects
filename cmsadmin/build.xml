@@ -8,19 +8,38 @@
 		<fileset dir="../lib">
 			<include name="*.jar"/>
 		</fileset>
-		<fileset dir="../build-core">
+		<fileset dir="../build/build-core">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="../build/build-module-email">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="../build/build-module-email-marketing">
 			<include name="*.jar"/>
 		</fileset>
 		<fileset dir="C:/Users/hamakhaa/.ivy2/cache/com.vaadin/vaadin-server/jars">
 			<include name="*.jar"/>
 		</fileset>
-		
 	</path>
 
 	<target name="build-jar">
-		<mkdir dir="../build-core"/>
-		<jar destfile="../build-core/core.jar" basedir="../core/classes">
+		<mkdir dir="../build/build-core"/>
+		<mkdir dir="../build/build-module-email"/>
+		<mkdir dir="../build/build-module-email-marketing"/>
+		<jar destfile="../build/build-core/core.jar" basedir="../core/classes">
 			<fileset  dir="../core/src">
+				<exclude name="**/main/**" />
+				<exclude name="**/test/**" />
+			</fileset>
+		</jar>
+		<jar destfile="../build/build-module-email/c3-module-email.jar" basedir="../c3-module-email/classes">
+			<fileset  dir="../c3-module-email/src">
+				<exclude name="**/main/**" />
+				<exclude name="**/test/**" />
+			</fileset>
+		</jar>
+		<jar destfile="../build/build-module-email-marketing/c3-module-email-marketing.jar" basedir="../c3-module-email-marketing/classes">
+			<fileset  dir="../c3-module-email-marketing/src">
 				<exclude name="**/main/**" />
 				<exclude name="**/test/**" />
 			</fileset>
@@ -41,7 +60,9 @@
 	<target name="war" depends="compile">
 		<war destfile="dist/cmsadmin.war" webxml="WebContent/WEB-INF/web.xml">
 			<fileset dir="WebContent"/>
-			<lib dir="../build-core"/>
+			<lib dir="../build/build-core"/>
+			<lib dir="../build/build-module-email"/>
+			<lib dir="../build/build-module-email-marketing"/>
 			<lib dir="../lib"/>
 			<classes dir="build/classes"/>
 		</war>

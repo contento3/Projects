@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springmodules.org/schema/ehcache http://www.springmodules.org/schema/cache/springmodules-ehcache.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+   <import resource="classpath:/config/spring/applicationContext-email.xml"/>
+
+	<context:annotation-config />
+
+	<bean id="newsletterService"
+		class="com.c3.email.marketing.newsletter.service.impl.NewsletterServiceImpl">
+		<constructor-arg ref="newsletterDao" />
+		<constructor-arg ref="newsletterAssembler" />
+		<property  name="emailService" ref="emailService"></property>
+		<property  name="templateEngine" ref="templateEngine"></property>
+	</bean>
+
+	<bean id="newsletterAssembler" class="com.c3.email.marketing.newsletter.service.impl.NewsletterAssemblerImpl">
+		<constructor-arg ref="templateAssembler" />
+		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="subscriptionAssembler" />
+	</bean>
+
+	<bean id="subscriptionService"
+		class="com.c3.email.marketing.subscription.service.impl.SubscriptionServiceImpl">
+		<constructor-arg ref="subscriptionDao" />
+		<constructor-arg ref="subscriptionAssembler" />
+	</bean>
+
+	<bean id="subscriptionAssembler" class="com.c3.email.marketing.subscription.service.impl.SubscriptionAssemblerImpl">
+		<constructor-arg ref="accountAssembler" />
+		<constructor-arg ref="subscriberAssembler" />
+		<constructor-arg ref="saltedHibernateUserAssembler" />
+	</bean>
+
+	<bean id="subscriberAssembler" class="com.c3.email.marketing.subscription.service.impl.SubscriberAssemblerImpl">
+	</bean>
+
+
+</beans>	

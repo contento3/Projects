@@ -18,11 +18,11 @@ import com.contento3.common.service.SimpleService;
 public interface TemplateService extends SimpleService<TemplateDto>{
 
 	/**
-	 * Finds the template by directoryName
-	 * @param directoryName
+	 * Finds the template by directoryId
+	 * @param directoryId
 	 * @return Collection<TemplateDto> 
 	 */
-	Collection<TemplateDto> findTemplateByDirectoryName(Integer directoryName);
+	Collection<TemplateDto> findTemplateByDirectoryId(Integer directoryId);
 
 	/**
 	 * Finds the Template by templateId

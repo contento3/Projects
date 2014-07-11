@@ -1,0 +1,89 @@
+<beans 
+  xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+  http://www.springframework.org/schema/mvc
+  http://www.springframework.org/schema/mvc/spring-mvc.xsd
+  ">
+
+   <!-- **************************************************************** -->
+  <!--  THYMELEAF-SPECIFIC ARTIFACTS                                    -->
+  <!--  TemplateResolver <- TemplateEngine <- ViewResolver              -->
+  <!-- **************************************************************** -->
+
+	<bean id="pageAssemb" class="com.contento3.site.template.assembler.PageAssembler">
+		<property name="pageService" ref="pageService" />
+		<property name="pageTemplateService" ref="pageTemplateService" />
+		<property name="templateService" ref="templateService" />
+	</bean>
+
+
+  <bean id="tempLoader"
+        class="com.contento3.site.template.loader.impl.TemplateLoaderImpl">
+            <constructor-arg ref="pageAssemb" />
+            <constructor-arg ref="siteService" />
+            <constructor-arg ref="templateService" />        
+  </bean>
+
+  <bean id="dbResourceResolver" class="com.contento3.thymeleaf.resolver.DBResourceResolver">
+  		<constructor-arg name="templateLoader" ref="tempLoader" />
+        <constructor-arg name="pageService" ref="pageService" />        
+  </bean>
+  
+
+
+  <bean id="templateResolver"
+        class="com.contento3.thymeleaf.resolver.C3TemplateResolver">
+	<constructor-arg ref="dbResourceResolver" />
+    <property name="templateMode" value="HTML5" />
+    <property name="cacheable" value="true"/>
+    <property name="cacheTTLMs" value="3600000"/>
+    <property name="nonCacheablePatterns">
+    	<set>
+    	<value>*.uncached</value>
+    	<value>/</value>
+    	</set>
+    </property>
+  </bean>
+
+  	<bean id="setupDialect" class="com.contento3.thymeleaf.dialect.setup.SetupDialect">
+  	</bean>  
+
+  	<bean id="articleDialect" class="com.contento3.thymeleaf.dialect.article.ArticleDialect">
+      <property name="articleProcessor" ref="articleProcessor" />
+  	</bean>  
+  
+  
+    <bean id="navigationDialect" class="com.contento3.thymeleaf.dialect.navigation.NavigationDialect">
+       <property name="navigationProcessor" ref="navigationProcessor" />
+    </bean>  
+  
+  	<bean id="articleProcessor" class="com.contento3.thymeleaf.dialect.article.ArticleProcessor">
+	      <property name="articleService" ref="articleService" />
+	</bean>  
+	<bean id="navigationProcessor" class="com.contento3.thymeleaf.dialect.navigation.NavigationProcessor">
+	      <property name="pageService" ref="pageService" />
+	</bean>  
+
+	<bean id="standardCacheManager" class="org.thymeleaf.cache.StandardCacheManager">
+	</bean>
+	
+  <bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
+    <property name="templateResolver" ref="templateResolver" />
+    <property name="cacheManager" ref="standardCacheManager"/>
+    <property name="additionalDialects">
+    	<set>
+      		<ref local="articleDialect" />
+      		<ref local="navigationDialect" />
+      		<ref local="setupDialect" />
+    	</set>
+  	</property>
+  </bean>
+   
+  <bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
+    <property name="templateEngine" ref="templateEngine" />
+  </bean>  
+</beans>

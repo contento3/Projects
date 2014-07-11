@@ -7,17 +7,19 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.contento3.cms.page.template.dao.TemplateDao;
 import com.contento3.cms.page.template.dao.TemplateDirectoryDao;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
+import com.contento3.cms.page.template.model.Template;
+import com.contento3.cms.page.template.model.TemplateDirectory;
 import com.contento3.cms.page.template.service.TemplateDirectoryAssembler;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 
-public class TemplateDirectoryServiceImpl 
-			implements TemplateDirectoryService {
+public class TemplateDirectoryServiceImpl implements TemplateDirectoryService {
 
 	private TemplateDirectoryAssembler assembler;
 	private TemplateDirectoryDao directoryDao;
-
+	private TemplateDao templateDao;
 	public TemplateDirectoryServiceImpl(final TemplateDirectoryAssembler assembler,final TemplateDirectoryDao directoryDao){
 		Validate.notNull(assembler,"assembler cannot be null");
 		Validate.notNull(directoryDao,"directoryDao cannot be null");
@@ -25,7 +27,7 @@ public class TemplateDirectoryServiceImpl
 		this.assembler=assembler;
 		this.directoryDao = directoryDao;
 	}
-	
+
 	@RequiresPermissions("TEMPLATE:ADD")
 	@Override
 	public Integer create(final TemplateDirectoryDto dto) {
@@ -72,7 +74,36 @@ public class TemplateDirectoryServiceImpl
 	@RequiresPermissions("TEMPLATE:DELETE")
 	@Override
 	public void delete(TemplateDirectoryDto dtoToDelete) {
-		// TODO Auto-generated method stub
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
+	}
+
+	@Override
+	public void move(final Integer directoryToMoveId,final Integer destinationParentId) {
+		final TemplateDirectory itemToMove = directoryDao.findById(directoryToMoveId);
+		final TemplateDirectory selectedParentItem = directoryDao.findById(destinationParentId);
+		
+		itemToMove.setParent(selectedParentItem);
+		itemToMove.setGlobal(selectedParentItem.isGlobal());
+		itemToMove.setAccount(selectedParentItem.getAccount());
+
+		final Collection <Template> templates = templateDao.findTemplateByDirectoryId(directoryToMoveId);
+		for (Template template: templates){
+			template.setGlobal(itemToMove.isGlobal());
+			template.setAccount(selectedParentItem.getAccount());
+			templateDao.update(template);
+		}
+		
+		directoryDao.update(itemToMove);
+	}
+	
+
+	public void setTemplateDao(final TemplateDao templateDao){
+		this.templateDao = templateDao;
+	}
+
+	@Override
+	public void delete(final Integer id) {
+		final TemplateDirectory directory = directoryDao.findById(id);
+		directoryDao.delete(directory);
 	}
 }

@@ -7,7 +7,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.AuthorizationException;
+import org.springframework.util.CollectionUtils;
 import org.vaadin.aceeditor.AceEditor;
+import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.peter.contextmenu.ContextMenu;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
@@ -17,12 +19,14 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuOpenedOnTreeItemEvent
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
+import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.page.templatecategory.service.TemplateCategoryService;
 import com.contento3.common.exception.EntityAlreadyFoundException;
+import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.ScreenHeader;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
@@ -80,6 +84,10 @@ public class TemplateUIManager implements UIManager {
 	private static final String CONTEXT_ITEM_OPEN = "Open template";
 
 	private static final String CONTEXT_ITEM_CLEAR_CACHE = "Clear Cache";
+
+	private static final String CONTEXT_ITEM_MOVE_DIRECTORY = "Move directory";
+
+	private static final String CONTEXT_ITEM_DELETE_DIRECTORY = "Delete directory";
 
 	/**
 	 * Logger for Template
@@ -299,8 +307,12 @@ public class TemplateUIManager implements UIManager {
 		accordion.addTab(globalTemplateListLayout, "Global Templates",
 				new ExternalResource("images/global-template-16.png"));
 		globalTemplatesTab.setClosable(true);
-		final Collection<TemplateDirectoryDto> globalTemplateDirectoryList = templateDirectoryService
-				.findRootDirectories(true,accountId);
+		
+		// The global templates are only associated to accountId=1, this means
+		// either this is contento3 account or if separately hosted means single account
+		// This means we are not going to use the accountId from session for global templates. 
+		// Hard coded to accountId = 1
+		final Collection<TemplateDirectoryDto> globalTemplateDirectoryList = templateDirectoryService.findRootDirectories(true,1);
 		globalTemplateListLayout.addComponent(populateTemplateList(
 				globalTemplateDirectoryList, templateDirectoryService, true));
 
@@ -347,27 +359,27 @@ public class TemplateUIManager implements UIManager {
 					contextMenu.addItem(CONTEXT_ITEM_CLEAR_CACHE).setData(
 							CONTEXT_ITEM_CLEAR_CACHE);
 				} else {
-					contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(
-							CONTEXT_ITEM_RENAME);
 					contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(
 							CONTEXT_ITEM_CREATE);
+					contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(
+							CONTEXT_ITEM_RENAME);
+					contextMenu.addItem(CONTEXT_ITEM_DELETE_DIRECTORY).setData(
+							CONTEXT_ITEM_DELETE_DIRECTORY);
+					contextMenu.addItem(CONTEXT_ITEM_MOVE_DIRECTORY).setData(
+							CONTEXT_ITEM_MOVE_DIRECTORY);
 					contextMenu.addItem(CONTEXT_ITEM_CREATE_TEMPLATE).setData(
 							CONTEXT_ITEM_CREATE_TEMPLATE);
-
 				}
 			}
 		};
 
 		final ContextMenuItemClickListener itemClickListener = new ContextMenu.ContextMenuItemClickListener() {
-			public void contextMenuItemClicked(
-					final ContextMenuItemClickEvent event) {
+			public void contextMenuItemClicked(final ContextMenuItemClickEvent event) {
 
-				final ContextMenuItem source = (ContextMenuItem) event
-						.getSource();
+				final ContextMenuItem source = (ContextMenuItem) event.getSource();
 				final String itemName = (String) source.getData();
 
 				// Open the template
-
 				if (itemId.startsWith("file:")) {
 					if (itemName.equals(CONTEXT_ITEM_OPEN)) {
 						renderTemplate(new Integer(itemId.substring(5)));
@@ -381,14 +393,21 @@ public class TemplateUIManager implements UIManager {
 					}
 				} else {
 					if (itemName.equals(CONTEXT_ITEM_RENAME)) {
-						final TemplateDirectoryDto dto = templateDirectoryService
-								.findById(Integer.parseInt(itemId));
+						final TemplateDirectoryDto dto = templateDirectoryService.findById(Integer.parseInt(itemId));
 						renameDirectory(dto);
 						itemId = null;
 					} else if (itemName.equals(CONTEXT_ITEM_CREATE)) {
 						renderFolderTab(null);
 					} else if (itemName.equals(CONTEXT_ITEM_CREATE_TEMPLATE)) {
 						renderTemplate(null);
+						itemId = null;
+					}
+					else if (itemName.equals(CONTEXT_ITEM_MOVE_DIRECTORY)) {
+						renderMoveDirectory(itemId);
+						itemId = null;
+					}
+					else if (itemName.equals(CONTEXT_ITEM_DELETE_DIRECTORY)) {
+						renderDeleteDirectory(selectedTreeItemId);
 						itemId = null;
 					}
 				}
@@ -527,8 +546,25 @@ public class TemplateUIManager implements UIManager {
 	}
 
 	private void renameDirectory(final TemplateDirectoryDto dtoToUpdate) {
-		UI.getCurrent()
-				.addWindow(new RenameDirectoryPopup(helper, dtoToUpdate));
+		UI.getCurrent().addWindow(new RenameDirectoryPopup(helper, dtoToUpdate));
+	}
+
+	private void renderMoveDirectory(final String itemToMoveId){
+		UI.getCurrent().addWindow(new TemplateDirectoryPopup(helper,itemToMoveId));
+	}
+
+	private void renderDeleteDirectory(final Integer itemToDelete){
+			if (!CollectionUtils.isEmpty(templateService.findTemplateByDirectoryId(this.selectedDirectoryId))){
+				Notification.show("Directory canot be deleted as it contains templates.",Notification.Type.TRAY_NOTIFICATION);
+			}
+			else {				
+				try {
+					templateDirectoryService.delete(this.selectedDirectoryId);
+					Notification.show("Directory deleted succesfully.",Notification.Type.TRAY_NOTIFICATION);
+				} catch (final EntityCannotBeDeletedException e) {
+					LOGGER.info("Unable to delete directory");
+				}
+			}	
 	}
 
 	private void addChildrenToSelectedDirectory(final Item parentItem,
@@ -559,7 +595,7 @@ public class TemplateUIManager implements UIManager {
 		}
 
 		Collection<TemplateDto> templateDtoList = templateService
-				.findTemplateByDirectoryName(selectedDirectoryId);
+				.findTemplateByDirectoryId(selectedDirectoryId);
 
 		for (TemplateDto templateDto : templateDtoList) {
 			String templateItemId = String.format("file:%d",
@@ -786,9 +822,15 @@ public class TemplateUIManager implements UIManager {
 			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
 				final AccountService accountService = (AccountService) helper
 						.getBean("accountService");
-				final AccountDto account = accountService
-						.findAccountById(accountId);
-
+				
+				AccountDto account = null;
+				if (selectedTemplateDirScope){
+					account = accountService.findAccountById(1);
+				}
+				else{
+					account = accountService.findAccountById(accountId);
+				}
+				
 				TemplateDirectoryDto directoryDto = new TemplateDirectoryDto();
 				String dirToAdd = name.getValue().toString();
 				directoryDto.setDirectoryName(dirToAdd);
@@ -802,7 +844,7 @@ public class TemplateUIManager implements UIManager {
 							.findById(selectedDirectoryId);
 					directoryDto.setParent(parentDirectory);
 					final Collection<TemplateDirectoryDto> childDirectories = templateDirectoryService
-							.findChildDirectories(parentDirectory.getId(),accountId);
+							.findChildDirectories(parentDirectory.getId(),account.getAccountId());
 					isSiblingWithSameName = isChildWithSameNameExist(
 							childDirectories, dirToAdd);
 				}
@@ -817,8 +859,7 @@ public class TemplateUIManager implements UIManager {
 							.show("Directory name already exist,please choose something different",
 									Notification.Type.TRAY_NOTIFICATION);
 				} else {
-					newDirectory = templateDirectoryService
-							.create(directoryDto);
+					newDirectory = templateDirectoryService.create(directoryDto);
 					if (folderId == null) { // works when no items in tree
 						directoryDto = templateDirectoryService
 								.findById(newDirectory);

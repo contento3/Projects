@@ -14,5 +14,7 @@
 
     <import resource="classpath:/config/spring/applicationContext.xml"/>
     <import resource="applicationContext-cmsadmin-security.xml"/>
+    <import resource="classpath:/config/spring/applicationContext-emailMarketing.xml"/>
+
 
 </beans>	

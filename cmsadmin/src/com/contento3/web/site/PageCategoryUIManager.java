@@ -9,7 +9,6 @@ import org.apache.shiro.SecurityUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
-import com.contento3.cms.page.service.impl.PageServiceImpl;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.category.CategoryPopup;
@@ -101,7 +100,9 @@ public class PageCategoryUIManager implements UIManager{
 			verticl.addComponent(categoryTable);
 			verticl.setSpacing(true);
 			verticl.setMargin(true);
-	
+			verticl.setWidth(100,Unit.PERCENTAGE);
+			
+			
 			//Pop-up that adds a new category
 			final Button button = new Button("Add Category");
 			button.addClickListener(new CategoryPopup(contextHelper,categoryTable,tabSheet));

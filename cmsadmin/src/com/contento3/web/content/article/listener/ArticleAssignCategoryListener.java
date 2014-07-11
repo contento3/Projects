@@ -114,7 +114,6 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 
 					}
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (EntityNotFoundException e) {
 					LOGGER.debug(e.getMessage());
