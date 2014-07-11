@@ -1,5 +1,8 @@
 package com.contento3.web.content.document;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
@@ -9,13 +12,18 @@ import com.contento3.web.content.document.listener.DocumentFormBuilderListner;
 import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.BaseTheme;
 
 public class DocumentTableBuilder extends AbstractTableBuilder {
+
+	private final static String BUTTON_NAME_DOWNLOAD = "Download";
 
 	/**
 	 * Helper to get the spring bean
@@ -55,26 +63,38 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 	 */
 	@Override
 	public void assignDataToTable(final Dto dto, final Table documentTable, final Container documentContainer) {
-		DocumentDto documentDto = (DocumentDto) dto;
-		Item item = documentContainer.addItem(documentDto.getDocumentId());
+		
+		final DocumentDto documentDto = (DocumentDto) dto;
+		Integer id = documentDto.getDocumentId();
+		Item item = documentContainer.addItem(id);
 		item.getItemProperty("documents").setValue(documentDto.getDocumentTitle());
 		
-
-		Button editLink = new Button();
-		editLink.setCaption("Edit");
-		editLink.setData(documentDto.getDocumentId());
-		editLink.addStyleName("edit");
-		editLink.setStyleName(BaseTheme.BUTTON_LINK);
+		Button editLink = createLinkButton("Edit", id);
 		editLink.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,documentTable));
 		item.getItemProperty("edit").setValue(editLink);
-		
-		Button deleteLink = new Button();
-		deleteLink.setCaption("Delete");
-		deleteLink.setData(documentDto.getDocumentId());
-		deleteLink.addStyleName("delete");
-		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+
+		Button deleteLink = createLinkButton("Delete", id);
 		item.getItemProperty("delete").setValue(deleteLink);
 		deleteLink.addClickListener(new DocumentDeleteListener(documentDto, documentService, deleteLink, documentTable));
+	
+		final Button btnDownload = createLinkButton(BUTTON_NAME_DOWNLOAD, id);
+
+		//Download document
+		StreamResource res =  createResource(documentDto);
+		FileDownloader fd = new FileDownloader(res);
+		fd.extend(btnDownload);
+		
+		item.getItemProperty(BUTTON_NAME_DOWNLOAD).setValue(btnDownload);
+	}
+		
+	private Button createLinkButton(final String caption, final Integer id) {
+		
+		Button linkButton = new Button();
+		linkButton.setCaption(caption);
+		linkButton.setData(id);
+		linkButton.addStyleName(caption.toLowerCase());
+		linkButton.setStyleName(BaseTheme.BUTTON_LINK);
+		return linkButton;
 	}
 
 	/**
@@ -85,6 +105,7 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 		documentContainer.addContainerProperty("documents", String.class, null);
 		documentContainer.addContainerProperty("edit", Button.class, null);
 		documentContainer.addContainerProperty("delete", Button.class, null);
+		documentContainer.addContainerProperty(BUTTON_NAME_DOWNLOAD, Button.class, null);
 		documentTable.setWidth(100, Unit.PERCENTAGE);
 		documentTable.setContainerDataSource(documentContainer);
 	}
@@ -98,4 +119,33 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("documents").setValue("No record found.");
 	}
 	
+	/**
+	 * Get full file name
+	 * @param dto
+	 * @return
+	 */
+	private String getFileNameWithExtension(final DocumentDto dto) {
+		
+		return dto.getDocumentTitle()+ "." + dto.getDocumentTypeDto().getName().toLowerCase();
+	}
+	
+	/**
+	 * Prepare resource to download.
+	 * @param dto
+	 * @return
+	 */
+	private StreamResource createResource(final DocumentDto dto) {
+        return new StreamResource(new StreamSource() {
+            @Override
+            public InputStream getStream() {
+
+                try {
+                	return new ByteArrayInputStream(dto.getDocumentContent());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }, getFileNameWithExtension(dto));
+    }
 }

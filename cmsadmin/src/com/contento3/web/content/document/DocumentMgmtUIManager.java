@@ -9,12 +9,12 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 
+import com.contento3.common.dto.Dto;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
 import com.contento3.security.permission.dao.PermissionDao;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
-import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.document.listener.AddDocumentButtonListener;
@@ -23,21 +23,30 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-public class DocumentMgmtUIManager implements UIManager {
+public class DocumentMgmtUIManager implements UIManager, ClickListener {
+	
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(DocumentMgmtUIManager.class);
+	private final static String BUTTON_NAME_SEARCH = "Search";
+
 	
 	/**
 	 * Used to get service beans from spring context.
@@ -70,6 +79,23 @@ public class DocumentMgmtUIManager implements UIManager {
 	 * Account id
 	 */
 	private final Integer accountId;
+	
+	
+	/**
+	 * Document table builder
+	 */
+	private AbstractTableBuilder tableBuilder;
+	
+	/**
+	 * Documents collection
+	 */
+	private Collection<DocumentDto> documents;
+
+	/**
+	 * Document search field
+	 */
+	private TextField searchField;
+
 	
 	/**
 	 * Constructor
@@ -130,8 +156,8 @@ public class DocumentMgmtUIManager implements UIManager {
 		horizontal.addComponent(innerLayout);
 		this.verticalLayout.addComponent(horizontal);
 		innerLayout.addComponent(documentHeading);
-	//	verticaal.addComponent(new HorizontalRuler());
 		innerLayout.setMargin(true);
+		innerLayout.setSpacing(true);
 		
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
@@ -148,19 +174,53 @@ public class DocumentMgmtUIManager implements UIManager {
 		horizontal.setWidth(100,Unit.PERCENTAGE);
 		horizontal.setExpandRatio(innerLayout, 8);
 		horizontal.setExpandRatio(toolbarGridLayout, 1);
-		innerLayout.addComponent(new HorizontalRuler());
 		//addDocumentButton();
+		renderSearchPanel(innerLayout);
 		renderDocumentTable(innerLayout);
+
 	}
-	
+		
+	/**
+	 * Render search panel
+	 * @param layout
+	 */
+	public void renderSearchPanel(final VerticalLayout layout) {
+		
+		final FormLayout txtFieldLayout = new FormLayout();
+		searchField = new TextField("Document");
+		searchField.setInputPrompt("Document name");
+		searchField.addStyleName("horizontalForm");
+		txtFieldLayout.addComponent(searchField);
+		
+	    final Button searchButton = new Button(BUTTON_NAME_SEARCH);
+	    searchButton.addClickListener(this);
+	    
+		final GridLayout searchBar = new GridLayout(3,1);
+		searchBar.setSizeFull();
+	    searchBar.setMargin(true);
+		searchBar.setSpacing(true);
+		searchBar.addStyleName("horizontalForm");
+		searchBar.addComponent(txtFieldLayout);
+		searchBar.addComponent(searchButton);
+		searchBar.setComponentAlignment(searchButton, Alignment.MIDDLE_CENTER);
+		searchBar.setWidth(800, Unit.PIXELS);
+
+		final Panel searchPanel = new Panel();
+		searchPanel.setSizeUndefined(); 
+		searchPanel.setContent(searchBar);
+		layout.addComponent(searchPanel);
+		searchPanel.setWidth(100,Unit.PERCENTAGE);
+
+	}
+		
 	/**
 	 * Render document table
 	 */
 	@SuppressWarnings("unchecked")
 	private void renderDocumentTable(final VerticalLayout innerLayout) {
-		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper, this.tabSheet, this.documentTable);
+		tableBuilder = new DocumentTableBuilder(this.contextHelper, this.tabSheet, this.documentTable);
 		try {
-		Collection<DocumentDto> documents = this.documentService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+		documents = this.documentService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 		tableBuilder.build((Collection)documents);}
 		catch(AuthorizationException ex){Notification.show("You are not permitted to view documents");}
 		innerLayout.addComponent(this.documentTable);
@@ -180,6 +240,39 @@ public class DocumentMgmtUIManager implements UIManager {
 		this.verticalLayout.addComponent(addButton);
 		}
 		
+	}
+	
+	/**
+	 * Prepare search result and add to table
+	 * @param searchTxt
+	 */
+	private void prepareSearchResult(String searchTxt) {
+		
+		if(!searchTxt.equals("")) {
+			
+			Collection<Dto> searchedDcmnt = new ArrayList<Dto>();
+			
+			for (DocumentDto dto : this.documents) {
+				
+				if(dto.getDocumentTitle().toLowerCase().contains(searchTxt)) {
+					searchedDcmnt.add(dto);
+				}
+			}
+			tableBuilder.rebuild(searchedDcmnt);
+		} else {
+			tableBuilder.rebuild((Collection)this.documents);
+		}
+		
+	}
+
+	/**
+	 * Button click handler
+	 */
+	@Override
+	public void buttonClick(ClickEvent event) {
+
+		String searchTxt = searchField.getValue();
+		prepareSearchResult(searchTxt.toLowerCase());
 	}
 	
 }

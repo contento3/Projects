@@ -21,6 +21,7 @@ import com.contento3.web.common.helper.GenricEntityTableBuilder;
 import com.contento3.web.common.helper.HorizontalRuler;
 import com.contento3.web.common.helper.ScreenToolbarBuilder;
 import com.contento3.web.common.helper.SessionHelper;
+import com.contento3.web.content.ContentPicker;
 import com.contento3.web.content.image.ImageViewPopup;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.listener.SiteContentAssignerClickEvent;
@@ -40,19 +41,19 @@ import com.vaadin.ui.VerticalLayout;
 
 public class SiteContentAssignmentUIManager extends EntityListener  implements ClickListener{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
 	private static final Logger LOGGER = Logger.getLogger(SiteContentAssignmentUIManager.class);
-	
-	private final static String CONTENT_TYPE_ARTICLE ="Article";
-	private final static String CONTENT_TYPE_IMAGE ="Image";
-	private final static String CONTENT_TYPE_VIDEO ="Video";
-	private final static String CONTENT_TYPE_DOCUMENT ="Document";
-	private final static String PICKER_TITLE_FOR_IMAGE = "Image assignment";
-	private final static String PICKER_TITLE_FOR_ARTICLE = "Article assignment";
+	private final static String COLUNM_ARTICLE				= "article";
+	private final static String COLUNM_IMAGES 				= "image";
+	private final static String COLUNM_LIBRARY 				= "library";
+	private final static String COLUNM_VIEW 				= "view";
+	private final static String CONTENT_TYPE_ARTICLE 		= "Article";
+	private final static String CONTENT_TYPE_IMAGE			= "Image";
+	private final static String CONTENT_TYPE_VIDEO 			= "Video";
+	private final static String CONTENT_TYPE_DOCUMENT 		= "Document";
+	private final static String PICKER_TITLE_FOR_IMAGE 		= "Image assignment";
+	private final static String PICKER_TITLE_FOR_ARTICLE 	= "Article assignment";
+
 
 	private final TabSheet tabSheet;
 
@@ -80,6 +81,10 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 	
 	private ComboBox contentTypeComboBox;
 	
+	private String selectedType;
+	
+	private HashMap<Integer, ImageDto> images;
+	
 	public SiteContentAssignmentUIManager(TabSheet uiTabSheet,
 			SpringContextHelper contextHelper) {
 		
@@ -90,11 +95,9 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		this.imageService = (ImageService) contextHelper.getBean("imageService");
 	}
 
-
 	public Component render(final Integer siteId){
 		
 		siteDto = siteService.findSiteById(siteId);
-		//final ScreenHeader screenHeader = new ScreenHeader(verticalLayout,"Assign Content to Site : "+siteDto.getSiteName());
 		verticalLayout.setSpacing(true);
 		verticalLayout.setMargin(true);
 
@@ -114,14 +117,9 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		contentTypeComboBox = new ComboBox("Content Type",contentTypeValue);
 		contentTypeComboBox.setImmediate(true);
 		formLayout.addComponent(contentTypeComboBox);
-		
-		final Button button = new Button("Assign Content");
-//		formLayout.addComponent(button);
-		button.addClickListener(this);
-		
+				
 		GridLayout grid = new GridLayout(1, 1);
 		grid.addStyleName("bordertest");
-		
 		
 		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
 		listeners.add(new SiteContentAssignerClickEvent(this));
@@ -141,8 +139,6 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		return tabSheet;
 	}
 
-	private String selectedType;
-	private HashMap<Integer, ImageDto> images;
 	
 	@Override
 	public void buttonClick(ClickEvent event) {
@@ -158,7 +154,7 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			if( contentType.toString().equals(CONTENT_TYPE_ARTICLE) ) {
 				
 				selectedType = CONTENT_TYPE_ARTICLE;
-				listOfColumns.add("Articles");
+				listOfColumns.add(COLUNM_ARTICLE);
 				dtos = populateGenericDtoFromArticleDto(articleService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false));
 				assignedDtos = populateGenericDtoFromArticleDto(articleService.findLatestArticleBySiteId(siteDto.getSiteId(),null,null, false));
 				title = PICKER_TITLE_FOR_ARTICLE;
@@ -166,8 +162,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			} else if( contentType.toString().equals(CONTENT_TYPE_IMAGE) ) {
 				
 				selectedType = CONTENT_TYPE_IMAGE;
-				listOfColumns.add("Images");
-				//listOfColumns.add("Library");
+				listOfColumns.add(COLUNM_IMAGES);
+				listOfColumns.add(COLUNM_LIBRARY);
 				listOfColumns.add(GenricEntityTableBuilder.COLUNM_VIEW);
 				
 				Collection<ImageDto> imageList = imageService.findImageByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
@@ -183,8 +179,8 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			}
 			
 			GenricEntityPicker contentPicker;
-			contentPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);	
-            this.setCaption(title);
+			contentPicker = new ContentPicker(dtos,assignedDtos,listOfColumns,verticalLayoutForPopup,this,false);	
+			this.setCaption(title);
 			contentPicker.build();
 
 		}
@@ -201,22 +197,6 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 			} else if(selectedType.equals(CONTENT_TYPE_IMAGE)) {
 				updateListForImage(selectedItems);
 			}
-		}
-	}
-	
-	/**
-	 * Button click handler for EntityPicker pop-up
-	 */
-	@Override
-	public void entityButtonClickListener(ClickEvent event) {
-
-		super.entityButtonClickListener(event);
-		if( event.getButton().getCaption().equals(GenricEntityTableBuilder.COLUNM_VIEW) ) {
-			
-			Object id =  event.getButton().getData();
-			ImageDto dto = images.get(id);
-			ImageViewPopup popup = ImageViewPopup.getInstance();
-			popup.show(dto);
 		}
 	}
 	
@@ -296,9 +276,34 @@ public class SiteContentAssignmentUIManager extends EntityListener  implements C
 		Collection <Dto> dtos = new ArrayList<Dto>();
 		for (ImageDto imageDto : imageDtos){
 			Dto dto = new Dto(imageDto.getId(),imageDto.getName());
+			dto.getHashMap().put(COLUNM_LIBRARY, imageDto.getImageLibraryDto().getName());
+			dto.getHashMap().put(COLUNM_VIEW, createButton(COLUNM_VIEW, dto));
 			dtos.add(dto);
 		}
 		return dtos;
 	}
 	
+	private Button createButton(String name, Dto dto) {
+		
+		Button btn = new Button();
+		btn.setCaption(name);
+		btn.setData(dto.getId());
+		btn.setStyleName("link");
+		
+		btn.addClickListener(new ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+
+				Object id =  event.getButton().getData();
+				ImageDto dto = images.get(id);
+				ImageViewPopup popup = ImageViewPopup.getInstance();
+				popup.show(dto);
+			}
+		});
+		return btn;
+	}
+		
 }

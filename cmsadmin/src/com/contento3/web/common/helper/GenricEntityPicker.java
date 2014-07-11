@@ -30,12 +30,12 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	/**
 	 * Dtos to be listed in table
 	 */
-	private final Collection<Dto> dtos;
+	protected final Collection<Dto> dtos;
 
 	/**
 	 * Dtos that are already assigned and need to be checked in the table
 	 */
-	private final Collection<Dto> assignedDto;
+	protected final Collection<Dto> assignedDto;
 	/**
 	 * Vertical layout to add components
 	 */
@@ -49,7 +49,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	/**
 	 * Table builder for genric entity picker
 	 */
-	GenricEntityTableBuilder tableBuilder;
+	protected GenricEntityTableBuilder tableBuilder;
 	
 	/**
 	 * Tree Table builder for genric entity picker
@@ -91,7 +91,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	/**
 	 * Contain calling object
 	 */
-	EntityListener entityListener;
+	protected EntityListener entityListener;
 	
 	/**
 	 * Generate Tree table 
@@ -107,6 +107,9 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * Height of popup
 	 */
 	String height = "40";//default height
+	
+	String pageLength = "5"; //default
+
 
 	/**
 	 * Constructor
@@ -129,7 +132,6 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	 * Build Table
 	 */
 	public void build() { 
-		String pageLength = "5"; //default
 		try {
 			final CachedTypedProperties entityPickerPoperties = CachedTypedProperties.getInstance("entityPickerConfigure.properties");
 			width = entityPickerPoperties.getProperty("width");
@@ -221,4 +223,17 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 		this.tableBuilder.rebuild(dtos);
 	}
 
+	/**
+	 * Rebuild table
+	 * @param assignedDtos
+	 * @param dtos
+	 */
+	protected void rebuildTable (final Collection <Dto> assignedDtos, final Collection <Dto> dtos) {
+
+		setAssignedDtos(assignedDtos);
+		this.tableBuilder.rebuild(dtos);
+		this.tableBuilder.sort();
+		this.tableBuilder.table.setPageLength(Integer.parseInt(pageLength));
+		
+	}
 }
