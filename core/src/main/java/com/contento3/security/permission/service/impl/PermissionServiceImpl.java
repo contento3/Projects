@@ -2,6 +2,7 @@ package com.contento3.security.permission.service.impl;
 
 import java.util.Collection;
 
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +70,7 @@ public class PermissionServiceImpl implements PermissionService{
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-	@RequiresPermissions("PERMISSION:VIEW")
+	@RequiresPermissions(value = { "PERMISSION:VIEW", "PERMISSION:EDIT" }, logical = Logical.OR) 
 	@Override
 	public PermissionDto findById(Integer id) {
 		return permissionAssembler.domainToDto(permissionDao.findById(id));
@@ -92,8 +93,8 @@ public class PermissionServiceImpl implements PermissionService{
 		}
 	}
 	
+	@RequiresPermissions("PERMISSION:VIEW_LISTING") 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-	@RequiresPermissions("PERMISSION:VIEW_LISTING")
 	@Override
 	public Collection<PermissionDto> findAllPermissions() {
 		return permissionAssembler.domainsToDtos(permissionDao.findAllPermissions());

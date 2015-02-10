@@ -7,8 +7,9 @@ import javax.persistence.Column;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.domain.dto.SiteDomainDto;
+import com.contento3.common.dto.Dto;
 
-public class SiteDto implements Serializable {
+public class SiteDto extends Dto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,27 +61,27 @@ public class SiteDto implements Serializable {
 		return status;
 	}
 	
-	public void setStatus(Integer status) {
+	public void setStatus(final Integer status) {
 		this.status = status;
 	}
 	
 	public String getLanguage() {
 		return language;
 	}
-	public void setLanguage(String language) {
+	public void setLanguage(final String language) {
 		this.language = language;
 	}
 	
 	public Collection<SiteDomainDto> getSiteDomainDto() {
 		return siteDomainDto;
 	}
-	public void setSiteDomainDto(Collection<SiteDomainDto> siteDomainDto) {
+	public void setSiteDomainDto(final Collection<SiteDomainDto> siteDomainDto) {
 		this.siteDomainDto = siteDomainDto;
 	}
 	public Integer getDefaultLayoutId() {
 		return defaultLayoutId;
 	}
-	public void setDefaultLayoutId(Integer defaultLayoutId) {
+	public void setDefaultLayoutId(final Integer defaultLayoutId) {
 		this.defaultLayoutId = defaultLayoutId;
 	}
 	public AccountDto getAccountDto() {
@@ -110,4 +111,15 @@ public class SiteDto implements Serializable {
 	public void setDefaultPageId(final Integer defaultPageId) {
           this.defaultPageId = defaultPageId;
 	}
+	
+	@Override
+	public Integer getId() {
+		return this.siteId;
+	}
+	
+	@Override
+	public String getName() {
+		return this.siteName;
+	}
+
 }

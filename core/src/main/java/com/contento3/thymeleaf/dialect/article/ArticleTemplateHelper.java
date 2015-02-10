@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.ContextLoader;
@@ -92,26 +93,32 @@ public class ArticleTemplateHelper {
 
 
 	public ArticleDto getArticleByQuery(final String query) {
-		
-		String articleInfo[] = query.split("/");
-		
-		//At the moment we are expecting to get the article's 
-		//seo friendly url and uuid in the query string.
-		
-		//1. First try article by uuid 	 
-		ArticleDto article=null;
-		if (articleInfo.length==2){ //First try by uuid
-			article = this.articleService.findByUuid(articleInfo[1],true) ;
-		}
 
-		if (articleInfo.length==2 && article==null){ //Then by id
-			try {
-			article = this.articleService.findById(Integer.parseInt(articleInfo[1]),true);
+		ArticleDto article=null;
+		try {
+			String articleInfo[] = query.split("/");
+			
+			//At the moment we are expecting to get the article's 
+			//seo friendly url and uuid in the query string.
+			
+			//1. First try article by uuid 	 
+			if (articleInfo.length==2){ //First try by uuid
+				article = this.articleService.findByUuid(articleInfo[1],true) ;
 			}
-			catch (final NumberFormatException nfe){
-				//TODO add logging
+	
+			if (articleInfo.length==2 && article==null){ //Then by id
+				try {
+				article = this.articleService.findById(Integer.parseInt(articleInfo[1]),true);
+				}
+				catch (final NumberFormatException nfe){
+					//TODO add logging
+				}
 			}
 		}
+		catch (final AuthorizationException ae){
+			
+		}	
+		
 		return article;
 	}
 

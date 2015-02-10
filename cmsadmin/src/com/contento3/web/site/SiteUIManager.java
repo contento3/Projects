@@ -1,7 +1,9 @@
 package com.contento3.web.site;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
@@ -140,13 +142,13 @@ public class SiteUIManager implements UIManager {
 		siteConfigUIManager = new SiteConfigUIManager(pageService,siteService,contextHelper);
 		SEOUIManager seoUIManager = new SEOUIManager(contextHelper);
 		
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new CreatePageEventListener(pageUIManager,uiTabSheet,siteId));
-		listeners.add(new SiteConfigurationEventListener(siteConfigUIManager, uiTabSheet, siteId));
-		listeners.add(new ContentAssignerEventListener(siteContentUIManager, siteId));
-		listeners.add(new SEOSettingsEventListener(seoUIManager, uiTabSheet, siteId));
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("PAGE:ADD",new CreatePageEventListener(pageUIManager,uiTabSheet,siteId));
+		listeners.put("SITE_CONFIG:VIEW",new SiteConfigurationEventListener(siteConfigUIManager, uiTabSheet, siteId));
+		listeners.put("SITE_CONTENT:VIEW",new ContentAssignerEventListener(siteContentUIManager, siteId));
+		listeners.put("SEO:VIEW",new SEOSettingsEventListener(seoUIManager, uiTabSheet, siteId));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(grid,"site",listeners);
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(grid,"site",listeners);
 		builder.build();
 		
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();

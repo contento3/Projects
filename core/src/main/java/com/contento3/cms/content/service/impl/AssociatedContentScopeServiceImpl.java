@@ -42,13 +42,13 @@ public class AssociatedContentScopeServiceImpl implements AssociatedContentScope
 		Validate.notNull(dto,"dto cannot be null");
 		return associatedContentScopeDao.persist(associatedContentScopeAssembler.dtoToDomain(dto));
 	}
+
 	@RequiresPermissions("ASSOCIATED_CONTENT:DELETE")
 	@Override
 	public void delete(final AssociatedContentScopeDto dtoToDelete)
 			throws EntityCannotBeDeletedException {
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		associatedContentScopeDao.delete(associatedContentScopeAssembler.dtoToDomain(dtoToDelete));
-
 	}
 	
 	//@RequiresPermissions("ASSOCIATED_CONTENT:VIEW")

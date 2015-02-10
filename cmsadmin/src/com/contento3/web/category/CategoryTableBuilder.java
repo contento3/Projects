@@ -75,8 +75,7 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 		item.getItemProperty("category").setValue(category.getName());
 
 		if (SecurityUtils.getSubject().isPermitted("CATEGORY:EDIT")) {
-		
-			Button editButton = new Button("Edit");
+			final Button editButton = new Button("Edit");
 			editButton.addClickListener(new CategoryPopup(contextHelper,(TreeTable)treeTable,tabSheet));
 			editButton.setStyleName(BaseTheme.BUTTON_LINK);
 			editButton.setData(categoryId);
@@ -84,8 +83,7 @@ public class CategoryTableBuilder extends AbstractTreeTableBuilder {
 		}
 		
 		if (SecurityUtils.getSubject().isPermitted("CATEGORY:DELETE")) {
-
-			Button deleteButton = new Button("Delete");
+			final Button deleteButton = new Button("Delete");
 			deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
 			deleteButton.setData(categoryId);
 			deleteButton.addClickListener(new EntityDeleteClickListener<CategoryDto>(category,categoryService,deleteButton,treeTable));

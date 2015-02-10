@@ -1,7 +1,10 @@
 package com.contento3.web.content.document.listener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.account.service.AccountService;
 import com.contento3.dam.document.dto.DocumentDto;
@@ -20,6 +23,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -145,26 +149,31 @@ public class DocumentFormBuilderListner implements ClickListener {
 		});
 	}
 
-	private void renderEditDocumentScreen(int documentId) {
-		buildDocumentUI("Edit", documentId);
-		
-		final DocumentDto document = this.documentService.findById(documentId);
-		documentForm.getDocumentTitle().setValue(document.getDocumentTitle());
-		documentForm.getSelectDocumentType().setValue(document.getDocumentTypeDto().getName());
-		documentForm.setUploadedDocument(document.getDocumentContent());
-		
-		//Redundant code below - no longer used
-		final Button editButton = new Button("Edit");
-		
-		editButton.addClickListener( new ClickListener() {
+	private void renderEditDocumentScreen(Integer documentId) {
+		try {
+			final DocumentDto document = this.documentService.findById(documentId);
+			buildDocumentUI("Edit", documentId);
 			
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				//save edited doc
-			}
-		});
+			documentForm.getDocumentTitle().setValue(document.getDocumentTitle());
+			documentForm.getSelectDocumentType().setValue(document.getDocumentTypeDto().getName());
+			documentForm.setUploadedDocument(document.getDocumentContent());
+			
+			//Redundant code below - no longer used
+			final Button editButton = new Button("Edit");
+			
+			editButton.addClickListener( new ClickListener() {
+				
+				private static final long serialVersionUID = 1L;
+	
+				@Override
+				public void buttonClick(ClickEvent event) {
+					//save edited doc
+				}
+			});
+		}
+		catch (final AuthorizationException ae){
+			Notification.show("Access denied","You do not have permissions to view document",Notification.Type.TRAY_NOTIFICATION);
+		}
 	}
 	
 	private void buildDocumentUI(final String command, final Integer documentId) {
@@ -179,11 +188,11 @@ public class DocumentFormBuilderListner implements ClickListener {
 		documentTab.setClosable(true);
 
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new DocumentSaveListener(documentTab, documentForm, documentTable, documentId));
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("DOCUMENT:ADD",new DocumentSaveListener(documentTab, documentForm, documentTable, documentId));
 		//listeners.add(new DocumentEditListener(documentTab, documentForm, documentTable, documentId));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"document",listeners);
 		builder.build();
 		
 		parentLayout.addComponent(toolbarGridLayout);

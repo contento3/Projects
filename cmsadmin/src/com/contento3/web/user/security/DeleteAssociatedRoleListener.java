@@ -87,7 +87,7 @@ public class DeleteAssociatedRoleListener extends EntityListener implements Clic
 		if (dtos!=null) {
 			setCaption("Delete Role");//extend class method
 			PermissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
-			PermissionPicker.build();
+			PermissionPicker.build(null);
 		}
 	}
 	

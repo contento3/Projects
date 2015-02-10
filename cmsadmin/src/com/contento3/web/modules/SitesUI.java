@@ -2,7 +2,9 @@ package com.contento3.web.modules;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -37,7 +39,9 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.themes.BaseTheme;
 
-public class SitesUI implements Button.ClickListener, Action.Handler {
+public class SitesUI extends ModuleUI implements Button.ClickListener, Action.Handler {
+
+	private static final Logger LOGGER = Logger.getLogger(SitesUI.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -88,7 +92,7 @@ public class SitesUI implements Button.ClickListener, Action.Handler {
 		this.parentLayout.replaceComponent(this.parentLayout.getSecondComponent(),buildUI());
 	}
 
-	
+	@Override
 	public HorizontalSplitPanel buildUI(){
 		horiz = new HorizontalSplitPanel();
         
@@ -180,59 +184,67 @@ public class SitesUI implements Button.ClickListener, Action.Handler {
 
             	if (!TabSheetHelper.isTabLocked(uiTabsheet)){
 	                if (null!=itemSelected && itemSelected.equals("Layout Manager")){
-	                		UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper);
-	                		horiz.setSecondComponent(layoutUIMgr.render(null));
+	                	final UIManager layoutUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Layout,helper);
+	                	horiz.setSecondComponent(layoutUIMgr.render(null));
 	        		}
 	                else if (null!=itemSelected && itemSelected.equals(NavigationConstant.DASHBOARD)){
-	                		UIManager sitesDashboard = UIManagerCreator.createUIManager(uiTabsheet,Manager.Dashboard,helper);
-	                		horiz.setSecondComponent(sitesDashboard.render(null));
+	                	final UIManager sitesDashboard = UIManagerCreator.createUIManager(uiTabsheet,Manager.Dashboard,helper);
+	                	horiz.setSecondComponent(sitesDashboard.render(null));
 	                }
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.CONTENT_MANAGER) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.CONTENT_MANAGER)))){
-	        				final TabSheet tabsheet = new TabSheet();
-	        				UIManager contentUIMgr = UIManagerCreator.createUIManager(tabsheet,Manager.Content,helper);
-	    	    			horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
+	        			final TabSheet tabsheet = new TabSheet();
+	        			final UIManager contentUIMgr = UIManagerCreator.createUIManager(tabsheet,Manager.Content,helper);
+	    	    		horiz.setSecondComponent(contentUIMgr.render(itemSelected,hwContainer));
 	        		}
 	        		else if (null!=itemSelected  && (itemSelected.equals(NavigationConstant.SECURITY) || 
 	        				(null!=parentOfSelectedItem && parentOfSelectedItem.equals(NavigationConstant.SECURITY)))){
-	    	    		UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper);
+	        			final UIManager userUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.User,helper);
 	    	    		horiz.setSecondComponent(userUIMgr.render(itemSelected,hwContainer));
 	        		}
 	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.TEMPLATE)){
-	    	    		UIManager templateUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Template,helper);
+	        			final UIManager templateUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Template,helper);
 	    	    		horiz.setSecondComponent(templateUIMgr.render(null));
 	        		}
+	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.PAGE_MODULES)){
+	    	    		final UIManager templateUIMgr = UIManagerCreator.createUIManager(Manager.PageModules,helper);
+	    	    		horiz.setSecondComponent(templateUIMgr.render("MAIN"));
+	        		}
 	        		else if (null!=itemSelected && itemSelected.equals(NavigationConstant.CATEGORY_MGMT)){
-	        			TabSheet tabsheet = new TabSheet();
-	    	    		UIManager categoryUIMgr = UIManagerCreator.createUIManager(tabsheet,Manager.Category,helper);
+	        			final TabSheet tabsheet = new TabSheet();
+	        			final  UIManager categoryUIMgr = UIManagerCreator.createUIManager(tabsheet,Manager.Category,helper);
 	    	    		horiz.setSecondComponent(categoryUIMgr.render(null));
 	        		}
                 	else if (null!=itemSelected && itemSelected.equals("Sites")) {
 	            		hwContainer.setChildrenAllowed("Sites", true);	
 	            		
-	            		//TODO no need to go to fetch sites if they are not null
-	            		// but need to handle the situation where a new site is added 
-	            		// so that this new site is added and hence displayed to the tree 
-	            		//if (CollectionUtils.isEmpty(sites)){
-	            			SiteService siteService = (SiteService) helper.getBean("siteService");
-	            			System.out.println("account id:" + (Integer)SessionHelper.loadAttribute("accountId"));
-	            			sites = siteService.findSitesByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false);
-	            		//}
-	            	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
-	            			
-	            			UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper);
-	            			horiz.setSecondComponent(siteUIMgr.render(null));
-	            			
-	            			
-	            		for (SiteDto site: sites){
-	           				Item item = hwContainer.addItem(site.getSiteName());
-	           				if (null != item){	
-	          					item.getItemProperty("name").setValue(site.getSiteName());
-	           					item.getItemProperty("id").setValue(site.getSiteId());
-	            				hwContainer.setParent(site.getSiteName(), "Sites");
-	            				hwContainer.setChildrenAllowed(site.getSiteName(), false);
-	            			}
-	            		}
+	            		try {
+		            		//TODO no need to go to fetch sites if they are not null
+		            		// but need to handle the situation where a new site is added 
+		            		// so that this new site is added and hence displayed to the tree 
+		            		//if (CollectionUtils.isEmpty(sites)){
+		            			SiteService siteService = (SiteService) helper.getBean("siteService");
+		            			
+		            			sites = siteService.findSitesByAccountId((Integer)SessionHelper.loadAttribute("accountId"), false);
+		            		//}
+		            	//	Log.debug(String.format("Found %d sites for this account", sites.size()));
+		            			
+		            			UIManager siteUIMgr = UIManagerCreator.createUIManager(uiTabsheet,Manager.Site,helper);
+		            			horiz.setSecondComponent(siteUIMgr.render(null));
+		            			
+		            			
+		            		for (SiteDto site: sites){
+		           				Item item = hwContainer.addItem(site.getSiteName());
+		           				if (null != item){	
+		          					item.getItemProperty("name").setValue(site.getSiteName());
+		           					item.getItemProperty("id").setValue(site.getSiteId());
+		            				hwContainer.setParent(site.getSiteName(), "Sites");
+		            				hwContainer.setChildrenAllowed(site.getSiteName(), false);
+		            			}
+		            		}
+	            		} catch (final AuthorizationException ae){
+	            			LOGGER.debug("User not permitted to view sites. [SITE:VIEW_LISTING]");	
+	            		}	
 	            	}
 	            	
 	            	// get pages for this site.
@@ -307,6 +319,11 @@ public class SitesUI implements Button.ClickListener, Action.Handler {
         if (SecurityUtils.getSubject().isPermitted("SECURITY:NAVIGATION")){
         	createNavigationItem(hwContainer,NavigationConstant.SECURITY,"images/security.png");
         }
+
+        if (SecurityUtils.getSubject().isPermitted("PAGE_MODULE:NAVIGATION")){
+        	createNavigationItem(hwContainer,NavigationConstant.PAGE_MODULES,"images/page-module-icon.png");
+        }
+
     }
     
     private void createNavigationItem(final HierarchicalContainer hwContainer,final String navigationConstant,final String imagePath){

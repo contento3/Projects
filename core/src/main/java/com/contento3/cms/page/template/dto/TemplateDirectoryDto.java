@@ -1,5 +1,6 @@
 package com.contento3.cms.page.template.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.contento3.account.dto.AccountDto;
@@ -17,7 +18,7 @@ public class TemplateDirectoryDto {
 	
 	private TemplateDirectoryDto parent;
 	
-	private Collection<TemplateDirectoryDto> childDirectories;
+	private Collection<TemplateDirectoryDto> childDirectories = new ArrayList<TemplateDirectoryDto>();
 
 	private boolean isGlobal;
 	

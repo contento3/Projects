@@ -1,7 +1,9 @@
 package com.contento3.web.email.marketing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.c3.email.marketing.subscription.dto.SubscriptionDto;
 import com.c3.email.marketing.subscription.service.SubscriptionService;
@@ -278,8 +280,8 @@ public class SubscriptionAddEditListener implements ClickListener,com.vaadin.eve
 		private GridLayout buildScreenToolbar(){
 			final GridLayout toolbarGridLayout = new GridLayout(1,2);
 
-			final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-			listeners.add(new SubscriptionSaveListener(context));
+			final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+			listeners.put("SUBSCRIPTION:ADD",new SubscriptionSaveListener(context));
 
 			final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"subscription-edit",listeners);
 			builder.build();

@@ -2,6 +2,8 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -93,12 +95,22 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 		  	this.tableBuilder = new AssociatedUserTableBuilder(popupWindow,helper,userTable);
 		  	
 		  	Integer groupId = Integer.parseInt(event.getButton().getData().toString());
+	        final HorizontalLayout addButtonLayout = new HorizontalLayout();
+	        addButtonLayout.setSpacing(true);
+
+		  	if (SecurityUtils.getSubject().isPermitted("GROUP:ASSOCIATE_USER")){
+		        final Button addUserButton = new Button("Add");
+		        addUserButton.addClickListener(new AddAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
+		        addButtonLayout.addComponent(addUserButton);
+		  	}
 		  	
-	        final Button addUserButton = new Button("Add");
-	        addUserButton.addClickListener(new AddAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
-	        final Button deleteUserButton = new Button("Delete");
-	    	deleteUserButton.addClickListener(new DeleteAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
-			popupWindow.setPositionX(200);
+		  	if (SecurityUtils.getSubject().isPermitted("GROUP:DISASSOCIATE_USER")){
+		  		final Button deleteUserButton = new Button("Delete");
+		  		deleteUserButton.addClickListener(new DeleteAssociatedUsersListener(mainwindow,helper, groupId,tableBuilder));
+		  		addButtonLayout.addComponent(deleteUserButton);
+		  	}
+		  	
+		  	popupWindow.setPositionX(200);
 	    	popupWindow.setPositionY(100);
 
 	    	popupWindow.setHeight(40,Unit.PERCENTAGE);
@@ -113,11 +125,7 @@ public class AssociatedUserPopup extends CustomComponent implements Window.Close
 	        popupWindow.setCaption("Associated users");
 	        final VerticalLayout popupMainLayout = new VerticalLayout();
 	        popupMainLayout.setSpacing(true);
-	        final HorizontalLayout addButtonLayout = new HorizontalLayout();
-	        addButtonLayout.setSpacing(true);
 	        popupMainLayout.addComponent(addButtonLayout);
-	        addButtonLayout.addComponent(addUserButton);
-	        addButtonLayout.addComponent(deleteUserButton);
 	        
 	        /* Adding user table to pop-up */
 	        popupMainLayout.addComponent(renderAssociatedUserTable(groupId));

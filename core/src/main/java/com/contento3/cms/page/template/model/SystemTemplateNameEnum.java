@@ -3,7 +3,7 @@ package com.contento3.cms.page.template.model;
 public enum SystemTemplateNameEnum {
 
 	SYSTEM_ERROR_SIMPLE("errorSimple"),
-	SYSTEM_REGISTER("registerForm"),
+	SYSTEM_REGISTER("Registration Form"),
 	SYSTEM_REGISTER_SUCCESS("registerSuccess"),
     SYSTEM_ARTICLE("article");
 		

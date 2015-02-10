@@ -1,5 +1,6 @@
 package com.contento3.web.content.document.listener;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.authz.AuthorizationException;
@@ -136,16 +137,16 @@ public class DocumentSaveListener implements ClickListener {
 				documentService.update(documentDto);
 			}
 		} catch (EntityAlreadyFoundException e) {
-			Notification.show("The document was not created, because a document " +
-										"with the same title already exists in the database");
-			//e.printStackTrace();
+			Notification.show("Document","The document was not created, because a document " +
+										"with the same title already exists in the database",Notification.Type.TRAY_NOTIFICATION);
 			return;
 		} catch (EntityNotCreatedException e) {
-			Notification.show("The document was not created due to errors.");
-			//e.printStackTrace();
+			Notification.show("Document","The document was not created due to errors.",Notification.Type.TRAY_NOTIFICATION);
 			return;
 		}
-		catch(AuthorizationException ex){Notification.show("You are not permitted to Add or Update the Document");}
+		catch(final AuthorizationException ex){
+			Notification.show("Document","You are not permitted to Add or Update the Document",Notification.Type.TRAY_NOTIFICATION);
+		}
 		
 		/* At this point we can assume that the document has been created.
 		 * Otherwise, Java would've thrown an exception by now.
@@ -163,7 +164,14 @@ public class DocumentSaveListener implements ClickListener {
 	 @SuppressWarnings("rawtypes")
 	 private void resetTable(){
 		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper,this.tabSheet,this.documentTable);
-		final Collection<DocumentDto> document = this.documentService.findByAccountId(accountId);
+		Collection<DocumentDto> document = null;
+		
+		try {
+			document = this.documentService.findByAccountId(accountId);
+		}
+		catch (final AuthorizationException ae){
+			document = new ArrayList <DocumentDto>();
+		}
 		tableBuilder.rebuild((Collection) document);
 	}
 

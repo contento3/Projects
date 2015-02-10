@@ -1,12 +1,11 @@
 package com.contento3.web.site.seo;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
 import com.contento3.cms.seo.dto.MetaTagDto;
+import com.contento3.cms.seo.model.MetaTagLevelEnum;
 import com.contento3.cms.seo.service.MetaTagService;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.cms.site.structure.service.SiteService;
@@ -15,7 +14,6 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.site.seo.listener.SEOListener;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -46,7 +44,7 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 	private static final String BUTTON_NAME_ADD = "Add attribute";
 	private static final String BUTTON_NAME_UPDATE = "Update";
 	
-	private final String[] ATTRIBUTE_COMBOX_VALUES= {"http-equiv", "charset", "name"};
+	private final String[] ATTRIBUTE_COMBOX_VALUES= {"http-equiv", "charset", "name","id"};
 
 	
 	/**
@@ -153,9 +151,15 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 	 */
 	private Table createTableForSeo() {
 		
-		Collection<MetaTagDto> tags = metaTagService.findBySiteId(siteId);
-	
-		Table table = new Table();
+		Collection<MetaTagDto> tags;
+		if (pageId==null){
+			tags = metaTagService.findByAssociatedId(siteId, MetaTagLevelEnum.SITE);
+		}
+		else {
+			tags = metaTagService.findByAssociatedId(pageId, MetaTagLevelEnum.PAGE);
+		}
+		
+		final Table table = new Table();
 		table.setImmediate(true);
 		
 		tableBuilder = new SEOTableBuilder(table, this);
@@ -192,7 +196,8 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 				if(event.getProperty() != null && event.getProperty().getValue() != null) {
 					String value = event.getProperty().getValue().toString();
 					if(value.equals(ATTRIBUTE_COMBOX_VALUES[1])) {
-						contentValuField.setEnabled(false);		
+						contentValuField.setEnabled(false);
+						contentValuField.setValue("");
 					} 
 				}
 			}
@@ -236,8 +241,7 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 	 * @param id
 	 */
 	private void refreshTableData() {
-
-		Collection<MetaTagDto> dtos = metaTagService.findBySiteId(siteId);
+		final Collection<MetaTagDto> dtos = metaTagService.findByAssociatedId(siteId,MetaTagLevelEnum.SITE);
 		tableBuilder.rebuild((Collection)dtos);
 	}
 
@@ -274,16 +278,15 @@ public class SEOUIManager implements ClickListener, SEOListener  {
 				
 				if(pageId == null) {
 					dto.setAssociatedId(site.getSiteId());
-					dto.setLevel("site"); 
+					dto.setLevel(MetaTagLevelEnum.SITE); 
 				} else {
 					dto.setAssociatedId(pageId); 
-					dto.setLevel("page");
+					dto.setLevel(MetaTagLevelEnum.PAGE);
 				}
 
 				int id = metaTagService.create(dto);
 				Notification.show("", MSG_ATTRIBUTE_CREATED, Type.TRAY_NOTIFICATION);
 			} else  { //edit
-				
 				dto.setMetaTagId(metaTagDto.getMetaTagId());
 				dto.setAssociatedId(metaTagDto.getAssociatedId());
 				dto.setLevel(metaTagDto.getLevel());

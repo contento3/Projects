@@ -14,7 +14,9 @@ public enum Manager {
 	Image("article"),
 	Dashboard("dashboard"),
 	Newsletter("newsletter"),
-	Subscription("subscription");
+	Subscription("subscription"),
+	PageModules("pageModules"),
+	SocialPublish("socialpublish");
 	
 	private String managerName;
 	

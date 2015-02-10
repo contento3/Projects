@@ -1,7 +1,12 @@
 package com.contento3.web.user.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
+
+import com.contento3.security.permission.dto.PermissionDto;
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
@@ -90,12 +95,22 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
 	  	this.tableBuilder = new AssociatedPermissionTableBuilder(popupWindow,helper,permissionTable);
 	  	
 	  	int roleId = (Integer) event.getButton().getData();
-	  	
-        final Button addPermissionButton = new Button("Add");
-        addPermissionButton.addClickListener(new AddAssociatedPermissionsListener(mainwindow,helper, roleId,tableBuilder));
-        final Button deletePermissionButton = new Button("Delete");
-    	deletePermissionButton.addClickListener(new DeleteAssociatedPermissionListener(mainwindow,helper, roleId,tableBuilder));
-		popupWindow.setPositionX(200);
+
+        final HorizontalLayout addButtonLayout = new HorizontalLayout();
+
+        if (SecurityUtils.getSubject().isPermitted("ROLE:ASSOCIATE_PERMISSION")) {
+	        final Button addPermissionButton = new Button("Add");
+	        addPermissionButton.addClickListener(new AddAssociatedPermissionsListener(mainwindow,helper, roleId,tableBuilder));
+	        addButtonLayout.addComponent(addPermissionButton);
+        }
+        
+        if (SecurityUtils.getSubject().isPermitted("ROLE:DISASSOCIATE_PERMISSION")) {
+	        final Button deletePermissionButton = new Button("Delete");
+	    	deletePermissionButton.addClickListener(new DeleteAssociatedPermissionListener(mainwindow,helper, roleId,tableBuilder));
+	        addButtonLayout.addComponent(deletePermissionButton);
+        }
+
+    	popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
     	popupWindow.setHeight(40,Unit.PERCENTAGE);
@@ -110,11 +125,8 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
         popupWindow.setCaption("Associated Permissions");
         final VerticalLayout popupMainLayout = new VerticalLayout();
         popupMainLayout.setSpacing(true);
-        final HorizontalLayout addButtonLayout = new HorizontalLayout();
         addButtonLayout.setSpacing(true);
         popupMainLayout.addComponent(addButtonLayout);
-        addButtonLayout.addComponent(addPermissionButton);
-        addButtonLayout.addComponent(deletePermissionButton);
         
         /* Adding user table to pop-up */
         popupMainLayout.addComponent(renderAssociatedPermissionTable(roleId));
@@ -135,7 +147,13 @@ public class AssociatedPermissionPopup extends CustomComponent implements Window
 	  @SuppressWarnings({ "rawtypes", "unchecked" })
 	  private Table renderAssociatedPermissionTable(final Integer roleId){
 		  permissionTable.setPageLength(25);
-		  tableBuilder.build((Collection)roleService.findById(roleId).getPermissions());
+		  
+		  try{
+			  tableBuilder.build((Collection)roleService.findById(roleId).getPermissions());
+		  }
+		  catch (final AuthorizationException ae){
+			  tableBuilder.build((Collection) new ArrayList<PermissionDto>());
+		  }
 		return permissionTable;
 	  }
 

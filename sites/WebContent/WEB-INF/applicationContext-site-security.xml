@@ -96,10 +96,16 @@
            <beans:property name="username" value="${dbuserCrmUser}"/>
            <beans:property name="password" value="${dbpasswordCrmUser}"/>
 	</beans:bean> 
+
+	<beans:bean id="userRegistrationAssembler" class="com.contento3.site.user.service.impl.UserRegistrationAssemblerImpl">
+	</beans:bean>
  
 	<beans:bean id="userRegistrationService" class="com.contento3.site.user.service.impl.UserRegistrationServiceImpl">
 		<beans:property name="userDao" ref="siteUserDao"/>
 		<beans:property name="siteDao" ref="siteDAO"/>
+		<beans:property name="platformUserDao" ref="saltedHibernateUserDao"/>
+		<beans:property name="emailService" ref="emailService"/>
+		<beans:property name="userRegistrationAssembler" ref="userRegistrationAssembler"/>
 	</beans:bean>
 
 </beans:beans>

@@ -83,24 +83,22 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
 
         @Override
         public Template findSystemTemplateForAccount(final String templateCategory,
-                        final Integer accountId,final Boolean isGlobal) {
+                        final Integer accountId) {
                 Validate.notNull(templateCategory,"templateCategory cannot be null");
                 Validate.notNull(accountId,"accountId cannot be null");
-                Validate.notNull(isGlobal,"isGlobal cannot be null");
 
                 final Criteria criteria = this.getSession()
                 .createCriteria(Template.class)
                 .setCacheable(true)
-                .setCacheRegion(CACHE_REGION).add(Restrictions
-                .eq("isGlobal", isGlobal));
+                .setCacheRegion(CACHE_REGION);
                 
                 criteria.createAlias("templateCategory","templateCategory")
                 .add(Restrictions
-                .eq("templateCategory.name", templateCategory));
+                .eq("templateCategory.templateCategoryName", templateCategory));
 
-//                criteria.createAlias("account","account")
-//                .add(Restrictions
-//                .eq("account.accountId", accountId));
+                criteria.createAlias("account","account")
+               .add(Restrictions
+               .eq("account.accountId", accountId));
                 
                 Template template = null;
                 if (!CollectionUtils.isEmpty(criteria.list())){
@@ -123,7 +121,7 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
                 
                 criteria.createAlias("templateCategory","templateCategory")
                 .add(Restrictions
-                .eq("templateCategory.name", templateCategory));
+                .eq("templateCategory.templateCategoryName", templateCategory));
 
                 Template template = null;
                 if (!CollectionUtils.isEmpty(criteria.list())){
@@ -180,8 +178,12 @@ public class TemplateDaoHibernateImpl extends GenericDaoSpringHibernateTemplate<
             .createCriteria("account").add(Restrictions
                             .eq("accountId", accountId));
                     
-            List list = criteria.list();
-            return (Template)list.get(0);
+            Template template = null;
+            if (!CollectionUtils.isEmpty(criteria.list())){
+                    template = (Template)criteria.list().get(0);
+            }        
+            
+            return template;
 		}
 
 }

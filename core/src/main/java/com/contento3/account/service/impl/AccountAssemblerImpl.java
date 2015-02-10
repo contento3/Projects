@@ -6,12 +6,21 @@ import java.util.Collection;
 import org.apache.commons.lang.Validate;
 
 import com.contento3.account.dto.AccountDto;
+import com.contento3.account.dto.AccountTypeDto;
 import com.contento3.account.model.Account;
+import com.contento3.account.model.AccountType;
 import com.contento3.account.service.AccountAssembler;
+import com.contento3.account.service.AccountTypeAssembler;
 
 
 public class AccountAssemblerImpl implements AccountAssembler {
 
+	private AccountTypeAssembler accountTypeAssembler;
+	
+	public AccountAssemblerImpl (final AccountTypeAssembler accountTypeAssembler){
+		this.accountTypeAssembler = accountTypeAssembler;
+	}
+	
 	@Override
 	public Account dtoToDomain(final AccountDto dto){
 		Validate.notNull(dto,"account dto cannot be null");
@@ -20,6 +29,7 @@ public class AccountAssemblerImpl implements AccountAssembler {
 		account.setAccountId(dto.getAccountId());
 		account.setName(dto.getName());
 		account.setEnabled(dto.isEnabled());
+		account.setAccountType(accountTypeAssembler.dtoToDomain(dto.getAccountTypeDto(), new AccountType()));
 		return account;
 	}
 
@@ -29,6 +39,7 @@ public class AccountAssemblerImpl implements AccountAssembler {
 		dto.setName(dto.getName());
 		dto.setAccountId(domain.getAccountId());
 		dto.setEnabled(domain.isEnabled());
+		dto.setAccountTypeDto(accountTypeAssembler.domainToDto(domain.getAccountType(), new AccountTypeDto()));
 		return dto;
 	}
 
@@ -42,7 +53,7 @@ public class AccountAssemblerImpl implements AccountAssembler {
 	}
 
 	@Override
-	public Collection<Account> dtosToDomains(Collection<AccountDto> dtos) {
+	public Collection<Account> dtosToDomains(final Collection<AccountDto> dtos) {
 		Collection<Account> domains = new ArrayList<Account>();
 		for (AccountDto accountDto : dtos){
 			domains.add(dtoToDomain(accountDto));

@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.contento3.cms.seo.dto.MetaTagDto;
 import com.contento3.cms.seo.model.MetaTag;
+import com.contento3.cms.seo.model.MetaTagLevelEnum;
 import com.contento3.cms.seo.service.MetaTagAssembler;
 import com.contento3.cms.site.structure.service.SiteAssembler;
 
@@ -23,7 +24,7 @@ public class MetaTagAssemblerImpl implements MetaTagAssembler {
 		domain.setAttribute(dto.getAttribute());
 		domain.setAttributeValue(dto.getAttributeValue());
 		domain.setAttributeContent(dto.getAttributeContent());
-		domain.setLevel(dto.getLevel());
+		domain.setLevel(dto.getLevel().toString());
 		domain.setAssociatedId(dto.getAssociatedId());
 		domain.setSite(siteAssembler.dtoToDomain(dto.getSite()));
 		return domain;
@@ -36,7 +37,13 @@ public class MetaTagAssemblerImpl implements MetaTagAssembler {
 		dto.setAttribute(domain.getAttribute());
 		dto.setAttributeValue(domain.getAttributeValue());
 		dto.setAttributeContent(domain.getAttributeContent());
-		dto.setLevel(domain.getLevel());
+		
+		if (domain.getLevel().equalsIgnoreCase("page")){
+			dto.setLevel(MetaTagLevelEnum.PAGE);
+		}
+		else {
+			dto.setLevel(MetaTagLevelEnum.SITE);
+		}
 		dto.setAssociatedId(domain.getAssociatedId());
 		dto.setSite(siteAssembler.domainToDto(domain.getSite()));
 		return dto;

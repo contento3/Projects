@@ -1,9 +1,10 @@
 package com.contento3.web.content.article.listener;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashMap;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
 
@@ -29,6 +30,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
@@ -146,20 +148,25 @@ public class ArticleFormBuilderListner implements ClickListener{
 	 * @return
 	 */
 	public Component renderEditScreen(final Integer editId){
-		article = this.articleService.findById(editId);
-		buildArticleUI("Edit",editId);
-		articleForm.getArticleHeading().setValue(article.getHead());
-		articleForm.getArticleTeaser().setValue(article.getTeaser());
-		articleForm.getBodyTextField().setValue(article.getBody());
-		articleForm.getPostedDatefield().setValue(article.getDatePosted());
-		articleForm.getExpiryDatefield().setValue(article.getExpiryDate());
-		articleForm.getSeoFriendlyURL().setValue(article.getSeoFriendlyUrl());
+		
+		try {
+			article = this.articleService.findById(editId);
+			buildArticleUI("Edit",editId);
+			articleForm.getArticleHeading().setValue(article.getHead());
+			articleForm.getArticleTeaser().setValue(article.getTeaser());
+			articleForm.getBodyTextField().setValue(article.getBody());
+			articleForm.getPostedDatefield().setValue(article.getDatePosted());
+			articleForm.getExpiryDatefield().setValue(article.getExpiryDate());
+			articleForm.getSeoFriendlyURL().setValue(article.getSeoFriendlyUrl());
+		}
+		catch (final AuthorizationException ae){
+			Notification.show("Access Denied","You do not have permission to view article",Notification.Type.TRAY_NOTIFICATION);
+		}
 		return formLayout;
 	}
 	
 	
 	private Button createPublishedButton() {
-		
 		Button btnPublished = new Button();
 		if (article.getStatus() == 0) {
 			btnPublished.setCaption(BUTTON_NAME_PUBLISHED);
@@ -229,31 +236,35 @@ public class ArticleFormBuilderListner implements ClickListener{
 		mainFormLayout.addComponent(formLayout);
 
 		if (articleId!=null){
-			final Button btnPublish = createPublishedButton();
-			HorizontalLayout layoutForButton = new HorizontalLayout();
-			layoutForButton.setSizeUndefined();
-			layoutForButton.setWidth(100, Unit.PERCENTAGE);
-			layoutForButton.addComponent(btnPublish);
 			
-			layoutForButton.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
-			layoutForButton.setSpacing(false);
-			hl.addComponent(layoutForButton);
-			hl.setComponentAlignment(layoutForButton, Alignment.MIDDLE_RIGHT);
-			hl.setWidth(100,Unit.PERCENTAGE);
+			if (SecurityUtils.getSubject().isPermitted("ARTICLE:PUBLISH")){
+				final Button btnPublish = createPublishedButton();
+			
+				HorizontalLayout layoutForButton = new HorizontalLayout();
+				layoutForButton.setSizeUndefined();
+				layoutForButton.setWidth(100, Unit.PERCENTAGE);
+				layoutForButton.addComponent(btnPublish);
+				
+				layoutForButton.setComponentAlignment(btnPublish, Alignment.TOP_RIGHT);
+				layoutForButton.setSpacing(false);
+				hl.addComponent(layoutForButton);
+				hl.setComponentAlignment(layoutForButton, Alignment.MIDDLE_RIGHT);
+				hl.setWidth(100,Unit.PERCENTAGE);
+			}
 		}
 		
 		articleTab = this.tabSheet.addTab(parentLayout,command+" Article",new ExternalResource("images/article.png"));
 		articleTab.setClosable(true);
 
 		final GridLayout toolbarGridLayout = new GridLayout(1,5);
-		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
-		listeners.add(new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
-		listeners.add(new AssociatedCategoryClickListener(articleId,contextHelper));
-		listeners.add(new ArticleAssignImageListener(parentWindow, contextHelper, articleId, accountId));
-		listeners.add(new AssociatedImagesUIManager(parentWindow, contextHelper, articleId));
+		final LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("ARTICLE:ADD",new ArticleSaveListener(articleTab, articleForm,articleTable,articleId,accountId));
+		listeners.put("ARTICLE:ASSOCIATE_CATEGORY",new ArticleAssignCategoryListener(parentWindow,contextHelper,articleId,accountId));
+		listeners.put("ARTICLE:ASSOCIATE_CATEGORY_VIEW",new AssociatedCategoryClickListener(articleId,contextHelper));
+		listeners.put("ARTICLE:ASSOCIATE_IMAGE",new ArticleAssignImageListener(parentWindow, contextHelper, articleId, accountId));
+		listeners.put("ARTICLE:ASSOCIATE_IMAGE_VIEW",new AssociatedImagesUIManager(parentWindow, contextHelper, articleId));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();
 
 		parentLayout.addComponent(toolbarGridLayout);

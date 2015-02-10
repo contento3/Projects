@@ -13,7 +13,10 @@ public class TemplateTypeAssemblerImpl implements TemplateTypeAssembler {
 	@Override
 	public TemplateType dtoToDomain(TemplateTypeDto dto) {
 		TemplateType domain = new TemplateType();
-		domain.setTemplateTypeId(dto.getTemplateTypeId());
+		
+		if (null!=dto.getTemplateTypeId()){
+			domain.setTemplateTypeId(dto.getTemplateTypeId());
+		}
 		domain.setTemplateTypeName(dto.getTemplateTypeName());
 		domain.setDescription(dto.getDescription());
 		domain.setContentType(dto.getContentType());

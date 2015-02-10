@@ -1,9 +1,19 @@
 package com.contento3.web;
 
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.util.Collection;
+
+import org.apache.log4j.Logger;
+
+import com.contento3.account.dto.AccountDto;
+import com.contento3.account.dto.AccountTypeDto;
+import com.contento3.account.dto.ModuleDto;
+import com.contento3.account.service.AccountService;
+import com.contento3.web.common.helper.SessionHelper;
 import com.contento3.web.content.image.ImageLoader;
 import com.contento3.web.helper.SpringContextHelper;
-import com.contento3.web.modules.EmailMarketingUI;
-import com.contento3.web.modules.SitesUI;
+import com.contento3.web.modules.ModuleUI;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -13,7 +23,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
@@ -21,7 +30,11 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 
-public class ModuleDashboardBuilder  {
+public class ModuleDashboardBuilder implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private static final Logger LOGGER = Logger.getLogger(ModuleDashboardBuilder.class);
 
 	private final SpringContextHelper helper;
 	
@@ -46,37 +59,73 @@ public class ModuleDashboardBuilder  {
 		headerLayout.addComponent(moduleItems,1);
 		headerLayout.setComponentAlignment(moduleItems,Alignment.BOTTOM_CENTER);
 		
+		final AccountService accountService = (AccountService)helper.getBean("accountService");
+		final AccountDto account = accountService.findAccountById((Integer)SessionHelper.loadAttribute("accountId"));
+		final AccountTypeDto accountTypeDto = account.getAccountTypeDto();
+		final Collection <ModuleDto> modules = accountTypeDto.getModules();
+
+		try {
+
+			final MenuItem item = moduleItems.addItem("Modules",new ExternalResource("images/arrow.png"), null);
+			moduleItems.setMoreMenuItem(null);
+
+			for (ModuleDto module:modules){
+				if (module.isEnabled()){
+					final Class<? extends Button.ClickListener> moduleInitiatingClass = (Class<? extends ClickListener>) Class.forName(module.getListenerClass());
+					final Constructor <ClickListener> constructor = (Constructor<ClickListener>) moduleInitiatingClass.getConstructor(SpringContextHelper.class,VerticalSplitPanel.class);
+					final Button.ClickListener moduleInstance  = constructor.newInstance(helper,verticalSplitPanel);
+					final HorizontalLayout moduleLayout = createDashBoardItem(module.getModuleName(),module.getIconName(),moduleInstance);
+					grid.addComponent(moduleLayout);
+					grid.setComponentAlignment(moduleLayout, Alignment.MIDDLE_CENTER);
+						final MenuBar.Command menuBarCommand = new MenuBar.Command() {
+						    public void menuSelected(final MenuItem selectedItem) {
+						    	verticalSplitPanel.replaceComponent(verticalSplitPanel.getSecondComponent(),((ModuleUI)moduleInstance).buildUI());
+						   }  
+						};
+						item.addItem(module.getModuleName(), menuBarCommand);
+				}
+			}	
+		}
+		catch (final Exception e){
+			LOGGER.fatal("Unable to load modules",e);
+		}
+		
+//		final HorizontalLayout websitesModule = createDashBoardItem("Websites","sites-96.png",new SitesUI(helper,verticalSplitPanel));
+//		grid.addComponent(websitesModule,0,0);
+//		grid.setComponentAlignment(websitesModule, Alignment.MIDDLE_CENTER);
+//
+		
 		//Module
-		final HorizontalLayout websitesModule = createDashBoardItem("Websites","sites-96.png",new SitesUI(helper,verticalSplitPanel));
-		grid.addComponent(websitesModule,0,0);
-		grid.setComponentAlignment(websitesModule, Alignment.MIDDLE_CENTER);
+//		final HorizontalLayout websitesModule = createDashBoardItem("Websites","sites-96.png",new SitesUI(helper,verticalSplitPanel));
+//		grid.addComponent(websitesModule,0,0);
+//		grid.setComponentAlignment(websitesModule, Alignment.MIDDLE_CENTER);
 		
-		
-		// Define a common menu command for all the menu items
-		MenuBar.Command menuBarCommand = new MenuBar.Command() {
-
-		    public void menuSelected(final MenuItem selectedItem) {
-		    	if (selectedItem.getText().equals("Websites")){
-		    		final SitesUI sitesUI = new SitesUI(helper,verticalSplitPanel);
-		    		verticalSplitPanel.replaceComponent(verticalSplitPanel.getSecondComponent(),sitesUI.buildUI());
-		    	}
-		    	else if (selectedItem.getText().equals("Email Marketing")){
-		    		final EmailMarketingUI email = new EmailMarketingUI(helper,verticalSplitPanel);
-		    		HorizontalSplitPanel panel = email.buildUI();
-		    		verticalSplitPanel.replaceComponent(verticalSplitPanel.getSecondComponent(),panel);
-		    	}
-		    }  
-		};
+//		// Define a common menu command for all the menu items
+//		MenuBar.Command menuBarCommand = new MenuBar.Command() {
+//
+//		    public void menuSelected(final MenuItem selectedItem) {
+//
+//		    	if (selectedItem.getText().equals("Websites")){
+//		    		final SitesUI sitesUI = new SitesUI(helper,verticalSplitPanel);
+//		    		verticalSplitPanel.replaceComponent(verticalSplitPanel.getSecondComponent(),sitesUI.buildUI());
+//		    	}
+//		    	else if (selectedItem.getText().equals("Email Marketing")){
+//		    		final EmailMarketingUI email = new EmailMarketingUI(helper,verticalSplitPanel);
+//		    		HorizontalSplitPanel panel = email.buildUI();
+//		    		verticalSplitPanel.replaceComponent(verticalSplitPanel.getSecondComponent(),panel);
+//		    	}
+//		    }  
+//		};
 		        
-		MenuItem item = moduleItems.addItem("Modules",new ExternalResource("images/arrow.png"), null);
-		moduleItems.setMoreMenuItem(null);
-		item.addItem("Websites", menuBarCommand);
+//		MenuItem item = moduleItems.addItem("Modules",new ExternalResource("images/arrow.png"), null);
+//		moduleItems.setMoreMenuItem(null);
+//		item.addItem("Websites", menuBarCommand);
 
-		final HorizontalLayout emailMarketingModule = createDashBoardItem("Email marketing","email-marketing-icon.png",new EmailMarketingUI(helper,verticalSplitPanel));
-		grid.addComponent(emailMarketingModule,1,0);
-		grid.setComponentAlignment(emailMarketingModule, Alignment.MIDDLE_CENTER);
+//		final HorizontalLayout emailMarketingModule = createDashBoardItem("Email marketing","email-marketing-icon.png",new EmailMarketingUI(helper,verticalSplitPanel));
+//		grid.addComponent(emailMarketingModule);
+//		grid.setComponentAlignment(emailMarketingModule, Alignment.MIDDLE_CENTER);
 
-		item.addItem("Email Marketing", menuBarCommand);
+//		item.addItem("Email Marketing", menuBarCommand);
 
 //		HorizontalLayout socialMediaModule = createDashBoardItem("Social Media","social-media-icon.png",new SocialMediaManagementUI());
 //		grid.addComponent(socialMediaModule,2,0);

@@ -2,6 +2,8 @@ package com.contento3.web.user.security;
 
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.security.group.service.GroupService;
 import com.contento3.web.common.helper.AbstractTableBuilder;
 import com.contento3.web.helper.SpringContextHelper;
@@ -88,12 +90,20 @@ public class AssociatedRolePopup extends CustomComponent implements Window.Close
 	  	this.tableBuilder= new AssociatedRoleTableBuilder(helper,roleTable);
 	  	
 	  	//List<RoleDto> roles = event.getButton().getData();
-	  	Integer groupId = Integer.parseInt(event.getButton().getData().toString());
+	  	final Integer groupId = Integer.parseInt(event.getButton().getData().toString());
+        final HorizontalLayout addButtonLayout = new HorizontalLayout();
 
-        final Button addRoleButton = new Button("Add");
-        addRoleButton.addClickListener(new AddAssociatedRoleListener(helper, groupId,tableBuilder));
-        final Button deleteRoleButton = new Button("Delete");
-        deleteRoleButton.addClickListener(new DeleteAssociatedRoleListener(helper, groupId,tableBuilder));
+	  	if (SecurityUtils.getSubject().isPermitted("GROUP:ASSOCIATE_ROLE")){
+	  		final Button addRoleButton = new Button("Add");
+	  		addRoleButton.addClickListener(new AddAssociatedRoleListener(helper, groupId,tableBuilder));
+	        addButtonLayout.addComponent(addRoleButton);
+	  	}
+	  	
+	  	if (SecurityUtils.getSubject().isPermitted("GROUP:DISASSOCIATE_ROLE")){
+	  		final Button deleteRoleButton = new Button("Delete");
+	  		deleteRoleButton.addClickListener(new DeleteAssociatedRoleListener(helper, groupId,tableBuilder));
+	        addButtonLayout.addComponent(deleteRoleButton);
+	  	}
 		popupWindow.setPositionX(200);
     	popupWindow.setPositionY(100);
 
@@ -109,11 +119,8 @@ public class AssociatedRolePopup extends CustomComponent implements Window.Close
         popupWindow.setCaption("Associated Role");
         final VerticalLayout popupMainLayout = new VerticalLayout();
         popupMainLayout.setSpacing(true);
-        final HorizontalLayout addButtonLayout = new HorizontalLayout();
         addButtonLayout.setSpacing(true);
         popupMainLayout.addComponent(addButtonLayout);
-        addButtonLayout.addComponent(addRoleButton);
-        addButtonLayout.addComponent(deleteRoleButton);
         
         /* Adding user table to pop-up */
         popupMainLayout.addComponent(renderAssociatedRoleTable(groupId));

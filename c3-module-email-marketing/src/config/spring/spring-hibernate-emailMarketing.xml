@@ -29,11 +29,18 @@
 </bean>
 
 
-	<bean id="cmsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-	           <property name="driverClassName" value="${driver}"/>
-	           <property name="url" value="${dburlEmail}"/>
-	           <property name="username" value="${dbuserEmail}"/>
+	<bean id="cmsDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close">
+	           <property name="driverName" value="${driver}"/>
+	           <property name="jdbcUrl" value="${dburlEmail}"/>
+	           <property name="user" value="${dbuserEmail}"/>
 	           <property name="password" value="${dbpasswordEmail}"/>
+	           <property name="acquireIncrement" value="1" />
+    	       <property name="minPoolSize" value="2" />
+       	       <property name="maxPoolSize" value="5" />
+       		   <property name="maxIdleTime" value="100" />
+        	   <property name="debugUnreturnedConnectionStackTraces" value="true" />
+   		       <property name="unreturnedConnectionTimeout" value="300" />
+       		        
 	</bean>
 
 	<bean id="emailMarketingSessionFactory"
@@ -46,6 +53,9 @@
 				 <value>com.c3.email.marketing.subscription.model.Subscription</value>
 				 <value>com.contento3.cms.page.template.model.Template</value>
 				 <value>com.contento3.account.model.Account</value>
+				 <value>com.contento3.account.model.AccountType</value>
+				 <value>com.contento3.account.model.Module</value>
+				 <value>com.contento3.account.model.ModuleCategory</value>
 				 <value>com.contento3.security.user.model.SaltedHibernateUser</value>
 				 <value>com.contento3.cms.page.template.model.TemplateDirectory</value>
 				 <value>com.contento3.cms.page.templatecategory.model.TemplateCategory</value>
@@ -65,13 +75,6 @@
 				<prop key="hibernate.cache.use_structured_entries">true</prop>
 				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
 				
-				<prop key="hibernate.c3p0.min_size">2 </prop>
-	            <prop key="hibernate.c3p0.max_size" >5</prop>
-	            <prop key="hibernate.c3p0.timeout">600</prop>
-	            <prop key="hibernate.c3p0.max_statements">0</prop>
-	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
-	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
-	            
 			</props>
 		</property>	</bean>
 

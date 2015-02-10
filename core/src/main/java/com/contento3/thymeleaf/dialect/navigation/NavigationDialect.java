@@ -1,19 +1,10 @@
 package com.contento3.thymeleaf.dialect.navigation;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.thymeleaf.context.IProcessingContext;
 import org.thymeleaf.dialect.AbstractDialect;
-import org.thymeleaf.dialect.IExpressionEnhancingDialect;
 import org.thymeleaf.processor.IProcessor;
-
-import com.contento3.cms.page.category.dao.impl.CategoryDaoHibernateImpl;
-import com.contento3.cms.page.dao.impl.PageDaoHibernateImplTest;
-import com.contento3.thymeleaf.dialect.article.ArticleTemplateHelper;
-import com.contento3.thymeleaf.dialect.category.CategoryTemplateHelper;
 
 public class NavigationDialect extends AbstractDialect {
 

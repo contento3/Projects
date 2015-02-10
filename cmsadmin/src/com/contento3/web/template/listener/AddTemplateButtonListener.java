@@ -31,6 +31,8 @@ public class AddTemplateButtonListener implements ClickListener {
     
     private TemplateForm templateForm;
     
+	Integer templateId = null;
+	
 	public AddTemplateButtonListener (final SpringContextHelper helper,final TemplateForm templateForm,final TemplateDto templateDto){
 		this.templateService = (TemplateService)helper.getBean("templateService");
 		this.templateForm = templateForm;
@@ -39,13 +41,15 @@ public class AddTemplateButtonListener implements ClickListener {
 	
 	@Override
 	public void click(final ClickEvent event) {
+	
 		if (null==templateDto){
 			try {
-				final TemplateDto templateDto = new TemplateDto();
+				templateDto = new TemplateDto();
 				templateDto.setTemplateName(templateForm.getTemplateNameTxtFld().getValue());
 				templateDto.setTemplatePath(templateForm.getTemplatePathTxtFld().getValue());
 				templateDto.setTemplateText(templateForm.getEditor().getValue());
 				templateDto.setGlobal(templateForm.getIsGlobal().getValue());
+				templateDto.setTemplateKey(templateForm.getTemplateKeyTxtFld().getValue());
 				
 				final TemplateDirectoryDto directory = new TemplateDirectoryDto();
 				directory.setId(Integer.parseInt(templateForm.getDirectoryId().getValue()));
@@ -58,16 +62,16 @@ public class AddTemplateButtonListener implements ClickListener {
 				final AccountDto accountDto = new AccountDto();
 				accountDto.setAccountId((Integer)SessionHelper.loadAttribute("accountId"));
 				templateDto.setAccountDto(accountDto);
-				templateService.create(templateDto);
+				templateId = (Integer)templateService.create(templateDto);
 				Notification.show("Template Creation","Template created successfully",Notification.Type.TRAY_NOTIFICATION);
 			} 
 			catch (final EntityAlreadyFoundException e) {
-				LOGGER.info("");
-				Notification.show("not crearedd","",Notification.Type.TRAY_NOTIFICATION);
+				LOGGER.info("Unable to create template");
+				Notification.show("Template","Unable to create template",Notification.Type.TRAY_NOTIFICATION);
 			} 
 			catch (final EntityNotCreatedException e) {
-				LOGGER.info("");
-				Notification.show("not crearedd","",Notification.Type.TRAY_NOTIFICATION);
+				LOGGER.info("Unable to create template");
+				Notification.show("Template","Unable to create template",Notification.Type.TRAY_NOTIFICATION);
 			}
 		}
 		else {
@@ -76,6 +80,7 @@ public class AddTemplateButtonListener implements ClickListener {
 				templateDto.setTemplatePath(templateForm.getTemplatePathTxtFld().getValue());
 				templateDto.setTemplateText(templateForm.getEditor().getValue());
 				templateDto.setGlobal(templateForm.getIsGlobal().getValue());
+				templateDto.setTemplateKey(templateForm.getTemplateKeyTxtFld().getValue());
 				
 				templateService.updateTemplate(templateDto);
 				Notification.show("Template Edit","Template updated successfully",Notification.Type.TRAY_NOTIFICATION);

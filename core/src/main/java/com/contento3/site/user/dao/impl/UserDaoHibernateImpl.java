@@ -5,7 +5,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.util.CollectionUtils;
 
-import com.contento3.cms.page.model.Page;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 import com.contento3.site.user.dao.UserDao;
 import com.contento3.site.user.model.User;
@@ -18,13 +17,13 @@ implements UserDao {
 	}
 
 	@Override
-	public User findByUsernameAndSiteId(String username, Integer siteId) {
+	public User findByUsernameAndSiteId(final String username,final Integer siteId) {
 		Validate.notNull(siteId,"siteId cannot be null");
 		
 		Criteria criteria = this.getSession()
-		.createCriteria(Page.class)
+		.createCriteria(User.class)
 		.add(Restrictions
-		.eq("siteId", siteId))
+		.eq("site.siteId", siteId))
 		.add(Restrictions
 		.eq("username", username));
 		

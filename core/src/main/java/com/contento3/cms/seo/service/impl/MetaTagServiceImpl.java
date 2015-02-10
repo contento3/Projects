@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.cms.seo.dao.MetaTagDAO;
 import com.contento3.cms.seo.dto.MetaTagDto;
+import com.contento3.cms.seo.model.MetaTagLevelEnum;
 import com.contento3.cms.seo.service.MetaTagAssembler;
 import com.contento3.cms.seo.service.MetaTagService;
 
@@ -38,9 +39,8 @@ public class MetaTagServiceImpl implements MetaTagService {
 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
-	public Collection<MetaTagDto> findBySiteId(final Integer siteId) {
-
-		return metaTagAssembler.domainsToDtos(metaTagDao.findBySiteId(siteId));
+	public Collection<MetaTagDto> findByAssociatedId(final Integer id,final MetaTagLevelEnum level) {
+		return metaTagAssembler.domainsToDtos(metaTagDao.findByAssocaitedId(id,level));
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)

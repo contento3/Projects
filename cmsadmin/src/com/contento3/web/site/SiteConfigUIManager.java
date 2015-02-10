@@ -2,7 +2,9 @@ package com.contento3.web.site;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -100,7 +102,8 @@ public class SiteConfigUIManager {
 			horizontl.addComponent(verticl);
 			siteConfigParentLayout.addComponent(horizontl);
 			GridLayout toolbarGridLayout = new GridLayout(1,2);
-			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+			
+			final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
 			horizontl.setWidth(100, Unit.PERCENTAGE);
 			horizontl.addComponent(toolbarGridLayout);
 			horizontl.setExpandRatio(verticl, 8);
@@ -116,7 +119,7 @@ public class SiteConfigUIManager {
 	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId, HorizontalLayout horizontl, VerticalLayout verticl, List<com.vaadin.event.MouseEvents.ClickListener> listeners){
+	public void renderSiteDomains(final SiteDto siteDto,final TabSheet siteTabSheet, final Integer pageId, HorizontalLayout horizontl, VerticalLayout verticl, Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners){
 		
 		final Label siteDomainLbl = new Label("Domains"); 
 		siteDomainLbl.setStyleName("screenSubHeading");
@@ -138,7 +141,7 @@ public class SiteConfigUIManager {
 		
 		siteTabSheet.setSelectedTab(siteConfigParentLayout);
 		
-		listeners.add(new AddSiteDomainClickListener(contextHelper,siteDto.getSiteId(),siteDomainTable));
+		listeners.put("SITE:ADD",new AddSiteDomainClickListener(contextHelper,siteDto.getSiteId(),siteDomainTable));
 //		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
 //		builder.build();
 		
@@ -152,7 +155,7 @@ public class SiteConfigUIManager {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void renderLayoutAndLanguage(final SiteDto siteDto, HorizontalLayout horizontl, VerticalLayout verticl, List<com.vaadin.event.MouseEvents.ClickListener> listeners){
+	public void renderLayoutAndLanguage(final SiteDto siteDto, HorizontalLayout horizontl, VerticalLayout verticl, Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners){
 
 		// List box to select Default Page 
 		final Collection<PageDto> pagesDto = pageService.findPageBySiteId(siteDto.getSiteId());
@@ -213,7 +216,7 @@ public class SiteConfigUIManager {
 			}// end buttonClick
 		});// end siteSaveButton listener
 		
-		listeners.add(new AddSiteLanguageClickListener(siteDto,  pageLayoutCombo,languageCombo,pageCombo,this));
+		listeners.put("SITE:ADD",new AddSiteLanguageClickListener(siteDto,  pageLayoutCombo,languageCombo,pageCombo,this));
 	}
 	
 	/**

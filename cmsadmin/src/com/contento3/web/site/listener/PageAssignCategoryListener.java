@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.AuthorizationException;
 
-import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
 import com.contento3.cms.page.dto.PageDto;
 import com.contento3.cms.page.exception.PageCannotCreateException;
-import com.contento3.cms.page.exception.PageNotFoundException;
 import com.contento3.cms.page.service.PageService;
 import com.contento3.common.dto.Dto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
@@ -73,12 +72,15 @@ public class PageAssignCategoryListener extends EntityListener implements ClickL
 			try {
 				dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
 				assignedDtos = populateGenericDtoFromCategoryDto(pageDto.getCategories());
-			} catch (EntityNotFoundException e) {
+			} catch (final EntityNotFoundException e) {
 				
+			}
+			 catch (final AuthorizationException ae) {
+				 LOGGER.debug("Current user not allowed to assign category to page");
 			}
 			setCaption("Add Category");
 			categoryPicker = new GenricEntityPicker(dtos, assignedDtos, listOfColumns, mainLayout, this, true);
-			categoryPicker.build();
+			categoryPicker.build(null);
 		}else{
 			//warning message
 			Notification.show("Opening failed", "create page first", Notification.Type.WARNING_MESSAGE);

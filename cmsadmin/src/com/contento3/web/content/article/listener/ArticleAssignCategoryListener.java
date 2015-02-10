@@ -65,19 +65,18 @@ public class ArticleAssignCategoryListener extends EntityListener implements Cli
 		if(articleId != null){
 			try
 			{
-			Collection<String> listOfColumns = new ArrayList<String>();
-			listOfColumns.add("Categories");
-			GenricEntityPicker categoryPicker;
-			Collection<Dto> dtos = null;
-			dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
-			setCaption("Add Category");
-			categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
-			categoryPicker.build();
+				final Collection<String> listOfColumns = new ArrayList<String>();
+				listOfColumns.add("Categories");
+				GenricEntityPicker categoryPicker;
+				final Collection<Dto> dtos = (Collection) categoryService.findNullParentIdCategory(accountId);
+				setCaption("Add Category");
+				categoryPicker = new GenricEntityPicker(dtos,null,listOfColumns,mainLayout,this,true);
+				categoryPicker.build(null);
 			}
-			catch(AuthorizationException ex) {
-				Notification.show("You are not permitted to assign category to articles");
+			catch(final AuthorizationException ex) {
+				Notification.show("Unauthorized","You are not permitted to assign category to articles",Notification.Type.WARNING_MESSAGE);
 			} catch (EntityNotFoundException e) {
-				LOGGER.debug(e.getMessage());
+				LOGGER.debug("Unable to find entity.");
 			} 
 		}else{
 			//warning message

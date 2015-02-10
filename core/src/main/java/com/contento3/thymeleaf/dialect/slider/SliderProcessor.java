@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.thymeleaf.Arguments;
-import org.thymeleaf.Configuration;
 import org.thymeleaf.Template;
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.dom.Document;
 import org.thymeleaf.dom.Element;
 import org.thymeleaf.dom.Node;
 import org.thymeleaf.processor.element.AbstractMarkupSubstitutionElementProcessor;
-import org.thymeleaf.standard.expression.IStandardExpression;
-import org.thymeleaf.standard.expression.IStandardExpressionParser;
-import org.thymeleaf.standard.expression.StandardExpressions;
+
 import com.contento3.cms.article.service.ArticleService;
+import com.contento3.thymeleaf.common.util.ProcessorUtil;
 public class SliderProcessor extends AbstractMarkupSubstitutionElementProcessor {
 
 	/**
@@ -36,6 +34,8 @@ public class SliderProcessor extends AbstractMarkupSubstitutionElementProcessor 
 	
 	private ArticleService articleService;
 
+	private ProcessorUtil processorUtil;
+	
 	protected SliderProcessor() {
 		super("");
 	}
@@ -44,8 +44,8 @@ public class SliderProcessor extends AbstractMarkupSubstitutionElementProcessor 
 	protected List<Node> getMarkupSubstitutes(final Arguments arguments,
 			final Element element) {
 		final String defaultTemplateKey = "default"; 	// will be used if required template is missing
-		String templateKey = parseString(arguments,element,"templateKey");
-		String libraryId   = parseString(arguments,element,"libraryId");
+		String templateKey = processorUtil.parseString(arguments,element,"templateKey");
+		String libraryId   = processorUtil.parseString(arguments,element,"libraryId");
 		
 		if(templateKey == null){
 			templateKey = defaultTemplateKey;
@@ -75,22 +75,6 @@ public class SliderProcessor extends AbstractMarkupSubstitutionElementProcessor 
 	    return nodes;
 	   }
 
-	private String parseString(final Arguments arguments,final Element element,final String attributeName){
-		String parsedAttribute = null;
-		String attributeValue = element.getAttributeValue(attributeName);
-			if (null!=element.getAttributeValue(attributeName)){
-			final IStandardExpression expression = buildExpression(arguments,element,attributeValue);
-			parsedAttribute = (String) expression.execute(arguments.getConfiguration(), arguments);
-		}
-		return parsedAttribute;
-	}
-		
-	private IStandardExpression buildExpression(final Arguments arguments,final Element element,final String attributeValue){
-        final Configuration configuration = arguments.getConfiguration();
- 		final IStandardExpressionParser parser = StandardExpressions.getExpressionParser(configuration);
-		final IStandardExpression expression = parser.parseExpression(configuration, arguments, attributeValue);
-		return expression; 
-	}
 	
 	@Override
 	public int getPrecedence() {

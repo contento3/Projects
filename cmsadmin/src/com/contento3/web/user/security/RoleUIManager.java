@@ -2,10 +2,12 @@ package com.contento3.web.user.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.shiro.authz.AuthorizationException;
 
+import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.service.RoleService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -109,10 +111,10 @@ public class RoleUIManager implements UIManager {
 	
 	private void addRoleButton(HorizontalLayout horizontl){
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddRoleClickListener(contextHelper, roleTable ));
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("ROLE:ADD",new AddRoleClickListener(contextHelper, roleTable ));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
 		builder.build();
 		horizontl.addComponent(toolbarGridLayout);
 		horizontl.setExpandRatio(toolbarGridLayout, 1);
@@ -120,12 +122,15 @@ public class RoleUIManager implements UIManager {
 
 	private void renderRoleTable(VerticalLayout verticl) {
 		final AbstractTableBuilder tableBuilder = new RoleTableBuilder(contextHelper,roleTable);
+		Collection <RoleDto> roles = new ArrayList<RoleDto>();
+
 		try
 		{
-			tableBuilder.build((Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
+			roles = (Collection)roleService.findRolesByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+			tableBuilder.build((Collection)roles);
 		}
-		catch(AuthorizationException ex){
-			
+		catch(final AuthorizationException ex){
+			tableBuilder.build((Collection)roles);
 		}
 		verticl.addComponent(roleTable);
 	}

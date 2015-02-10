@@ -8,10 +8,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -39,7 +44,6 @@ import com.contento3.web.helper.SpringContextHelper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -215,9 +219,9 @@ public class ImageMgmtUIManager extends CustomComponent
 		horizLayout.setSpacing(true);
 	
 		final GridLayout toolbarGridLayout = new GridLayout(1,2);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddImageButtonListener(tabSheet, this));
-		listeners.add(new AddLibraryButtonListener(helper));
+		final LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("IMAGE:ADD",new AddImageButtonListener(tabSheet, this));
+		listeners.put("CONTENT_LIBRARY:ADD",new AddLibraryButtonListener(helper));
 		
 		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"imgMgmt",listeners);
 		builder.build();
@@ -238,8 +242,7 @@ public class ImageMgmtUIManager extends CustomComponent
         final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
 		Collection<ImageLibraryDto> imageLibraryDto = imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
-	    final ComboBox imageLibrayCombo = new ComboBox("See library",
-		comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
+	    final ComboBox imageLibrayCombo = new ComboBox("Library",comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));	
 	    imageLibrayCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
 
@@ -264,7 +267,6 @@ public class ImageMgmtUIManager extends CustomComponent
 		searchPanel.setSizeUndefined(); 
 		searchPanel.setContent(searchBar);
 		verticall.addComponent(searchPanel);
-
 		
 		/*Search Image button listener*/
 	    searchButton.addClickListener(new ClickListener() {
@@ -272,22 +274,26 @@ public class ImageMgmtUIManager extends CustomComponent
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
+				
 				imagePanlelayout.removeAllComponents(); // remove items from CSSlayout which contains panels of image
 			
-				String imgName = searchField.getValue();
+				final String imgName = searchField.getValue();
 				Object id = imageLibrayCombo.getValue();
 
 				if (imgName != null && !imgName.equals("")) {
 					searchImageByName(imgName, accountId);
 				} else if (id != null) {
 					int libraryId = Integer.parseInt(id.toString());
-					Collection<ImageDto> images = imageService
-							.findImagesByLibrary(libraryId);
+					Collection<ImageDto> images;
+					try {
+						images = imageService.findImagesByLibrary(libraryId);
+					}
+					catch(final AuthorizationException ae){
+						images = new ArrayList<ImageDto>();
+					}
 					displayImages(images);
 				} else {
-					Notification
-							.show("Please provide image name or select library from the list to search.",
-									Notification.Type.TRAY_NOTIFICATION);
+					Notification.show("Image","Enter image name or select library to search.",Notification.Type.TRAY_NOTIFICATION);
 				}
 
 			}
@@ -466,32 +472,36 @@ public class ImageMgmtUIManager extends CustomComponent
     	imageInfoLayout.setComponentAlignment(lblName, Alignment.MIDDLE_CENTER);
     	
     	//Edit image button
-    	final Button editImageDetail = new Button("Edit Image");
-    	editImageDetail.setStyleName("link");
-    	editImageDetail.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void buttonClick(final ClickEvent event) {
-				VerticalLayout newImageLayout = new VerticalLayout();
-				
-				Tab createNew = tabSheet.addTab(newImageLayout, String.format("Edit "+ dto.getName()));
-				createNew.setClosable(true);
-				tabSheet.setSelectedTab(newImageLayout);
-				newImageLayout.addComponent(renderAddEditScreen("Edit",dto));
-			}
-		});
-    	
-    	imageInfoLayout.addComponent(editImageDetail);
-    	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
-    	
-    	//Delete image button
-    	Button btnDelete = new Button("Delete Image");
-    	btnDelete.setStyleName("link");
-    	btnDelete.addClickListener(new ImageDeleteListner(helper, dto, this));
-    	
-    	imageInfoLayout.addComponent(btnDelete);
-    	imageInfoLayout.setComponentAlignment(btnDelete, Alignment.MIDDLE_CENTER);
+    	if (SecurityUtils.getSubject().isPermitted("IMAGE:EDIT")){
+	    	final Button editImageDetail = new Button("Edit Image");
+	    	editImageDetail.setStyleName("link");
+	    	editImageDetail.addClickListener(new ClickListener() {
+				private static final long serialVersionUID = 1L;
+	
+				@Override
+				public void buttonClick(final ClickEvent event) {
+					VerticalLayout newImageLayout = new VerticalLayout();
+					
+					Tab createNew = tabSheet.addTab(newImageLayout, String.format("Edit "+ dto.getName()));
+					createNew.setClosable(true);
+					tabSheet.setSelectedTab(newImageLayout);
+					newImageLayout.addComponent(renderAddEditScreen("Edit",dto));
+				}
+			});
+	    	
+	    	imageInfoLayout.addComponent(editImageDetail);
+	    	imageInfoLayout.setComponentAlignment(editImageDetail, Alignment.MIDDLE_CENTER);
+	    }
+    
+    	if (SecurityUtils.getSubject().isPermitted("IMAGE:DELETE")){
+	    	//Delete image button
+	    	Button btnDelete = new Button("Delete Image");
+	    	btnDelete.setStyleName("link");
+	    	btnDelete.addClickListener(new ImageDeleteListner(helper, dto, this));
+	    	
+	    	imageInfoLayout.addComponent(btnDelete);
+	    	imageInfoLayout.setComponentAlignment(btnDelete, Alignment.MIDDLE_CENTER);
+    	}
     	
     	final Panel mainPanel = new Panel();
     	final VerticalLayout mainPanelLayout = new VerticalLayout();
@@ -573,10 +583,11 @@ public class ImageMgmtUIManager extends CustomComponent
 		final GridLayout toolbarGridLayout = new GridLayout(1,3);
 		toolbarGridLayout.setSizeUndefined();
 		toolbarGridLayout.setWidth(10,Unit.PIXELS);
-		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new CropImageListener());
-		listeners.add(new ResizeImageListener());
-		listeners.add(new RotateImageListener());			
+		
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("IMAGE:CROP",new CropImageListener());
+		listeners.put("IMAGE:RESIZE",new ResizeImageListener());
+		listeners.put("IMAGE:ROTATE",new RotateImageListener());			
 			
 		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"editImgMgmt",listeners);
 		builder.build();

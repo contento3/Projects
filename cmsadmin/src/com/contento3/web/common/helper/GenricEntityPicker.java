@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.contento3.common.dto.Dto;
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.pagemodules.ContentTypeEnum;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
@@ -131,7 +132,7 @@ public  class GenricEntityPicker extends CustomComponent implements Window.Close
 	/**
 	 * Build Table
 	 */
-	public void build() { 
+	public void build(final ContentTypeEnum contentType) { 
 		try {
 			final CachedTypedProperties entityPickerPoperties = CachedTypedProperties.getInstance("entityPickerConfigure.properties");
 			width = entityPickerPoperties.getProperty("width");

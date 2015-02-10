@@ -1,8 +1,12 @@
 package com.contento3.web.common.helper;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.util.CollectionUtils;
 
 import com.contento3.util.CachedTypedProperties;
 import com.contento3.web.content.image.ImageLoader;
@@ -44,7 +48,7 @@ public class ScreenToolbarBuilder {
 	 * Collection of listeners that will be 
 	 * attached to each of the action in the toolbar
 	 */
-	private final List<ClickListener> listeners;
+	private final Map<String, ClickListener> listenersMap;
 	
 	/**
 	 * Constructor
@@ -52,10 +56,10 @@ public class ScreenToolbarBuilder {
 	 * @param toolbarName
 	 * @param listeners
 	 */
-	public ScreenToolbarBuilder(final GridLayout toolbarGridLayout,final String toolbarName,final List<ClickListener> listeners){
+	public ScreenToolbarBuilder(final GridLayout toolbarGridLayout,final String toolbarName,final Map<String, ClickListener> listenersMap){
 		this.gridLayout = toolbarGridLayout;
 		this.toolbarName = toolbarName;
-		this.listeners = listeners;
+		this.listenersMap = listenersMap;
 		
 		try {
 			properties = CachedTypedProperties.getInstance("screenToolbar.properties");
@@ -68,19 +72,28 @@ public class ScreenToolbarBuilder {
 	 * Builds the toolbar.
 	 */
 	public void build(){
-		gridLayout.addStyleName("bordertest");
-		gridLayout.setWidth(35,Unit.PIXELS);
-		
-		final int totalRows = gridLayout.getRows();
-		int count = 0;
-
-		final List<String> imagePaths = properties.getDelimetedProperty(toolbarName+".path", ",");
-		final List<String> tooltips = properties.getDelimetedProperty(toolbarName+".tooltip", ",");
-
-		while (count<totalRows && count<listeners.size()){
-			ClickListener listener = listeners.get(count);
-			buildCell(imagePaths,tooltips,count,listener);
-			count++;
+		if (!CollectionUtils.isEmpty(listenersMap)){
+			final int totalRows = gridLayout.getRows();
+			int count = 0;
+	
+			final List<String> imagePaths = properties.getDelimetedProperty(toolbarName+".path", ",");
+			final List<String> tooltips = properties.getDelimetedProperty(toolbarName+".tooltip", ",");
+			
+			final Set<String> listenerPermissions = listenersMap.keySet();
+			boolean anyItemPermitted = false;
+			for (String permission : listenerPermissions){
+				if (count<totalRows && count<listenerPermissions.size()){
+					if (SecurityUtils.getSubject().isPermitted(permission)){
+						buildCell(imagePaths,tooltips,count,listenersMap.get(permission));
+						anyItemPermitted = true;
+					}
+				}
+				count++;
+			}
+			if (anyItemPermitted){
+				gridLayout.addStyleName("bordertest");
+				gridLayout.setWidth(35,Unit.PIXELS);
+			} 
 		}
 	}
 	

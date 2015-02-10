@@ -3,6 +3,7 @@ package com.contento3.web.category;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.util.CollectionUtils;
 
@@ -87,100 +88,103 @@ implements Window.CloseListener,Button.ClickListener {
 
     /** Handle the clicks for the two buttons. */
     public void openButtonClick(Button.ClickEvent event) {
-        
-    	/* Create a new window. */
-        final Button categoryButton = new Button();
-		popupWindow = new Window();
-    	
-		popupWindow.setPositionX(200);
-    	popupWindow.setPositionY(100);
 
-    	popupWindow.setHeight(56,Unit.PERCENTAGE);
-    	popupWindow.setWidth(30,Unit.PERCENTAGE);
-       
-    	/* Add the window inside the main window. */
-    	UI.getCurrent().addWindow(popupWindow);
-        
-        /* Listen for close events for the window. */
-        popupWindow.addCloseListener(this);
-        popupWindow.setModal(true);
-        /* Reset old selected category. */
-        selectedParentCategory = -1;
-        
-        final VerticalLayout popupMainLayout = new VerticalLayout();
-        final Label categoryLbl = new Label("Name");
-        final HorizontalLayout inputDataLayout = new HorizontalLayout();
-        final TextField categoryNameTxtField = new TextField("");
-        categoryNameTxtField.setInputPrompt("Enter Category Name");
-        
-        final TextArea categoryDescriptionTxtField = new TextArea("");
-        categoryDescriptionTxtField.setInputPrompt("Enter Description Name");
-        
-        final Label parentCategoryLbl = new Label("<b>Select Parent Category</b>", ContentMode.HTML);
-        inputDataLayout.setSpacing(true);
-        inputDataLayout.setMargin(true);
-        inputDataLayout.addComponent(categoryLbl);
-        inputDataLayout.setComponentAlignment(categoryLbl, Alignment.BOTTOM_LEFT);
-        inputDataLayout.addComponent(categoryNameTxtField);
-        inputDataLayout.setComponentAlignment(categoryNameTxtField, Alignment.BOTTOM_LEFT);
-
-        popupMainLayout.addComponent(inputDataLayout);
-        popupMainLayout.setSpacing(true);
-        popupMainLayout.addComponent(parentCategoryLbl);
-        popupMainLayout.setMargin(true);
-        popupWindow.setContent(popupMainLayout);
-        popupWindow.setResizable(false);
-        /* Allow opening only one window at a time. */
-        openbutton.setEnabled(false);
-
-    	if (event.getButton().getCaption().equals("Edit")){
-	        categoryButton.setCaption("Save");
-	        popupWindow.setCaption("Edit Category");
-	        categoryId = (Integer)event.getButton().getData();
-	        CategoryDto categoryDto;
+		if (SecurityUtils.getSubject().isPermitted("CATEGORY:ADD") && SecurityUtils.getSubject().isPermitted("CATEGORY:VIEW_LISTING")){
+	    	/* Create a new window. */
+	        final Button categoryButton = new Button();
+			popupWindow = new Window();
+	    	
+			popupWindow.setPositionX(200);
+	    	popupWindow.setPositionY(100);
+	
+	    	popupWindow.setHeight(56,Unit.PERCENTAGE);
+	    	popupWindow.setWidth(30,Unit.PERCENTAGE);
+	       
+	    	/* Add the window inside the main window. */
+	    	UI.getCurrent().addWindow(popupWindow);
 	        
-			try {
-				categoryDto = categoryService.findById(categoryId);
-				  categoryNameTxtField.setValue(categoryDto.getName());
-			} catch (EntityNotFoundException e) {
-				LOGGER.debug(e.getMessage());
-			}
-	      
-	        buildTree(popupMainLayout);
-	        categoryButton.addClickListener(new ClickListener() {
-				private static final long serialVersionUID = 1L;
-				public void buttonClick(ClickEvent event) {
-					if (categoryId==selectedParentCategory){
-						Notification.show("Parent category cannot be the same the current category you are editing");
-					}
-					handleEditCategory(categoryNameTxtField,categoryId);
-				}	
-			});
-    	}
-    	else
-    	{
-    		categoryButton.setCaption("Add");
-	        popupWindow.setCaption("Add Category");
-	        buildTree(popupMainLayout);
-	        categoryButton.addClickListener(new ClickListener() {
-				private static final long serialVersionUID = 1L;
-				public void buttonClick(ClickEvent event) {
-					handleNewCategory(categoryNameTxtField);
-				}	
-			});
-    	}
-
-        final HorizontalLayout addButtonLayout = new HorizontalLayout();
-        popupMainLayout.addComponent(addButtonLayout);
-
-        addButtonLayout.addComponent(categoryButton);
-        addButtonLayout.setComponentAlignment(categoryButton, Alignment.BOTTOM_RIGHT);
-        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
+	        /* Listen for close events for the window. */
+	        popupWindow.addCloseListener(this);
+	        popupWindow.setModal(true);
+	        /* Reset old selected category. */
+	        selectedParentCategory = -1;
+	        
+	        final VerticalLayout popupMainLayout = new VerticalLayout();
+	        final Label categoryLbl = new Label("Name");
+	        final HorizontalLayout inputDataLayout = new HorizontalLayout();
+	        final TextField categoryNameTxtField = new TextField("");
+	        categoryNameTxtField.setInputPrompt("Enter Category Name");
+	        
+	        final TextArea categoryDescriptionTxtField = new TextArea("");
+	        categoryDescriptionTxtField.setInputPrompt("Enter Description Name");
+	        
+	        final Label parentCategoryLbl = new Label("<b>Select Parent Category</b>", ContentMode.HTML);
+	        inputDataLayout.setSpacing(true);
+	        inputDataLayout.setMargin(true);
+	        inputDataLayout.addComponent(categoryLbl);
+	        inputDataLayout.setComponentAlignment(categoryLbl, Alignment.BOTTOM_LEFT);
+	        inputDataLayout.addComponent(categoryNameTxtField);
+	        inputDataLayout.setComponentAlignment(categoryNameTxtField, Alignment.BOTTOM_LEFT);
+	
+	        popupMainLayout.addComponent(inputDataLayout);
+	        popupMainLayout.setSpacing(true);
+	        popupMainLayout.addComponent(parentCategoryLbl);
+	        popupMainLayout.setMargin(true);
+	        popupWindow.setContent(popupMainLayout);
+	        popupWindow.setResizable(false);
+	        /* Allow opening only one window at a time. */
+	        openbutton.setEnabled(false);
+	
+	    	if (event.getButton().getCaption().equals("Edit")){
+		        categoryButton.setCaption("Save");
+		        popupWindow.setCaption("Edit Category");
+		        categoryId = (Integer)event.getButton().getData();
+		        CategoryDto categoryDto;
+		        
+				try {
+					categoryDto = categoryService.findById(categoryId);
+					  categoryNameTxtField.setValue(categoryDto.getName());
+				} catch (EntityNotFoundException e) {
+					LOGGER.debug(e.getMessage());
+				}
+		      
+		        buildTree(popupMainLayout);
+		        categoryButton.addClickListener(new ClickListener() {
+					private static final long serialVersionUID = 1L;
+					public void buttonClick(ClickEvent event) {
+						if (categoryId==selectedParentCategory){
+							Notification.show("Parent category cannot be the same the current category you are editing");
+						}
+						handleEditCategory(categoryNameTxtField,categoryId);
+					}	
+				});
+	    	}
+	    	else
+	    	{
+	    		categoryButton.setCaption("Add");
+		        popupWindow.setCaption("Add Category");
+		        buildTree(popupMainLayout);
+		        categoryButton.addClickListener(new ClickListener() {
+					private static final long serialVersionUID = 1L;
+					public void buttonClick(ClickEvent event) {
+						handleNewCategory(categoryNameTxtField);
+					}	
+				});
+	    	}
+	
+	        final HorizontalLayout addButtonLayout = new HorizontalLayout();
+	        popupMainLayout.addComponent(addButtonLayout);
+	
+	        addButtonLayout.addComponent(categoryButton);
+	        addButtonLayout.setComponentAlignment(categoryButton, Alignment.BOTTOM_RIGHT);
+	        addButtonLayout.setWidth(100, Unit.PERCENTAGE);
+		}     
     }
 
 	private void buildTree(final VerticalLayout parentLayout) {
 		Collection<CategoryDto> categoryDtos;
 		try {
+			
 			categoryDtos = categoryService
 					.findNullParentIdCategory((Integer) SessionHelper
 							.loadAttribute("accountId"));
@@ -218,13 +222,16 @@ implements Window.CloseListener,Button.ClickListener {
 					}
 				}
 			}
+			
+			parentLayout.addComponent(tree);
+			tree.setImmediate(true);
 		} catch (EntityNotFoundException e) {
 			LOGGER.debug(e.getMessage());
 		}
-		parentLayout.addComponent(tree);
-
-		tree.setImmediate(true);
-		tree.addItemClickListener(new ItemClickListener() {
+		catch (final AuthorizationException ae) {
+				LOGGER.debug(ae.getMessage());
+		}
+				tree.addItemClickListener(new ItemClickListener() {
 			private static final long serialVersionUID = -4607219466099528006L;
 
 			public void itemClick(ItemClickEvent event) {

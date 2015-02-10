@@ -12,6 +12,9 @@
         <dependent-module archiveName="c3-module-email.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/c3-module-email/c3-module-email">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="social-core.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/social-core/social-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/cmsadmin/WEB-INF/classes"/>
         <property name="context-root" value="/cms"/>
     </wb-module>

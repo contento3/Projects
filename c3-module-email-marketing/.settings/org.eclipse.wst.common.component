@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="c3-module-email-marketing">
+        <wb-resource deploy-path="/" source-path="/src/test/java"/>
+        <wb-resource deploy-path="/config/spring" source-path="/src/config/spring"/>
+        <wb-resource deploy-path="/" source-path="/src/main/java"/>
+        <dependent-module archiveName="c3-module-email.jar" deploy-path="/" handle="module:/resource/c3-module-email/c3-module-email">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

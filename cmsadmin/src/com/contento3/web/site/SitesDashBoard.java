@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.site.structure.dto.SiteDto;
@@ -119,25 +121,34 @@ public class SitesDashBoard implements UIManager,Property.ValueChangeListener{
 		dashboardHeaderRow.addComponent(label);
 		
 		verticalLayout.addComponent(dashboardHeaderRow);
-		verticalLayout.addComponent(createDashboardRow());
+		
+		final HorizontalLayout dashboardLayout = createDashboardRow();
+		if (dashboardLayout!=null){
+			verticalLayout.addComponent(dashboardLayout);
+		}
 		return verticalLayout;
 	}
 
 	private HorizontalLayout createDashboardRow(){
-		HorizontalLayout dashboardRow = new HorizontalLayout();
-		dashboardRow.setSpacing(true);
-		final Panel panel = new Panel();
-		panel.setSizeUndefined(); // Shrink to fit content
-		dashboardRow.addComponent(panel);
-		dashboardRow.setMargin(true);
-		panel.setContent(createDashBoardItem("Start creating websites right here.You can create multiple websites under one account.","Create a site","sites-96.png",new SiteCreatePopup(helper)));
+		if (SecurityUtils.getSubject().isPermitted("SITE:ADD")){
+			final HorizontalLayout dashboardRow = new HorizontalLayout();
+			dashboardRow.setSpacing(true);
+			final Panel panel = new Panel();
+			panel.setSizeUndefined(); // Shrink to fit content
+			dashboardRow.addComponent(panel);
+			dashboardRow.setMargin(true);
+			panel.setContent(createDashBoardItem("Start creating websites right here.You can create multiple websites under one account.","Create a site","sites-96.png",new SiteCreatePopup(helper)));
+			return dashboardRow;
+		}
+		else {
+			return null;
+		}
 //TODO
 //		final Panel panel2 = new Panel();
 //		panel2.setContent(createDashBoardItem("You can create as many pages as you want for sites you have under your account.","Create a page","pages-icon-96.png",new SiteCreateListener(helper,siteDashboardTab,verticalLayout)));
 //		panel2.setSizeUndefined(); // Shrink to fit content
 //		dashboardRow.addComponent(panel2);
 		
-		return dashboardRow;
 	}	
 	
 	private HorizontalLayout createDashBoardItem(final String label,final String linkedCmsLabel,final String itemImage,final ClickListener listener){

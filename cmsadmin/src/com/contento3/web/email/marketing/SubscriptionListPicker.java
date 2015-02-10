@@ -71,10 +71,10 @@ public class SubscriptionListPicker extends EntityListener implements ClickListe
 			assignedDtos = (Collection) newsletterService.findById(newsletterId).getSubscriptionList();
 
 			final GenricEntityPicker subscriptionPicker = new GenricEntityPicker(dtos,assignedDtos,listOfColumns,mainLayout,this,false);
-			subscriptionPicker.build();
+			subscriptionPicker.build(null);
 		}
 		catch(final AuthorizationException ex) {
-			Notification.show("You are not permitted to assign category to articles");
+			Notification.show("You are not permitted to assign subscription to newsletter");
 		} 
 		catch (final EntityNotFoundException e) {
 			LOGGER.debug(e.getMessage());

@@ -3,6 +3,8 @@ package com.contento3.web.user.listner;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.shiro.authz.AuthorizationException;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.security.permission.dto.PermissionDto;
@@ -79,17 +81,22 @@ public class DeleteAssociatedPermissionListener extends EntityListener implement
 	@Override
 	public void buttonClick(Button.ClickEvent event) {
 		
-		Collection<String> listOfColumns = new ArrayList<String>();
+		final Collection<String> listOfColumns = new ArrayList<String>();
 		listOfColumns.add("id");
-		GenricEntityPicker PermissionPicker;
+		GenricEntityPicker permissionPicker;
 		this.vLayout = new VerticalLayout();
 		
-		Collection<Dto> dtos = (Collection) roleService.findById(roleId).getPermissions();
-		
-		if (dtos!=null) {
-			setCaption("Delete Permission");//extend class method
-			PermissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
-			PermissionPicker.build();
+		try {
+			final RoleDto roleDto = roleService.findById(roleId);
+			final Collection<PermissionDto> permissionDtos = (Collection <PermissionDto>) roleDto.getPermissions();
+			if (permissionDtos!=null) {
+				setCaption("Delete Permission");//extend class method
+				permissionPicker = new GenricEntityPicker((Collection)permissionDtos,null, listOfColumns,this.vLayout,this,false);
+				permissionPicker.build(null);
+			}
+		}
+		catch (final AuthorizationException ae){
+			Notification.show("Unauthorized operation","You do not have permission to view role.",Notification.Type.TRAY_NOTIFICATION);	
 		}
 	}
 	

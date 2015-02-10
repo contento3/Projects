@@ -16,6 +16,7 @@ public class NavigationConstant {
 	public static final String USR_ROLE_MGMT = "Roles";
 	public static final String USR_PRMSN_MGMT = "Permissions";
 	public static final String GLOBAL_CONFIG = "Global Configuration";
+	public static final String PAGE_MODULES = "Page Modules";
 	
 	public static final String SECURITY = "Security";
 	
@@ -30,4 +31,7 @@ public class NavigationConstant {
 	public static final String NEWSLETTER = "Newsletter";
 	public static final String SUBSCRIPTION_LIST = "Subscribers";
 	
+	//Items for social media 
+	public static final String PUBLISH = "Publish";
+
 }

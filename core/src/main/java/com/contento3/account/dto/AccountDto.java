@@ -12,24 +12,32 @@ public class AccountDto implements Serializable {
 	
 	private boolean isEnabled;
 
+	private AccountTypeDto accountTypeDto;
+	
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
 	public Integer getAccountId() {
 		return accountId;
 	}
-	public void setAccountId(Integer accountId) {
+	public void setAccountId(final Integer accountId) {
 		this.accountId = accountId;
 	}
 	public boolean isEnabled() {
 		return isEnabled;
 	}
-	public void setEnabled(boolean isEnabled) {
+	public void setEnabled(final boolean isEnabled) {
 		this.isEnabled = isEnabled;
+	}
+	public AccountTypeDto getAccountTypeDto() {
+		return accountTypeDto;
+	}
+	public void setAccountTypeDto(final AccountTypeDto accountTypeDto) {
+		this.accountTypeDto = accountTypeDto;
 	}
 
 	

@@ -26,14 +26,20 @@ public class TemplateDirectoryAssemblerImpl implements TemplateDirectoryAssemble
 			domain.setParent(dtoToDomain(dto.getParent()));
 		}
 		domain.setDirectoryName(dto.getDirectoryName());
-		domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
+		
+		if (null!=dto.getAccount()){
+			domain.setAccount(accountAssembler.dtoToDomain(dto.getAccount()));
+		}
 		return domain;
 	}
 
 	@Override
 	public TemplateDirectoryDto domainToDto(TemplateDirectory domain) {
 		TemplateDirectoryDto dto = new TemplateDirectoryDto();	
-		dto.setId(domain.getId());
+		
+		if (null!=domain.getId()){
+			dto.setId(domain.getId());
+		}
 		dto.setGlobal(domain.isGlobal());
 		
 		if (domain.getParent()!=null){

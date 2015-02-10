@@ -2,7 +2,8 @@ package com.contento3.web.email.marketing;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.AuthorizationException;
@@ -112,10 +113,10 @@ public class SubscriptionUIManager extends UIManagerImpl {
 	private GridLayout buildScreenToolbar(){
 		final GridLayout toolbarGridLayout = new GridLayout(1,2);
 
-		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new SubscriptionAddEditListener(this.getUiContext()));
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("SUBSCRIPTION:ADD",new SubscriptionAddEditListener(this.getUiContext()));
 
-		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"newsletter",listeners);
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"subscription",listeners);
 		builder.build();
 
 		return toolbarGridLayout;

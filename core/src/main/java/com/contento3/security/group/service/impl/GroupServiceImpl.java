@@ -17,7 +17,7 @@ import com.contento3.security.group.service.GroupService;
 import com.contento3.security.user.dto.SaltedHibernateUserDto;
 
 
-@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class GroupServiceImpl implements GroupService {
 
 	/**
@@ -47,7 +47,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@RequiresPermissions("GROUP:VIEW")
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@Override
 	public GroupDto findByGroupName(String groupName,Integer accountId){
 		Validate.notNull(groupName,"groupName cannot be null");
@@ -55,15 +55,14 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@RequiresPermissions("GROUP:VIEW_LISTING")
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-	@Override
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	public Collection<GroupDto> findByAccountId(final Integer accountId){
 		Validate.notNull(accountId,"groupName cannot be null");
 		return groupAssembler.domainsToDtos(groupDao.findByAccountId(accountId));
 	}
 
 	@RequiresPermissions("GROUP:ADD")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public Integer create(final GroupDto groupDto) throws EntityAlreadyFoundException {
 		Validate.notNull(groupDto,"groupDto cannot be null");
@@ -76,7 +75,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@RequiresPermissions("GROUP:VIEW")
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@Override
 	public GroupDto findById(Integer id) {
 		Validate.notNull(id,"id cannot be null");
@@ -84,7 +83,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 	
 	@RequiresPermissions("GROUP:EDIT")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void update(final GroupDto groupDto) throws EntityAlreadyFoundException {
 		Validate.notNull(groupDto,"groupDto cannot be null");
@@ -100,7 +99,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 	
 	@RequiresPermissions("GROUP:DELETE")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void delete(GroupDto group) {
 		Validate.notNull(group,"group cannot be null");
@@ -112,7 +111,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@RequiresPermissions("GROUP:DELETE")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void deleteWithException(GroupDto group) throws EntityCannotBeDeletedException {
 		Validate.notNull(group,"group cannot be null");
@@ -131,6 +130,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 	
 	@RequiresPermissions("GROUP:VIEW_LISTING")
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@Override
 	public Collection<GroupDto> findByUserId(Integer id) {
 		return groupAssembler.domainsToDtos(groupDao.findByUserId(id));

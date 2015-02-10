@@ -1,5 +1,7 @@
 package com.contento3.web.content;
 
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.cms.constant.NavigationConstant;
 import com.contento3.web.UIManager;
 import com.contento3.web.content.article.ArticleMgmtUIManager;
@@ -82,16 +84,16 @@ public class ContentUIManager implements UIManager{
 				renderContentNavigationItems(hwContainer);
 			
 		}
-		else if (command.equals(NavigationConstant.CONTENT_ART_MGMT)){
+		else if (command.equals(NavigationConstant.CONTENT_ART_MGMT)  && SecurityUtils.getSubject().isPermitted("ARTICLE:NAVIGATION")){
 			tabsheet = renderArticleUI();
 		}
-		else if (command.equals(NavigationConstant.CONTENT_IMG_MGMT)){
+		else if (command.equals(NavigationConstant.CONTENT_IMG_MGMT)  && SecurityUtils.getSubject().isPermitted("IMAGE:NAVIGATION")){
 			tabsheet = renderImageUI();
 		}
-		else if (command.equals(NavigationConstant.CONTENT_VID_MGMT)){
+		else if (command.equals(NavigationConstant.CONTENT_VID_MGMT)  && SecurityUtils.getSubject().isPermitted("VIDEO:NAVIGATION")){
 			tabsheet = renderVideoUI();
 		}
-		else if (command.equals(NavigationConstant.DOCUMENT_MGMT)){
+		else if (command.equals(NavigationConstant.DOCUMENT_MGMT)  && SecurityUtils.getSubject().isPermitted("DOCUMENT:NAVIGATION")){
 			tabsheet = renderDocumentUI();
 		}
 		return tabsheet;
@@ -103,12 +105,35 @@ public class ContentUIManager implements UIManager{
 	 */
 	public void renderContentNavigationItems(final HierarchicalContainer hwContainer){
 		for (String navigationItem : navigationItems){
-			Item item = hwContainer.addItem(navigationItem);
-			if (null != item){
-				item.getItemProperty("name").setValue(navigationItem);
-				hwContainer.setParent(navigationItem, NavigationConstant.CONTENT_MANAGER);
-				hwContainer.setChildrenAllowed(navigationItem, false);
+			if (navigationItem.equals(NavigationConstant.CONTENT_ART_MGMT)){
+				if (SecurityUtils.getSubject().isPermitted("ARTICLE:NAVIGATION")){
+					addItemToParent(hwContainer,navigationItem);
+				}
 			}
+			else if (navigationItem.equals(NavigationConstant.CONTENT_IMG_MGMT)){
+				if (SecurityUtils.getSubject().isPermitted("IMAGE:NAVIGATION")){
+					addItemToParent(hwContainer,navigationItem);
+				}
+			}
+			else if (navigationItem.equals(NavigationConstant.CONTENT_VID_MGMT)){
+				if (SecurityUtils.getSubject().isPermitted("VIDEO:NAVIGATION")){
+					addItemToParent(hwContainer,navigationItem);
+				}
+			}
+			else if (navigationItem.equals(NavigationConstant.DOCUMENT_MGMT)){
+				if (SecurityUtils.getSubject().isPermitted("DOCUMENT:NAVIGATION")){
+					addItemToParent(hwContainer,navigationItem);
+				}
+			}
+		}
+	}
+	
+	private void addItemToParent(final HierarchicalContainer hwContainer,final String navigationItem){
+		Item item = hwContainer.addItem(navigationItem);
+		if (null != item){
+			item.getItemProperty("name").setValue(navigationItem);
+			hwContainer.setParent(navigationItem, NavigationConstant.CONTENT_MANAGER);
+			hwContainer.setChildrenAllowed(navigationItem, false);
 		}
 	}
 

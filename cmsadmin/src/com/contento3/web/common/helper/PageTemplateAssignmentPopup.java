@@ -3,6 +3,7 @@ package com.contento3.web.common.helper;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
@@ -48,13 +49,16 @@ public class PageTemplateAssignmentPopup extends CustomComponent
     public PageTemplateAssignmentPopup(final String label,final SpringContextHelper helper,final AbstractTableBuilder templateTableBuilder) {
         this.helper = helper;
         this.templateTableBuilder = templateTableBuilder;
-        // The component contains a button that opens the window.
-        final VerticalLayout layout = new VerticalLayout();
-        
-        openbutton = new Button("Add template");
-        openbutton.addClickListener(this);
-        layout.addComponent(openbutton);
-        setCompositionRoot(layout);
+
+        if (SecurityUtils.getSubject().isPermitted("PAGE:ASSOCIATE_TEMPLATE")){
+	        // The component contains a button that opens the window.
+	        final VerticalLayout layout = new VerticalLayout();
+	        
+	        openbutton = new Button("Add template");
+	        openbutton.addClickListener(this);
+	        layout.addComponent(openbutton);
+	        setCompositionRoot(layout);
+        }
     }
 
     /** Handle the clicks for the two buttons. */
@@ -177,8 +181,8 @@ public class PageTemplateAssignmentPopup extends CustomComponent
         openbutton.setEnabled(true);
         
         if (null!=pageTemplateService){
-			PageTemplateDto dto = (PageTemplateDto)UI.getCurrent().getData();
-       		Collection<PageTemplateDto> newPageTemplates = pageTemplateService.findByPageAndPageSectionType(dto.getPageId(), dto.getSectionTypeId());
+			final PageTemplateDto dto = (PageTemplateDto)UI.getCurrent().getData();
+       		final Collection<PageTemplateDto> newPageTemplates = pageTemplateService.findByPageAndPageSectionType(dto.getPageId(), dto.getSectionTypeId());
        		UI.getCurrent().setData(newPageTemplates);
        	}
    	}

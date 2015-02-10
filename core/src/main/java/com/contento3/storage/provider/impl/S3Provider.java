@@ -2,6 +2,8 @@ package com.contento3.storage.provider.impl;
 
 import org.apache.log4j.Logger;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -34,7 +36,7 @@ public class S3Provider implements StorageProvider<S3Storage> {
 		final AWSCredentials credentials = new BasicAWSCredentials(storage.getAccessKey(),storage.getSecretKey());
 		final TransferManager tx = new TransferManager(credentials);
 		AmazonS3 s3 = new AmazonS3Client(credentials);
-		 
+		System.out.println("bucket size"+ s3.listBuckets().size());
 		
 		// The upload and download methods return immediately, while
 		// TransferManager processes the transfer in the background thread pool
@@ -43,7 +45,31 @@ public class S3Provider implements StorageProvider<S3Storage> {
 		// While the transfer is processing, you can work with the transfer object
 		while (upload.isDone() == false) {
 			LOGGER.debug("Upload in progress for file with name "+ context.getFile().getName()+ upload.getProgress().getPercentTransferred());
+		       System.out.println("Transfer: " + upload.getDescription());
+		       System.out.println("  - State: " + upload.getState());
+		       System.out.println("  - Progress: "
+		                       + upload.getProgress().getBytesTransferred());
+
 		}
+
+		// Or you can block the current thread and wait for your transfer to
+		// to complete. If the transfer fails, this method will throw an
+		// AmazonClientException or AmazonServiceException detailing the reason.
+		try {
+			upload.waitForCompletion();
+		} catch (AmazonServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AmazonClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 
+		// After the upload is complete, call shutdownNow to release the resources.
+		tx.shutdownNow();
 		return upload.isDone();
 	}
 

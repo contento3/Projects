@@ -27,6 +27,7 @@ public class EntityListener {
 	 * used in extended class to handle items button click listener
 	 */
 	public void entityButtonClickListener(ClickEvent event) {
+		System.out.print("In "+EntityListener.class+"Entity button click listener");
 	}
 	
 }

@@ -2,7 +2,8 @@ package com.contento3.web.content.document;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -89,7 +90,7 @@ public class DocumentMgmtUIManager implements UIManager, ClickListener {
 	/**
 	 * Documents collection
 	 */
-	private Collection<DocumentDto> documents;
+	private Collection<DocumentDto> documents = new ArrayList <DocumentDto>();
 
 	/**
 	 * Document search field
@@ -159,16 +160,17 @@ public class DocumentMgmtUIManager implements UIManager, ClickListener {
 		innerLayout.setMargin(true);
 		innerLayout.setSpacing(true);
 		
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		final GridLayout toolbarGridLayout = new GridLayout(1,1);
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
 		try
 		{
-			listeners.add(new AddDocumentButtonListener(this.contextHelper,this.tabSheet,this.documentTable));
+			listeners.put("DOCUMENT:ADD",new AddDocumentButtonListener(this.contextHelper,this.tabSheet,this.documentTable));
 		}
-		catch(AuthorizationException ex){Notification.show("You are not permitted to add documents");}
-		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
-		//listeners.add(new PageViewCategoryListener(pageId,contextHelper));
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"document",listeners);
+		catch(final AuthorizationException ex) {
+			Notification.show("Document","You are not permitted to add documents",Notification.Type.TRAY_NOTIFICATION);
+		}
+
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"document",listeners);
 		builder.build();
 		horizontal.addComponent(toolbarGridLayout);
 		horizontal.setWidth(100,Unit.PERCENTAGE);
@@ -220,9 +222,12 @@ public class DocumentMgmtUIManager implements UIManager, ClickListener {
 	private void renderDocumentTable(final VerticalLayout innerLayout) {
 		tableBuilder = new DocumentTableBuilder(this.contextHelper, this.tabSheet, this.documentTable);
 		try {
-		documents = this.documentService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
-		tableBuilder.build((Collection)documents);}
-		catch(AuthorizationException ex){Notification.show("You are not permitted to view documents");}
+			documents = this.documentService.findByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+			tableBuilder.build((Collection)documents);
+		}
+		catch(final AuthorizationException ex){
+			tableBuilder.build((Collection)documents);
+		}
 		innerLayout.addComponent(this.documentTable);
 	}
 

@@ -20,11 +20,13 @@ public class TemplateDto {
 	
 	private String templatePath;
 	
+	private String templateKey;
+	
 	public AccountDto getAccountDto() {
 		return accountDto;
 	}
 
-	public void setAccountDto(AccountDto accountDto) {
+	public void setAccountDto(final AccountDto accountDto) {
 		this.accountDto = accountDto;
 	}
 
@@ -32,7 +34,7 @@ public class TemplateDto {
 		return templateId;
 	}
 
-	public void setTemplateId(Integer templateId) {
+	public void setTemplateId(final Integer templateId) {
 		this.templateId = templateId;
 	}
 
@@ -40,7 +42,7 @@ public class TemplateDto {
 		return templateType;
 	}
 
-	public void setTemplateType(TemplateTypeDto templateType) {
+	public void setTemplateType(final TemplateTypeDto templateType) {
 		this.templateType = templateType;
 	}
 
@@ -56,7 +58,7 @@ public class TemplateDto {
 		return templateName;
 	}
 
-	public void setTemplateName(String templateName) {
+	public void setTemplateName(final String templateName) {
 		this.templateName = templateName;
 	}
 
@@ -64,11 +66,11 @@ public class TemplateDto {
 		return templateText;
 	}
 
-	public void setTemplateText(String templateText) {
+	public void setTemplateText(final String templateText) {
 		this.templateText = templateText;
 	}
 
-	public void setTemplateDirectoryDto(TemplateDirectoryDto templateDirectorDto) {
+	public void setTemplateDirectoryDto(final TemplateDirectoryDto templateDirectorDto) {
 		this.templateDirectoryDto = templateDirectorDto;
 	}
 
@@ -83,5 +85,13 @@ public class TemplateDto {
     public void setTemplatePath(final String templatePath) {
         this.templatePath = templatePath;
     }
+
+	public String getTemplateKey() {
+		return templateKey;
+	}
+
+	public void setTemplateKey(final String templateKey) {
+		this.templateKey = templateKey;
+	}
 
 }

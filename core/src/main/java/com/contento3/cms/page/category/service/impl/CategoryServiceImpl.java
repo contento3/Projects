@@ -3,6 +3,7 @@ package com.contento3.cms.page.category.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
 	 */
 	private CategoryAssembler categoryAssembler;
 
-	CategoryServiceImpl(final CategoryAssembler categoryAssembler,final CategoryDao categoryDao,final AccountDao accountDao){
+	public CategoryServiceImpl(final CategoryAssembler categoryAssembler,final CategoryDao categoryDao,final AccountDao accountDao){
 		Validate.notNull(categoryAssembler,"categoryAssembler cannot be null");
 		Validate.notNull(accountDao,"accountDao cannot be null");
 		Validate.notNull(categoryDao,"categoryDao cannot be null");
@@ -97,6 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 	
 	@RequiresPermissions("CATEGORY:VIEW_LISTING")
+	//TODO @RequiresPermissions(value = { "CATEGORY:VIEW_LISTING", "ARTICLE:ASSOCIATE_CATEGORY" }, logical = Logical.OR) 
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<CategoryDto> findNullParentIdCategory(final Integer accountId) throws EntityNotFoundException {
@@ -154,8 +156,8 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		return categories;
 	}
-	
-	@RequiresPermissions("CATEGORY:VIEW")
+
+	@RequiresPermissions(value = { "CATEGORY:VIEW", "ARTICLE:ASSOCIATE_CATEGORY" }, logical = Logical.OR)
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public CategoryDto findById(Integer id) throws EntityNotFoundException {

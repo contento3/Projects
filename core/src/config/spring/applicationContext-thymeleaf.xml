@@ -52,6 +52,9 @@
   	<bean id="setupDialect" class="com.contento3.thymeleaf.dialect.setup.SetupDialect">
   	</bean>  
 
+  	<bean id="processorUtil" class="com.contento3.thymeleaf.common.util.ProcessorUtil">
+  	</bean>  
+
   	<bean id="articleDialect" class="com.contento3.thymeleaf.dialect.article.ArticleDialect">
       <property name="articleProcessor" ref="articleProcessor" />
   	</bean>  
@@ -63,13 +66,25 @@
   
   	<bean id="articleProcessor" class="com.contento3.thymeleaf.dialect.article.ArticleProcessor">
 	      <property name="articleService" ref="articleService" />
+	      <property name="processorUtil" ref="processorUtil" />
 	</bean>  
+
 	<bean id="navigationProcessor" class="com.contento3.thymeleaf.dialect.navigation.NavigationProcessor">
 	      <property name="pageService" ref="pageService" />
+	      <property name="processorUtil" ref="processorUtil" />
 	</bean>  
 
 	<bean id="standardCacheManager" class="org.thymeleaf.cache.StandardCacheManager">
 	</bean>
+
+  	<bean id="seoProcessor" class="com.contento3.thymeleaf.dialect.seo.SEOProcessor">
+	      <property name="metaTagService" ref="metaTagService" />
+	      <property name="processorUtil" ref="processorUtil" />
+	</bean>  
+	
+	<bean id="seoDialect" class="com.contento3.thymeleaf.dialect.seo.SEODialect">
+	      <property name="seoProcessor" ref="seoProcessor" />
+	</bean>  
 	
   <bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
     <property name="templateResolver" ref="templateResolver" />
@@ -79,6 +94,7 @@
       		<ref local="articleDialect" />
       		<ref local="navigationDialect" />
       		<ref local="setupDialect" />
+      		<ref local="seoDialect" />
     	</set>
   	</property>
   </bean>

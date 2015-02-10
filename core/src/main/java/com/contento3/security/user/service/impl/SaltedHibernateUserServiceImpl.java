@@ -21,6 +21,7 @@ import com.contento3.security.user.model.SaltedHibernateUser;
 import com.contento3.security.user.service.SaltedHibernateUserAssembler;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 
+@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserService{
 
 	/**
@@ -46,7 +47,7 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 	}
 
 	@RequiresPermissions("USER:ADD")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public Integer create(final SaltedHibernateUserDto dto)
 			throws EntityAlreadyFoundException, EntityNotCreatedException {
@@ -73,7 +74,7 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		return userId;
 	}
 	
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@RequiresPermissions("USER:DELETE")
 	@Override
 	public void delete(final SaltedHibernateUserDto dtoToDelete) throws EntityCannotBeDeletedException {
@@ -89,7 +90,7 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		} 
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@RequiresPermissions("USER:VIEW_LISTING")
 	@Override
 	public Collection<SaltedHibernateUserDto> findUsersByAccountId(final Integer accountId) {
@@ -97,23 +98,23 @@ public class SaltedHibernateUserServiceImpl implements SaltedHibernateUserServic
 		return userAssembler.domainsToDtos(userDao.findUsersByAccountId(accountId));
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-	@RequiresPermissions("USER:VIEW_LISTING")
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+	@RequiresPermissions("USER:VIEW")
 	@Override
 	public SaltedHibernateUserDto findUserById(final Integer userId) {
 		Validate.notNull(userId,"userId cannot be null");
 		return userAssembler.domainToDto(userDao.findById(userId));
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-	@RequiresPermissions("USER:VIEW_LISTING")
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+	@RequiresPermissions("USER:VIEW")
 	@Override
 	public SaltedHibernateUserDto findUserByUsername(final String username) {
 		Validate.notNull(username,"username cannot be null");
 		return userAssembler.domainToDto(userDao.findByUsername(username));
 	}
 	
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@RequiresPermissions("USER:UPDATE")
 	@Override
 	public void update(SaltedHibernateUserDto dtoToUpdate) throws EntityAlreadyFoundException {

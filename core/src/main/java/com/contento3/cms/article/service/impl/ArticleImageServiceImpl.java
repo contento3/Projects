@@ -72,8 +72,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 	
 	//@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:VIEW")
 	@Override
-	public Collection<ArticleImageDto> findAsscArticleImageByArticleIdAndScopeId(
-			final Integer articleId,final Integer scopeId) {
+	public Collection<ArticleImageDto> findAsscArticleImageByArticleIdAndScopeId(final Integer articleId,final Integer scopeId) {
 		Validate.notNull(articleId,"articleId cannot null");
 		Validate.notNull(scopeId,"scopeId cannot null");
 		return this.articleImageAssembler.domainsToDtos(this.articleImageDao.findAsscArticleImageByArticleIdAndScopeId(articleId,scopeId));

@@ -1,7 +1,9 @@
 package com.contento3.web.email.marketing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.c3.email.marketing.newsletter.dto.NewsletterDto;
 import com.c3.email.marketing.newsletter.service.NewsletterService;
@@ -159,13 +161,13 @@ public class NewsletterAddEditListener implements ClickListener,com.vaadin.event
 		templateSelectionLayout.addComponent(templateButton);
 		templateSelectionLayout.setComponentAlignment(templateButton,Alignment.MIDDLE_CENTER);
 
-    	final TemplateDto template = (TemplateDto)UI.getCurrent().getData();
+    	TemplateDto template = (TemplateDto)UI.getCurrent().getData();
 
     	if (template==null){
     		template = newsletter.getTemplate();
     	}
     	
-		previewButton.addClickListener(new NewsletterTemplatePreviewListener("test popup",context.getHelper(), templateTableBuilder,(TextField)layout.getComponent(0)));
+		//previewButton.addClickListener(new NewsletterTemplatePreviewListener(template));
 		templateSelectionLayout.addComponent(previewButton);
 		templateSelectionLayout.setComponentAlignment(previewButton,Alignment.MIDDLE_CENTER);
 
@@ -294,9 +296,9 @@ public class NewsletterAddEditListener implements ClickListener,com.vaadin.event
 	private GridLayout buildScreenToolbar(){
 		final GridLayout toolbarGridLayout = new GridLayout(1,2);
 
-		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new NewsletterSaveListener(context));
-		listeners.add(new NewsletterSendListener(context));
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("NEWSLETTER:ADD",new NewsletterSaveListener(context));
+		listeners.put("NEWSLETTER:SEND",new NewsletterSendListener(context));
 
 		
 		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"newsletter-edit",listeners);

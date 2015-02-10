@@ -2,14 +2,15 @@ package com.contento3.web.template;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.util.CollectionUtils;
 import org.vaadin.aceeditor.AceEditor;
-import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.peter.contextmenu.ContextMenu;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
@@ -19,7 +20,6 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuOpenedOnTreeItemEvent
 
 import com.contento3.account.dto.AccountDto;
 import com.contento3.account.service.AccountService;
-import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.service.TemplateDirectoryService;
@@ -312,22 +312,26 @@ public class TemplateUIManager implements UIManager {
 		// either this is contento3 account or if separately hosted means single account
 		// This means we are not going to use the accountId from session for global templates. 
 		// Hard coded to accountId = 1
-		final Collection<TemplateDirectoryDto> globalTemplateDirectoryList = templateDirectoryService.findRootDirectories(true,1);
-		globalTemplateListLayout.addComponent(populateTemplateList(
-				globalTemplateDirectoryList, templateDirectoryService, true));
-
+		Collection<TemplateDirectoryDto> globalTemplateDirectoryList = new ArrayList<TemplateDirectoryDto>();
+		
+		if (SecurityUtils.getSubject().isPermitted("TEMPLATE_LIBRARY:VIEW")){
+			globalTemplateDirectoryList = templateDirectoryService.findRootDirectories(true,1);
+			globalTemplateListLayout.addComponent(populateTemplateList(globalTemplateDirectoryList, templateDirectoryService, true));
+		}
+		
 		// Populate the template list
 		final VerticalLayout templateListLayout = new VerticalLayout();
 		templateListLayout.setHeight(80, Unit.PERCENTAGE);
 		final Tab templatesTab = accordion.addTab(templateListLayout,
 				"Templates", new ExternalResource("images/add-template-16.png"));
-		final Collection<TemplateDirectoryDto> templateDirectoryList = templateDirectoryService
-				.findRootDirectories(false,accountId);
+		Collection<TemplateDirectoryDto> templateDirectoryList = new ArrayList<TemplateDirectoryDto>();
+	
 		accordion.setSelectedTab(templateListLayout);
-
-		// Add the tree to the vertical layout for template list.
-		templateListLayout.addComponent(populateTemplateList(
-				templateDirectoryList, templateDirectoryService, false));
+		if (SecurityUtils.getSubject().isPermitted("TEMPLATE:VIEW")){
+			templateDirectoryList = templateDirectoryService.findRootDirectories(false,accountId);
+			// Add the tree to the vertical layout for template list.
+			templateListLayout.addComponent(populateTemplateList(templateDirectoryList, templateDirectoryService, false));
+		}
 	}
 
 	public Tree populateTemplateList(
@@ -352,23 +356,34 @@ public class TemplateUIManager implements UIManager {
 				final ContextMenu contextMenu = event.getContextMenu();
 				contextMenu.removeAllItems();
 				if (itemId.startsWith("file:")) {
-					contextMenu.addItem(CONTEXT_ITEM_OPEN).setData(
-							CONTEXT_ITEM_OPEN);
-					contextMenu.addItem(CONTEXT_ITEM_CREATE_TEMPLATE).setData(
-							CONTEXT_ITEM_CREATE_TEMPLATE);
-					contextMenu.addItem(CONTEXT_ITEM_CLEAR_CACHE).setData(
-							CONTEXT_ITEM_CLEAR_CACHE);
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:EDIT")){
+						contextMenu.addItem(CONTEXT_ITEM_OPEN).setData(CONTEXT_ITEM_OPEN);
+					}
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:ADD")){
+						contextMenu.addItem(CONTEXT_ITEM_CREATE_TEMPLATE).setData(CONTEXT_ITEM_CREATE_TEMPLATE);
+					}	
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:CLEAR_CACHE")){
+						contextMenu.addItem(CONTEXT_ITEM_CLEAR_CACHE).setData(CONTEXT_ITEM_CLEAR_CACHE);
+					}	
 				} else {
-					contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(
-							CONTEXT_ITEM_CREATE);
-					contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(
-							CONTEXT_ITEM_RENAME);
-					contextMenu.addItem(CONTEXT_ITEM_DELETE_DIRECTORY).setData(
-							CONTEXT_ITEM_DELETE_DIRECTORY);
-					contextMenu.addItem(CONTEXT_ITEM_MOVE_DIRECTORY).setData(
-							CONTEXT_ITEM_MOVE_DIRECTORY);
-					contextMenu.addItem(CONTEXT_ITEM_CREATE_TEMPLATE).setData(
-							CONTEXT_ITEM_CREATE_TEMPLATE);
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:ADD")){
+						contextMenu.addItem(CONTEXT_ITEM_CREATE).setData(CONTEXT_ITEM_CREATE);
+					}
+					
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:EDIT")){
+						contextMenu.addItem(CONTEXT_ITEM_RENAME).setData(CONTEXT_ITEM_RENAME);
+					}	
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:DELETE_DIR")){
+						contextMenu.addItem(CONTEXT_ITEM_DELETE_DIRECTORY).setData(CONTEXT_ITEM_DELETE_DIRECTORY);
+					}
+					
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:MOVE_DIR")){
+						contextMenu.addItem(CONTEXT_ITEM_MOVE_DIRECTORY).setData(CONTEXT_ITEM_MOVE_DIRECTORY);
+					}
+					
+					if (SecurityUtils.getSubject().isPermitted("TEMPLATE:ADD")){
+						contextMenu.addItem(CONTEXT_ITEM_CREATE_TEMPLATE).setData(CONTEXT_ITEM_CREATE_TEMPLATE);
+					}	
 				}
 			}
 		};
@@ -574,8 +589,7 @@ public class TemplateUIManager implements UIManager {
 				.getValue().toString());
 		String name = parentItem.getItemProperty("name").getValue().toString();
 
-		Collection<TemplateDirectoryDto> templateDirectoryDtoList = templateDirectoryService
-				.findChildDirectories(selectedDirectoryId,accountId);
+		Collection<TemplateDirectoryDto> templateDirectoryDtoList = templateDirectoryService.findChildDirectories(selectedDirectoryId);
 
 		for (TemplateDirectoryDto templateDirectoryDto : templateDirectoryDtoList) {
 			Integer itemToAdd = templateDirectoryDto.getId();
@@ -603,16 +617,11 @@ public class TemplateUIManager implements UIManager {
 			if (null == templateContainer.getItem(templateItemId)) {
 				Item item = templateContainer.addItem(templateItemId);
 				item.getItemProperty("fileid").setValue(templateItemId);
-				item.getItemProperty("name").setValue(
-						templateDto.getTemplateName());
-				templateContainer.setParent(
-						String.format("file:%d", templateDto.getTemplateId()),
-						selectedDirectoryId);
-				templateContainer.setChildrenAllowed(
-						String.format("file:%d", templateDto.getTemplateId()),
+				item.getItemProperty("name").setValue(templateDto.getTemplateName());
+				templateContainer.setParent(String.format("file:%d", templateDto.getTemplateId()),selectedDirectoryId);
+				templateContainer.setChildrenAllowed(String.format("file:%d", templateDto.getTemplateId()),
 						false);
-				item.getItemProperty("icon").setValue(
-						new ExternalResource("images/add-template-16.png"));
+				item.getItemProperty("icon").setValue(new ExternalResource("images/add-template-16.png"));
 			}
 		}
 	}
@@ -638,13 +647,10 @@ public class TemplateUIManager implements UIManager {
 										Notification.Type.TRAY_NOTIFICATION);
 					} else {
 						Notification
-								.show(String
-										.format("Please select template directory to create a new template."),
-										Notification.Type.TRAY_NOTIFICATION);
+								.show(String.format("Please select template directory to create a new template."),Notification.Type.TRAY_NOTIFICATION);
 					}
 				} else {
-					final TemplateDirectoryDto directoryDto = templateDirectoryService
-							.findById(selectedDirectoryId);
+					final TemplateDirectoryDto directoryDto = templateDirectoryService.findById(selectedDirectoryId);
 					createTemplateUI(templateDto, directoryDto);
 				}
 			}
@@ -653,29 +659,25 @@ public class TemplateUIManager implements UIManager {
 		}
 	}
 
-	private void createTemplateUI(final TemplateDto templateDto,
-			final TemplateDirectoryDto selectedDirectory) {
+	private void createTemplateUI(final TemplateDto templateDto,final TemplateDirectoryDto selectedDirectory) {
 		final TemplateForm form = new TemplateForm(this.helper, templateCategoryService);
 		final VerticalLayout createNewTemplate = new VerticalLayout();
 
 		final VerticalLayout templateEditorLayout = new VerticalLayout();
 		templateEditorLayout.setMargin(true);
 
-		final ScreenHeader screenHeader = new ScreenHeader(
-				templateEditorLayout, "Templates");
+		final ScreenHeader screenHeader = new ScreenHeader(templateEditorLayout, "Templates");
 		final HorizontalLayout mainLayout = new HorizontalLayout();
 
 		mainLayout.addComponent(createNewTemplate);
 
 		final GridLayout toolbarGridLayout = new GridLayout(1, 1);
-		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
 
 		try {
-			listeners.add(new AddTemplateButtonListener(this.helper, form,
-					templateDto));
+			listeners.put("TEMPLATE:ADD",new AddTemplateButtonListener(this.helper, form,templateDto));
 		} catch (final AuthorizationException ex) {
-			Notification.show("You are not permitted to add documents",
-					Notification.Type.TRAY_NOTIFICATION);
+			Notification.show("Document","You are not permitted to add documents",Notification.Type.TRAY_NOTIFICATION);
 		}
 
 		mainLayout.addComponent(toolbarGridLayout);
@@ -684,8 +686,7 @@ public class TemplateUIManager implements UIManager {
 		mainLayout.setExpandRatio(createNewTemplate, 15);
 		mainLayout.setExpandRatio(toolbarGridLayout, 1);
 
-		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(
-				toolbarGridLayout, "template", listeners);
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout, "template", listeners);
 		builder.build();
 
 		templateEditorLayout.setSpacing(true);
@@ -707,6 +708,7 @@ public class TemplateUIManager implements UIManager {
 		if (null != templateDto) {
 			form.getTemplateNameTxtFld()
 					.setValue(templateDto.getTemplateName());
+			form.getTemplateKeyTxtFld().setValue(templateDto.getTemplateKey());
 			editor.setValue(templateDto.getTemplateText());
 		}
 
@@ -781,8 +783,7 @@ public class TemplateUIManager implements UIManager {
 
 		isGlobalOptionsGroup.addItem("Global");
 		isGlobalOptionsGroup.addItem("Local");
-		isGlobalOptionsGroup
-				.addValueChangeListener(new Property.ValueChangeListener() {
+		isGlobalOptionsGroup.addValueChangeListener(new Property.ValueChangeListener() {
 					private static final long serialVersionUID = 1L;
 
 					@Override

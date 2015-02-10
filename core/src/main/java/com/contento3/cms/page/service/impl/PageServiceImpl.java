@@ -5,10 +5,8 @@ import java.util.Collection;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.dao.PageDao;
 import com.contento3.cms.page.dto.PageDto;
@@ -25,14 +23,8 @@ public class PageServiceImpl implements PageService {
 	
 	private static final Logger LOGGER = Logger.getLogger(PageServiceImpl.class);
 	
-	/**
-	 * 
-	 */
 	private PageAssembler pageAssembler;
 
-	/**
-	 * 
-	 */
 	private PageDao pageDao;
 
 	public PageServiceImpl(final PageDao pageDao,final PageAssembler pageAssembler){
@@ -97,7 +89,7 @@ public class PageServiceImpl implements PageService {
 		return newPageDto;
 	}
 	
-	@RequiresPermissions("PAGE:VIEW")
+	@RequiresPermissions("PAGE:VIEW_LISTING")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public Collection<PageDto> findPageBySiteId(Integer siteId){
 		Validate.notNull(siteId,"siteId cannot be null");
@@ -194,16 +186,17 @@ public class PageServiceImpl implements PageService {
 		return isExists;
 	}
 
+	@RequiresPermissions("PAGE:VIEW_LISTING")
 	@Override
 	public Collection<PageDto> findNavigablePagesBySiteId(final Integer siteId) {
 		Validate.notNull(siteId,"siteId cannot be null");
 		return pageAssembler.domainsToDtos(pageDao.findNavigablePages(siteId)); 	
 	}
 
+	@RequiresPermissions("PAGE:VIEW_LISTING")
 	@Override
 	public Collection<PageDto> findPagesByCategory(
 			Collection<Integer> categoryIds, Integer siteId, Integer accountId) {
-		// TODO Auto-generated method stub
 		return pageAssembler.domainsToDtos(pageDao.findPagesByCategory(categoryIds, accountId, siteId));
 	}
 }

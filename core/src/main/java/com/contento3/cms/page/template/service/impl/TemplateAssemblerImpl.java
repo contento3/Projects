@@ -26,7 +26,7 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
         }
         
         @Override
-        public Template dtoToDomain(TemplateDto dto,Template domain) {
+        public Template dtoToDomain(final TemplateDto dto,final Template domain) {
                 
                 if (null!=dto.getTemplateId()){
                         domain.setTemplateId(dto.getTemplateId());
@@ -37,12 +37,16 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
                 domain.setTemplateText(dto.getTemplateText());
                 domain.setTemplateType(templateTypeAssembler.dtoToDomain(dto.getTemplateType()));
                 domain.setTemplatePath(dto.getTemplatePath());
-                //domain.setDirectory(templateDirectoryAssembler.dtoToDomain(dto.getTemplateDirectoryDto()));
+                domain.setTemplateKey(dto.getTemplateKey());
+                
+                if (null!=dto.getTemplateDirectoryDto()){
+                	domain.setDirectory(templateDirectoryAssembler.dtoToDomain(dto.getTemplateDirectoryDto()));
+        		}
                 return domain;
         }
 
         @Override
-        public TemplateDto domainToDto(Template domain,TemplateDto dto) {
+        public TemplateDto domainToDto(final Template domain,final TemplateDto dto) {
                 dto.setTemplateId(domain.getTemplateId());
                 dto.setGlobal(domain.isGlobal());
                 dto.setTemplateName(domain.getTemplateName());
@@ -51,6 +55,7 @@ public class TemplateAssemblerImpl implements TemplateAssembler {
                 dto.setTemplateType(templateTypeAssembler.domainToDto(domain.getTemplateType()));
                 dto.setTemplateDirectoryDto(templateDirectoryAssembler.domainToDto(domain.getDirectory()));
                 dto.setTemplatePath(domain.getTemplatePath());
+                dto.setTemplateKey(domain.getTemplateKey());
                 return dto;
         }
 

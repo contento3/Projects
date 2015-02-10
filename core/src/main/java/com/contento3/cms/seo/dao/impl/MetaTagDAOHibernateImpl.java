@@ -8,6 +8,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.contento3.cms.seo.dao.MetaTagDAO;
 import com.contento3.cms.seo.model.MetaTag;
+import com.contento3.cms.seo.model.MetaTagLevelEnum;
 import com.contento3.common.spring.dao.GenericDaoSpringHibernateTemplate;
 
 public class MetaTagDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<MetaTag, Integer> implements MetaTagDAO {
@@ -19,7 +20,7 @@ public class MetaTagDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<M
 	}
 
 	@Override
-	public Collection<MetaTag> findBySiteId(Integer siteId) {
+	public Collection<MetaTag> findBySiteId(final Integer siteId) {
 		
 		Validate.notNull(siteId,"siteId cannot be null");
 
@@ -31,5 +32,19 @@ public class MetaTagDAOHibernateImpl extends GenericDaoSpringHibernateTemplate<M
 		return criteria.list();
 	}
 
+	@Override
+	public Collection<MetaTag> findByAssocaitedId(final Integer id,final MetaTagLevelEnum level) {
+		
+		Validate.notNull(id,"id cannot be null");
+		Validate.notNull(level,"level cannot be null");
+
+		final Criteria criteria = this.getSession()
+								.createCriteria(MetaTag.class)
+								.add(Restrictions
+								.eq("associatedId", id)).add(Restrictions
+										.eq("level", level.toString()));
+		
+		return criteria.list();
+	}
 
 }

@@ -17,7 +17,7 @@ public class Dto {
 		
 	}
 	
-	public Dto (Integer id,String name){
+	public Dto (final Integer id,final String name){
 		this.id = id;
 		this.name = name;
 		this.hashMap = new HashMap<String, Object>();

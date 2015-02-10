@@ -2,13 +2,16 @@ package com.contento3.web.site;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
 import com.contento3.cms.page.category.service.CategoryService;
+import com.contento3.common.dto.Dto;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.web.UIManager;
 import com.contento3.web.category.CategoryPopup;
@@ -94,9 +97,16 @@ public class PageCategoryUIManager implements UIManager{
 			try {
 				categories = this.categoryService.findNullParentIdCategory((Integer)SessionHelper.loadAttribute("accountId"));
 				tableBuilder.build((Collection)categories);
-			} catch (EntityNotFoundException e) {
+			} 
+			catch (final EntityNotFoundException e) {
 				LOGGER.debug(e.getMessage());
 			}
+			catch (final AuthorizationException e) {
+				LOGGER.debug("Unable to authorise this user for categorylisting"+ SecurityUtils.getSubject().getPrincipal().toString());
+				tableBuilder.rebuild(new ArrayList<Dto>());
+				categoryTable.setPageLength(0);
+			}
+			
 			verticl.addComponent(categoryTable);
 			verticl.setSpacing(true);
 			verticl.setMargin(true);
@@ -107,12 +117,9 @@ public class PageCategoryUIManager implements UIManager{
 			final Button button = new Button("Add Category");
 			button.addClickListener(new CategoryPopup(contextHelper,categoryTable,tabSheet));
 
-			GridLayout toolbarGridLayout = new GridLayout(1,1);
-			List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-			
-			if (SecurityUtils.getSubject().isPermitted("CATEGORY:ADD")){
-				listeners.add(new AddCategoryClickListener(contextHelper, categoryTable,tabSheet ));
-			}
+			final GridLayout toolbarGridLayout = new GridLayout(1,1);
+			final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+			listeners.put("CATEGORY:ADD",new AddCategoryClickListener(contextHelper, categoryTable,tabSheet ));
 			
 			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"category",listeners);
 			builder.build();

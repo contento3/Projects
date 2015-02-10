@@ -3,6 +3,8 @@
  */
 package com.contento3.web.site;
 
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.cms.page.template.dto.PageTemplateDto;
 import com.contento3.cms.page.template.dto.TemplateDirectoryDto;
 import com.contento3.cms.page.template.service.PageTemplateService;
@@ -56,16 +58,17 @@ public class PageTemplateTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("url").setValue(buildPath(templateDirDto, templateDto.getTemplateName()));
 		item.getItemProperty("order").setValue(templateDto.getOrder());
 		
-		// adding delete button item into list
-		final Button deleteLink = new Button();
-		deleteLink.setCaption("Delete");
-		deleteLink.setData(templateDto.getTemplateId());
-		deleteLink.addStyleName("delete");
-		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("delete").setValue(deleteLink);
-		PageTemplateService service = (PageTemplateService) this.contextHelper.getBean("pageTemplateService");
-		deleteLink.addClickListener(new EntityDeleteClickListener<PageTemplateDto>(templateDto,service,deleteLink,table));
-		
+		if (SecurityUtils.getSubject().isPermitted("PAGE:DISASSOCIATE_TEMPLATE")){
+			// adding delete button item into list
+			final Button deleteLink = new Button();
+			deleteLink.setCaption("Delete");
+			deleteLink.setData(templateDto.getTemplateId());
+			deleteLink.addStyleName("delete");
+			deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+			item.getItemProperty("delete").setValue(deleteLink);
+			PageTemplateService service = (PageTemplateService) this.contextHelper.getBean("pageTemplateService");
+			deleteLink.addClickListener(new EntityDeleteClickListener<PageTemplateDto>(templateDto,service,deleteLink,table));
+		}
 		((IndexedContainer) container).sort(new Object[] { "order" }, new boolean[] { true });
 	}
 

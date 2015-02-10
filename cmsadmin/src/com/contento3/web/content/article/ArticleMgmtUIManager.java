@@ -2,7 +2,8 @@ package com.contento3.web.content.article;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.AuthorizationException;
@@ -154,8 +155,8 @@ public class ArticleMgmtUIManager implements UIManager {
 		mainLayout.setExpandRatio(contentLayout, 100);
 		final GridLayout toolbarGridLayout = new GridLayout(1,2);
 		mainLayout.addComponent(toolbarGridLayout);
-		final List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddArticleButtonListener(this.contextHelper,this.tabSheet,this.articleTable));
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("ARTICLE:ADD",new AddArticleButtonListener(this.contextHelper,this.tabSheet,this.articleTable));
 
 		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"article",listeners);
 		builder.build();
@@ -223,14 +224,18 @@ public class ArticleMgmtUIManager implements UIManager {
 	@SuppressWarnings("unchecked")
 	private void renderArticleTable(final VerticalLayout contentLayout) {
 		final AbstractTableBuilder tableBuilder = new ArticleTableBuilder(this.parentWindow,this.contextHelper,this.tabSheet,this.articleTable);
+		Collection<ArticleDto> articles = null;
 		try
 		{
-			Collection<ArticleDto> articles=this.articleService.findByAccountId(accountId, false);
-			tableBuilder.build((Collection)articles);
+			articles=this.articleService.findByAccountId(accountId, false);
 		} 
 		catch(AuthorizationException ex)
 		{
+			articles = new ArrayList<ArticleDto>();
 			LOGGER.debug("you are not permitted to see article", ex);
+		}
+		finally {
+			tableBuilder.build((Collection)articles);
 		}
 		contentLayout.setSpacing(true);
 		contentLayout.setMargin(true);

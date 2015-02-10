@@ -4,6 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -14,14 +17,15 @@ import com.contento3.site.resolver.StaticResourceViewResolver;
  * @author HAMMAD
  *
  */
-public class StaticResourceController extends AbstractController {
+@Controller
+public class StaticResourceController {
 
-	private static final Logger LOGGER = Logger.getLogger(PageController.class);
+	private static final Logger LOGGER = Logger.getLogger(StaticResourceController.class);
 
 	private StaticResourceViewResolver view;
 	
-	@Override
-	protected ModelAndView handleRequestInternal(final HttpServletRequest request,
+    @RequestMapping(value="/image/**/*", method = RequestMethod.GET)
+    protected ModelAndView handleRequestInternal(final HttpServletRequest request,
 			final HttpServletResponse response) throws Exception {
 
 		ModelAndView modelAndView = null;

@@ -13,12 +13,19 @@
 		<property name="location" value="classpath:/config/spring/db.properties" />
 	</bean>
 
-	<bean id="jdbcdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-           <property name="driverClassName" value="${driver}"/>
-           <property name="url" value="${dburlPlatformUser}"/>
-           <property name="username" value="${dbuserPlatformUser}"/>
+	<bean id="jdbcdataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close">
+           <property name="driverClass" value="${driver}"/>
+           <property name="jdbcUrl" value="${dburlPlatformUser}"/>
+           <property name="user" value="${dbuserPlatformUser}"/>
            <property name="password" value="${dbpasswordPlatformUser}"/>	
+           <property name="acquireIncrement" value="1" />
+           <property name="minPoolSize" value="2" />
+           <property name="maxPoolSize" value="5" />
+           <property name="maxIdleTime" value="200" />     
+           <property name="debugUnreturnedConnectionStackTraces" value="true" />
+           <property name="unreturnedConnectionTimeout" value="0" />
 	</bean>
+
 	
 	<bean id="cmsSecuritySessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -30,33 +37,38 @@
 			    <value>com.contento3.security.permission.model.Permission</value> 
 			    <value>com.contento3.security.user.model.SaltedHibernateUser</value>
 			    <value>com.contento3.account.model.Account</value>
+				 <value>com.contento3.account.model.AccountType</value>
+				 <value>com.contento3.account.model.Module</value>
+				 <value>com.contento3.account.model.ModuleCategory</value>
 			    <value>com.contento3.security.entity.model.PermissionEntity</value>
 				<value>com.contento3.security.entityoperation.model.EntityOperation</value>
 			</list>
 		</property>	
 		<property name="hibernateProperties">
 			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
 				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
 				<prop key="hibernate.generate_statistics">true</prop>
 				<prop key="hibernate.cache.use_structured_entries">true</prop>
 				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
-				
-				<prop key="hibernate.c3p0.min_size">2 </prop>
-	            <prop key="hibernate.c3p0.max_size" >5</prop>
-	            <prop key="hibernate.c3p0.timeout">600</prop>
-	            <prop key="hibernate.c3p0.max_statements">0</prop>
-	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
-	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
-	            
 			</props>
 		</property>
+		
 	</bean>
 
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<bean id="cacheMonitor" class="com.contento3.common.aspect.CacheMonitor">
-		<property name="sessionFactory" ref="cmsSessionFactory" />
+		<property name="sessionFactory" ref="cmsSecuritySessionFactory" />
 	</bean>
 
 	<bean id="cacheManager"

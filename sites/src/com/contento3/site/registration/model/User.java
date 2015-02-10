@@ -8,8 +8,6 @@ public class User {
 	
 	private String passwordReminder;
 	
-	private String email;
-
 	public String getUsername() {
 		return username;
 	}
@@ -24,14 +22,6 @@ public class User {
 
 	public void setPassword(final String password) {
 		this.password = password;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(final String email) {
-		this.email = email;
 	}
 
 	public void setPasswordReminder(String passwordReminder) {

@@ -12,19 +12,17 @@
  <import resource="applicationContext-site-security.xml"/>
 
   <context:component-scan base-package="com.contento3.site.controller" />
+  <mvc:annotation-driven/>
 
- <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">    
- </bean>  
-    
 <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	<property name="mappings">
 		<value>
 	  	 	/register/**/*=registrationController
 	  	 	/register/*=registrationController
 	  	 	/page/**/*=pageController  
-			/image/**/*=staticResourceController
+ 			/image/**/*=staticResourceController
 			/js/**/*=staticResourceController
-			/css/**/*=staticResourceController
+			/css/**/*=staticResourceController 
 	  	 	/*=pageController  
 		</value>
 	</property>
@@ -55,6 +53,15 @@
 <bean id="staticResourceController" class="com.contento3.site.controller.StaticResourceController">
 	<property name="staticResourceViewResolver" ref="staticResourceView" />
 </bean>
+
+ <bean id="messageSource"
+        class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:message" />
+        <property name="defaultEncoding" value="UTF-8" />
+ </bean>
+
+<bean id="validator"
+      class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
 <!-- 
 <bean id="fmView" class="com.contento3.site.resolver.ExtendedFreemarkerView">

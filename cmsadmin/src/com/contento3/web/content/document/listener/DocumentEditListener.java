@@ -1,5 +1,6 @@
 package com.contento3.web.content.document.listener;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.authz.AuthorizationException;
@@ -62,7 +63,7 @@ public class DocumentEditListener implements ClickListener {
 	@Override
 	public void click(ClickEvent event) {
 		if(documentForm.getUploadedDocument() == null){
-			Notification.show("You must upload a document to Save.");
+			Notification.show("Document","You must upload a document to Save.",Notification.Type.TRAY_NOTIFICATION);
 			return;
 		}
 		try
@@ -85,16 +86,19 @@ public class DocumentEditListener implements ClickListener {
 		try {
 			documentService.update(documentDto);
 		} catch (EntityAlreadyFoundException e) {
+			//TODO
 			e.printStackTrace();
 		}
 		
-		String notification = documentDto.getDocumentTitle() + " updated successfully"; 
-		Notification.show(notification);
+		final String notification = documentDto.getDocumentTitle() + " updated successfully"; 
+		Notification.show("Document",notification,Notification.Type.TRAY_NOTIFICATION);
 		tabSheet.removeTab(documentTab);
 		resetTable();
 		tabSheet.removeTab(documentTab);
 		}
-		catch(AuthorizationException ex){Notification.show("You are not permitted to edit documents");}
+		catch(final AuthorizationException ex){
+			Notification.show("Access denied","You are not permitted to edit documents",Notification.Type.TRAY_NOTIFICATION);
+		}
 	}
 
 	/**
@@ -103,7 +107,14 @@ public class DocumentEditListener implements ClickListener {
 	 @SuppressWarnings("rawtypes")
 	 private void resetTable(){
 		final AbstractTableBuilder tableBuilder = new DocumentTableBuilder(this.contextHelper,this.tabSheet,this.documentTable);
-		final Collection<DocumentDto> document = this.documentService.findByAccountId(accountId);
+		Collection<DocumentDto> document = null;
+		
+		try {
+			document = this.documentService.findByAccountId(accountId);
+		}
+		catch (final AuthorizationException ae){
+			document = new ArrayList <DocumentDto>();
+		}
 		tableBuilder.rebuild((Collection) document);
 	}
 

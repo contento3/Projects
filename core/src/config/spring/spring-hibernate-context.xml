@@ -23,11 +23,17 @@
 </bean>
 
 
-<bean id="cmsDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-           <property name="driverClassName" value="${driver}"/>
-           <property name="url" value="${dburlCms}"/>
-           <property name="username" value="${dbuserCms}"/>
+<bean id="cmsDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+           <property name="driverClass" value="${driver}"/>
+           <property name="jdbcUrl" value="${dburlCms}"/>
+           <property name="user" value="${dbuserCms}"/>
            <property name="password" value="${dbpasswordCms}"/>
+           <property name="acquireIncrement" value="1" />
+           <property name="minPoolSize" value="2" />
+           <property name="maxPoolSize" value="5" />
+           <property name="maxIdleTime" value="100" />     
+           <property name="debugUnreturnedConnectionStackTraces" value="true" />
+           <property name="unreturnedConnectionTimeout" value="300" />
 </bean>
 
 
@@ -44,6 +50,9 @@
 				 <value>com.contento3.cms.page.model.Page</value>
 				 <value>com.contento3.cms.site.structure.model.Site</value>
 				 <value>com.contento3.account.model.Account</value>
+				 <value>com.contento3.account.model.AccountType</value>
+				 <value>com.contento3.account.model.Module</value>
+				 <value>com.contento3.account.model.ModuleCategory</value>
 				 <value>com.contento3.cms.page.template.model.TemplateType</value>
 				 <value>com.contento3.cms.page.template.model.TemplateDirectory</value>
 				 <value>com.contento3.dam.image.model.Image</value>
@@ -83,13 +92,7 @@
 				<prop key="hibernate.cache.use_structured_entries">true</prop>
 				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
 				
-				<prop key="hibernate.c3p0.min_size">2 </prop>
-	            <prop key="hibernate.c3p0.max_size" >5</prop>
-	            <prop key="hibernate.c3p0.timeout">600</prop>
-	            <prop key="hibernate.c3p0.max_statements">0</prop>
-	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
-	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
-	            
+			    
 			</props>
 		</property>	</bean>
 

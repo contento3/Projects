@@ -5,6 +5,7 @@ public enum PageSectionTypeEnum {
 	HEADER,
 	FOOTER,
 	BODY,
+	CONTENT,
 	LEFT_NAVIGATION,
 	RIGHT_NAVIGATION,
 	META_TAGS,

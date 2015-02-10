@@ -1,8 +1,8 @@
 package com.contento3.web.user.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.shiro.authz.AuthorizationException;
 
@@ -68,37 +68,30 @@ public class GroupUIManager implements UIManager {
 	
 	@Override
 	public void render() {
-		}
+	}
 	
 	/**
 	 * Return tab sheet  
 	 */
 	@Override
 	public Component render(final String command) {
-	
 		this.uiTabSheet.setHeight(100, Unit.PERCENTAGE);
 		Tab groupTab = uiTabSheet.addTab(verticalLayout, "User Groups",new ExternalResource("images/group.png"));
 		groupTab.setClosable(true);
 		this.verticalLayout.setSpacing(true);
 		this.verticalLayout.setWidth(100,Unit.PERCENTAGE);
-		
 		renderGroupContent();
-		
 		return this.uiTabSheet;
 	}
 
-	
-
 	@Override
 	public Component render(String command, Integer entityFilterId) {
-
 		return null;
 	}
 
 	@Override
 	public Component render(String command,
 			HierarchicalContainer treeItemContainer) {
-		
 		return null;
 	}
 	
@@ -118,11 +111,11 @@ public class GroupUIManager implements UIManager {
 		verticl.addComponent(new HorizontalRuler());
 		verticl.setMargin(true);
 		addGroupButton();
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddGroupClickListener(contextHelper, groupTable));
+		final GridLayout toolbarGridLayout = new GridLayout(1,1);
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("GROUP:ADD",new AddGroupClickListener(contextHelper, groupTable));
 		
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"group",listeners);
+		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"group",listeners);
 		builder.build();
 		renderGroupTable(verticl);
 		horizon.addComponent(toolbarGridLayout);

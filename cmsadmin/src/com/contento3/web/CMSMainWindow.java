@@ -34,6 +34,7 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.CloseHandler;
@@ -113,10 +114,25 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 		final PasswordField passwordTxtFld = new PasswordField();
 		passwordTxtFld.setCaption("Password");
 		passwordTxtFld.setTabIndex(2);
-		
+
+		final ImageLoader imageLoader = new ImageLoader();
+	    final Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
+	    embedded.setHeight(75,Unit.PIXELS);
+	    embedded.setWidth(200,Unit.PIXELS);
+	    loginLayout.addComponent(embedded);
+	    loginLayout.setComponentAlignment(embedded,Alignment.TOP_CENTER);
+
 		loginLayout.addComponent(usernameTxtFld);
 		loginLayout.addComponent(passwordTxtFld);
-
+		loginLayout.setComponentAlignment(usernameTxtFld, Alignment.BOTTOM_CENTER);
+		loginLayout.setComponentAlignment(passwordTxtFld, Alignment.BOTTOM_CENTER);
+		loginLayout.setSizeFull();
+		loginLayout.setHeight(300,Unit.PIXELS);
+		
+		final Panel panel = new Panel();
+		panel.setWidth(375,Unit.PIXELS);
+		panel.setContent(loginLayout);
+		
 		//If its the demo account
 		//Set the demo username and password
 		if (isDemo){
@@ -124,28 +140,46 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 			passwordTxtFld.setValue("guest123");
 		}
 		
-		ImageLoader imageLoader = new ImageLoader();
-	    Embedded embedded = imageLoader.loadEmbeddedImageByPath("images/logo.png");
-	    embedded.setHeight(75,Unit.PIXELS);
-	    embedded.setWidth(200,Unit.PIXELS);
-	    appRootLayout.addComponent(embedded);
-	    appRootLayout.setComponentAlignment(embedded,Alignment.BOTTOM_CENTER);
-
 	    appRootLayout.setSpacing(true);
 	    
-	    appRootLayout.addComponent(loginLayout);
-	    appRootLayout.setComponentAlignment(loginLayout,Alignment.MIDDLE_CENTER);
+	    final HorizontalLayout emptyHeadLayout = new HorizontalLayout();
+	    emptyHeadLayout.setHeight(65,Unit.PIXELS);
+	    appRootLayout.addComponent(emptyHeadLayout);
+	    
+	    appRootLayout.addComponent(panel);
+	    appRootLayout.setComponentAlignment(panel,Alignment.BOTTOM_CENTER);
 
-		appRootLayout.setSizeFull();
+	    final HorizontalLayout newAccountLayout = new HorizontalLayout();
+	    newAccountLayout.setSpacing(true);
+	    final Label dontHaveAccountLabel = new Label("Don't have an account?");
+	    newAccountLayout.addComponent(dontHaveAccountLabel);
+	    newAccountLayout.setComponentAlignment(dontHaveAccountLabel,Alignment.MIDDLE_CENTER);
+	    
+	    final Button createNewAccountButton = new Button("Create Account");
+	    createNewAccountButton.setStyleName("link");
+	    
+	    newAccountLayout.addComponent(createNewAccountButton);
+	    newAccountLayout.setComponentAlignment(createNewAccountButton,Alignment.TOP_CENTER);
+	    		
+	    appRootLayout.addComponent(newAccountLayout);
+	    appRootLayout.setComponentAlignment(newAccountLayout,Alignment.MIDDLE_CENTER);
+	    
 		this.addComponent(appRootLayout);
-		this.setComponentAlignment(appRootLayout, Alignment.MIDDLE_CENTER);
+		this.setWidth(700, Unit.PIXELS);
+		this.setComponentAlignment(appRootLayout, Alignment.TOP_CENTER);
 		
 		final Button loginButton = new Button();
 		loginButton.setCaption("Login");
 		loginButton.focus();
 		loginButton.setTabIndex(3);
 		loginLayout.addComponent(loginButton);
+		
+		final Button forgotPassword = new Button("Forgot your password?");
+		forgotPassword.setStyleName("link");
+		loginLayout.addComponent(forgotPassword);
+		loginLayout.setComponentAlignment(forgotPassword, Alignment.MIDDLE_CENTER);
 
+		loginLayout.setComponentAlignment(loginButton, Alignment.BOTTOM_CENTER);
 		loginButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
 
@@ -179,7 +213,7 @@ public class CMSMainWindow extends VerticalLayout implements Action.Handler {
 						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
 					}
 					catch(final AuthenticationException ae){
-						LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username);
+						LOGGER.error("AuthenticationException,Error occured while authentication user with username: "+username,ae);
 						Notification.show("Login failed","Invalid username or password.",Type.TRAY_NOTIFICATION);
 					}
 					catch(final Exception e){

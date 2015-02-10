@@ -1,13 +1,10 @@
 package com.contento3.thymeleaf.dialect.slider;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.ContextLoader;
 
-import com.contento3.cms.article.dto.ArticleDto;
-import com.contento3.cms.article.service.ArticleService;
 import com.contento3.dam.image.dto.ImageDto;
 import com.contento3.dam.image.service.ImageService;
 

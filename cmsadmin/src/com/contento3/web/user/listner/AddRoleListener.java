@@ -78,7 +78,7 @@ public class AddRoleListener extends EntityListener implements ClickListener{
 		if (dtos!=null) {
 			setCaption("Add role");//extend class method
 			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
-			userPicker.build();
+			userPicker.build(null);
 			
 		}
 	}

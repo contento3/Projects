@@ -4,8 +4,10 @@ import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.contento3.web.helper.SpringContextHelper;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -15,7 +17,7 @@ import com.vaadin.ui.VerticalLayout;
  * @author HAMMAD
  *
  */
-@Theme("contento3")
+@Theme("contento3") 
 public class CMSHome extends UI 
 {
 	

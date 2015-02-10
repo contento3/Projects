@@ -1,5 +1,6 @@
 package com.contento3.web.user.security;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.common.dto.Dto;
@@ -48,28 +49,34 @@ public class UserTableBuilder extends AbstractTableBuilder  {
 	public void assignDataToTable(final Dto dto,final Table userTable,final Container userContainer) {
 		try
 		{
-		SaltedHibernateUserDto user = (SaltedHibernateUserDto) dto;
-		Item item = userContainer.addItem(user.getName());
-		item.getItemProperty("users").setValue(user.getName());
-	
-		//adding edit button item into list
-	    final Button editLink = new Button("Edit users");
-	    editLink.addClickListener(new UserPopup(contextHelper, userTable));
-		editLink.setCaption("Edit");
-		editLink.setData(user.getName());
-		editLink.addStyleName("edit");
-		editLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("edit").setValue(editLink);
+			final SaltedHibernateUserDto user = (SaltedHibernateUserDto) dto;
+			final Item item = userContainer.addItem(user.getName());
+			item.getItemProperty("users").setValue(user.getName());
 		
-		//adding delete button item  into list
-		final Button deleteLink = new Button();
-		deleteLink.setCaption("Delete");
-		deleteLink.setData((user.getName()));
-		deleteLink.addStyleName("delete");
-		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addClickListener(new UserDeleteClickListener(user, userService, deleteLink, userTable));
-		}catch(AuthorizationException ex){}
+			if (SecurityUtils.getSubject().isPermitted("USER:EDIT")){
+				//adding edit button item into list
+			    final Button editLink = new Button("Edit users");
+			    editLink.addClickListener(new UserPopup(contextHelper, userTable));
+				editLink.setCaption("Edit");
+				editLink.setData(user.getName());
+				editLink.addStyleName("edit");
+				editLink.setStyleName(BaseTheme.BUTTON_LINK);
+				item.getItemProperty("edit").setValue(editLink);
+			}
+			
+			if (SecurityUtils.getSubject().isPermitted("USER:DELETE")){
+				//adding delete button item  into list
+				final Button deleteLink = new Button();
+				deleteLink.setCaption("Delete");
+				deleteLink.setData((user.getName()));
+				deleteLink.addStyleName("delete");
+				deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+				item.getItemProperty("delete").setValue(deleteLink);
+				deleteLink.addClickListener(new UserDeleteClickListener(user, userService, deleteLink, userTable));
+			}
+		}catch(final AuthorizationException ex){
+			
+		}
 	}
 
 	/**

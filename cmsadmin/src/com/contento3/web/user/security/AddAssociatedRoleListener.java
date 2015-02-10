@@ -57,7 +57,7 @@ public class AddAssociatedRoleListener extends EntityListener implements ClickLi
 		
 		if (dtos!=null) {
 			permissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
-			permissionPicker.build();
+			permissionPicker.build(null);
 		}
 	}
 	

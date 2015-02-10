@@ -1,5 +1,9 @@
 package com.contento3.cms.seo.dto;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import com.contento3.cms.page.model.Page;
+import com.contento3.cms.seo.model.MetaTagLevelEnum;
 import com.contento3.cms.site.structure.dto.SiteDto;
 import com.contento3.common.dto.Dto;
 
@@ -28,7 +32,7 @@ public class MetaTagDto extends Dto {
 	/**
 	 * Level of meta tag
 	 */
-	private String level;
+	private MetaTagLevelEnum level;
 	
 	/**
 	 *Is associated to Meta tag
@@ -73,11 +77,11 @@ public class MetaTagDto extends Dto {
 		this.attributeContent = attributeContent;
 	}
 
-	public String getLevel() {
+	public MetaTagLevelEnum getLevel() {
 		return level;
 	}
 
-	public void setLevel(final String level) {
+	public void setLevel(final MetaTagLevelEnum level) {
 		this.level = level;
 	}
 
@@ -96,5 +100,40 @@ public class MetaTagDto extends Dto {
 	public void setSite(final SiteDto site) {
 		this.site = site;
 	}
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder(23,31)
+                  .append(this.attributeValue)
+                  .toHashCode();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+      boolean isEqual;
+      
+      if(obj == null) {
+        isEqual = false;
+      } else if(this == obj) {
+    	  isEqual = true;
+      } else if(obj instanceof MetaTagDto) {
+    	  final MetaTagDto metaTag = (MetaTagDto)obj;
+    	  if (this.getAttributeValue().equals(((MetaTagDto) obj).getAttributeValue()))
+    		  isEqual = true;
+    	  else
+    		  isEqual = false;
+      } else {
+        isEqual = false;
+      }
+      return isEqual;
+    }
 
 }

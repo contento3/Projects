@@ -22,12 +22,17 @@
 <property name="location" value="classpath:/config/spring/db.properties" />
 </bean>
 
-
-<bean id="storageDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-           <property name="driverClassName" value="${driver}"/>
-           <property name="url" value="${dburlStorage}"/>
-           <property name="username" value="${dbuserStorage}"/>
+<bean id="storageDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close">
+           <property name="driverClass" value="${driver}"/>
+           <property name="jdbcUrl" value="${dburlStorage}"/>
+           <property name="user" value="${dbuserStorage}"/>
            <property name="password" value="${dbpasswordStorage}"/>
+           <property name="acquireIncrement" value="1" />
+   	       <property name="minPoolSize" value="2" />
+   	       <property name="maxPoolSize" value="5" />
+   		   <property name="maxIdleTime" value="100" />     
+           <property name="debugUnreturnedConnectionStackTraces" value="true" />
+           <property name="unreturnedConnectionTimeout" value="300" />
 </bean>
 
 
@@ -37,7 +42,10 @@
 		<property name="annotatedClasses">
 			<list>
 			     <value>com.contento3.dam.content.storage.S3Storage</value>
-			    <value>com.contento3.account.model.Account</value>
+	  		     <value>com.contento3.account.model.Account</value>
+				 <value>com.contento3.account.model.AccountType</value>
+				 <value>com.contento3.account.model.Module</value>
+				 <value>com.contento3.account.model.ModuleCategory</value>
 			</list>
 		</property>	
 		<property name="mappingResources">
@@ -57,14 +65,6 @@
 				<prop key="hibernate.generate_statistics">true</prop>
 				<prop key="hibernate.cache.use_structured_entries">true</prop>
 				<prop key="net.sf.Ehcache.configurationResourceName">/config/spring/ehcache.xml</prop>
-				
-				<prop key="hibernate.c3p0.min_size">2 </prop>
-	            <prop key="hibernate.c3p0.max_size" >5</prop>
-	            <prop key="hibernate.c3p0.timeout">600</prop>
-	            <prop key="hibernate.c3p0.max_statements">0</prop>
-	            <prop key="hibernate.c3p0.idle_test_period">300</prop>
-	            <prop key="hibernate.c3p0.acquire_increment">1</prop>
-	            
 			</props>
 		</property>	</bean>
 

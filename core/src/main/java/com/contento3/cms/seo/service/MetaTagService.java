@@ -3,6 +3,7 @@ package com.contento3.cms.seo.service;
 import java.util.Collection;
 
 import com.contento3.cms.seo.dto.MetaTagDto;
+import com.contento3.cms.seo.model.MetaTagLevelEnum;
 
 public interface MetaTagService {
 	
@@ -31,7 +32,7 @@ public interface MetaTagService {
 	 * @param siteId
 	 * @return
 	 */
-	public Collection<MetaTagDto> findBySiteId(Integer siteId);
+	public Collection<MetaTagDto> findByAssociatedId(Integer assocaitedId,MetaTagLevelEnum level);
 	
 	/**
 	 * Return MetaTag Dto

@@ -3,6 +3,8 @@ package com.contento3.web.content.document;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.common.dto.Dto;
 import com.contento3.dam.document.dto.DocumentDto;
 import com.contento3.dam.document.service.DocumentService;
@@ -69,22 +71,28 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 		Item item = documentContainer.addItem(id);
 		item.getItemProperty("documents").setValue(documentDto.getDocumentTitle());
 		
-		Button editLink = createLinkButton("Edit", id);
-		editLink.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,documentTable));
-		item.getItemProperty("edit").setValue(editLink);
-
-		Button deleteLink = createLinkButton("Delete", id);
-		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addClickListener(new DocumentDeleteListener(documentDto, documentService, deleteLink, documentTable));
-	
-		final Button btnDownload = createLinkButton(BUTTON_NAME_DOWNLOAD, id);
-
-		//Download document
-		StreamResource res =  createResource(documentDto);
-		FileDownloader fd = new FileDownloader(res);
-		fd.extend(btnDownload);
+		if (SecurityUtils.getSubject().isPermitted("DOCUMENT:EDIT")) {
+			final Button editLink = createLinkButton("Edit", id);
+			editLink.addClickListener(new DocumentFormBuilderListner(this.contextHelper,this.tabSheet,documentTable));
+			item.getItemProperty("edit").setValue(editLink);
+		}
 		
-		item.getItemProperty(BUTTON_NAME_DOWNLOAD).setValue(btnDownload);
+		if (SecurityUtils.getSubject().isPermitted("DOCUMENT:DELETE")) {
+			final Button deleteLink = createLinkButton("Delete", id);
+			item.getItemProperty("delete").setValue(deleteLink);
+			deleteLink.addClickListener(new DocumentDeleteListener(documentDto, documentService, deleteLink, documentTable));
+		}
+		
+		if (SecurityUtils.getSubject().isPermitted("DOCUMENT:DOWNLOAD")) {
+			final Button btnDownload = createLinkButton(BUTTON_NAME_DOWNLOAD, id);
+		
+			//Download document
+			final StreamResource res =  createResource(documentDto);
+			final FileDownloader fd = new FileDownloader(res);
+			fd.extend(btnDownload);
+			
+			item.getItemProperty(BUTTON_NAME_DOWNLOAD).setValue(btnDownload);
+		}
 	}
 		
 	private Button createLinkButton(final String caption, final Integer id) {
@@ -103,9 +111,19 @@ public class DocumentTableBuilder extends AbstractTableBuilder {
 	@Override
 	public void buildHeader(final Table documentTable, final Container documentContainer) {
 		documentContainer.addContainerProperty("documents", String.class, null);
-		documentContainer.addContainerProperty("edit", Button.class, null);
-		documentContainer.addContainerProperty("delete", Button.class, null);
-		documentContainer.addContainerProperty(BUTTON_NAME_DOWNLOAD, Button.class, null);
+		
+		if (SecurityUtils.getSubject().isPermitted("DOCUMENT:EDIT")){
+			documentContainer.addContainerProperty("edit", Button.class, null);
+		}
+		
+		if (SecurityUtils.getSubject().isPermitted("DOCUMENT:DELETE")){
+			documentContainer.addContainerProperty("delete", Button.class, null);
+		}
+		
+		if (SecurityUtils.getSubject().isPermitted("DOCUMENT:DOWNLOAD")){
+			documentContainer.addContainerProperty(BUTTON_NAME_DOWNLOAD, Button.class, null);
+		}
+		
 		documentTable.setWidth(100, Unit.PERCENTAGE);
 		documentTable.setContainerDataSource(documentContainer);
 	}

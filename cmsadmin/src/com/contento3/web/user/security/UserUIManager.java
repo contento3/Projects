@@ -2,10 +2,12 @@ package com.contento3.web.user.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.shiro.authz.AuthorizationException;
 
+import com.contento3.security.user.dto.SaltedHibernateUserDto;
 import com.contento3.security.user.service.SaltedHibernateUserService;
 import com.contento3.web.UIManager;
 import com.contento3.web.common.helper.AbstractTableBuilder;
@@ -128,9 +130,9 @@ public class UserUIManager implements UIManager {
 	 */
 	private void addUserButton(HorizontalLayout horizontl){
 
-		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddUserClickListener(contextHelper, userTable));
+		final GridLayout toolbarGridLayout = new GridLayout(1,1);
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("USER:ADD",new AddUserClickListener(contextHelper, userTable));
 		
 		final ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"user",listeners);
 		builder.build();
@@ -144,10 +146,14 @@ public class UserUIManager implements UIManager {
 	 */
 	private void renderUserTable(VerticalLayout verticl) {
 		final AbstractTableBuilder tableBuilder = new UserTableBuilder(contextHelper,userTable);
+		Collection <SaltedHibernateUserDto> user = new ArrayList<SaltedHibernateUserDto>();		
 		try
 		{
-		tableBuilder.build((Collection)userService.findUsersByAccountId((Integer)SessionHelper.loadAttribute("accountId")));
-		}catch(AuthorizationException ex){}
+			user = userService.findUsersByAccountId((Integer)SessionHelper.loadAttribute("accountId"));
+			tableBuilder.build((Collection)user);
+		}catch(final AuthorizationException ex){
+			tableBuilder.build((Collection)user);
+		}
 		verticl.addComponent(userTable);
 	}
 

@@ -3,6 +3,8 @@ package com.contento3.web.common;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.util.CollectionUtils;
+
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -46,22 +48,24 @@ public class ListingUIHeaderBuilder {
 		searchBar.addStyleName("horizontalForm");
 		searchBar.setSizeFull();
 
-		//Add the searchbar fields
-		for (SearchBarFieldInfo info : fields){
-			searchBar.addComponent(buildTextField(info.getTextFieldLabel(),info.getTextFieldPrompt()));
+		if (!CollectionUtils.isEmpty(fields)){
+			//Add the searchbar fields
+			for (SearchBarFieldInfo info : fields){
+				searchBar.addComponent(buildTextField(info.getTextFieldLabel(),info.getTextFieldPrompt()));
+			}
+			
+			searchBar.addComponent(searchBtn);
+			searchBar.setComponentAlignment(searchBtn, Alignment.MIDDLE_CENTER);
+			searchBar.setWidth(800,Unit.PIXELS);
+	
+			final Panel searchPanel = new Panel();
+			searchPanel.setSizeUndefined(); 
+			searchPanel.setContent(searchBar);
+			searchLayout.addComponent(searchPanel);
+			searchPanel.setWidth(100,Unit.PERCENTAGE);
+			searchLayout.setSpacing(true);
 		}
 		
-		searchBar.addComponent(searchBtn);
-		searchBar.setComponentAlignment(searchBtn, Alignment.MIDDLE_CENTER);
-		searchBar.setWidth(800,Unit.PIXELS);
-
-		final Panel searchPanel = new Panel();
-		searchPanel.setSizeUndefined(); 
-		searchPanel.setContent(searchBar);
-		searchLayout.addComponent(searchPanel);
-		searchPanel.setWidth(100,Unit.PERCENTAGE);
-		
-		searchLayout.setSpacing(true);
 		return searchLayout;
 	}
 	

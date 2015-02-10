@@ -25,8 +25,7 @@ implements GroupDao {
 		Validate.notNull(groupName,"groupName cannot be null");
 		final Criteria criteria = this.getSession()
 		.createCriteria(Group.class)
-		.add(Restrictions
-		.eq("name", groupName));
+		.add(Restrictions.eq("name", groupName));
 		
 		Group group = null;
 		if (!CollectionUtils.isEmpty(criteria.list())) {

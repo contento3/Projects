@@ -89,7 +89,7 @@ public class DeleteAssociatedUsersListener extends EntityListener implements Cli
 		if (dtos!=null) {
 			setCaption("Delete user");//extend class method
 			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
-			userPicker.build();
+			userPicker.build(null);
 		}
 	}
 	

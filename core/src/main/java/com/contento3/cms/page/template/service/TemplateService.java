@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
+import com.contento3.cms.page.template.model.Template;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.common.exception.ResourceNotFoundException;
@@ -52,5 +53,14 @@ public interface TemplateService extends SimpleService<TemplateDto>{
 	TemplateDto findTemplateByNameAndAccount(String templateName,
 			Integer accountId) throws ResourceNotFoundException;
 
+	TemplateDto findGlobalTemplateByKey(String templateKey) throws ResourceNotFoundException;
+
 	void clearCache(Integer cache);
+
+	/**
+	 * Create template path based on template object passed.It gets the template directory from the template object that is passed.
+	 * @param template
+	 * @return
+	 */
+	String buildTemplatePath(TemplateDto templateDto);
 }

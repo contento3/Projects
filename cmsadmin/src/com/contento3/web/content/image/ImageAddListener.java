@@ -163,8 +163,7 @@ public class ImageAddListener extends CustomComponent implements ClickListener,
         final Integer accountId = (Integer)SessionHelper.loadAttribute("accountId");
         Collection<ImageLibraryDto> imageLibraryDto = this.imageLibraryService.findImageLibraryByAccountId(accountId);
 		final ComboDataLoader comboDataLoader = new ComboDataLoader();
-		imageLibrayCombo = new ComboBox("Select library",
-				comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
+		imageLibrayCombo = new ComboBox("Select library",comboDataLoader.loadDataInContainer((Collection)imageLibraryDto ));
 		
 		imageLibrayCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
 		imageLibrayCombo.setItemCaptionPropertyId("name");
@@ -177,8 +176,7 @@ public class ImageAddListener extends CustomComponent implements ClickListener,
     	
         
         rootContentLayout.addComponent(upload);
-        rootContentLayout.addComponent(new Label("Click 'Browse' to "+
-        "select a file and then click 'Upload'."));
+        rootContentLayout.addComponent(new Label("Click 'Browse' to "+"select a file and then click 'Upload'."));
 
         // Create a panel for displaying the uploaded image.
         imagePanel = new Panel("Uploaded image");

@@ -136,7 +136,7 @@ public class GenricEntityTableBuilder  extends AbstractTableBuilder {
 		
 		for(String column:listOfColumns){
 			
-			if (dto.getHashMap().containsKey(column)) {
+			if (!CollectionUtils.isEmpty(dto.getHashMap()) && dto.getHashMap().containsKey(column)) {
 				value = dto.getHashMap().get(column);
 			} else {
 				value = dto.getName();

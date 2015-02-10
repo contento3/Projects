@@ -14,7 +14,7 @@ public interface TemplateDao extends GenericDao<Template,Integer> {
         Template findTemplateByPathAndAccount(String path,String templateName,Integer accountId);
 
         Template findSystemTemplateForAccount(String templateCategory,
-                        Integer accountId, Boolean isGlobal);
+                        Integer accountId );
 
         Template findGlobalSystemTemplate(String templateCategory);
 

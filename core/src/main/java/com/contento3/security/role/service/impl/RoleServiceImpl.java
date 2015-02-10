@@ -10,14 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityCannotBeDeletedException;
 import com.contento3.common.exception.EntityNotCreatedException;
-import com.contento3.security.group.model.Group;
 import com.contento3.security.model.Permission;
 import com.contento3.security.role.dao.RoleDao;
 import com.contento3.security.role.dto.RoleDto;
 import com.contento3.security.role.model.Role;
 import com.contento3.security.role.service.RoleAssembler;
 import com.contento3.security.role.service.RoleService;
-@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class RoleServiceImpl implements RoleService{
 
 	private  RoleDao roleDao;
@@ -31,7 +30,7 @@ public class RoleServiceImpl implements RoleService{
 	}
 	
 	@RequiresPermissions("ROLE:ADD")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public Integer create(RoleDto dto) throws EntityAlreadyFoundException,
 			EntityNotCreatedException {
@@ -41,28 +40,28 @@ public class RoleServiceImpl implements RoleService{
 	}
 	
 	@RequiresPermissions("ROLE:DELETE")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void delete(RoleDto dtoToDelete)	throws EntityCannotBeDeletedException {
 		roleDao.delete(roleAssembler.dtoToDomain(dtoToDelete,new Role()));
 	}
 	
 	@RequiresPermissions("ROLE:VIEW_LISTING")
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@Override
 	public Collection<RoleDto> findRolesByAccountId(Integer accountId) {
 		return roleAssembler.domainsToDtos(roleDao.findRolesByAccountId(accountId));
 	}
 	
 	@RequiresPermissions("ROLE:VIEW")
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@Override
 	public RoleDto findRoleByName(String name) {
 		return roleAssembler.domainToDto(roleDao.findByRolename(name),new RoleDto());		
 	}
 
 	@RequiresPermissions("ROLE:EDIT")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void update(RoleDto dtoToUpdate) throws EntityAlreadyFoundException {
 		Validate.notNull(dtoToUpdate,"roleDto cannot be null");
@@ -78,20 +77,20 @@ public class RoleServiceImpl implements RoleService{
 	}
 
 	@RequiresPermissions("ROLE:VIEW")
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@Override
 	public RoleDto findById(final Integer id) {
 		return roleAssembler.domainToDto(roleDao.findById(id),new RoleDto());
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@RequiresPermissions("ROLE:VIEW")
 	@Override
 	public Collection<RoleDto> findRolesByGroupId(final Integer Id) {
 		return roleAssembler.domainsToDtos(roleDao.findRolesByGroupId(Id));
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 	@RequiresPermissions("ROLE:VIEW")
 	@Override
 	public RoleDto findRoleById(final Integer Id) {

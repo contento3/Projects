@@ -3,12 +3,12 @@ package com.contento3.dam.image.service.impl;
 import java.util.Collection;
 
 import org.apache.commons.lang.Validate;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.contento3.account.dao.AccountDao;
 import com.contento3.account.model.Account;
-import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.common.exception.EntityNotFoundException;
 import com.contento3.dam.image.dao.ImageDao;
 import com.contento3.dam.image.dto.ImageDto;
@@ -52,6 +52,7 @@ public class ImageServiceImpl implements ImageService {
 		this.storageManager = storageManager;
 	}
 	
+	@RequiresPermissions("IMAGE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ImageDto findImageByUuid(final String imageId){
@@ -59,6 +60,7 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainToDto(imageDao.findByUuid(imageId));
 	}
 
+	@RequiresPermissions("IMAGE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ImageDto> findImageByAccountId(final Integer accountId){
@@ -66,6 +68,7 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainsToDtos(imageDao.findByAccountId(accountId));
 	}
 
+	@RequiresPermissions("IMAGE:VIEW")
 	@Override
 	public ImageDto findImageByNameAndAccountId(final String name,final Integer accountId) throws EntityNotFoundException{
 		Validate.notNull(name,"name cannot be null");
@@ -78,6 +81,7 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainToDto(image);
 	}
 
+	@RequiresPermissions("IMAGE:ADD")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Boolean create(final ImageDto imageDto) {
@@ -91,6 +95,7 @@ public class ImageServiceImpl implements ImageService {
 		return storageManager.addToStorage(image);
 	}
 	
+	@RequiresPermissions("IMAGE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ImageDto> findLatestImagesBySiteId(Integer siteId,
@@ -101,6 +106,7 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainsToDtos(imageDao.findLatestImagesBySiteId(siteId, count));
 	}
 
+	@RequiresPermissions("IMAGE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ImageDto> findImagesByLibrary(final Integer libraryId) {
@@ -108,6 +114,7 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainsToDtos(imageDao.findImagesByLibrary(libraryId));
 	}
 
+	@RequiresPermissions("IMAGE:EDIT")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void update(final ImageDto imageDto) {
@@ -118,13 +125,15 @@ public class ImageServiceImpl implements ImageService {
 		imageDao.update(image);
 	}
 
+	@RequiresPermissions("IMAGE:DELETE")
 	@Override
 	public void delete(ImageDto dtoToDelete) {
 		// TODO Auto-generated method stub
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 		imageDao.delete(imageAssembler.dtoToDomain(dtoToDelete));
 	}
-	
+
+	@RequiresPermissions("IMAGE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ImageDto findById(Integer imageId){
@@ -132,24 +141,28 @@ public class ImageServiceImpl implements ImageService {
 		return this.imageAssembler.domainToDto(imageDao.findById(imageId));
 	}
 
+	@RequiresPermissions("IMAGE:CROP")
 	@Override
 	public ImageDto crop(final ImageDto imageToCrop) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@RequiresPermissions("IMAGE:RESIZE")
 	@Override
 	public ImageDto resize(final ImageDto imageToResize) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@RequiresPermissions("IMAGE:ROTATE")
 	@Override
 	public ImageDto rotate(final ImageDto imageToRotate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@RequiresPermissions("IMAGE:VIEW_LISTING")
 	@Override
 	public Collection<ImageDto> findImagesByLibraryAndAccountId(
 			Integer libraryId, Integer accountId) {
@@ -158,6 +171,7 @@ public class ImageServiceImpl implements ImageService {
 		return imageAssembler.domainsToDtos(imageDao.findImagesByLibraryAndAccount(libraryId, accountId));
 	}
 
+	@RequiresPermissions("IMAGE:VIEW")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public ImageDto findImageByIdAndSiteId(Integer imageId, Integer siteId) {

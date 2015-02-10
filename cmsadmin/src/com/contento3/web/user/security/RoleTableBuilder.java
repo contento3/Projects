@@ -1,5 +1,6 @@
 package com.contento3.web.user.security;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.common.dto.Dto;
@@ -32,45 +33,51 @@ public class RoleTableBuilder extends AbstractTableBuilder {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void assignDataToTable(final Dto dto,final Table roletable,final Container rolecontainer) {
-		// TODO Auto-generated method stub
+		
 		try
 		{
-		RoleDto role = (RoleDto) dto;
-		Item item = rolecontainer.addItem(role.getId());
-		item.getItemProperty("role").setValue(role.getName());
-
-		//adding edit button item into list
-	    final Button editLink = new Button("Edit roles",new RolePopup(contextHelper, roletable));
-		editLink.setCaption("Edit");
-		editLink.setData(role.getId());
-		editLink.addStyleName("edit");
-		editLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("edit").setValue(editLink);
-		
-		
-		
-		//adding delete button item  into list
-		final Button deleteLink = new Button();
-		deleteLink.setCaption("Delete");
-		deleteLink.setData((role.getId()));
-		deleteLink.addStyleName("delete");
-		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addClickListener(new RoleDeleteClickListener(role, roleService, deleteLink, roletable));
-		
-		//add view button item into list
+			RoleDto role = (RoleDto) dto;
+			Item item = rolecontainer.addItem(role.getId());
+			item.getItemProperty("role").setValue(role.getName());
+	
+			if (SecurityUtils.getSubject().isPermitted("ROLE:EDIT")){
+				//adding edit button item into list
+			    final Button editLink = new Button("Edit roles",new RolePopup(contextHelper, roletable));
+				editLink.setCaption("Edit");
+				editLink.setData(role.getId());
+				editLink.addStyleName("edit");
+				editLink.setStyleName(BaseTheme.BUTTON_LINK);
+				item.getItemProperty("edit").setValue(editLink);
+			}
+			
+			if (SecurityUtils.getSubject().isPermitted("ROLE:DELETE")){
+				//adding delete button item  into list
+				final Button deleteLink = new Button();
+				deleteLink.setCaption("Delete");
+				deleteLink.setData((role.getId()));
+				deleteLink.addStyleName("delete");
+				deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+				item.getItemProperty("delete").setValue(deleteLink);
+				deleteLink.addClickListener(new RoleDeleteClickListener(role, roleService, deleteLink, roletable));
+			}
+			
+			if (SecurityUtils.getSubject().isPermitted("ROLE:ASSOCIATE_PERMISSION")){
+				//add view button item into list
 				final Button viewLink = new Button("permissions",new AssociatedPermissionPopup(contextHelper, new Table()));
 				viewLink.setCaption("View");
 				viewLink.setData(role.getId());
 				viewLink.addStyleName("permissions");
 				viewLink.setStyleName(BaseTheme.BUTTON_LINK);
 				item.getItemProperty("permissions").setValue(viewLink);
-		}catch(AuthorizationException ex){}
+			}
+		}
+		catch(final AuthorizationException ex){
+			
+		}
 	}
 
 	@Override
 	public void buildHeader(Table roletable, Container rolecontainer) {
-		// TODO Auto-generated method stub
 		rolecontainer.addContainerProperty("role", String.class, null);
 		rolecontainer.addContainerProperty("edit", Button.class, null);
 		rolecontainer.addContainerProperty("delete", Button.class, null);

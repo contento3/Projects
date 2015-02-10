@@ -27,11 +27,24 @@
 
 	<beans:bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
     <!-- Single realm app.  If you have multiple realms, use the 'realms' property instead. -->
-    <beans:property name="realm" ref="authenticationAuthorizationRealm"/>
-    <!-- By default the servlet container sessions will be used.  Uncomment this line
-         to use shiro's native sessions (see the JavaDoc for more): -->
-    <!-- <beans:property name="sessionMode" value="native"/>-->
+	    <beans:property name="realm" ref="authenticationAuthorizationRealm"/>
+	    <beans:property name="cacheManager" ref="myCacheManager"/>
 	</beans:bean>
+
+<beans:bean id="myCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+   <beans:property name="cacheManager" ref="ehcache"/>
+</beans:bean>
+
+<beans:bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+</beans:bean>
+
+<beans:bean id="sessionDAO" 
+    class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO"/>
+
+<beans:bean id="sessionManager"
+    class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+    <beans:property name="sessionDAO" ref="sessionDAO"/>
+</beans:bean>
 	
 	<beans:bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 <!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
@@ -45,9 +58,11 @@
 	<!-- Define the Shiro Realm implementation you want to use to connect to your back-end -->
 	<!-- security datasource: -->
 	<beans:bean id="authenticationAuthorizationRealm" class="com.contento3.security.DefaultAuthenticationAuthorizationRealm">
-		<beans:property name="saltedHibernateUserService" ref="saltedHibernateUserService" />	
-		<beans:property name="groupService" ref="groupService" />
-		<beans:property name="credentialsMatcher" ref="hashMatcher" />	
+		<beans:property name="saltedHibernateUserDao" ref="saltedHibernateUserDao" />	
+		<beans:property name="groupDao" ref="groupDao" />
+		<beans:property name="credentialsMatcher" ref="hashMatcher" />
+		<beans:property name="permissionAssembler" ref="permissionAssembler" />	
+		<beans:property name="userAssembler" ref="saltedHibernateUserAssembler" />	
 	</beans:bean>
 
 

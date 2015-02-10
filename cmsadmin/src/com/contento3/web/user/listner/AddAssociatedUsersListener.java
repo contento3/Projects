@@ -86,7 +86,7 @@ public class AddAssociatedUsersListener extends EntityListener implements ClickL
 		if (dtos!=null) {
 			setCaption("Add user");//extend class method
 			userPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
-			userPicker.build();
+			userPicker.build(null);
 			
 		}
 	}

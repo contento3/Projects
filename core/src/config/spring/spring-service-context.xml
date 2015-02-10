@@ -35,7 +35,19 @@
 	</property>	
    </bean> 
 
+	<bean id="moduleCategoryAssembler" class="com.contento3.account.service.impl.ModuleCategoryAssemblerImpl">
+	</bean>
+
+	<bean id="moduleAssembler" class="com.contento3.account.service.impl.ModuleAssemblerImpl">
+		<constructor-arg ref="moduleCategoryAssembler" />
+	</bean>
+
+	<bean id="accountTypeAssembler" class="com.contento3.account.service.impl.AccountTypeAssemblerImpl">
+		<constructor-arg ref="moduleAssembler" />
+	</bean>
+
 	<bean id="accountAssembler" class="com.contento3.account.service.impl.AccountAssemblerImpl">
+		<constructor-arg ref="accountTypeAssembler" />
 	</bean>
 
 	<bean id="siteAssembler"

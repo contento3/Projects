@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -31,6 +33,9 @@ public class Account implements Serializable {
 	@Column(name="IS_ENABLED")
 	private boolean enabled;
 
+	@OneToOne
+	@JoinColumn(name = "ACCOUNT_TYPE_ID")
+	private AccountType accountType;
 	
 //	private String description;
 	
@@ -56,7 +61,17 @@ public class Account implements Serializable {
 	public Integer getAccountId() {
 		return accountId;
 	}
-	public void setAccountId(Integer accountId) {
+	public void setAccountId(final Integer accountId) {
 		this.accountId = accountId;
 	}
+
+	public AccountType getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(final AccountType accountType) {
+		this.accountType = accountType;
+	}
+	
+	
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contacts</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+ 
+<table th:if="${not #lists.isEmpty(users)}">
+    <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+    </tr>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.username}">The first name</td>
+        <td th:text="${user.password}">The last name</td>
+    </tr>
+</table>
+ 
+</body>
+</html>

@@ -1,8 +1,8 @@
 package com.contento3.web.user.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.shiro.authz.AuthorizationException;
 
@@ -111,8 +111,8 @@ public class PermissionUIManager implements UIManager{
 	
 	private void addPermissionButton(HorizontalLayout horizontl){
 		GridLayout toolbarGridLayout = new GridLayout(1,1);
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddPermissionClickListener(contextHelper, permissionTable ));
+		final Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new HashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+		listeners.put("PERMISSION:ADD",new AddPermissionClickListener(contextHelper, permissionTable ));
 		
 		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"permission",listeners);
 		builder.build();

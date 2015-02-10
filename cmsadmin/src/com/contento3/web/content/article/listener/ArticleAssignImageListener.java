@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.authz.AuthorizationException;
 
 import com.contento3.account.dto.AccountDto;
@@ -24,6 +25,7 @@ import com.contento3.web.common.helper.ComboDataLoader;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
 import com.contento3.web.helper.SpringContextHelper;
+import com.contento3.web.site.PageCategoryUIManager;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.ui.ComboBox;
@@ -33,9 +35,8 @@ import com.vaadin.ui.Window;
 
 public class ArticleAssignImageListener extends EntityListener implements ClickListener {
 
-	/**
-	 * 
-	 */
+	private static final Logger LOGGER = Logger.getLogger(ArticleAssignImageListener.class);
+
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -135,7 +136,7 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 			assignedDtos = new ArrayList<Dto>();
 			
 			GenricEntityPicker imagePicker = new GenricEntityPicker(dtos,assignedDtos, listOfColumns, this.mainLayout, this, false);
-			imagePicker.build();
+			imagePicker.build(null);
 			imagePicker.setTableCaption("Select Images");
 
 			contentScopeCombo.addValueChangeListener(new ContentScopeChangeListener(articleId,accountId,helper,imagePicker));
@@ -170,67 +171,69 @@ public class ArticleAssignImageListener extends EntityListener implements ClickL
 		Collection <ArticleImageDto> articleImages = article.getAssociateImagesDtos();
 
 		//if(!CollectionUtils.isEmpty(selectedItems)){
-			AccountService accountService = (AccountService) this.helper.getBean("accountService");
-			AccountDto account = accountService.findAccountById(accountId);
-			AssociatedContentScopeService scopeService = (AssociatedContentScopeService) this.helper.getBean("associatedContentScopeService");
-			Integer scopeId = Integer.parseInt(this.contentScopeCombo.getValue().toString());
-			AssociatedContentScopeDto contentscope = scopeService.findById(scopeId);
+			final AccountService accountService = (AccountService) this.helper.getBean("accountService");
 
 			try {
-				for(String id : selectedItems ){
-						
-					final ImageDto image = imageService.findById(Integer.parseInt(id));
-					if (!alreadyAssignedToArticle (image,article,scopeId)){
-					final ArticleImageDto dto = new ArticleImageDto();
-					dto.setArticle(article);
-					dto.setImage(image);
-					dto.setContentScope(contentscope);
-					dto.setAccount(account);
-					article.getAssociateImagesDtos().add(dto);
-					}	
-				}//end outer for	
-		}//end outer for	
-			catch (Exception e) {
+				final AccountDto account = accountService.findAccountById(accountId);
+				AssociatedContentScopeService scopeService = (AssociatedContentScopeService) this.helper.getBean("associatedContentScopeService");
+				Integer scopeId = Integer.parseInt(this.contentScopeCombo.getValue().toString());
+				AssociatedContentScopeDto contentscope = scopeService.findById(scopeId);
+	
+					for(String id : selectedItems ){
+						final ImageDto image = imageService.findById(Integer.parseInt(id));
+						if (!alreadyAssignedToArticle (image,article,scopeId)){
+						final ArticleImageDto dto = new ArticleImageDto();
+						dto.setArticle(article);
+						dto.setImage(image);
+						dto.setContentScope(contentscope);
+						dto.setAccount(account);
+						article.getAssociateImagesDtos().add(dto);
+						}	
+					}//end outer for	
+					Collection<ArticleImageDto> articleImageDtoToDelete  = new ArrayList<ArticleImageDto>();
+					Collection<ArticleImageDto> articleImagesLatest  = article.getAssociateImagesDtos();
+					
+					ArticleImageDto toDelete =null;
+					for (ArticleImageDto aiDto:articleImagesLatest){
+						boolean flag = false;
+						if (aiDto.getContentScope().getId()==scopeId){
+							for (String id:selectedItems){
+								if (aiDto.getImage().getId().equals(Integer.parseInt(id)))
+								{
+									flag = true;
+									continue;
+								}
+								else {
+									toDelete = aiDto;
+								}
+							}
+							if (!flag && null!=toDelete){
+								articleImageDtoToDelete.add(toDelete);
+							}
+							else if (!flag && null==toDelete){
+								articleImageDtoToDelete.add(aiDto);
+							}
+						}	
+					}
+
+					try {
+						articleImageService.deleteAll(articleImageDtoToDelete);
+					} 
+					catch (final EntityCannotBeDeletedException e) {
+						LOGGER.info("Unable to disassociate image from article");
+					}
+
+					article.getAssociateImagesDtos().removeAll(articleImageDtoToDelete);
+					articleService.updateAssociateImages(article);
+
+			}//end outer for
+			catch (final AuthorizationException ae){
+				Notification.show("Unauthorized","You are not authorized to perform this operation",Notification.Type.TRAY_NOTIFICATION);
+			}
+			catch (final Exception e) {
 				Notification.show("Error occured");
 	}
-			Collection<ArticleImageDto> articleImageDtoToDelete  = new ArrayList<ArticleImageDto>();
-			Collection<ArticleImageDto> articleImagesLatest  = article.getAssociateImagesDtos();
-			
-			ArticleImageDto toDelete =null;
-			for (ArticleImageDto aiDto:articleImagesLatest){
-				boolean flag = false;
-				if (aiDto.getContentScope().getId()==scopeId){
-					for (String id:selectedItems){
-						if (aiDto.getImage().getId().equals(Integer.parseInt(id)))
-						{
-							flag = true;
-							continue;
-						}
-						else {
-							toDelete = aiDto;
-						}
-					}
-					if (!flag && null!=toDelete){
-						articleImageDtoToDelete.add(toDelete);
-					}
-					else if (!flag && null==toDelete){
-						articleImageDtoToDelete.add(aiDto);
-					}
-				}	
-			}
-				
-			
-
-			try {
-				articleImageService.deleteAll(articleImageDtoToDelete);
-			} catch (EntityCannotBeDeletedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			article.getAssociateImagesDtos().removeAll(articleImageDtoToDelete);
-			articleService.updateAssociateImages(article);
-//		}//end if
+		//		}//end if
 //		else {
 //			try {
 //				articleImageService.deleteAll(articleImages);

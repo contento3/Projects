@@ -3,6 +3,8 @@ package com.contento3.web.content.article;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.shiro.SecurityUtils;
+
 import com.contento3.cms.article.dto.ArticleDto;
 import com.contento3.cms.article.service.ArticleService;
 import com.contento3.common.dto.Dto;
@@ -49,11 +51,7 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 	 * @param helper
 	 * @param table
 	 */
-	
-	
-
-	
-	
+		
 	public ArticleTableBuilder(final Window window,final SpringContextHelper helper,final TabSheet tabSheet,final Table table) {
 		super(table);
 		this.contextHelper = helper;
@@ -61,9 +59,6 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		this.tabSheet = tabSheet;
 		this.articleService = (ArticleService) contextHelper.getBean("articleService");
 	}
-
-	
-    
      
 	/**
 	 * Assign data to table
@@ -81,27 +76,32 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		item.getItemProperty("date created").setValue(sdf.format(article.getDateCreated()));
 		item.getItemProperty("date posted").setValue(sdf.format(article.getDatePosted()));
 
-		Date expiryDate = article.getExpiryDate();
+		final Date expiryDate = article.getExpiryDate();
 		if (null!=expiryDate){
 			item.getItemProperty("expiry date").setValue(sdf.format(expiryDate));
 		}
 		
-		Button editLink = new Button();
-		editLink.setCaption("Edit");
-		editLink.setData(article.getId());
-		editLink.addStyleName("edit");
-		editLink.setStyleName(BaseTheme.BUTTON_LINK);
-		ClickListener articleListener = new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,articleTable);
-		editLink.addClickListener(articleListener);
-		item.getItemProperty("edit").setValue(editLink);
+		if (SecurityUtils.getSubject().isPermitted("ARTICLE:EDIT")){
+			final Button editLink = new Button();
+			editLink.setCaption("Edit");
+			editLink.setData(article.getId());
+			editLink.addStyleName("edit");
+			editLink.setStyleName(BaseTheme.BUTTON_LINK);
+			
+			final ClickListener articleListener = new ArticleFormBuilderListner(this.contextHelper,this.tabSheet,articleTable);
+			editLink.addClickListener(articleListener);
+			item.getItemProperty("edit").setValue(editLink);
+		}
 		
-		Button deleteLink = new Button();
-		deleteLink.setCaption("Delete");
-		deleteLink.setData(article.getId());
-		deleteLink.addStyleName("delete");
-		deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
-		item.getItemProperty("delete").setValue(deleteLink);
-		deleteLink.addClickListener(new ArticleDeleteClickListner(article, articleService, deleteLink, articleTable));
+		if (SecurityUtils.getSubject().isPermitted("ARTICLE:DELETE")){
+			final Button deleteLink = new Button();
+			deleteLink.setCaption("Delete");
+			deleteLink.setData(article.getId());
+			deleteLink.addStyleName("delete");
+			deleteLink.setStyleName(BaseTheme.BUTTON_LINK);
+			item.getItemProperty("delete").setValue(deleteLink);
+			deleteLink.addClickListener(new ArticleDeleteClickListner(article, articleService, deleteLink, articleTable));
+		}
 	}
 
 	/**
@@ -114,8 +114,15 @@ public class ArticleTableBuilder extends AbstractTableBuilder {
 		articleContainer.addContainerProperty("date created", String.class, null);
 		articleContainer.addContainerProperty("date posted", String.class, null);
 		articleContainer.addContainerProperty("expiry date", String.class, null);
-		articleContainer.addContainerProperty("edit", Button.class, null);
-		articleContainer.addContainerProperty("delete", Button.class, null);
+		
+		if (SecurityUtils.getSubject().isPermitted("ARTICLE:EDIT")){
+			articleContainer.addContainerProperty("edit", Button.class, null);
+		}
+		
+		if (SecurityUtils.getSubject().isPermitted("ARTICLE:DELETE")){
+			articleContainer.addContainerProperty("delete", Button.class, null);
+		}
+		
 		articleTable.setWidth(100, Unit.PERCENTAGE);
 		articleTable.setContainerDataSource(articleContainer);
 	}

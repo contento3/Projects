@@ -18,5 +18,8 @@ public interface TemplateDirectoryDao extends GenericDao<TemplateDirectory,Integ
 	TemplateDirectory findByName(String name, boolean isGlobal,Integer accountId);
 
 	Collection<TemplateDirectory> findChildDirectories(Integer parentId,Integer accountId);
-	
+
+	TemplateDirectory findChildDirectory(Integer parentId,String directoryToFind,Integer accountId);
+
+	Collection<TemplateDirectory> findChildDirectories(Integer parentId);
 }

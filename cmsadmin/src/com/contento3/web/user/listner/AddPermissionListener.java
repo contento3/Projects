@@ -78,7 +78,7 @@ public class AddPermissionListener extends EntityListener implements ClickListen
 		if (dtos!=null) {
 			setCaption("Add Permission");//extend class method
 			permissionPicker = new GenricEntityPicker(dtos,null, listOfColumns,this.vLayout,this,false);
-			permissionPicker.build();
+			permissionPicker.build(null);
 			
 		}
 	}

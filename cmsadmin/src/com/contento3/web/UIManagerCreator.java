@@ -65,6 +65,15 @@ public class UIManagerCreator {
 			final SubscriptionUIManager subscrptionUIMgr = new SubscriptionUIManager(helper);
 			return subscrptionUIMgr;
 		}
+		else if (manager.equals(Manager.PageModules)){
+			final PageModulesUIManager pageUIModuleMgr = new PageModulesUIManager(helper);
+			return pageUIModuleMgr;
+		}
+		else if (manager.equals(Manager.SocialPublish)){
+			final SocialPublishUIManager socialUIModuleMgr = new SocialPublishUIManager(helper);
+			return socialUIModuleMgr;
+		}
+		
 		return null;
 	}
 }

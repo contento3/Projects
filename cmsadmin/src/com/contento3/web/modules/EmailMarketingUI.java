@@ -1,19 +1,12 @@
 package com.contento3.web.modules;
 
-import java.util.Collection;
-
 import com.contento3.cms.constant.NavigationConstant;
-import com.contento3.cms.site.structure.dto.SiteDto;
-import com.contento3.cms.site.structure.service.SiteService;
 import com.contento3.web.Manager;
 import com.contento3.web.UIManager;
 import com.contento3.web.UIManagerCreator;
-import com.contento3.web.common.helper.SessionHelper;
-import com.contento3.web.common.helper.TabSheetHelper;
 import com.contento3.web.helper.SpringContextHelper;
 import com.contento3.web.layout.LayoutManagerRenderer;
 import com.contento3.web.site.SiteMainAreaRenderer;
-import com.contento3.web.site.SiteUIManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.Action;
@@ -27,13 +20,12 @@ import com.vaadin.ui.AbstractSplitPanel.SplitterClickListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.themes.BaseTheme;
 
-public class EmailMarketingUI implements Button.ClickListener, Action.Handler {
+public class EmailMarketingUI extends ModuleUI implements Button.ClickListener, Action.Handler {
 
 
 	private static final long serialVersionUID = 1L;
@@ -74,7 +66,7 @@ public class EmailMarketingUI implements Button.ClickListener, Action.Handler {
 		this.parentLayout.replaceComponent(this.parentLayout.getSecondComponent(),buildUI());
 	}
 
-	
+	@Override
 	public HorizontalSplitPanel buildUI(){
 		horiz = new HorizontalSplitPanel();
         

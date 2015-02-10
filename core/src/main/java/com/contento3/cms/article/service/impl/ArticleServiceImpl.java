@@ -103,7 +103,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 		articleDao.update(article);
 	}
-	@RequiresPermissions("ARTICLE:VIEW")
+	@RequiresPermissions("ARTICLE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findByAccountId(Integer accountId, boolean isPublished) {
@@ -111,7 +111,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findByAccountId(accountId, isPublished));
 	}
 	
-	@RequiresPermissions("ARTICLE:VIEW")
+	@RequiresPermissions("ARTICLE:VIEW_LISTING")
 	@Override
 	public Collection<ArticleDto> findBySearch(String header, String catagory, boolean isPublished) {
 		Validate.notNull(header,"header cannot be null");
@@ -121,7 +121,7 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 	
 	
-	@RequiresPermissions("ARTICLE:VIEW")
+	@RequiresPermissions("ARTICLE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticle(int count, boolean isPublished) {
@@ -148,11 +148,10 @@ public class ArticleServiceImpl implements ArticleService {
 		articleDto.setAssociateImagesDtos(this.articleImageAssembler.domainsToDtos(article.getAssociateImages()));
 		return articleDto;
 	}
-	@RequiresPermissions("ARTICLE:VIEW")
+	@RequiresPermissions("ARTICLE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<ArticleDto> findLatestArticleBySiteId(Integer siteId, Integer count, Integer start, boolean isPublished) {
-		// TODO Auto-generated method stub
 		Validate.notNull(siteId,"siteId cannot be null");
 		//Validate.notNull(count,"count cannot be null");
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleBySiteId(siteId,count,start, isPublished));
@@ -160,11 +159,10 @@ public class ArticleServiceImpl implements ArticleService {
 	@RequiresPermissions("ARTICLE:DELETE")
 	@Override
 	public void delete(ArticleDto dtoToDelete) {
-		// TODO Auto-generated method stub
 		Validate.notNull(dtoToDelete,"dtoToDelete cannot be null");
 	}
 	
-	//@RequiresPermissions("ARTICLE_IMAGE_ASSOCIATION:EDIT")
+	@RequiresPermissions("ARTICLE:ASSOCIATE_IMAGE")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public void updateAssociateImages(final ArticleDto articleDto){
@@ -174,7 +172,7 @@ public class ArticleServiceImpl implements ArticleService {
 		this.articleDao.update(article);
 	}
 	
-	@RequiresPermissions("ARTICLE:VIEW")
+	@RequiresPermissions("ARTICLE:VIEW_LISTING")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     @Override
     public Collection<ArticleDto> findLatestArticleByCategory(
@@ -186,6 +184,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleAssembler.domainsToDtos(articleDao.findLatestArticleByCategory(categoryIds, numberOfArticles, siteId, start, isPublished));
 	}
 
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Override
 	public ArticleDto findArticleByIdAndSiteId(Integer id, Integer siteId, boolean isPublished) {
 		Validate.notNull(id,"id cannot be null");
@@ -199,6 +198,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleDto;
 	}
 
+	@RequiresPermissions("ARTICLE:VIEW")
 	@Override
 	public ArticleDto findById(final Integer id,final Boolean isPublished) {
 		Article article = articleDao.findById(id,isPublished);

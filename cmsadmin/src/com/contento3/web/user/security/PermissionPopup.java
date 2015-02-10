@@ -175,7 +175,7 @@ public class PermissionPopup extends CustomComponent implements Window.CloseList
         	permissionButton.setCaption("Edit");
         	popupWindow.setCaption("Edit Permission");
 			final int permissionId =  (Integer) event.getButton().getData();
-			PermissionDto permissionDto = permissionService.findById(permissionId);
+			final PermissionDto permissionDto = permissionService.findById(permissionId);
 			
 			entityCombo.setValue(permissionDto.getEntity().getId());
 			entityOperationCombo.setValue(permissionDto.getEntityOperation().getId());

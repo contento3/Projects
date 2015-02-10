@@ -9,7 +9,6 @@ import org.springframework.web.context.ContextLoader;
 
 import com.contento3.cms.article.dto.ArticleImageDto;
 import com.contento3.cms.article.service.ArticleImageService;
-import com.contento3.cms.article.service.ArticleService;
 import com.contento3.cms.content.dto.AssociatedContentScopeDto;
 import com.contento3.cms.content.model.AssociatedContentScopeTypeEnum;
 import com.contento3.cms.content.service.AssociatedContentScopeService;

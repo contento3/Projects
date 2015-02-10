@@ -2,12 +2,14 @@ package com.contento3.site.registration;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,8 +19,8 @@ import com.contento3.cms.page.template.dto.TemplateDto;
 import com.contento3.cms.page.template.model.SystemTemplateNameEnum;
 import com.contento3.cms.page.template.service.TemplateService;
 import com.contento3.cms.site.structure.dto.SiteDto;
+import com.contento3.common.exception.EntityAlreadyFoundException;
 import com.contento3.common.exception.EntityNotFoundException;
-import com.contento3.site.registration.model.User;
 import com.contento3.site.user.dto.UserDto;
 import com.contento3.site.user.service.UserRegistrationService;
 import com.contento3.util.DomainUtil;
@@ -39,7 +41,7 @@ public class UserRegistrationController {
 	private TemplateService templateService;
 	
     @RequestMapping(value = "/register/login", method = RequestMethod.POST)
-    public String registerLogin(@ModelAttribute("command") User user,BindingResult result) {
+    public String registerLogin(@ModelAttribute("command") UserDto user,BindingResult result) {
     	return "redirect:userSuccess.htm";
     }
 
@@ -52,30 +54,41 @@ public class UserRegistrationController {
      * @throws EntityNotFoundException 
      */
     @RequestMapping(value = "/register/process", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("user")final User user,final BindingResult result,final HttpServletRequest request,final Model model) throws EntityNotFoundException {
+    public String addUser(@Valid @ModelAttribute("user") final UserDto user,final BindingResult result,final HttpServletRequest request,final Model model) throws EntityNotFoundException {
     	Validate.notNull(user,"site cannot be null in user registration");
 
-    	UserDto userDto = new UserDto();
-    	userDto.setPassword(user.getPassword());
-    	userDto.setUsername(user.getUsername());
-    	userDto.setPasswordReminder(user.getPasswordReminder());
-    	
     	final SiteDto site = (SiteDto) request.getAttribute("site");
     	final AccountDto account = site.getAccountDto();	
-    	userDto.setSiteId(site.getSiteId());
+
+		//Get the appropriate forwarding template after use is added.
+		TemplateDto template;
+		try {
+			template = templateService.findSystemTemplateForAccount(SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS, account.getAccountId());
+		}
+		catch(final EntityNotFoundException e){
+			template = templateService.findSystemTemplateForAccount(SystemTemplateNameEnum.SYSTEM_REGISTER, account.getAccountId());
+		}
+		
+    	if (result.hasErrors()) {
+    		model.addAttribute("user",user);
+    		return "/template"+template.getTemplatePath()+"/"+template.getTemplateName(); 
+        }
+
+    	user.setSiteId(site.getSiteId());
     	
 		//This is required to get the template for right site
 		model.addAttribute("site",site);
-
-    	LOGGER.info(String.format("Trying to register user with username : [%s]",user.getUsername()));
-		registrationService.create(userDto,DomainUtil.fetchDomain(request));
 		
-		//TODO 
-		//Email the user for confirmation
+		try {
+			registrationService.create(user,DomainUtil.fetchDomain(request));
+		}
+		catch (final EntityAlreadyFoundException e){
+			result.addError(new ObjectError("invalid", "User already exists"));
+			return "/template"+template.getTemplatePath()+"/"+template.getTemplateName(); 
+		}
+    	LOGGER.info(String.format("New user registered with username: [%s]",user.getUsername()));
 		
-		//Get the appropriate forwarding template after use is added.
-		final TemplateDto template = templateService.findSystemTemplateForAccount(SystemTemplateNameEnum.SYSTEM_REGISTER_SUCCESS, account.getAccountId());
-		return template.getTemplateName(); //TODO this needs to be dynamic so that we can redirect to appropriate page based on site.
+		return "/template"+template.getTemplatePath()+"/"+template.getTemplateName(); 
     }
     
 
@@ -98,8 +111,9 @@ public class UserRegistrationController {
     	    	
 		//This is required to get the template for right site
 		model.addAttribute("site",site);
-		model.addAttribute("user",new User());
-		return "user";
+		model.addAttribute("user",new UserDto());
+		final TemplateDto template = templateService.findSystemTemplateForAccount(SystemTemplateNameEnum.SYSTEM_REGISTER, account.getAccountId());
+		return "/template"+template.getTemplatePath()+"/"+template.getTemplateName(); 
     }
 
 	/**

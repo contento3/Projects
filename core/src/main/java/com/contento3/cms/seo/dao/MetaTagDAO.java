@@ -3,6 +3,7 @@ package com.contento3.cms.seo.dao;
 import java.util.Collection;
 
 import com.contento3.cms.seo.model.MetaTag;
+import com.contento3.cms.seo.model.MetaTagLevelEnum;
 import com.contento3.common.dao.GenericDao;
 
 public interface MetaTagDAO extends GenericDao<MetaTag, Integer> {
@@ -13,4 +14,6 @@ public interface MetaTagDAO extends GenericDao<MetaTag, Integer> {
 	 * @return
 	 */
 	public Collection<MetaTag> findBySiteId(Integer siteId);
+
+	Collection<MetaTag> findByAssocaitedId(Integer id, MetaTagLevelEnum level);
 }

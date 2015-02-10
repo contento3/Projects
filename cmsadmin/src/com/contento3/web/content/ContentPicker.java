@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.contento3.common.dto.Dto;
 import com.contento3.web.common.helper.EntityListener;
 import com.contento3.web.common.helper.GenricEntityPicker;
+import com.contento3.web.pagemodules.ContentTypeEnum;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -23,23 +24,18 @@ public class ContentPicker extends GenricEntityPicker implements ClickListener {
 	private Collection<Dto> searchedDtos;
 	private Collection<Dto> searchedAssignedDtos;
 
-	public ContentPicker(Collection<Dto> dtos, Collection<Dto> assignedDtos,
-			Collection<String> listOfColumns, VerticalLayout vLayout,
-			EntityListener entityListener, boolean isHierarchicalTable) {
-		
-		super(dtos, assignedDtos, listOfColumns, vLayout, entityListener,
-				isHierarchicalTable);
+	public ContentPicker(final Collection<Dto> dtos,final Collection<Dto> assignedDtos,final Collection<String> listOfColumns,final VerticalLayout vLayout,
+			final EntityListener entityListener,final boolean isHierarchicalTable) {
+		super(dtos, assignedDtos, listOfColumns, vLayout, entityListener,isHierarchicalTable);
 		this.verticalLayout = vLayout;
-		
 	}
 
 	/**
 	 * Build table
 	 */
 	@Override
-	public void build() {
-
-		super.build();
+	public void build(final ContentTypeEnum contentType) {
+		super.build(contentType);
 		verticalLayout.setMargin(true);
 		verticalLayout.setSpacing(true);
 		searchField = new TextField();
@@ -47,9 +43,10 @@ public class ContentPicker extends GenricEntityPicker implements ClickListener {
 		btnSearch = new Button("Search");
 		btnSearch.addClickListener(this);
 		
-		HorizontalLayout searchLayout = new HorizontalLayout(searchField, btnSearch);
+		final HorizontalLayout searchLayout = new HorizontalLayout(searchField, btnSearch);
 		searchLayout.setSpacing(true);
 		verticalLayout.addComponent(searchLayout, 0);
+
 	}
 
 	/**
@@ -63,7 +60,6 @@ public class ContentPicker extends GenricEntityPicker implements ClickListener {
 		searchedAssignedDtos = new ArrayList<Dto>(); 
 		
 		if(!searchTxt.equals("")) {
-			
 			for (Dto dto : super.dtos) {
 				addIntoCollection(searchTxt, dto, searchedDtos);
 			}

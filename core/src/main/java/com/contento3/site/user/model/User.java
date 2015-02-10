@@ -55,6 +55,51 @@ public class User implements Serializable {
 	@Column(name="IS_EMAIL_USERNAME") 
 	private boolean isEmailUsername;
 
+	@Column(name="SALT")
+	private String salt;
+
+	@Column(name="FIRST_NAME")
+	private String firstName;
+	
+	@Column(name="LAST_NAME")
+	private String lastName;
+	
+	@Column(name="MIDDLE_NAME")
+	private String middleName;
+	
+	
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(final String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(final String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(final String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(final String salt) {
+		this.salt = salt;
+	}
+
 	public Integer getId() {
 		return id;
 	}

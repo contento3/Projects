@@ -84,7 +84,7 @@ public class SiteServiceImpl implements SiteService {
 	}
 	
 
-	@RequiresPermissions("SITE:VIEW")
+	@RequiresPermissions("SITE:VIEW_LISTING")
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public Collection<SiteDto> findSitesByAccountId(Integer accountId, boolean isPublished) {

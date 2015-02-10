@@ -7,6 +7,7 @@
 		<project>core</project>
 		<project>c3-module-email-marketing</project>
 		<project>c3-module-email</project>
+		<project>social-core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

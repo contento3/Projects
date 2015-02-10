@@ -7,3 +7,16 @@ cmsadmin/.settings/org.eclipse.wst.common.project.facet.core.xml
 sites/.project
 sites/ivy.xml
 sites/ivysettings.xml
+learning-social/
+core/bin/.gitignore
+scribe-project/
+builds/
+build/build-module-email/c3-module-email.jar
+build/build-module-email-marketing/c3-module-email-marketing.jar
+build/build-core/core.jar
+DB/Scripts/db scripts errors.rtf
+cmsadmin/WebContent/images/fdgfg.txt
+core/src/config/spring/db.properties.prod
+sites/dist/
+sites/src/com/SitesWidgetset.gwt.xml
+cmsadmin/dist/

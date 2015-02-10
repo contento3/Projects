@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.util.CollectionUtils;
 
 import com.contento3.cms.page.category.dto.CategoryDto;
@@ -63,7 +67,9 @@ import com.vaadin.ui.VerticalLayout;
 public class PageUIManager {
 
 	private static final Logger LOGGER = Logger.getLogger(PageUIManager.class);
+	
 	private final static String BUTTON_NAME_PUBLISHED = "Publish";
+
 	private final static String BUTTON_NAME_UNPUBLISHED = "Unpublish";
 
 	/**
@@ -106,7 +112,6 @@ public class PageUIManager {
 		this.contextHelper = helper;
 		
 		setPageContainerProperty();
-	
 	}
 	
 	/**
@@ -120,8 +125,10 @@ public class PageUIManager {
 	}
 	
 	public TabSheet renderPageListing(final Integer siteId,final TabSheet pagesTab,final VerticalLayout horizontalLayout,final VerticalLayout pageLayout) {
-		//pageLayout.addComponent(horizontalLayout);
-		siteDto = siteService.findSiteById(siteId);
+		final Table table = new Table();
+		try {
+			siteDto = siteService.findSiteById(siteId);
+		
 		HorizontalLayout horizLayout = new HorizontalLayout();
 		
 		final Label subHeadingLbl = new Label("Site page");
@@ -130,10 +137,14 @@ public class PageUIManager {
 		
 		HorizontalLayout layoutForBtns = new HorizontalLayout();
 		layoutForBtns.setSpacing(true);
-		// published/unpublished button
-		final Button btnPublish = new Button(getButtonTitle()); 
-		btnPublish.addClickListener(publishedListener());
-		layoutForBtns.addComponent(btnPublish);
+		
+		
+		if (SecurityUtils.getSubject().isPermitted("SITE:PUBLISH") && SecurityUtils.getSubject().isPermitted("SITE:UNPUBLISH")){
+			// published/unpublished button
+			final Button btnPublish = new Button(getButtonTitle()); 
+			btnPublish.addClickListener(publishedListener());
+			layoutForBtns.addComponent(btnPublish);
+		}
 		
 		horizLayout.setWidth(100, Unit.PERCENTAGE);
 		horizLayout.addComponent(layoutForBtns);
@@ -142,7 +153,6 @@ public class PageUIManager {
 		pageLayout.setSpacing(true);
 		pageLayout.addComponent(new HorizontalRuler());
 		
-		final Table table = new Table();
 		table.setImmediate(true);
 
 		// Create a new layout and add as a the 
@@ -164,24 +174,31 @@ public class PageUIManager {
 		});
 		
 		final PageService pageService = (PageService) contextHelper.getBean("pageService");
-		final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
-
-		if (!CollectionUtils.isEmpty(pageDtos)) {
-			
-			table.setWidth(100, Unit.PERCENTAGE);
-			table.setPageLength(pageDtos.size());
-			Button link = null;
-			for (PageDto page : pageDtos) {
-				addPageToPageListTable(page, siteId, pagesTab, link);
+			final Collection<PageDto> pageDtos = pageService.findPageBySiteId(siteId);
+	
+			if (!CollectionUtils.isEmpty(pageDtos)) {
+				
+				table.setWidth(100, Unit.PERCENTAGE);
+				table.setPageLength(pageDtos.size());
+				Button link = null;
+				for (PageDto page : pageDtos) {
+					addPageToPageListTable(page, siteId, pagesTab, link);
+				}
+	
+				table.setContainerDataSource(container);
+				pageLayout.addComponent(table);
+			} else {
+				final Label label = new Label("No pages found for this site.");
+				pageLayout.addComponent(label);
 			}
-
-			table.setContainerDataSource(container);
-			pageLayout.addComponent(table);
-		} else {
-			final Label label = new Label("No pages found for this site.");
-			pageLayout.addComponent(label);
 		}
-
+		catch (final AuthorizationException ae){
+			LOGGER.debug("User does not have permission to perform this operation.");
+			table.setPageLength(1);
+			addEmpytPageTable(table);
+			pageLayout.addComponent(table);
+			table.setWidth(100,Unit.PERCENTAGE);
+		}
 		return pagesTab;
 	}
 
@@ -240,167 +257,176 @@ public class PageUIManager {
 	public void renderNewPage(final Integer siteId, final TabSheet pagesTab,
 			final Integer pageId) {
 
-
-		final HorizontalLayout newPageRootlayout = new HorizontalLayout();
-		final VerticalLayout newPageParentlayout = new VerticalLayout();
-		newPageParentlayout.setSpacing(true);
-		
-		ScreenHeader screenHeader = new ScreenHeader(newPageParentlayout,"Page");
-        newPageRootlayout.setSpacing(true);
-		newPageRootlayout.addComponent(newPageParentlayout);
-
-		final FormLayout newPageFormLayout = new FormLayout();
-		newPageParentlayout.addComponent(newPageFormLayout);
-		pagesTab.setSelectedTab(newPageRootlayout);
-
-		final TextField titleTxt = new TextField();
-		titleTxt.setCaption("Title");
-
-		final TextField uriTxt = new TextField();
-		uriTxt.setCaption("Uri");
-		siteDto = siteService.findSiteById(siteId);
-		
-		final CheckBox checkbox1 = new CheckBox();
-		checkbox1.setCaption("Add to Navigation");
-		
-		newPageFormLayout.addComponent(titleTxt);
-		newPageFormLayout.addComponent(uriTxt);
-		newPageFormLayout.addComponent(checkbox1);
-		newPageFormLayout.setWidth(100,Unit.PERCENTAGE);
-		newPageFormLayout.setSpacing(true);
-		
-
-		String pageTabTitle = "Untitled page";
-		String pageButtonTitle = "Add page";
-		PageDto pageDto = null;
-		//categories = null;
-		if (null != pageId) {
-
-			try {
-				pageDto = pageService.findPageWithLayout(pageId);
-				
-			} catch (PageNotFoundException e) {
-				LOGGER.equals(String.format("Page not found %s", pageId));
-			}
-
-			pageTabTitle = String.format("Edit %s", pageDto.getTitle());
-			pageButtonTitle = "Save";
+		try {
+			final HorizontalLayout newPageRootlayout = new HorizontalLayout();
+			final VerticalLayout newPageParentlayout = new VerticalLayout();
+			newPageParentlayout.setSpacing(true);
 			
-		
-			//categories = pageDto.getCategories();
-			Iterator<CategoryDto> itr=pageDto.getCategories().iterator();
-		}
-		
-		Tab newPageTab = pagesTab.addTab(newPageRootlayout, pageTabTitle,
-				new ExternalResource("images/site.png"));
-		pagesTab.setSelectedTab(newPageParentlayout);
-		newPageTab.setVisible(true);
-		newPageTab.setEnabled(true);
-		newPageTab.setClosable(true);
-
-		// List box to select Page layouts
-
-		pageLayoutService = (PageLayoutService) contextHelper
-				.getBean("pageLayoutService");
-		siteDto = siteService.findSiteById(siteId);
-
-		int accountId = siteDto.getAccountDto().getAccountId();
-		Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(accountId);
-		final ComboDataLoader comboDataLoader = new ComboDataLoader();
-		pageLayoutCombo = new ComboBox("Select Page Layouts",
-				comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
-
-		Button newPageSubmitBtn = new Button(pageButtonTitle);
-		//newPageFormLayout.addComponent(pageLayoutCombo);
-		//newPageFormLayout.addComponent(newPageSubmitBtn);
-		pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
-		pageLayoutCombo.setItemCaptionPropertyId("name");
-
-
-		int gridRows = 1;
-		List<com.vaadin.event.MouseEvents.ClickListener> listeners = new ArrayList<com.vaadin.event.MouseEvents.ClickListener>();
-		listeners.add(new AddPageButtonClickListener(contextHelper,titleTxt,uriTxt,checkbox1,siteDto,pageLayoutCombo,pageLayoutService, pageId,newPageDtoWithLayout,pagesTab,newPageParentlayout,this));
-		
-		if (null != pageId) {
-			gridRows = 3;
-			SEOUIManager seoUIManager = new SEOUIManager(contextHelper);
-			listeners.add(new SEOSettingsEventListener(seoUIManager, pagesTab, siteId, pageId));
-			listeners.add(new PageAssignCategoryListener(this.contextHelper, pageDto, accountId));
-		}
-
-		GridLayout toolbarGridLayout = new GridLayout(1, gridRows);
-		ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
-		builder.build();
-
-		newPageRootlayout.addComponent(toolbarGridLayout);
-		newPageRootlayout.setWidth(100,Unit.PERCENTAGE);
-		
-		newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
-		newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
-
-		newPageSubmitBtn.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			public void buttonClick(ClickEvent event) {
-				PageService pageService = (PageService) contextHelper
-						.getBean("pageService");
-				PageDto pageDto = new PageDto();
-				pageDto.setTitle(titleTxt.getValue().toString());
-				pageDto.setUri(uriTxt.getValue().toString());
-				pageDto.setIsNavigable((checkbox1.getValue())?1:0);
-				pageDto.setSite(siteDto);
-				pageDto.setCategories(new ArrayList<CategoryDto>());
-////				if(categories!=null){
-////					pageDto.setCategories(categories);
-////				}else{
-////					pageDto.setCategories(null);
-//				}
-				if (null != pageLayoutCombo.getValue()) {
-					pageDto.setPageLayoutDto(pageLayoutService
-							.findPageLayoutById(Integer
-									.parseInt(pageLayoutCombo.getValue()
-											.toString())));
+			ScreenHeader screenHeader = new ScreenHeader(newPageParentlayout,"Page");
+	        newPageRootlayout.setSpacing(true);
+			newPageRootlayout.addComponent(newPageParentlayout);
+	
+			final FormLayout newPageFormLayout = new FormLayout();
+			newPageParentlayout.addComponent(newPageFormLayout);
+			pagesTab.setSelectedTab(newPageRootlayout);
+	
+			final TextField titleTxt = new TextField();
+			titleTxt.setCaption("Title");
+	
+			final TextField uriTxt = new TextField();
+			uriTxt.setCaption("Uri");
+			siteDto = siteService.findSiteById(siteId);
+			
+			final CheckBox checkbox1 = new CheckBox();
+			checkbox1.setCaption("Add to Navigation");
+			
+			newPageFormLayout.addComponent(titleTxt);
+			newPageFormLayout.addComponent(uriTxt);
+			newPageFormLayout.addComponent(checkbox1);
+			newPageFormLayout.setWidth(100,Unit.PERCENTAGE);
+			newPageFormLayout.setSpacing(true);
+			
+	
+			String pageTabTitle = "Untitled page";
+			String pageButtonTitle = "Add page";
+			PageDto pageDto = null;
+			//categories = null;
+			if (null != pageId) {
+	
+				try {
+					pageDto = pageService.findPageWithLayout(pageId);
+					
+				} catch (final PageNotFoundException e) {
+					LOGGER.debug(String.format("Page not found %s", pageId));
 				}
-
-	try{
-				String notificationMsg = "Page %s %s successfullly";
-				if (null!=pageId){
-					pageDto.setPageId(pageId);
-					pageService.update(pageDto);	
-					notificationMsg = String.format(notificationMsg,pageDto.getTitle(),"updated");
-				}
-				else {
-					// Create a new page,get page dto with its layout.
-					newPageDtoWithLayout = pageService.createAndReturn(pageDto);
-					addPageToPageListTable(newPageDtoWithLayout, siteId, pagesTab,
-							new Button());
-
-					// Render the page layout by splitting them with page sections
-					// and add them to the parent layout i.e. VerticalLayout
-					newPageParentlayout
-							.addComponent(renderPageLayouts(newPageDtoWithLayout));
-					notificationMsg = String.format(
-							"Page %s added successfully",
-							newPageDtoWithLayout.getTitle());
-				}
-
-				Notification.show(notificationMsg);
-				}
-				catch(EntityAlreadyFoundException e){
-					Notification.show("Page already exists with this title or uri",Notification.Type.ERROR_MESSAGE);
-				} catch(PageCannotCreateException e) {
-					Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
-				}
-
+				pageTabTitle = String.format("Edit %s", pageDto.getTitle());
+				pageButtonTitle = "Save";
+				
+			
+				//categories = pageDto.getCategories();
+				Iterator<CategoryDto> itr=pageDto.getCategories().iterator();
 			}
-
-		});
-
-		// Call for editing
-		if (null != pageId) {
-			newPageParentlayout.addComponent(populatePage(pageDto,
-					newPageFormLayout));
-		}
+			
+			Tab newPageTab = pagesTab.addTab(newPageRootlayout, pageTabTitle,
+					new ExternalResource("images/site.png"));
+			pagesTab.setSelectedTab(newPageParentlayout);
+			newPageTab.setVisible(true);
+			newPageTab.setEnabled(true);
+			newPageTab.setClosable(true);
+	
+			// List box to select Page layouts
+	
+			pageLayoutService = (PageLayoutService) contextHelper
+					.getBean("pageLayoutService");
+			siteDto = siteService.findSiteById(siteId);
+	
+			int accountId = siteDto.getAccountDto().getAccountId();
+			Collection<PageLayoutDto> pageLayoutDto = pageLayoutService.findPageLayoutByAccount(accountId);
+			final ComboDataLoader comboDataLoader = new ComboDataLoader();
+			pageLayoutCombo = new ComboBox("Select Page Layouts",
+					comboDataLoader.loadDataInContainer((Collection)pageLayoutDto));
+	
+			Button newPageSubmitBtn = new Button(pageButtonTitle);
+			//newPageFormLayout.addComponent(pageLayoutCombo);
+			//newPageFormLayout.addComponent(newPageSubmitBtn);
+			pageLayoutCombo.setItemCaptionMode(ComboBox.ItemCaptionMode.PROPERTY);
+			pageLayoutCombo.setItemCaptionPropertyId("name");
+	
+	
+			int gridRows = 1;
+			Map<String,com.vaadin.event.MouseEvents.ClickListener> listeners = new LinkedHashMap<String,com.vaadin.event.MouseEvents.ClickListener>();
+			listeners.put("PAGE:ADD",new AddPageButtonClickListener(contextHelper,titleTxt,uriTxt,checkbox1,siteDto,pageLayoutCombo,pageLayoutService, pageId,newPageDtoWithLayout,pagesTab,newPageParentlayout,this));
+			
+			if (null != pageId) {
+				gridRows = 3;
+				SEOUIManager seoUIManager = new SEOUIManager(contextHelper);
+				listeners.put("SEO:VIEW",new SEOSettingsEventListener(seoUIManager, pagesTab, siteId, pageId));
+				listeners.put("PAGE:ASSOCIATE_CATEGORY",new PageAssignCategoryListener(this.contextHelper, pageDto, accountId));
+			}	
+			
+			final GridLayout toolbarGridLayout = new GridLayout(1, gridRows);
+			ScreenToolbarBuilder builder = new ScreenToolbarBuilder(toolbarGridLayout,"page",listeners);
+			builder.build();
+	
+			newPageRootlayout.addComponent(toolbarGridLayout);
+			newPageRootlayout.setWidth(100,Unit.PERCENTAGE);
+			
+			newPageRootlayout.setExpandRatio(toolbarGridLayout, 1);
+			newPageRootlayout.setExpandRatio(newPageParentlayout, 14);
+	
+			newPageSubmitBtn.addClickListener(new ClickListener() {
+				private static final long serialVersionUID = 1L;
+	
+				public void buttonClick(ClickEvent event) {
+					PageService pageService = (PageService) contextHelper
+							.getBean("pageService");
+					PageDto pageDto = new PageDto();
+					pageDto.setTitle(titleTxt.getValue().toString());
+					pageDto.setUri(uriTxt.getValue().toString());
+					pageDto.setIsNavigable((checkbox1.getValue())?1:0);
+					pageDto.setSite(siteDto);
+					pageDto.setCategories(new ArrayList<CategoryDto>());
+	////				if(categories!=null){
+	////					pageDto.setCategories(categories);
+	////				}else{
+	////					pageDto.setCategories(null);
+	//				}
+					if (null != pageLayoutCombo.getValue()) {
+						pageDto.setPageLayoutDto(pageLayoutService
+								.findPageLayoutById(Integer
+										.parseInt(pageLayoutCombo.getValue()
+												.toString())));
+					}
+	
+		try {
+					String notificationMsg = "Page %s %s successfullly";
+					if (null!=pageId){
+						pageDto.setPageId(pageId);
+						pageService.update(pageDto);	
+						notificationMsg = String.format(notificationMsg,pageDto.getTitle(),"updated");
+					}
+					else {
+						// Create a new page,get page dto with its layout.
+						newPageDtoWithLayout = pageService.createAndReturn(pageDto);
+						addPageToPageListTable(newPageDtoWithLayout, siteId, pagesTab,
+								new Button());
+	
+						// Render the page layout by splitting them with page sections
+						// and add them to the parent layout i.e. VerticalLayout
+						newPageParentlayout
+								.addComponent(renderPageLayouts(newPageDtoWithLayout));
+						notificationMsg = String.format(
+								"Page %s added successfully",
+								newPageDtoWithLayout.getTitle());
+					}
+	
+					Notification.show(notificationMsg);
+					}
+					catch(final EntityAlreadyFoundException e){
+						Notification.show("Page already exists with this title or uri",Notification.Type.ERROR_MESSAGE);
+					} catch(final PageCannotCreateException e) {
+						Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+					}
+					catch (final AuthorizationException ae) {
+						LOGGER.debug("User do not have permission [PAGE:VIEW]");
+						Notification.show("Unauthorized", "You do not have permissions to perform this operation", Notification.Type.TRAY_NOTIFICATION);
+					}
+				}
+	
+			});
+	
+			// Call for editing
+			if (null != pageId) {
+				newPageParentlayout.addComponent(populatePage(pageDto,
+						newPageFormLayout));
+			}
+	}
+	catch (final AuthorizationException ae) {
+		LOGGER.debug("User do not have permission [PAGE:VIEW]");
+		Notification.show("Unauthorized", "You do not have permissions to perform this operation", Notification.Type.TRAY_NOTIFICATION);
+	}
+	
+		
 	}
 
 	public void addPageToPageListTable(final PageDto page,
@@ -409,24 +435,36 @@ public class PageUIManager {
 		Item item = container.addItem(page.getPageId());
 		item.getItemProperty("Title").setValue(page.getTitle());
 		item.getItemProperty("Uri").setValue(page.getUri());
-		link = new Button();
-
-		link.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-
-			public void buttonClick(ClickEvent event) {
-				// Get the item identifier from the user-defined data.
-				// Integer pageId = (Integer)event.getButton().getData();
-				renderNewPage(siteId, pagesTab, page.getPageId());
-			}
-		});
-
-		link.setCaption("Edit");
-		link.setData(page.getPageId());
-		link.addStyleName("link");
-		item.getItemProperty("Edit").setValue(link);
+		
+		if (SecurityUtils.getSubject().isPermitted("PAGE:EDIT")){
+			link = new Button();
+			link.addClickListener(new Button.ClickListener() {
+				private static final long serialVersionUID = 1L;
+	
+				public void buttonClick(ClickEvent event) {
+					// Get the item identifier from the user-defined data.
+					// Integer pageId = (Integer)event.getButton().getData();
+					renderNewPage(siteId, pagesTab, page.getPageId());
+				}
+			});
+	
+			link.setCaption("Edit");
+			link.setData(page.getPageId());
+			link.addStyleName("link");
+			
+			item.getItemProperty("Edit").setValue(link);
+		}
 	}
 
+	public void addEmpytPageTable(final Table table) {
+
+		Item item = container.addItem("-1");
+		item.getItemProperty("Title").setValue("No page found");
+		item.getItemProperty("Uri").setValue("");
+		table.setContainerDataSource(container);
+	}
+
+	
 	/**
 	 * Renders the page layouts. A PageDto is passed as a parameter so that
 	 * associated layouts to a page can be rendered.
@@ -434,52 +472,58 @@ public class PageUIManager {
 	 * @param pageDtoWithLayout
 	 */
 	public TabSheet renderPageLayouts(PageDto pageDtoWithLayout) {
-		final PageLayoutDto layoutDto = pageDtoWithLayout.getPageLayoutDto();
+
 		pageLayoutsTab = new TabSheet();
-		pageLayoutsTab.setHeight(10,Unit.PERCENTAGE);
-		pageLayoutsTab.setWidth(100,Unit.PERCENTAGE);
-
-		PageTemplateDto pageTemplateDto = new PageTemplateDto();
-		//pageTemplateDto.setPageId(selectedPageId);
-		pageTemplateDto.setPageId(pageDtoWithLayout.getPageId());
-		UI.getCurrent().setData(pageTemplateDto);
-
-		//creating associated template table
-		Table templateTable = new Table();
-		final AbstractTableBuilder templateTableBuilder = new PageTemplateTableBuilder(contextHelper, templateTable);
-		
-		
-		// If there are layout with page sections then add it
-		if (null != layoutDto && !layoutDto.getLayoutTypeDto().getName().equalsIgnoreCase(PageSectionTypeEnum.CUSTOM.toString())) {
-			final List<PageSectionDto> pageSections = (List<PageSectionDto>) layoutDto
-					.getPageSections();
-
-			Collections.sort(pageSections);
-			final Iterator<PageSectionDto> pageSectionIterator = pageSections
-					.iterator();
-
-			while (pageSectionIterator.hasNext()) {
+		if (SecurityUtils.getSubject().isPermitted("PAGE:ASSOCIATE_TEMPLATE")){
+			final PageLayoutDto layoutDto = pageDtoWithLayout.getPageLayoutDto();
+			pageLayoutsTab.setHeight(10,Unit.PERCENTAGE);
+			pageLayoutsTab.setWidth(100,Unit.PERCENTAGE);
+	
+			PageTemplateDto pageTemplateDto = new PageTemplateDto();
+			//pageTemplateDto.setPageId(selectedPageId);
+			pageTemplateDto.setPageId(pageDtoWithLayout.getPageId());
+			UI.getCurrent().setData(pageTemplateDto);
+	
+			//creating associated template table
+			Table templateTable = new Table();
+			final AbstractTableBuilder templateTableBuilder = new PageTemplateTableBuilder(contextHelper, templateTable);
+			
+			
+			// If there are layout with page sections then add it
+			if (null != layoutDto && !layoutDto.getLayoutTypeDto().getName().equalsIgnoreCase(PageSectionTypeEnum.CUSTOM.toString())) {
+				final List<PageSectionDto> pageSections = (List<PageSectionDto>) layoutDto
+						.getPageSections();
+	
+				Collections.sort(pageSections);
+				final Iterator<PageSectionDto> pageSectionIterator = pageSections
+						.iterator();
+	
+				while (pageSectionIterator.hasNext()) {
+					final VerticalLayout pageSectionLayout = new VerticalLayout();
+					pageLayoutsTab.addComponent(pageSectionLayout);
+					pageLayoutsTab.setHeight(100,Unit.PERCENTAGE);
+					pageLayoutsTab.setWidth(100,Unit.PERCENTAGE);
+	
+					renderPageSection(pageLayoutsTab, pageSectionLayout,
+							pageSectionIterator.next(), pageTemplateDto,templateTableBuilder,templateTable);
+					pageSectionLayout.addComponent(templateTable);
+				}
+			}
+			// otherwise add a section to add layout based on a template.
+			else {
 				final VerticalLayout pageSectionLayout = new VerticalLayout();
-				pageLayoutsTab.addComponent(pageSectionLayout);
-				pageLayoutsTab.setHeight(100,Unit.PERCENTAGE);
-				pageLayoutsTab.setWidth(100,Unit.PERCENTAGE);
-
-				renderPageSection(pageLayoutsTab, pageSectionLayout,
-						pageSectionIterator.next(), pageTemplateDto,templateTableBuilder,templateTable);
+				pageSectionLayout.setWidth(100,Unit.PERCENTAGE);
+				pageSectionLayout.setSpacing(true);
+				Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", new ExternalResource("images/site.png"));
+				tab.setClosable(false);
+				
+				pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", contextHelper,templateTableBuilder));
+				renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM,templateTableBuilder,templateTable);
 				pageSectionLayout.addComponent(templateTable);
 			}
 		}
-		// otherwise add a section to add layout based on a template.
 		else {
-			final VerticalLayout pageSectionLayout = new VerticalLayout();
-			pageSectionLayout.setWidth(100,Unit.PERCENTAGE);
-			pageSectionLayout.setSpacing(true);
-			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, "Custom Layout", new ExternalResource("images/site.png"));
-			tab.setClosable(false);
-			
-			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", contextHelper,templateTableBuilder));
-			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.CUSTOM,templateTableBuilder,templateTable);
-			pageSectionLayout.addComponent(templateTable);
+			pageLayoutsTab.setVisible(false);
 		}
 		return pageLayoutsTab;
 	}
@@ -491,11 +535,14 @@ public class PageUIManager {
 		PageTemplateService pageTemplateService = (PageTemplateService) contextHelper.getBean("pageTemplateService");
 		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
 		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findByName(sectionType);
-		Collection<PageTemplateDto> newPageTemplates = pageTemplateService.findByPageAndPageSectionType(selectedPageId,sectionTypeDto.getId());
-
-		//adding associated template item to table
-		if (!CollectionUtils.isEmpty(newPageTemplates)){
-			templateTableBuilder.build((Collection)newPageTemplates);
+		
+		if (SecurityUtils.getSubject().isPermitted("PAGE:ASSOCIATE_TEMPLATE")){
+			final Collection<PageTemplateDto> newPageTemplates = pageTemplateService.findByPageAndPageSectionType(selectedPageId,sectionTypeDto.getId());
+		
+			//adding associated template item to table
+			if (!CollectionUtils.isEmpty(newPageTemplates)){
+				templateTableBuilder.build((Collection)newPageTemplates);
+			}
 		}
 	}
 
@@ -506,16 +553,17 @@ public class PageUIManager {
 			final PageTemplateDto pageTemplateDto,
 			final AbstractTableBuilder templateTableBuilder,
 			final Table templateTable) {
-		Tab tab = pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), new ExternalResource("images/site.png"));
-		tab.setClosable(true);
+		if (SecurityUtils.getSubject().isPermitted("PAGE:ASSOCIATE_TEMPLATE")){
+			Tab tab = pageLayoutsTab.addTab(pageSectionLayout, pageSectionDto.getSectionTypeDto().getName(), new ExternalResource("images/site.png"));
+			tab.setClosable(true);
 
-		pageTemplateDto.setSectionTypeId(pageSectionDto.getSectionTypeDto().getId());
-		PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
-		PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findById(pageSectionDto.getSectionTypeDto().getId());
-
-		pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", contextHelper,templateTableBuilder));
-		renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.valueOf(sectionTypeDto.getName()),templateTableBuilder,templateTable);
+			pageTemplateDto.setSectionTypeId(pageSectionDto.getSectionTypeDto().getId());
+			PageSectionTypeService pageSectionTypeService = (PageSectionTypeService) contextHelper.getBean("pageSectionTypeService");
+			PageSectionTypeDto sectionTypeDto = pageSectionTypeService.findById(pageSectionDto.getSectionTypeDto().getId());
 	
+			pageSectionLayout.addComponent(new PageTemplateAssignmentPopup("Open", contextHelper,templateTableBuilder));
+			renderPageTemplateList(pageSectionLayout,PageSectionTypeEnum.valueOf(sectionTypeDto.getName()),templateTableBuilder,templateTable);
+		}
 	}
 
 	/**
